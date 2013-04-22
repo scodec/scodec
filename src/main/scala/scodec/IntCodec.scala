@@ -29,4 +29,6 @@ class IntCodec(bits: Int, signed: Boolean = true) extends Codec[Int] {
 
   override def decode(buffer: BitVector) =
     buffer.consume(bits) { _.padTo(32).rightShift(32 - bits, signed).asByteBuffer.getInt.right }
+
+  override def toString = description + " codec"
 }

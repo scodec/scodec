@@ -36,7 +36,7 @@ trait BitVector {
    *
    * @group collection
    */
-  @inline final def nonEmpty: Boolean = !isEmpty
+  final def nonEmpty: Boolean = !isEmpty
 
   /**
    * Returns number of bits in this vector.
@@ -51,7 +51,7 @@ trait BitVector {
    * @group individual
    * @see get(Int)
    */
-  @inline final def apply(n: Int): Boolean = get(n)
+  final def apply(n: Int): Boolean = get(n)
 
   /**
    * Returns true if the `n`th bit is high, false otherwise.
@@ -81,14 +81,14 @@ trait BitVector {
    *
    * @group individual
    */
-  @inline final def set(n: Int): BitVector = updated(n, true)
+  final def set(n: Int): BitVector = updated(n, true)
 
   /**
    * Returns a new bit vector with the `n`th bit low (and all other bits unmodified).
    *
    * @group individual
    */
-  @inline final def clear(n: Int): BitVector = updated(n, false)
+  final def clear(n: Int): BitVector = updated(n, false)
 
   /**
    * Returns a new bit vector representing this vector's contents followed by the specified vector's contents.
@@ -150,7 +150,7 @@ trait BitVector {
    *
    * @group bitwise
    */
-  @inline final def <<(n: Int): BitVector = leftShift(n)
+  final def <<(n: Int): BitVector = leftShift(n)
 
   /**
    * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
@@ -164,14 +164,14 @@ trait BitVector {
    *
    * @group bitwise
    */
-  @inline final def >>(n: Int): BitVector = rightShift(n, true)
+  final def >>(n: Int): BitVector = rightShift(n, true)
 
   /**
    * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are low.
    *
    * @group bitwise
    */
-  @inline final def >>>(n: Int): BitVector = rightShift(n, false)
+  final def >>>(n: Int): BitVector = rightShift(n, false)
 
   /**
    * Returns a bit vector of the same size with each bit shifted to the right `n` bits.
@@ -187,7 +187,7 @@ trait BitVector {
    *
    * @group bitwise
    */
-  @inline final def unary_~(): BitVector = not
+  final def unary_~(): BitVector = not
 
   /**
    * Returns a bitwise complement of this vector.
@@ -203,7 +203,7 @@ trait BitVector {
    *
    * @group bitwise
    */
-  @inline final def &(other: BitVector): BitVector = and(other)
+  final def &(other: BitVector): BitVector = and(other)
 
   /**
    * Returns a bitwise AND of this vector with the specified vector.
@@ -221,7 +221,7 @@ trait BitVector {
    *
    * @group bitwise
    */
-  @inline final def |(other: BitVector): BitVector = or(other)
+  final def |(other: BitVector): BitVector = or(other)
 
   /**
    * Returns a bitwise OR of this vector with the specified vector.
@@ -239,7 +239,7 @@ trait BitVector {
    *
    * @group bitwise
    */
-  @inline final def ^(other: BitVector): BitVector = xor(other)
+  final def ^(other: BitVector): BitVector = xor(other)
 
   /**
    * Returns a bitwise XOR of this vector with the specified vector.
