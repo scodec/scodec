@@ -2,11 +2,9 @@ package scodec
 
 import scalaz.syntax.id._
 
+import Codecs._
 
 class LongCodecTest extends CodecSuite {
-
-  val int64 = new LongCodec(64)
-  val uint32 = new LongCodec(32, signed = false)
 
   test("roundtrip") {
     roundtripAll(int64, Seq(0, 1, -1, Long.MaxValue, Long.MinValue))

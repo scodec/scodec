@@ -2,12 +2,10 @@ package scodec
 
 import scalaz.syntax.id._
 
+import Codecs._
+
 
 class IntCodecTest extends CodecSuite {
-
-  val int32 = new IntCodec(32)
-  val int16 = new IntCodec(16)
-  val uint16 = new IntCodec(16, signed = false)
 
   test("roundtrip") {
     roundtripAll(int32, Seq(0, 1, -1, Int.MaxValue, Int.MinValue))
