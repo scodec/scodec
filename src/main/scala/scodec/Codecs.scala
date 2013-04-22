@@ -1,5 +1,8 @@
 package scodec
 
+import java.nio.charset.Charset
+
+
 object Codecs {
 
   val int8 = new IntCodec(8)
@@ -13,4 +16,8 @@ object Codecs {
   val uint24 = new IntCodec(24, signed = false)
   val uint32 = new LongCodec(32, signed = false)
 
+
+  def string(implicit charset: Charset) = new StringCodec(charset)
+  val ascii = string(Charset.forName("US-ASCII"))
+  val utf8 = string(Charset.forName("UTF-8"))
 }
