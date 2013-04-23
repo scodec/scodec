@@ -437,6 +437,8 @@ object BitVector {
       bldr.result
     }
 
+    override protected[this] def thisCollection = seq
+
     override def hashCode: Int =
       bytes.hashCode
 

@@ -135,4 +135,8 @@ class BitVectorTest extends FunSuite with Matchers {
     BitVector(10, 245) ^ BitVector(245, 10) shouldBe BitVector.high(16)
   }
 
+  test("toIterable") {
+    BitVector.high(8).toIterable
+  }
+
 }
