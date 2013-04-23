@@ -274,21 +274,18 @@ trait BitVector {
 
 object BitVector {
 
-  val empty: BitVector = BitVector(Vector.empty)
+  val empty: BitVector = BitVector(ByteVector.empty)
 
-  def high(n: Int): BitVector = apply(n, Vector.fill[Byte]((n + 7) / 8)(-1: Byte))
-  def low(n: Int): BitVector = apply(n, Vector.fill[Byte]((n + 7) / 8)(0: Byte))
+  def high(n: Int): BitVector = apply(n, ByteVector.fill((n + 7) / 8)(-1))
+  def low(n: Int): BitVector = apply(n, ByteVector.fill((n + 7) / 8)(0))
 
   private def apply(n: Int, bytes: ByteVector): BitVector =
     SimpleBitVector(n, clearUnneededBits(n, bytes))
 
-  def apply(bytes: Vector[Byte]): BitVector = SimpleBitVector(bytes.size * 8, bytes)
-  def apply(bytes: Array[Byte]): BitVector = apply(bytes.toVector)
-  def apply(buffer: ByteBuffer): BitVector = {
-    val arr = Array.ofDim[Byte](buffer.remaining)
-    buffer.get(arr)
-    apply(arr)
-  }
+  def apply(bytes: ByteVector): BitVector = SimpleBitVector(bytes.size * 8, bytes)
+  def apply(bytes: Array[Byte]): BitVector = apply(ByteVector(bytes))
+  def apply(buffer: ByteBuffer): BitVector = apply(ByteVector(buffer))
+  def apply[A: Integral](bytes: A*): BitVector = apply(ByteVector(bytes: _*))
 
   private def getBit(byte: Byte, n: Int): Boolean =
     ((0x00000080 >> n) & byte) != 0
@@ -324,7 +321,7 @@ object BitVector {
   }
 
 
-  private case class SimpleBitVector(val size: Int, bytes: Vector[Byte]) extends BitVector with Serializable {
+  private case class SimpleBitVector(val size: Int, bytes: ByteVector) extends BitVector with Serializable {
 
     require(size >= 0, "size must be non-negative")
     require(bytes.size == bytesNeededForBits(size), s"size ($size) and bytes.size (${bytes.size}) are not compatible")
@@ -353,14 +350,13 @@ object BitVector {
       } else {
         val bitsToShiftEachByte = n % 8
         val shiftedByWholeBytes = bytes.drop(n / 8)
-        val windows = shiftedByWholeBytes zip (shiftedByWholeBytes.drop(1) :+ (0: Byte))
-        val newBytes = windows map { case (a, b) =>
+        val newBytes = (shiftedByWholeBytes zipWithI (shiftedByWholeBytes.drop(1) :+ (0: Byte))) { case (a, b) =>
           val hi = (a << bitsToShiftEachByte)
           val low = (((b & topNBits(bitsToShiftEachByte)) & 0x000000ff) >>> (8 - bitsToShiftEachByte))
-          (hi | low).toByte
+          hi | low
         }
         val newSize = size - n
-        SimpleBitVector(newSize, if (newSize <= (newBytes.size - 1) * 8) newBytes.reverse.tail.reverse else newBytes)
+        SimpleBitVector(newSize, if (newSize <= (newBytes.size - 1) * 8) newBytes.dropRight(1) else newBytes)
       }
     }
 
@@ -428,7 +424,7 @@ object BitVector {
     }
 
     def not: BitVector =
-      BitVector(size, bytes map { b => (~b).toByte })
+      BitVector(size, bytes mapI { ~_ })
 
     def and(other: BitVector): BitVector =
       zipBytesWith(other)(_ & _)
@@ -440,7 +436,7 @@ object BitVector {
       zipBytesWith(other)(_ ^ _)
 
     private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector =
-      BitVector(size min other.size, (bytes zip other.asBytes) map { case (l, r) => op(l, r).toByte })
+      BitVector(size min other.size, (bytes zipWithI other.asBytes)(op))
 
     def asBytes = bytes
 
@@ -450,7 +446,7 @@ object BitVector {
       if (isEmpty) {
         "BitVector(0 bits)"
       } else {
-        val hex = Bytes.toHexadecimal(bytes)
+        val hex = Bytes.toHexadecimal(bytes.toIterable)
         val truncatedHex = if (invalidBits >= 4) {
           hex.substring(0, hex.size - 1)
         } else hex

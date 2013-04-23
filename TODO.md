@@ -12,6 +12,7 @@ Future Improvements
  - Implementation of ByteVector that minimizes boxing/unboxing
    - Need fast ++ and indexed access
    - Slow insertion is okay
-   - Consider something like Akka's ByteString
+   - Integrate Akka's ByteString?
  - Implementation of BitVector backed by Vector[Long]
+   - A non-specialized Vector[Long] should result in 1/8th of total operations on large vectors (and 1/8th boxing/unboxing)
    - Test if this is faster than current Vector[Byte]

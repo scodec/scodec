@@ -6,10 +6,11 @@ import org.scalatest._
 
 
 class BytesTest extends FunSuite with Matchers {
-  val deadbeef = Vector[Byte](0xde.toByte, 0xad.toByte, 0xbe.toByte, 0xef.toByte)
+  val deadbeef = ByteVector(0xde, 0xad, 0xbe, 0xef)
 
   test("toHexadecimal") {
-    Bytes.toHexadecimal(deadbeef) should be ("0xdeadbeef")
+    deadbeef.toHexadecimal should be ("0xdeadbeef")
+    Bytes.toHexadecimal(deadbeef.toIterable) should be ("0xdeadbeef")
     Bytes.toHexadecimal(deadbeef.toArray) should be ("0xdeadbeef")
   }
 

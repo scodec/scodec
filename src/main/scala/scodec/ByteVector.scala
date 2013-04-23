@@ -1,6 +1,60 @@
 package scodec
 
+import scala.collection.{IndexedSeqLike, IndexedSeqOptimized}
+
+import java.nio.ByteBuffer
+
+
+trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] {
+
+  def lift(idx: Int): Option[Byte]
+
+  def updated(idx: Int, b: Byte): ByteVector
+
+  def +:(byte: Byte): ByteVector
+
+  def :+(byte: Byte): ByteVector
+
+  def ++(other: ByteVector): ByteVector
+
+  def map(f: Byte => Byte): ByteVector
+
+  def mapI(f: Byte => Int): ByteVector =
+    map(f andThen { _.toByte })
+
+  def zipWith(other: ByteVector)(op: (Byte, Byte) => Byte): ByteVector
+
+  def zipWithI(other: ByteVector)(op: (Byte, Byte) => Int): ByteVector =
+    zipWith(other) { case (l, r) => op(l, r).toByte }
+
+  def toArray: Array[Byte]
+
+  def toByteBuffer: ByteBuffer = ByteBuffer.wrap(toArray)
+
+  def toHexadecimal: String
+}
+
 object ByteVector {
 
-  def apply(bytes: Byte*): ByteVector = Vector(bytes: _*)
+  val empty: ByteVector = StandardByteVector(Vector.empty)
+
+  def apply[A: Integral](bytes: A*): ByteVector = {
+    val integral = implicitly[Integral[A]]
+    StandardByteVector(bytes.map { i => integral.toInt(i).toByte }.toVector)
+  }
+
+  def apply(bytes: Vector[Byte]): ByteVector = StandardByteVector(bytes)
+
+  def apply(bytes: Array[Byte]): ByteVector = StandardByteVector(bytes.toVector)
+
+  def apply(buffer: ByteBuffer): ByteVector = {
+    val arr = Array.ofDim[Byte](buffer.remaining)
+    buffer.get(arr)
+    apply(arr)
+  }
+
+  def fill[A: Integral](size: Int)(b: A): ByteVector = {
+    val integral = implicitly[Integral[A]]
+    StandardByteVector(Vector.fill[Byte](size)(integral.toInt(b).toByte))
+  }
 }

@@ -21,14 +21,14 @@ object Bytes {
     bldr.toString
   }
 
-  def fromHexadecimal(str: String): String \/ Vector[Byte] = {
+  def fromHexadecimal(str: String): String \/ ByteVector = {
     val withoutPrefix = if (str startsWith "0x") str.substring(2) else str
     withoutPrefix.replaceAll("\\s", "").sliding(2, 2).toVector.map { h =>
       try java.lang.Integer.valueOf(h, 16).toByte.right
       catch { case e: NumberFormatException => s"Invalid octet '$h'".left }
-    }.sequenceU
+    }.sequenceU.map { v => ByteVector(v) }
   }
 
-  def fromValidHexadecimal(str: String): Vector[Byte] =
+  def fromValidHexadecimal(str: String): ByteVector =
     fromHexadecimal(str) valueOr { msg => throw new IllegalArgumentException(msg) }
 }
