@@ -5,20 +5,20 @@ import org.scalatest._
 class BitVectorTest extends FunSuite with Matchers {
 
   test("construction via high") {
-    BitVector.high(1).asBytes shouldBe ByteVector(0x80)
-    BitVector.high(2).asBytes shouldBe ByteVector(0xc0)
-    BitVector.high(3).asBytes shouldBe ByteVector(0xe0)
-    BitVector.high(4).asBytes shouldBe ByteVector(0xf0)
-    BitVector.high(5).asBytes shouldBe ByteVector(0xf8)
-    BitVector.high(6).asBytes shouldBe ByteVector(0xfc)
-    BitVector.high(7).asBytes shouldBe ByteVector(0xfe)
-    BitVector.high(8).asBytes shouldBe ByteVector(0xff)
-    BitVector.high(9).asBytes shouldBe ByteVector(0xff, 0x80)
-    BitVector.high(10).asBytes shouldBe ByteVector(0xff, 0xc0)
+    BitVector.high(1).toByteVector shouldBe ByteVector(0x80)
+    BitVector.high(2).toByteVector shouldBe ByteVector(0xc0)
+    BitVector.high(3).toByteVector shouldBe ByteVector(0xe0)
+    BitVector.high(4).toByteVector shouldBe ByteVector(0xf0)
+    BitVector.high(5).toByteVector shouldBe ByteVector(0xf8)
+    BitVector.high(6).toByteVector shouldBe ByteVector(0xfc)
+    BitVector.high(7).toByteVector shouldBe ByteVector(0xfe)
+    BitVector.high(8).toByteVector shouldBe ByteVector(0xff)
+    BitVector.high(9).toByteVector shouldBe ByteVector(0xff, 0x80)
+    BitVector.high(10).toByteVector shouldBe ByteVector(0xff, 0xc0)
   }
 
-  test("empty asBytes") {
-    BitVector.empty.asBytes shouldBe ByteVector.empty
+  test("empty toByteVector") {
+    BitVector.empty.toByteVector shouldBe ByteVector.empty
   }
 
   test("apply") {
@@ -49,45 +49,45 @@ class BitVectorTest extends FunSuite with Matchers {
   }
 
   test("drop") {
-    BitVector.high(8).drop(4).asBytes shouldBe ByteVector(0xf0)
-    BitVector.high(8).drop(3).asBytes shouldBe ByteVector(0xf8)
-    BitVector.high(10).drop(3).asBytes shouldBe ByteVector(0xfe)
-    BitVector.high(12).drop(3).asBytes shouldBe ByteVector(0xff, 0x80)
+    BitVector.high(8).drop(4).toByteVector shouldBe ByteVector(0xf0)
+    BitVector.high(8).drop(3).toByteVector shouldBe ByteVector(0xf8)
+    BitVector.high(10).drop(3).toByteVector shouldBe ByteVector(0xfe)
+    BitVector.high(12).drop(3).toByteVector shouldBe ByteVector(0xff, 0x80)
     BitVector.empty.drop(4) shouldBe BitVector.empty
     BitVector.high(4).drop(8) shouldBe BitVector.empty
   }
 
   test("take") {
-    BitVector.high(8).take(4).asBytes shouldBe ByteVector(0xf0)
-    BitVector.high(8).take(5).asBytes shouldBe ByteVector(0xf8)
-    BitVector.high(10).take(7).asBytes shouldBe ByteVector(0xfe)
-    BitVector.high(12).take(9).asBytes shouldBe ByteVector(0xff, 0x80)
-    BitVector.high(4).take(100).asBytes shouldBe ByteVector(0xf0)
+    BitVector.high(8).take(4).toByteVector shouldBe ByteVector(0xf0)
+    BitVector.high(8).take(5).toByteVector shouldBe ByteVector(0xf8)
+    BitVector.high(10).take(7).toByteVector shouldBe ByteVector(0xfe)
+    BitVector.high(12).take(9).toByteVector shouldBe ByteVector(0xff, 0x80)
+    BitVector.high(4).take(100).toByteVector shouldBe ByteVector(0xf0)
   }
 
   test("dropRight") {
-    BitVector.high(12).clear(0).dropRight(4).asBytes shouldBe ByteVector(0x7f)
+    BitVector.high(12).clear(0).dropRight(4).toByteVector shouldBe ByteVector(0x7f)
   }
 
   test("takeRight") {
-    BitVector.high(12).clear(0).takeRight(4).asBytes shouldBe ByteVector(0xf0)
+    BitVector.high(12).clear(0).takeRight(4).toByteVector shouldBe ByteVector(0xf0)
   }
 
   test("++") {
-    (BitVector.low(7) ++ BitVector.high(1)).asBytes shouldBe ByteVector(1: Byte)
-    (BitVector.high(8) ++ BitVector.high(8)).asBytes shouldBe ByteVector(-1: Byte, -1: Byte)
-    (BitVector.high(4) ++ BitVector.low(4)).asBytes shouldBe ByteVector(0xf0)
-    (BitVector.high(4) ++ BitVector.high(4)).asBytes shouldBe ByteVector(-1: Byte)
-    (BitVector.high(4) ++ BitVector.high(5)).asBytes shouldBe ByteVector(-1: Byte, 0x80)
+    (BitVector.low(7) ++ BitVector.high(1)).toByteVector shouldBe ByteVector(1: Byte)
+    (BitVector.high(8) ++ BitVector.high(8)).toByteVector shouldBe ByteVector(-1: Byte, -1: Byte)
+    (BitVector.high(4) ++ BitVector.low(4)).toByteVector shouldBe ByteVector(0xf0)
+    (BitVector.high(4) ++ BitVector.high(4)).toByteVector shouldBe ByteVector(-1: Byte)
+    (BitVector.high(4) ++ BitVector.high(5)).toByteVector shouldBe ByteVector(-1: Byte, 0x80)
   }
 
   test("<<") {
-    (BitVector.high(8) << 0).asBytes shouldBe ByteVector(0xff)
-    (BitVector.high(8) << 4).asBytes shouldBe ByteVector(0xf0)
-    (BitVector.high(10) << 1).asBytes shouldBe ByteVector(0xff, 0x80)
-    (BitVector.high(10) << 3).asBytes shouldBe ByteVector(0xfe, 0x00)
-    (BitVector.high(32) << 16).asBytes shouldBe ByteVector(0xff, 0xff, 0, 0)
-    (BitVector.high(32) << 15).asBytes shouldBe ByteVector(0xff, 0xff, 0x80, 0)
+    (BitVector.high(8) << 0).toByteVector shouldBe ByteVector(0xff)
+    (BitVector.high(8) << 4).toByteVector shouldBe ByteVector(0xf0)
+    (BitVector.high(10) << 1).toByteVector shouldBe ByteVector(0xff, 0x80)
+    (BitVector.high(10) << 3).toByteVector shouldBe ByteVector(0xfe, 0x00)
+    (BitVector.high(32) << 16).toByteVector shouldBe ByteVector(0xff, 0xff, 0, 0)
+    (BitVector.high(32) << 15).toByteVector shouldBe ByteVector(0xff, 0xff, 0x80, 0)
   }
 
   test(">>") {
@@ -95,12 +95,12 @@ class BitVectorTest extends FunSuite with Matchers {
   }
 
   test(">>>") {
-    (BitVector.high(8) >>> 7).asBytes shouldBe ByteVector(0x01)
+    (BitVector.high(8) >>> 7).toByteVector shouldBe ByteVector(0x01)
   }
 
   test("padTo") {
-    BitVector.high(2).padTo(8).asBytes shouldBe ByteVector(0xc0)
-    BitVector.high(16).padTo(32).asBytes shouldBe ByteVector(0xff, 0xff, 0, 0)
+    BitVector.high(2).padTo(8).toByteVector shouldBe ByteVector(0xc0)
+    BitVector.high(16).padTo(32).toByteVector shouldBe ByteVector(0xff, 0xff, 0, 0)
   }
 
   test("~") {

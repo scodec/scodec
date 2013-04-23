@@ -24,7 +24,7 @@ import java.nio.ByteBuffer
  * @groupname conversions Conversions
  * @groupprio conversions 3
  */
-trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] {
+trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] with BitwiseOperations[BitVector] {
 
   /**
    * Returns true if this bit vector has no bits.
@@ -148,111 +148,6 @@ trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] {
   def padTo(n: Int): BitVector
 
   /**
-   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
-   *
-   * @group bitwise
-   */
-  final def <<(n: Int): BitVector = leftShift(n)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
-   *
-   * @group bitwise
-   */
-  def leftShift(n: Int): BitVector
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are sign extended.
-   *
-   * @group bitwise
-   */
-  final def >>(n: Int): BitVector = rightShift(n, true)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are low.
-   *
-   * @group bitwise
-   */
-  final def >>>(n: Int): BitVector = rightShift(n, false)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the right `n` bits.
-   *
-   * @param signExtension whether the `n` left-msot bits should take on the value of bit 0
-   *
-   * @group bitwise
-   */
-  def rightShift(n: Int, signExtension: Boolean): BitVector
-
-  /**
-   * Returns a bitwise complement of this vector.
-   *
-   * @group bitwise
-   */
-  final def unary_~(): BitVector = not
-
-  /**
-   * Returns a bitwise complement of this vector.
-   *
-   * @group bitwise
-   */
-  def not: BitVector
-
-  /**
-   * Returns a bitwise AND of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  final def &(other: BitVector): BitVector = and(other)
-
-  /**
-   * Returns a bitwise AND of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  def and(other: BitVector): BitVector
-
-  /**
-   * Returns a bitwise OR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  final def |(other: BitVector): BitVector = or(other)
-
-  /**
-   * Returns a bitwise OR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  def or(other: BitVector): BitVector
-
-  /**
-   * Returns a bitwise XOR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  final def ^(other: BitVector): BitVector = xor(other)
-
-  /**
-   * Returns a bitwise XOR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  def xor(other: BitVector): BitVector
-
-  /**
    * Converts the contents of this vector to a byte vector.
    *
    * If this vector's size does not divide evenly by 8, the last byte of the returned vector
@@ -260,7 +155,7 @@ trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] {
    *
    * @group conversions
    */
-  def asBytes: ByteVector
+  def toByteVector: ByteVector
 
   /**
    * Converts the contents of this vector to a `java.nio.ByteBuffer`.
@@ -268,10 +163,10 @@ trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] {
    * The returned buffer is freshly allocated with limit set to the minimum number of bytes needed
    * to represent the contents of this vector, position set to zero, and remaining set to the limit.
    *
-   * @see asBytes
+   * @see toByteVector
    * @group conversions
    */
-  def asByteBuffer: ByteBuffer
+  def toByteBuffer: ByteBuffer
 }
 
 object BitVector {
@@ -376,7 +271,7 @@ object BitVector {
     }
 
     def ++(other: BitVector): BitVector = {
-      val otherBytes = other.asBytes
+      val otherBytes = other.toByteVector
       if (isEmpty) {
         other
       } else if (otherBytes.isEmpty) {
@@ -388,7 +283,7 @@ object BitVector {
         val otherInvalidBits = if (other.size % 8 == 0) 0 else (8 - (other.size % 8))
         val lo = (((otherBytes.head & topNBits(8 - otherInvalidBits)) & 0x000000ff) >>> otherInvalidBits).toByte
         val updatedOurBytes = bytes.updated(bytes.size - 1, (hi | lo).toByte)
-        val updatedOtherBytes = other.drop(invalidBits).asBytes
+        val updatedOtherBytes = other.drop(invalidBits).toByteVector
         new SimpleBitVector(size + other.size, updatedOurBytes ++ updatedOtherBytes)
       }
     }
@@ -424,11 +319,11 @@ object BitVector {
       zipBytesWith(other)(_ ^ _)
 
     private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector =
-      BitVector(size min other.size, (bytes zipWithI other.asBytes)(op))
+      BitVector(size min other.size, (bytes zipWithI other.toByteVector)(op))
 
-    def asBytes = bytes
+    def toByteVector = bytes
 
-    def asByteBuffer = ByteBuffer.wrap(bytes.toArray)
+    def toByteBuffer = ByteBuffer.wrap(bytes.toArray)
 
     def seq: IndexedSeq[Boolean] = {
       val bldr = Vector.newBuilder[Boolean]
@@ -443,7 +338,7 @@ object BitVector {
       bytes.hashCode
 
     override def equals(other: Any): Boolean = other match {
-      case o: BitVector => bytes == o.asBytes
+      case o: BitVector => bytes == o.toByteVector
       case _ => false
     }
 

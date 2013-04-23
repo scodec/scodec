@@ -28,7 +28,7 @@ class LongCodec(bits: Int, signed: Boolean = true) extends Codec[Long] {
   }
 
   override def decode(buffer: BitVector) =
-    buffer.consume(bits) { _.padTo(64).rightShift(64 - bits, signed).asByteBuffer.getLong.right }
+    buffer.consume(bits) { _.padTo(64).rightShift(64 - bits, signed).toByteBuffer.getLong.right }
 
   override def toString = description + " codec"
 }

@@ -5,7 +5,7 @@ import scala.collection.{IndexedSeqLike, IndexedSeqOptimized}
 import java.nio.ByteBuffer
 
 
-trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] {
+trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] with BitwiseOperations[ByteVector] {
 
   def lift(idx: Int): Option[Byte]
 
@@ -32,6 +32,23 @@ trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] {
   def toByteBuffer: ByteBuffer = ByteBuffer.wrap(toArray)
 
   def toHexadecimal: String
+
+  def leftShift(n: Int): ByteVector =
+    BitVector(this).leftShift(n).toByteVector
+
+  def rightShift(n: Int, signExtension: Boolean): ByteVector =
+    BitVector(this).rightShift(n, signExtension).toByteVector
+
+  def not: ByteVector = mapI { ~_ }
+
+  def and(other: ByteVector): ByteVector =
+    zipWithI(other)(_ & _)
+
+  def or(other: ByteVector): ByteVector =
+    zipWithI(other)(_ | _)
+
+  def xor(other: ByteVector): ByteVector =
+    zipWithI(other)(_ ^ _)
 }
 
 object ByteVector {
@@ -57,4 +74,7 @@ object ByteVector {
     val integral = implicitly[Integral[A]]
     StandardByteVector(Vector.fill[Byte](size)(integral.toInt(b).toByte))
   }
+
+  def low(size: Int): ByteVector = fill(size)(0)
+  def high(size: Int): ByteVector = fill(size)(0xff)
 }

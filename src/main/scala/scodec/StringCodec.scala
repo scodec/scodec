@@ -22,10 +22,10 @@ class StringCodec(charset: Charset) extends Codec[String] {
   override def decode(buffer: BitVector) = {
     val decoder = charset.newDecoder
     try {
-      (BitVector.empty, decoder.decode(buffer.asByteBuffer).toString).right
+      (BitVector.empty, decoder.decode(buffer.toByteBuffer).toString).right
     } catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        s"${charset.displayName} cannot decode string from '${buffer.asBytes.toHexadecimal}'".left
+        s"${charset.displayName} cannot decode string from '${buffer.toByteVector.toHexadecimal}'".left
     }
   }
 
