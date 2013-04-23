@@ -3,7 +3,7 @@ package scodec
 import scalaz.syntax.id._
 
 import java.nio.CharBuffer
-import java.nio.charset.{Charset, CodingErrorAction}
+import java.nio.charset.Charset
 import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
 
 
@@ -28,4 +28,6 @@ class StringCodec(charset: Charset) extends Codec[String] {
         s"${charset.displayName} cannot decode string from '${Bytes.toHexadecimal(buffer.asBytes)}'".left
     }
   }
+
+  override def toString = charset.displayName
 }
