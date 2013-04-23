@@ -11,6 +11,7 @@ object Codecs extends TupleCodecSyntax {
   val int32 = new IntCodec(32)
   val int64 = new LongCodec(64)
 
+  val uint4 = new IntCodec(4, signed = false)
   val uint8 = new IntCodec(8, signed = false)
   val uint16 = new IntCodec(16, signed = false)
   val uint24 = new IntCodec(24, signed = false)
@@ -21,4 +22,7 @@ object Codecs extends TupleCodecSyntax {
   val ascii = string(Charset.forName("US-ASCII"))
   val utf8 = string(Charset.forName("UTF-8"))
 
+  def ignore(bits: Int): Codec[Unit] = new IgnoreCodec(bits)
+
+  implicit val unitInstance = scalaz.std.anyVal.unitInstance
 }

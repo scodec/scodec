@@ -11,6 +11,7 @@ class IntCodecTest extends CodecSuite {
     roundtripAll(int32, Seq(0, 1, -1, Int.MaxValue, Int.MinValue))
     roundtripAll(int16, Seq(0, 1, -1, 32767, -32768))
     roundtripAll(uint16, Seq(0, 1, 65535))
+    roundtripAll(uint4, 0 to 15)
   }
 
   test("range checking") {

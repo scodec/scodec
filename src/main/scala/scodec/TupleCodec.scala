@@ -1,5 +1,7 @@
 package scodec
 
+import scalaz.Monoid
+
 import Codec.DecodingContext
 
 
@@ -45,9 +47,18 @@ trait TupleCodecSyntax extends TupleCodecSyntax0 {
   /** Type alias for Tuple2 in order to allow left nested tuples to be written as A ~ B ~ C ~ .... */
   type ~[+A, +B] = (A, B)
 
+
   /** Allows two codecs to be combined in to a single codec that produces a tuple. */
   implicit class CodecEnrichedWithTuplingSupport[A](val codecA: Codec[A]) {
-    def ~[B](codecB: Codec[B]): Codec[(A, B)] = new TupleCodec(codecA, codecB)
+
+    def ~[B](codecB: Codec[B]): Codec[(A, B)] =
+      new TupleCodec(codecA, codecB)
+
+    def <~[B: Monoid](codecB: Codec[B]): Codec[A] =
+      Codec.xmap[A ~ B, A](new TupleCodec(codecA, codecB))({ case a ~ b => a }, a => (a, Monoid[B].zero))
+
+    def ~>[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] =
+      Codec.xmap[A ~ B, B](new TupleCodec(codecA, codecB))({ case a ~ b => b }, b => (Monoid[A].zero, b))
   }
 
   /** Extractor that allows pattern matching on the tuples created by tupling codecs. */

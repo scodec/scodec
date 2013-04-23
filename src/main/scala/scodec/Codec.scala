@@ -21,4 +21,9 @@ object Codec {
   def decode[A](codec: Codec[A], buffer: BitVector): Error \/ A = {
     codec decode buffer map { case (rest, result) => result }
   }
+
+  def xmap[A, B](codec: Codec[A])(f: A => B, g: B => A): Codec[B] = new Codec[B] {
+    def encode(b: B): Error \/ BitVector = codec.encode(g(b))
+    def decode(buffer: BitVector): Error \/ (BitVector, B) = codec.decode(buffer).map { case (rest, a) => (rest, f(a)) }
+  }
 }
