@@ -65,6 +65,14 @@ class BitVectorTest extends FunSuite with Matchers {
     BitVector.high(4).take(100).asBytes shouldBe ByteVector(0xf0)
   }
 
+  test("dropRight") {
+    BitVector.high(12).clear(0).dropRight(4).asBytes shouldBe ByteVector(0x7f)
+  }
+
+  test("takeRight") {
+    BitVector.high(12).clear(0).takeRight(4).asBytes shouldBe ByteVector(0xf0)
+  }
+
   test("++") {
     (BitVector.low(7) ++ BitVector.high(1)).asBytes shouldBe ByteVector(1: Byte)
     (BitVector.high(8) ++ BitVector.high(8)).asBytes shouldBe ByteVector(-1: Byte, -1: Byte)

@@ -1,5 +1,7 @@
 package scodec
 
+import scala.collection.IndexedSeqOptimized
+import scala.collection.mutable.Builder
 import scalaz.\/
 
 import java.nio.ByteBuffer
@@ -22,7 +24,7 @@ import java.nio.ByteBuffer
  * @groupname conversions Conversions
  * @groupprio conversions 3
  */
-trait BitVector {
+trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] {
 
   /**
    * Returns true if this bit vector has no bits.
@@ -36,7 +38,7 @@ trait BitVector {
    *
    * @group collection
    */
-  final def nonEmpty: Boolean = !isEmpty
+  def nonEmpty: Boolean
 
   /**
    * Returns number of bits in this vector.
@@ -280,9 +282,9 @@ object BitVector {
   def low(n: Int): BitVector = apply(n, ByteVector.fill((n + 7) / 8)(0))
 
   private def apply(n: Int, bytes: ByteVector): BitVector =
-    SimpleBitVector(n, clearUnneededBits(n, bytes))
+    new SimpleBitVector(n, clearUnneededBits(n, bytes))
 
-  def apply(bytes: ByteVector): BitVector = SimpleBitVector(bytes.size * 8, bytes)
+  def apply(bytes: ByteVector): BitVector = new SimpleBitVector(bytes.size * 8, bytes)
   def apply(bytes: Array[Byte]): BitVector = apply(ByteVector(bytes))
   def apply(buffer: ByteBuffer): BitVector = apply(ByteVector(buffer))
   def apply[A: Integral](bytes: A*): BitVector = apply(ByteVector(bytes: _*))
@@ -321,15 +323,13 @@ object BitVector {
   }
 
 
-  private case class SimpleBitVector(val size: Int, bytes: ByteVector) extends BitVector with Serializable {
+  private class SimpleBitVector(val length: Int, bytes: ByteVector) extends BitVector with Serializable {
 
     require(size >= 0, "size must be non-negative")
     require(bytes.size == bytesNeededForBits(size), s"size ($size) and bytes.size (${bytes.size}) are not compatible")
 
     /** Number of bits (0 - 7) in the last bye of bytes that are not part of vector. */
     private val invalidBits = 8 - validBitsInLastByte(size)
-
-    def isEmpty = size == 0
 
     def get(n: Int) = lift(n) getOrElse { throw new NoSuchElementException(s"Cannot get bit $n from vector of $size bits") }
 
@@ -338,37 +338,25 @@ object BitVector {
     } yield getBit(byte, n % 8)
 
     def updated(n: Int, high: Boolean): BitVector =
-      SimpleBitVector(size, bytes.updated(n / 8, setBit(bytes(n / 8), n % 8, high)))
+      new SimpleBitVector(size, bytes.updated(n / 8, setBit(bytes(n / 8), n % 8, high)))
 
-    def drop(n: Int): BitVector = {
-      if (bytes.isEmpty || n <= 0) {
-        this
-      } else if (n >= size) {
+    override def slice(from: Int, until: Int): BitVector = {
+      val low = from max 0
+      val high = until max 0 min size
+      val newSize = (high - low) max 0
+
+      if (newSize == 0) {
         BitVector.empty
-      } else if (n % 8 == 0) {
-        SimpleBitVector(size - n, bytes.drop(n / 8))
       } else {
-        val bitsToShiftEachByte = n % 8
-        val shiftedByWholeBytes = bytes.drop(n / 8)
+        val bitsToShiftEachByte = low % 8
+        val lowByte = low / 8
+        val shiftedByWholeBytes = bytes.slice(lowByte, lowByte + bytesNeededForBits(newSize) + 1)
         val newBytes = (shiftedByWholeBytes zipWithI (shiftedByWholeBytes.drop(1) :+ (0: Byte))) { case (a, b) =>
           val hi = (a << bitsToShiftEachByte)
           val low = (((b & topNBits(bitsToShiftEachByte)) & 0x000000ff) >>> (8 - bitsToShiftEachByte))
           hi | low
         }
-        val newSize = size - n
-        SimpleBitVector(newSize, if (newSize <= (newBytes.size - 1) * 8) newBytes.dropRight(1) else newBytes)
-      }
-    }
-
-    def take(n: Int): BitVector = {
-      if (n <= 0) {
-        BitVector.empty
-      } else if (n >= size) {
-        this
-      } else {
-        val wholeBytes = bytes.take(n / 8)
-        val newBytes = if (n % 8 == 0) wholeBytes else wholeBytes :+ bytes(n / 8)
-        BitVector.apply(n, newBytes)
+        BitVector(newSize, if (newSize <= (newBytes.size - 1) * 8) newBytes.dropRight(1) else newBytes)
       }
     }
 
@@ -394,14 +382,14 @@ object BitVector {
       } else if (otherBytes.isEmpty) {
         this
       } else if (invalidBits == 0) {
-        SimpleBitVector(size + other.size, bytes ++ otherBytes)
+        new SimpleBitVector(size + other.size, bytes ++ otherBytes)
       } else {
         val hi = bytes(bytes.size - 1)
         val otherInvalidBits = if (other.size % 8 == 0) 0 else (8 - (other.size % 8))
         val lo = (((otherBytes.head & topNBits(8 - otherInvalidBits)) & 0x000000ff) >>> otherInvalidBits).toByte
         val updatedOurBytes = bytes.updated(bytes.size - 1, (hi | lo).toByte)
         val updatedOtherBytes = other.drop(invalidBits).asBytes
-        SimpleBitVector(size + other.size, updatedOurBytes ++ updatedOtherBytes)
+        new SimpleBitVector(size + other.size, updatedOurBytes ++ updatedOtherBytes)
       }
     }
 
@@ -442,6 +430,21 @@ object BitVector {
 
     def asByteBuffer = ByteBuffer.wrap(bytes.toArray)
 
+    def seq: IndexedSeq[Boolean] = {
+      val bldr = Vector.newBuilder[Boolean]
+      for (i <- 0 until length)
+        bldr += get(i)
+      bldr.result
+    }
+
+    override def hashCode: Int =
+      bytes.hashCode
+
+    override def equals(other: Any): Boolean = other match {
+      case o: BitVector => bytes == o.asBytes
+      case _ => false
+    }
+
     override def toString = {
       if (isEmpty) {
         "BitVector(0 bits)"
@@ -451,6 +454,33 @@ object BitVector {
           hex.substring(0, hex.size - 1)
         } else hex
         s"BitVector($size bits, $truncatedHex)"
+      }
+    }
+
+    override protected[this] def newBuilder: Builder[Boolean, BitVector] = new Builder[Boolean, BitVector] {
+      private var length = 0
+      private var currentByte: Byte = 0
+      private var doneBytes = Vector.newBuilder[Byte]
+
+      def +=(bit: Boolean) = {
+        currentByte = setBit(currentByte, length, bit)
+        length += 1
+        this
+      }
+
+      def clear() {
+        length = 0
+        currentByte = 0
+        doneBytes.clear()
+      }
+
+      def result(): BitVector = {
+        if (length == 0) {
+          BitVector.empty
+        } else {
+          val bytes = (doneBytes += currentByte).result()
+          new SimpleBitVector(length, ByteVector(bytes))
+        }
       }
     }
   }
