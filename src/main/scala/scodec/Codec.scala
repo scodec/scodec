@@ -5,6 +5,8 @@ import scalaz.{\/, StateT}
 trait Codec[A] {
   def encode(a: A): Error \/ BitVector
   def decode(bits: BitVector): Error \/ (BitVector, A)
+
+  def xmap[B](f: A => B, g: B => A): Codec[B] = Codec.xmap(this)(f, g)
 }
 
 object Codec {
