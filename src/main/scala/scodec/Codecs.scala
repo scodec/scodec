@@ -3,7 +3,7 @@ package scodec
 import java.nio.charset.Charset
 
 
-object Codecs {
+object Codecs extends TupleCodecSyntax {
 
   val int8 = new IntCodec(8)
   val int16 = new IntCodec(16)
@@ -21,13 +21,4 @@ object Codecs {
   val ascii = string(Charset.forName("US-ASCII"))
   val utf8 = string(Charset.forName("UTF-8"))
 
-  /** Allows two codecs to be combined in to a single codec that produces a tuple. */
-  implicit class TuplingSyntax[A](val codecA: Codec[A]) {
-    def ~[B](codecB: Codec[B]): Codec[(A, B)] = new TupleCodec(codecA, codecB)
-  }
-
-  /** Extractor that allows pattern matching on the tuples created by tupling codecs. */
-  object ~ {
-    def unapply[A, B](t: (A, B)): Option[(A, B)] = Some(t)
-  }
 }
