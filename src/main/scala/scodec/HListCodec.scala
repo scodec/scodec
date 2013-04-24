@@ -44,9 +44,6 @@ trait HListCodecSyntax {
 
     /** Returns a new codec that encodes/decodes `A :: L` but only returns `L`.  HList equivalent of `~>`. */
     def :~>:[A: scalaz.Monoid](a: Codec[A]): Codec[L] = Codec.dropLeft(a, l)
-
-    /** Returns a new codec that encodes/decodes a value of type `A` by using an iso between `A` and `L`. */
-    def as[A](implicit iso: Iso[A, L]): Codec[A] = l.xmap(iso.from _, iso.to _)
   }
 
   /** Provides `HList` related syntax for codecs of any type. */

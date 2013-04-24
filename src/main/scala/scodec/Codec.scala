@@ -1,14 +1,24 @@
 package scodec
 
 import scalaz.{\/, Monoid, StateT}
+import shapeless._
 
 
 trait Codec[A] {
   def encode(a: A): Error \/ BitVector
   def decode(bits: BitVector): Error \/ (BitVector, A)
 
-  def xmap[B](f: A => B, g: B => A): Codec[B] = Codec.xmap(this)(f, g)
-  def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = Codec.flatZip(this)(f)
+  /** Maps to a codec of type `B`. */
+  final def xmap[B](f: A => B, g: B => A): Codec[B] = Codec.xmap(this)(f, g)
+
+  /** Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`. */
+  final def as[B](implicit iso: Iso[B, A]): Codec[B] = Codec.xmap(this)(iso.from, iso.to)
+
+  /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the decoding of `B` is dependent on the decoded `A`. */
+  final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = Codec.flatZip(this)(f)
+
+  /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
+  final def hlist: Codec[A :: HNil] = Codec.xmap(this)(_ :: HNil, _.head)
 }
 
 object Codec {

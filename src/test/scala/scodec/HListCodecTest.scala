@@ -15,4 +15,9 @@ class HListCodecTest extends CodecSuite {
     roundtripAll((uint8 :~: uint8 :~: ascii).as[Foo], Seq(Foo(1, 2, "test")))
   }
 
+  test("xmap non-hlist codec to case class") {
+    case class Bar(x: Int)
+    implicit val barIso = Iso.hlist(Bar.apply _, Bar.unapply _)
+    roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
+  }
 }

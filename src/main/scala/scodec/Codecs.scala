@@ -2,6 +2,8 @@ package scodec
 
 import java.nio.charset.Charset
 
+import shapeless.Iso
+
 
 object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSyntax {
 
@@ -40,4 +42,13 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
   implicit val unitInstance = scalaz.std.anyVal.unitInstance
+
+  def isoFromFunctions[A, B](to: A => B, from: B => A): Iso[A, B] = {
+    val toFn = to
+    val fromFn = from
+    new Iso[A, B] {
+      def to(a: A) = toFn(a)
+      def from(b: B) = fromFn(b)
+    }
+  }
 }
