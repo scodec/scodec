@@ -30,8 +30,14 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def constant[A: Integral](bits: A*): Codec[Unit] = new ConstantCodec(BitVector(bits: _*))
 
   def fixedSizeBits[A](size: Int, codec: Codec[A]): Codec[A] = new FixedSizeCodec(size, codec)
+  def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = fixedSizeBits(size * 8, codec)
   def variableSizeBits[A](size: Codec[Int], value: Codec[A]): Codec[A] = new VariableSizeCodec(size, value)
   def variableSizeBytes[A](size: Codec[Int], value: Codec[A]): Codec[A] = variableSizeBits(size.xmap(_ * 8, _ / 8), value)
+
+  def bits(size: Int): Codec[BitVector] = fixedSizeBits(size, BitVectorCodec)
+  def bytes(size: Int): Codec[BitVector] = fixedSizeBytes(size, BitVectorCodec)
+
+  def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
   implicit val unitInstance = scalaz.std.anyVal.unitInstance
 }

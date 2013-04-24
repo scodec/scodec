@@ -11,7 +11,7 @@ object HListCodec {
 
   val emptyHListCodec: Codec[HNil] = new Codec[HNil] {
     def encode(hn: HNil) = \/-(BitVector.empty)
-    def decode(buffer: BitVector) = \/-((BitVector.empty, HNil))
+    def decode(buffer: BitVector) = \/-((buffer, HNil))
   }
 
   def prependCodec[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
@@ -50,9 +50,17 @@ trait HListCodecSyntax {
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
-  implicit class EnrichedCodec[A](a: Codec[A]) {
+  implicit class EnrichedCodec[A](codecA: Codec[A]) {
 
     /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
-    def :~:[B](b: Codec[B]): Codec[B :: A :: HNil] = prependCodec(b, prependCodec(a, emptyHListCodec))
+    def :~:[B](codecB: Codec[B]): Codec[B :: A :: HNil] = prependCodec(codecB, prependCodec(codecA, emptyHListCodec))
+
+    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
+      override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
+      override def decode(buffer: BitVector) = (for {
+        a <- Codec.DecodingContext(codecA.decode)
+        l <- Codec.DecodingContext(f(a).decode)
+      } yield a :: l).run(buffer)
+    }
   }
 }
