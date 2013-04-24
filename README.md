@@ -31,6 +31,7 @@ The primary abstraction is a [`Codec[A]`](src/main/scala/scodec/Codec.scala), wh
 
 The [`Codecs`](src/main/scala/scodec/Codecs.scala) object provides a number of predefined codecs and combinators.
 
+```scala
     import scodec._
     import Codecs._
     import scalaz.\/
@@ -44,9 +45,11 @@ The [`Codecs`](src/main/scala/scodec/Codecs.scala) object provides a number of p
     // Sum the result
     val add3 = (_: Int) + (_: Int) + (_: Int)
     val sum: String \/ Int = result map add3
+```
 
 Automatic case class binding is supported via Shapeless HLists:
 
+```scala
     import shapeless._
 
     case class Point(x: Int, y: Int, z: Int)
@@ -59,16 +62,19 @@ Automatic case class binding is supported via Shapeless HLists:
 
     val decoded: String \/ Point = Codec.decode(pointCodec, BitVector(0xfb, 0x0a, 0x01))
     // \/-(Point(-5,10,1))
+```
 
 Codecs can also be implicitly resolved, resulting in usage like:
 
+```scala
     // Assuming Codec[Point] is in implicit scope
 
-    val encoded: String \/ BitVector = Codec.encode(Point(-5, 10, 1))
+    val encoded = Codec.encode(Point(-5, 10, 1))
     // \/-(BitVector(24 bits, 0xfb0a01))
 
-    val decoded: String \/ Point = Codec.decode(BitVector(0xfb, 0x0a, 0x01))
+    val decoded = Codec.decode[Point](BitVector(0xfb, 0x0a, 0x01))
     // \/-(Point(-5,10,1))
+```
 
 
 Examples
