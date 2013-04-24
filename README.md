@@ -60,6 +60,17 @@ Automatic case class binding is supported via Shapeless HLists:
     val decoded: String \/ Point = Codec.decode(pointCodec, BitVector(0xfb, 0x0a, 0x01))
     // \/-(Point(-5,10,1))
 
+Codecs can also be implicitly resolved, resulting in usage like:
+
+    // Assuming Codec[Point] is in implicit scope
+
+    val encoded: String \/ BitVector = Codec.encode(Point(-5, 10, 1))
+    // \/-(BitVector(24 bits, 0xfb0a01))
+
+    val decoded: String \/ Point = Codec.decode(BitVector(0xfb, 0x0a, 0x01))
+    // \/-(Point(-5,10,1))
+
+
 Examples
 --------
 

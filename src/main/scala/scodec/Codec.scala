@@ -4,8 +4,22 @@ import scalaz.{\/, Monoid, StateT}
 import shapeless._
 
 
+/**
+ * Supports encoding a value of type `A` to a `BitVector` and decoding a `BitVector` to a value of `A`.
+ *
+ * Not every value of `A` can be encoded to a bit vector and similarly, not every bit vector can be decoded to a value
+ * of type `A`. Hence, both encode and decode return either an error or the result. Furthermore, decode returns the
+ * remaining bits in the bit vector that it did not use in decoding.
+ *
+ * Note: the decode function can be lifted to a state action via `StateT[Error \/ ?, BitVector, A]`. This type alias
+ * and associated constructor is provided by `Codec.DecodingContext`.
+ */
 trait Codec[A] {
+
+  /** Attempts to encode the specified value in to a bit vector. */
   def encode(a: A): Error \/ BitVector
+
+  /** Attempts to decode a value of type `A` from the specified bit vector. */
   def decode(bits: BitVector): Error \/ (BitVector, A)
 
   /** Maps to a codec of type `B`. */
@@ -14,7 +28,7 @@ trait Codec[A] {
   /** Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`. */
   final def as[B](implicit iso: Iso[B, A]): Codec[B] = Codec.xmap(this)(iso.from, iso.to)
 
-  /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the decoding of `B` is dependent on the decoded `A`. */
+  /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`. */
   final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = Codec.flatZip(this)(f)
 
   /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
@@ -23,19 +37,41 @@ trait Codec[A] {
 
 object Codec {
 
+  /** Creates a codec from encoder and decoder functions. */
+  def apply[A](encoder: A => Error \/ BitVector, decoder: BitVector => Error \/ (BitVector, A)): Codec[A] = new Codec[A] {
+    override def encode(a: A) = encoder(a)
+    override def decode(bits: BitVector) = decoder(bits)
+  }
+
+  /** Gets the implicitly available codec for type `A`. */
+  def apply[A: Codec]: Codec[A] = implicitly[Codec[A]]
+
+  /** Alias for state/either transformer that simplifies calling decode on a series of codecs, wiring the remaining bit vector of each in to the next entry. */
   type DecodingContext[+A] = StateT[({type λ[+a] = Error \/ a})#λ, BitVector, A]
 
+  /** Provides constructors for `DecodingContext`. */
   object DecodingContext {
-
     def apply[A](f: BitVector => Error \/ (BitVector, A)): DecodingContext[A] =
       StateT[({type λ[+a] = Error \/ a})#λ, BitVector, A](f)
-
   }
 
-  def decode[A](codec: Codec[A], buffer: BitVector): Error \/ A = {
+  /** Encodes the specified value to a bit vector. */
+  def encode[A](codec: Codec[A], a: A): Error \/ BitVector =
+    codec encode a
+
+  /** Encodes the specified value to a bit vector using an implicitly available codec. */
+  def encode[A: Codec](a: A): Error \/ BitVector =
+    encode(Codec[A], a)
+
+  /** Decodes the specified bit vector using the specified codec and discards the remaining bits. */
+  def decode[A](codec: Codec[A], buffer: BitVector): Error \/ A =
     codec decode buffer map { case (rest, result) => result }
-  }
 
+  /** Decodes the specified buffer in to a value of type `A` using an implicitly available codec and discards the remaining bits. */
+  def decode[A: Codec](buffer: BitVector): Error \/ A =
+    decode(Codec[A], buffer)
+
+  /** Maps a `Codec[A]` in to a `Codec[B]`. */
   def xmap[A, B](codec: Codec[A])(f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B): Error \/ BitVector = codec.encode(g(b))
     def decode(buffer: BitVector): Error \/ (BitVector, B) = codec.decode(buffer).map { case (rest, a) => (rest, f(a)) }
