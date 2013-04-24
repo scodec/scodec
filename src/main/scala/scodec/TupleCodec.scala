@@ -55,10 +55,10 @@ trait TupleCodecSyntax extends TupleCodecSyntax0 {
       new TupleCodec(codecA, codecB)
 
     def <~[B: Monoid](codecB: Codec[B]): Codec[A] =
-      Codec.xmap[A ~ B, A](new TupleCodec(codecA, codecB))({ case a ~ b => a }, a => (a, Monoid[B].zero))
+      Codec.dropRight(codecA, codecB)
 
     def ~>[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] =
-      Codec.xmap[A ~ B, B](new TupleCodec(codecA, codecB))({ case a ~ b => b }, b => (Monoid[A].zero, b))
+      Codec.dropLeft(codecA, codecB)
   }
 
   /** Extractor that allows pattern matching on the tuples created by tupling codecs. */

@@ -13,8 +13,8 @@ class NamedCodec[A](name: String, target: Codec[A]) extends Codec[A] {
 
 trait NamedCodecSyntax {
 
-  implicit class CodecEncrichedWithNamingSupport[A](target: Codec[A]) {
-    def ::(name: String): Codec[A] = new NamedCodec(name, target)
+  implicit class StringEnrichedWithCodecNamingSupport(name: String) {
+    def |[A](codec: Codec[A]): Codec[A] = new NamedCodec(name, codec)
   }
 
 }

@@ -1,6 +1,7 @@
 package scodec
 
 import org.scalatest._
+import shapeless._
 
 
 class MpegPacketExample {
@@ -14,6 +15,7 @@ class MpegPacketExample {
     adaptationFieldControl: Int,
     continuityCounter: Int
   )
+  implicit def mpegPacketHeaderIso = Iso.hlist(MpegPacketHeader.apply _, MpegPacketHeader.unapply _)
 
   object MpegCodecs {
     import Codecs._
@@ -21,17 +23,14 @@ class MpegPacketExample {
     val uint13 = new IntCodec(13, signed = false)
 
     val mpegPacketHeader: Codec[MpegPacketHeader] = {
-      ("syncByte"                  :: constant(0x47)  ) ~> (
-      ("transportErrorIndicator"   :: bool            ) ~
-      ("payloadUnitStartIndicator" :: bool            ) ~
-      ("transportPriority"         :: bool            ) ~
-      ("pid"                       :: uint13          ) ~
-      ("scramblingControl"         :: uint2           ) ~
-      ("adaptationFieldControl"    :: uint2           ) ~
-      ("continuityCounter"         :: uint4           ))
-    }.xmap(
-      { case tsi ~ pusi ~ tprio ~ pid ~ scr ~ afc ~ cc => MpegPacketHeader(tsi, pusi, tprio, pid, scr, afc, cc) },
-      { hdr => hdr.transportErrorIndicator ~ hdr.payloadUnitStartIndicator ~ hdr.transportPriority ~ hdr.pid ~ hdr.scramblingControl ~ hdr.adaptationFieldControl ~ hdr.continuityCounter }
-    )
+      ("syncByte"                  | constant(0x47) ) :~>:
+      ("transportErrorIndicator"   | bool           ) :~:
+      ("payloadUnitStartIndicator" | bool           ) :~:
+      ("transportPriority"         | bool           ) :~:
+      ("pid"                       | uint13         ) :~:
+      ("scramblingControl"         | uint2          ) :~:
+      ("adaptationFieldControl"    | uint2          ) :~:
+      ("continuityCounter"         | uint4          )
+    }.as[MpegPacketHeader]
   }
 }

@@ -1,6 +1,7 @@
 package scodec
 
-import scalaz.{\/, StateT}
+import scalaz.{\/, Monoid, StateT}
+
 
 trait Codec[A] {
   def encode(a: A): Error \/ BitVector
@@ -28,4 +29,10 @@ object Codec {
     def encode(b: B): Error \/ BitVector = codec.encode(g(b))
     def decode(buffer: BitVector): Error \/ (BitVector, B) = codec.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
+
+  def dropLeft[A: Monoid, B](codecA: Codec[A], codecB: Codec[B]): Codec[B] =
+    xmap[(A, B), B](new TupleCodec(codecA, codecB))({ case (a, b) => b }, b => (Monoid[A].zero, b))
+
+  def dropRight[A, B: Monoid](codecA: Codec[A], codecB: Codec[B]): Codec[A] =
+    xmap[(A, B), A](new TupleCodec(codecA, codecB))({ case (a, b) => a }, a => (a, Monoid[B].zero))
 }
