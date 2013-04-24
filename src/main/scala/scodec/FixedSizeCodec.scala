@@ -9,7 +9,7 @@ class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
     encoded <- codec.encode(a)
     result <- {
       if (encoded.size > size)
-        -\/(s"Encoding [$a] requires ${encoded.size} bits but field is fixed size of $size bits")
+        -\/(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
       else
         \/-(encoded.padTo(size))
     }
