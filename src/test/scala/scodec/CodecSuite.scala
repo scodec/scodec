@@ -9,6 +9,10 @@ import org.scalatest.{FunSuite, Matchers}
 
 abstract class CodecSuite extends FunSuite with Matchers {
 
+  protected def roundtrip[A: Codec](a: A) {
+    roundtrip(Codec[A], a)
+  }
+
   protected def roundtrip[A](codec: Codec[A], a: A) {
     val encoded = codec.encode(a)
     encoded should be ('right)

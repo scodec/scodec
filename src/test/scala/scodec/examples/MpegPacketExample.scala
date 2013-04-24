@@ -1,4 +1,5 @@
 package scodec
+package examples
 
 import scalaz.\/-
 import shapeless._
@@ -76,15 +77,15 @@ class MpegPacketExample extends CodecSuite {
     }.as[AdaptationFieldFlags]
 
     implicit val adaptationField: Codec[AdaptationField] = {
-      adaptationFieldFlags >>:~ { flags =>
+      ("adaptation_flags"          | adaptationFieldFlags                       ) >>:~ { flags =>
       ("pcr"                       | conditional(flags.pcrFlag, bits(48))       ) :~:
       ("opcr"                      | conditional(flags.opcrFlag, bits(48))      ) :~:
       ("spliceCountdown"           | conditional(flags.splicingPointFlag, int8) )
     }}.as[AdaptationField]
 
     implicit val mpegPacket: Codec[MpegPacket] = {
-      transportStreamHeader >>:~ { hdr =>
-      ("adaptation_field"          | conditional(hdr.adaptationFieldIncluded, adaptationField) ):~:
+      ("header"                    | transportStreamHeader                                     ) >>:~ { hdr =>
+      ("adaptation_field"          | conditional(hdr.adaptationFieldIncluded, adaptationField) ) :~:
       ("payload"                   | conditional(hdr.payloadIncluded, bytes(184))              )
     }}.as[MpegPacket]
   }
