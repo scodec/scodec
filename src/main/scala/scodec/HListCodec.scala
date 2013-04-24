@@ -52,7 +52,7 @@ trait HListCodecSyntax {
     /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
     def :~:[B](codecB: Codec[B]): Codec[B :: A :: HNil] = prependCodec(codecB, prependCodec(codecA, emptyHListCodec))
 
-    def flatCons[L <: HList](f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
+    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
       override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
       override def decode(buffer: BitVector) = (for {
         a <- Codec.DecodingContext(codecA.decode)
@@ -60,7 +60,7 @@ trait HListCodecSyntax {
       } yield a :: l).run(buffer)
     }
 
-    /** Operator alias for `flatCons`. */
-    def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatCons(f)
+    /** Operator alias for `flatPrepend`. */
+    def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
   }
 }
