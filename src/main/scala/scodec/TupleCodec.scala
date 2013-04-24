@@ -7,16 +7,11 @@ import Codec.DecodingContext
 
 class TupleCodec[A, B](codecA: Codec[A], codecB: Codec[B]) extends Codec[(A, B)] {
 
-  override def encode(t: (A, B)) = for {
-    a <- codecA.encode(t._1)
-    b <- codecB.encode(t._2)
-  } yield a ++ b
+  override def encode(t: (A, B)) =
+    Codec.encodeBoth(codecA, codecB)(t._1, t._2)
 
-  override def decode(buffer: BitVector) = (for {
-    a <- DecodingContext(codecA.decode)
-    b <- DecodingContext(codecB.decode)
-  } yield (a, b)).run(buffer)
-
+  override def decode(buffer: BitVector) =
+    Codec.decodeBoth(codecA, codecB)(buffer)
 }
 
 /**

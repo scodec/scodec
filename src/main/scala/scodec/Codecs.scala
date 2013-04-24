@@ -11,7 +11,7 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   val int32: Codec[Int] = new IntCodec(32)
   val int64: Codec[Long] = new LongCodec(64)
 
-  val uint2: Codec[Int] = new IntCodec(4, signed = false)
+  val uint2: Codec[Int] = new IntCodec(2, signed = false)
   val uint4: Codec[Int] = new IntCodec(4, signed = false)
   val uint8: Codec[Int] = new IntCodec(8, signed = false)
   val uint16: Codec[Int] = new IntCodec(16, signed = false)
@@ -28,6 +28,10 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
 
   def constant(bits: BitVector): Codec[Unit] = new ConstantCodec(bits)
   def constant[A: Integral](bits: A*): Codec[Unit] = new ConstantCodec(BitVector(bits: _*))
+
+  def fixedSizeBits[A](size: Int, codec: Codec[A]): Codec[A] = new FixedSizeCodec(size, codec)
+  def variableSizeBits[A](size: Codec[Int], value: Codec[A]): Codec[A] = new VariableSizeCodec(size, value)
+  def variableSizeBytes[A](size: Codec[Int], value: Codec[A]): Codec[A] = variableSizeBits(size.xmap(_ * 8, _ / 8), value)
 
   implicit val unitInstance = scalaz.std.anyVal.unitInstance
 }

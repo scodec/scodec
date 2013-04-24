@@ -15,10 +15,8 @@ object HListCodec {
   }
 
   def prependCodec[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
-    override def encode(xs: A :: L) = for {
-      encA <- a.encode(xs.head)
-      encL <- l.encode(xs.tail)
-    } yield encA ++ encL
+
+    override def encode(xs: A :: L) = Codec.encodeBoth(a, l)(xs.head, xs.tail)
 
     override def decode(buffer: BitVector) = (for {
       decA <- Codec.DecodingContext(a.decode)
