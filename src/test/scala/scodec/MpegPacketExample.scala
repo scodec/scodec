@@ -1,9 +1,12 @@
 package scodec
 
+import scalaz.\/-
 import shapeless._
 
 
 class MpegPacketExample extends CodecSuite {
+
+  // Define case classes that describe MPEG packets and define an HList iso for each
 
   case class TransportStreamHeader(
     transportErrorIndicator: Boolean,
@@ -45,23 +48,23 @@ class MpegPacketExample extends CodecSuite {
   )
   implicit def mpegPacketIso = Iso.hlist(MpegPacket.apply _, MpegPacket.unapply _)
 
+
+  // Define MPEG codecs
   object MpegCodecs {
     import Codecs._
 
-    val uint13 = new IntCodec(13, signed = false)
-
-    val transportStreamHeader: Codec[TransportStreamHeader] = {
+    implicit val transportStreamHeader: Codec[TransportStreamHeader] = {
       ("syncByte"                  | constant(0x47)          ) :~>:
       ("transportErrorIndicator"   | bool                    ) :~:
       ("payloadUnitStartIndicator" | bool                    ) :~:
       ("transportPriority"         | bool                    ) :~:
-      ("pid"                       | uint13                  ) :~:
+      ("pid"                       | uint(13)                ) :~:
       ("scramblingControl"         | uint2                   ) :~:
       ("adaptationFieldControl"    | uint2                   ) :~:
       ("continuityCounter"         | uint4                   )
     }.as[TransportStreamHeader]
 
-    val adaptationFieldFlags: Codec[AdaptationFieldFlags] = {
+    implicit val adaptationFieldFlags: Codec[AdaptationFieldFlags] = {
       ("discontinuity"             | bool                    ) :~:
       ("randomAccess"              | bool                    ) :~:
       ("priority"                  | bool                    ) :~:
@@ -72,24 +75,26 @@ class MpegPacketExample extends CodecSuite {
       ("adaptationFieldExtension"  | bool                    )
     }.as[AdaptationFieldFlags]
 
-    val adaptationField: Codec[AdaptationField] = adaptationFieldFlags.flatPrepend { flags =>
+    implicit val adaptationField: Codec[AdaptationField] = {
+      adaptationFieldFlags >>:~ { flags =>
       ("pcr"                       | conditional(flags.pcrFlag, bits(48))       ) :~:
       ("opcr"                      | conditional(flags.opcrFlag, bits(48))      ) :~:
       ("spliceCountdown"           | conditional(flags.splicingPointFlag, int8) )
-    }.as[AdaptationField]
+    }}.as[AdaptationField]
 
-    val mpegPacket: Codec[MpegPacket] = transportStreamHeader.flatPrepend { hdr =>
+    implicit val mpegPacket: Codec[MpegPacket] = {
+      transportStreamHeader >>:~ { hdr =>
       ("adaptation_field"          | conditional(hdr.adaptationFieldIncluded, adaptationField) ):~:
       ("payload"                   | conditional(hdr.payloadIncluded, bytes(184))              )
-    }.as[MpegPacket]
+    }}.as[MpegPacket]
   }
 
+  import MpegCodecs._
 
-
-  test("roundtrip") {
-    roundtrip(MpegCodecs.transportStreamHeader, TransportStreamHeader(false, true, false, 0, 0, 1, 15))
-
+  test("manually roundtripping a packet") {
     val pkt = MpegPacket(TransportStreamHeader(false, true, false, 0, 0, 1, 15), None, Some(BitVector.low(184 * 8)))
-    roundtrip(MpegCodecs.mpegPacket, pkt)
+    val encoded = Codec.encode(pkt)
+    val decoded = Codec.decode[MpegPacket](encoded.toOption.get)
+    decoded shouldBe \/-(pkt)
   }
 }

@@ -31,6 +31,9 @@ trait Codec[A] {
   /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`. */
   final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = Codec.flatZip(this)(f)
 
+  /** Operator alias for `flatZip`. */
+  final def >>~[B](f: A => Codec[B]): Codec[(A, B)] = flatZip(f)
+
   /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
   final def hlist: Codec[A :: HNil] = Codec.xmap(this)(_ :: HNil, _.head)
 }

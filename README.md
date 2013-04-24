@@ -20,7 +20,7 @@ Performance is considered but yields to the above design constraints.
 Acknowledgements
 ----------------
 The library uses [Scalaz](https://github.com/scalaz/scalaz) and [Shapeless](https://github.com/milessabin/shapeless)
-and is heavily influence by scala.util.parsing.combinator.
+and is heavily influenced by scala.util.parsing.combinator.
 
 
 Introduction
