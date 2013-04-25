@@ -74,6 +74,22 @@ object Codec {
   def decode[A: Codec](buffer: BitVector): Error \/ A =
     decode(Codec[A], buffer)
 
+  def decodeAll[A: Codec, B: Monoid](buffer: BitVector)(f: A => B): (Option[Error], B) = {
+    val codec = Codec[A]
+    var remaining = buffer
+    var acc = Monoid[B].zero
+    while (remaining.nonEmpty) {
+      codec.decode(remaining).fold(
+        { err => return (Some(err), acc) },
+        { case (newRemaining, a) =>
+            remaining = newRemaining
+            acc = Monoid[B].append(acc, f(a))
+        }
+      )
+    }
+    (None, acc)
+  }
+
   /** Maps a `Codec[A]` in to a `Codec[B]`. */
   def xmap[A, B](codec: Codec[A])(f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B): Error \/ BitVector = codec.encode(g(b))

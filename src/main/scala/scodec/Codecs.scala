@@ -20,6 +20,19 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   val uint24: Codec[Int] = new IntCodec(24, signed = false)
   val uint32: Codec[Long] = new LongCodec(32, signed = false)
 
+  val int8L: Codec[Int] = new IntCodec(8, bigEndian = false)
+  val int16L: Codec[Int] = new IntCodec(16, bigEndian = false)
+  val int24L: Codec[Int] = new IntCodec(24, bigEndian = false)
+  val int32L: Codec[Int] = new IntCodec(32, bigEndian = false)
+  val int64L: Codec[Long] = new LongCodec(64, bigEndian = false)
+
+  val uint2L: Codec[Int] = new IntCodec(2, signed = false, bigEndian = false)
+  val uint4L: Codec[Int] = new IntCodec(4, signed = false, bigEndian = false)
+  val uint8L: Codec[Int] = new IntCodec(8, signed = false, bigEndian = false)
+  val uint16L: Codec[Int] = new IntCodec(16, signed = false, bigEndian = false)
+  val uint24L: Codec[Int] = new IntCodec(24, signed = false, bigEndian = false)
+  val uint32L: Codec[Long] = new LongCodec(32, signed = false, bigEndian = false)
+
   def int(bits: Int): Codec[Int] = new IntCodec(bits)
   def uint(bits: Int): Codec[Int] = new IntCodec(bits, signed = false)
   def long(bits: Int): Codec[Long] = new LongCodec(bits)
@@ -45,6 +58,8 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def bytes(size: Int): Codec[BitVector] = fixedSizeBytes(size, BitVectorCodec)
 
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
+
+  def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
 
   // Needed for the ignore combinator when used with <~, ~>, and :~>:
   implicit val unitInstance = scalaz.std.anyVal.unitInstance

@@ -31,6 +31,8 @@ trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] with BitwiseOpera
 
   def toByteBuffer: ByteBuffer = ByteBuffer.wrap(toArray)
 
+  def toBitVector: BitVector = BitVector(this)
+
   def toHexadecimal: String
 
   def leftShift(n: Int): ByteVector =

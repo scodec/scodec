@@ -32,6 +32,16 @@ class StandardByteVector(private val bytes: Vector[Byte]) extends ByteVector {
     case _ => StandardByteVector(bytes ++ other.toIterable)
   }}
 
+  override def drop(n: Int): ByteVector = StandardByteVector(bytes drop n)
+
+  override def dropRight(n: Int): ByteVector = StandardByteVector(bytes dropRight n)
+
+  override def take(n: Int): ByteVector = StandardByteVector(bytes take n)
+
+  override def takeRight(n: Int): ByteVector = StandardByteVector(bytes takeRight n)
+
+  override def slice(from: Int, until: Int): ByteVector = StandardByteVector(bytes.slice(from, until))
+
   override def map(f: Byte => Byte): ByteVector = StandardByteVector(bytes map f)
 
   override def zipWith(other: ByteVector)(op: (Byte, Byte) => Byte): ByteVector =

@@ -141,4 +141,9 @@ class BitVectorTest extends FunSuite with Matchers {
     BitVector.high(8).toIterable
   }
 
+  test("reverse") {
+    BitVector(0x03).reverse shouldBe BitVector(0xc0)
+    BitVector(0x03, 0x80).reverse shouldBe BitVector(0x01, 0xc0)
+    BitVector(0x01, 0xc0).reverse shouldBe BitVector(0x03, 0x80)
+  }
 }

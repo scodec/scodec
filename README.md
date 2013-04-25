@@ -82,8 +82,9 @@ Examples
 
 There are various examples in the test directory, including codecs for:
 
- - [MPEG Packets](src/test/scala/scodec/examples/MpegPacketExample.scala)
  - [UDP Datagrams](src/test/scala/scodec/examples/UdpDatagramExample.scala)
+ - [MPEG Packets](src/test/scala/scodec/examples/MpegPacketExample.scala)
+ - [libpcap Files](src/test/scala/scodec/examples/PcapExample.scala)
 
 
 Getting JAR

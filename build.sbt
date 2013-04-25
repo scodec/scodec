@@ -32,5 +32,6 @@ parallelExecution in Test := false
 libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.0.0",
   "com.chuusai" %% "shapeless" % "1.2.4",
-  "org.scalatest" %% "scalatest" % "2.0.M6-SNAP6" % "test"
+  "org.scalatest" %% "scalatest" % "2.0.M6-SNAP6" % "test",
+  "com.google.guava" % "guava" % "14.0.1" % "test"
 )

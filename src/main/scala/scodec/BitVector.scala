@@ -2,7 +2,7 @@ package scodec
 
 import scala.collection.IndexedSeqOptimized
 import scala.collection.mutable.Builder
-import scalaz.\/
+import scalaz.{\/, Monoid}
 
 import java.nio.ByteBuffer
 
@@ -217,6 +217,19 @@ object BitVector {
     }
   }
 
+  private def reverseBitsInBytes(b: Byte): Byte = {
+    // See Hacker's Delight Chapter 7 page 101
+    var x = (b & 0x055) << 1 | (b & 0x0aa) >> 1
+    x = (x & 0x033) << 2 | (x & 0x0cc) >> 2
+    x = (x & 0x00f) << 4 | (x & 0x0f0) >> 4
+    x.toByte
+  }
+
+  implicit val monoidInstance: Monoid[BitVector] = new Monoid[BitVector] {
+    override def zero: BitVector = BitVector.empty
+    override def append(x: BitVector, y: => BitVector) = x ++ y
+  }
+
 
   private class SimpleBitVector(val length: Int, bytes: ByteVector) extends BitVector with Serializable {
 
@@ -243,13 +256,18 @@ object BitVector {
       if (newSize == 0) {
         BitVector.empty
       } else {
-        val bitsToShiftEachByte = low % 8
         val lowByte = low / 8
         val shiftedByWholeBytes = bytes.slice(lowByte, lowByte + bytesNeededForBits(newSize) + 1)
-        val newBytes = (shiftedByWholeBytes zipWithI (shiftedByWholeBytes.drop(1) :+ (0: Byte))) { case (a, b) =>
-          val hi = (a << bitsToShiftEachByte)
-          val low = (((b & topNBits(bitsToShiftEachByte)) & 0x000000ff) >>> (8 - bitsToShiftEachByte))
-          hi | low
+        val bitsToShiftEachByte = low % 8
+        val newBytes = {
+          if (bitsToShiftEachByte == 0) shiftedByWholeBytes
+          else {
+            (shiftedByWholeBytes zipWithI (shiftedByWholeBytes.drop(1) :+ (0: Byte))) { case (a, b) =>
+              val hi = (a << bitsToShiftEachByte)
+              val low = (((b & topNBits(bitsToShiftEachByte)) & 0x000000ff) >>> (8 - bitsToShiftEachByte))
+              hi | low
+            }
+          }
         }
         BitVector(newSize, if (newSize <= (newBytes.size - 1) * 8) newBytes.dropRight(1) else newBytes)
       }
@@ -320,6 +338,9 @@ object BitVector {
 
     private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector =
       BitVector(size min other.size, (bytes zipWithI other.toByteVector)(op))
+
+    override def reverse: BitVector =
+      BitVector(bytes.reverse.map(BitVector.reverseBitsInBytes _))
 
     def toByteVector = bytes
 
