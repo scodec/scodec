@@ -76,6 +76,20 @@ Codecs can also be implicitly resolved, resulting in usage like:
     // \/-(Point(-5,10,1))
 ```
 
+New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method.
+
+There are a number of built in combinators:
+ - `"name" | a` - creates a `Codec[A]` that prefixes any error messages with the specified name.
+ - Tuple Support
+   - `a ~ b` - creates a `Codec[(A, B)]` that first decodes `a` and then `b`.
+   - `a ~> b` - creates a `Codec[B]` that decodes first with `a` and then with `b` and throws away the decoded `a`. For encoding, the zero value of type `A`s monoid is encoded.
+   - `a <~ b` - creates a `Codec[A]` that decodes first with `a` and then with `b` and throws away the decoded `b`. For encoding, the zero value of type `B`s monoid is encoded.
+   - `a >>~ f` - creates a `Codec[(A, B)]` that decodes first with `a` and then with the codec returned from `f(decodedA)`. The non-operator version of this is `flatZip(f: A => Codec[B]): Codec[(A, B)]`.
+ - HList Support
+   - `a :~: b` - creates a `Codec[A :: B :: HNil]` or if `B` is an HList, a `Codec[A :: B]`.
+   - `a :~>: b` - creates a `Codec[B]` (if B is an HList) that decodes and throws away the decoded `a` and encodes `a`s zero value.
+   - `a >>:~ f` - creates a `Codec[A :: B]` that decodes first with `a` and then with the HList codec returned from `f(decodedA)`. The non-operator version of this is `flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L]`.
+
 
 Examples
 --------
