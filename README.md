@@ -76,7 +76,10 @@ Codecs can also be implicitly resolved, resulting in usage like:
     // \/-(Point(-5,10,1))
 ```
 
-New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method.
+Combinators
+-----------
+
+New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
 There are a number of built in combinators:
  - `"name" | a` - creates a `Codec[A]` that prefixes any error messages with the specified name.
@@ -90,8 +93,14 @@ There are a number of built in combinators:
    - `a :~>: b` - creates a `Codec[B]` (if B is an HList) that decodes and throws away the decoded `a` and encodes `a`s zero value.
    - `a >>:~ f` - creates a `Codec[A :: B]` that decodes first with `a` and then with the HList codec returned from `f(decodedA)`. The non-operator version of this is `flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L]`.
    - `a.hlist` - creates a `Codec[A :: HNil]`.
- - `a.xmap(f, g)` - creates a `Codec[B]` given bidirectional functions `f: A => B` and `g: B => A`.
- - `a.as[B]` - creates a `Codec[B]` if a `shapeless.Iso[B, A]` is in implicit scope
+ - Sizing
+   - `fixedSizeBits(size, a)` and `fixedSizeBytes(size, a)` - creates a `Codec[A]` that always encodes/decodes `size` bits/bytes.
+   - `variableSizeBits(sizeCodec, a)` and `variableSizeBytes(size, a)` - creates a `Codec[A]` that encodes the size of the encoded `A` followed by the encoded `A`.
+ - `conditional(boolean, a)` - creates a `Codec[Option[A]]` that skips encoding/decoding if the specified boolean is false
+ - `repeated(a)` - creates a `Codec[IndexedSeq[A]]`
+ - Type Conversions
+   - `a.xmap(f, g)` - creates a `Codec[B]` given bidirectional functions `f: A => B` and `g: B => A`.
+   - `a.as[B]` - creates a `Codec[B]` if a `shapeless.Iso[B, A]` is in implicit scope
 
 
 Examples
