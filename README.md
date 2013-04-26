@@ -91,7 +91,7 @@ There are a number of built in combinators:
    - `a >>:~ f` - creates a `Codec[A :: B]` that decodes first with `a` and then with the HList codec returned from `f(decodedA)`. The non-operator version of this is `flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L]`.
    - `a.hlist` - creates a `Codec[A :: HNil]`.
  - `a.xmap(f, g)` - creates a `Codec[B]` given bidirectional functions `f: A => B` and `g: B => A`.
- - `a.as[X]` - creates a `Codec[X]` if a `shapeless.Iso[B, A]` is in implicit scope
+ - `a.as[B]` - creates a `Codec[B]` if a `shapeless.Iso[B, A]` is in implicit scope
 
 
 Examples
