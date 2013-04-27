@@ -5,9 +5,10 @@ import scala.collection.GenTraversable
 import scalaz.syntax.id._
 
 import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 
-abstract class CodecSuite extends FunSuite with Matchers {
+abstract class CodecSuite extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
 
   protected def roundtrip[A: Codec](a: A) {
     roundtrip(Codec[A], a)

@@ -2,6 +2,7 @@ package scodec
 
 import org.scalatest._
 
+
 class BitVectorTest extends FunSuite with Matchers {
 
   test("construction via high") {

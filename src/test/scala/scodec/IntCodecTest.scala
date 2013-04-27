@@ -1,17 +1,24 @@
 package scodec
 
 import scalaz.syntax.id._
+import org.scalacheck.Gen
 
 import Codecs._
 
 
 class IntCodecTest extends CodecSuite {
 
-  test("roundtrip") {
-    roundtripAll(int32, Seq(0, 1, -1, Int.MaxValue, Int.MinValue))
-    roundtripAll(int16, Seq(0, 1, -1, 32767, -32768))
-    roundtripAll(uint16, Seq(0, 1, 65535))
-    roundtripAll(uint4, 0 to 15)
+  test("int32") { forAll { (n: Int) => roundtrip(int32, n) } }
+  test("int16") { forAll(Gen.choose(-32768, 32767)) { (n: Int) => roundtrip(int16, n) } }
+  test("uint16") { forAll(Gen.choose(0, 65535)) { (n: Int) => roundtrip(uint16, n) } }
+  test("uint4") { forAll(Gen.choose(0, 15)) { (n: Int) => roundtrip(uint16, n) } }
+
+  test("endianess") {
+    forAll { (n: Int) =>
+      val bigEndian = int32.encode(n).toOption.get.toByteVector
+      val littleEndian = int32L.encode(n).toOption.get.toByteVector
+      littleEndian shouldBe bigEndian.reverse
+    }
   }
 
   test("range checking") {

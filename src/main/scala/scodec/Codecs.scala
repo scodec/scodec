@@ -38,6 +38,12 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def long(bits: Int): Codec[Long] = new LongCodec(bits)
   def ulong(bits: Int): Codec[Long] = new LongCodec(bits, signed = false)
 
+  def intL(bits: Int): Codec[Int] = new IntCodec(bits, bigEndian = false)
+  def uintL(bits: Int): Codec[Int] = new IntCodec(bits, signed = false, bigEndian = false)
+  def longL(bits: Int): Codec[Long] = new LongCodec(bits, bigEndian = false)
+  def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, signed = false, bigEndian = false)
+
+
   val bool: Codec[Boolean] = BooleanCodec
 
   def string(implicit charset: Charset): Codec[String] = new StringCodec(charset)

@@ -1,7 +1,7 @@
 package scodec
 
 import scala.collection.{IndexedSeqLike, IndexedSeqOptimized}
-
+import scalaz.Monoid
 import java.nio.ByteBuffer
 
 
@@ -79,4 +79,10 @@ object ByteVector {
 
   def low(size: Int): ByteVector = fill(size)(0)
   def high(size: Int): ByteVector = fill(size)(0xff)
+
+  implicit val monoidInstance: Monoid[ByteVector] = new Monoid[ByteVector] {
+    override def zero: ByteVector = ByteVector.empty
+    override def append(x: ByteVector, y: => ByteVector) = x ++ y
+  }
+
 }
