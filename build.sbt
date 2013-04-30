@@ -37,6 +37,18 @@ libraryDependencies ++= Seq(
   "com.google.guava" % "guava" % "14.0.1" % "test"
 )
 
+osgiSettings
+
+OsgiKeys.exportPackage := Seq("scodec.*;version=${Bundle-Version}")
+
+OsgiKeys.importPackage := Seq(
+  """scala.*;version="$<range;[==,=+);$<@>>"""",
+  """scalaz.*;version="$<range;[==,=+);$<@>>"""",
+  "*"
+)
+
+OsgiKeys.additionalHeaders := Map("-removeheaders" -> "Include-Resource,Private-Package")
+
 publishTo <<= version { v: String =>
   val nexus = "https://oss.sonatype.org/"
   if (v.trim.endsWith("SNAPSHOT"))
