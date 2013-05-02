@@ -60,6 +60,8 @@ trait HListCodecSyntax {
       } yield a :: l).run(buffer)
     }
 
+    def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
+
     /** Operator alias for `flatPrepend`. */
     def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
   }

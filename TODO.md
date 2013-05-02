@@ -6,8 +6,6 @@ Current Work
    - variable size
    - tuples via ~ (ala parser combinators)
    - hlists w/ case class bindings
- - Allow flatPrepend (and flatZip) to return a non-HList (or auto-lift to HList?)
-   - Does not auto-lift but this is possible via .hlist now
  - More Scalacheck tests
 
 Future Improvements

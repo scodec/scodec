@@ -20,4 +20,12 @@ class HListCodecTest extends CodecSuite {
     implicit val barIso = Iso.hlist(Bar.apply _, Bar.unapply _)
     roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
   }
+
+  test("flatPrepend") {
+    uint8 flatPrepend { n => bits(n).hlist }
+  }
+
+  test("flatZipHList") {
+    uint8 flatZipHList { n => bits(n) }
+  }
 }
