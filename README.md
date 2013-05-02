@@ -113,11 +113,43 @@ There are various examples in the test directory, including codecs for:
  - [libpcap Files](src/test/scala/scodec/examples/PcapExample.scala)
 
 
-Getting JAR
------------
+Getting Binaries
+----------------
 
-The library will be published on Maven Central once it reaches a critical mass of functionality.
+This library works with Scala 2.10.*.
 
+### Releases
+
+Released binaries will be published on Maven Central once the library reaches a critical mass of functionality.
+
+### Snapshots
+
+Snapshot builds of the master branch are available on Sonatype's OSS hosting at https://oss.sonatype.org/content/repositories/snapshots/.
+
+For SBT users:
+
+    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+
+    libraryDependencies += "com.github.mpilquist" %% "scodec" % "1.0.0-SNAPSHOT"
+
+
+For Maven users:
+
+    <repositories>
+      <repository>
+        <id>sonatype-oss-snapshots</id>
+        <name>Sonatype OSS Snapshots</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      </repository>
+    </repositories>
+    
+    <dependencies>
+      <dependency>
+        <groupId>com.github.mpilquist</groupId>
+        <artifactId>scodec_2.10</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
 
 Building
 --------
