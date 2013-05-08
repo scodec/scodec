@@ -78,3 +78,14 @@ pomExtra := (
   </developers>
 )
 
+pomPostProcess := { (node) =>
+  import scala.xml._
+  import scala.xml.transform._
+  def stripIf(f: Node => Boolean) = new RewriteRule {
+    override def transform(n: Node) =
+      if (f(n)) NodeSeq.Empty else n
+  }
+  val stripTestScope = stripIf { n => n.label == "dependency" && (n \ "scope").text == "test" }
+  new RuleTransformer(stripTestScope).transform(node)(0)
+}
+
