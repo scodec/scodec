@@ -1,6 +1,8 @@
 package scodec
 
 import java.nio.charset.Charset
+import java.security.cert.Certificate
+import java.util.UUID
 
 import shapeless.Iso
 
@@ -50,6 +52,8 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   val ascii = string(Charset.forName("US-ASCII"))
   val utf8 = string(Charset.forName("UTF-8"))
 
+  val uuid: Codec[UUID] = UuidCodec
+
   def ignore(bits: Int): Codec[Unit] = new IgnoreCodec(bits)
 
   def constant(bits: BitVector): Codec[Unit] = new ConstantCodec(bits)
@@ -66,6 +70,10 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
+
+  def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
+  def signed[A](codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] = new SignatureCodec(codec)(signatureFactory)
+  val x509Certificate: Codec[Certificate] = new CertificateCodec("X.509")
 
   // Needed for the ignore combinator when used with <~, ~>, and :~>:
   implicit val unitInstance = scalaz.std.anyVal.unitInstance
