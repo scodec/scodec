@@ -1,6 +1,7 @@
 package scodec
 
 import java.nio.charset.Charset
+import java.util.UUID
 
 import shapeless.Iso
 
@@ -49,6 +50,8 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def string(implicit charset: Charset): Codec[String] = new StringCodec(charset)
   val ascii = string(Charset.forName("US-ASCII"))
   val utf8 = string(Charset.forName("UTF-8"))
+
+  val uuid: Codec[UUID] = UuidCodec
 
   def ignore(bits: Int): Codec[Unit] = new IgnoreCodec(bits)
 
