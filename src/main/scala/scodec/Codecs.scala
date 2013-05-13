@@ -67,6 +67,8 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
 
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
 
+  def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
+
   // Needed for the ignore combinator when used with <~, ~>, and :~>:
   implicit val unitInstance = scalaz.std.anyVal.unitInstance
 
