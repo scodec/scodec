@@ -5,7 +5,7 @@ import scalaz.syntax.monad._
 
 import java.security.Key
 import java.security.spec.AlgorithmParameterSpec
-import javax.crypto.{Cipher, IllegalBlockSizeException, BadPaddingException, AEADBadTagException}
+import javax.crypto.{Cipher, IllegalBlockSizeException, BadPaddingException}
 
 /**
  * Represents the ability to create a [[Cipher]] for encryption or decryption.
@@ -99,7 +99,7 @@ class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) ext
       val decrypted = cipherFactory.newDecryptCipher.doFinal(blocks)
       \/-(BitVector(decrypted))
     } catch {
-      case e @ (_: IllegalBlockSizeException | _: BadPaddingException | _: AEADBadTagException) =>
+      case e @ (_: IllegalBlockSizeException | _: BadPaddingException) =>
         -\/("Failed to decrypt: " + e.getMessage)
     }
   }
