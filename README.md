@@ -55,7 +55,7 @@ Automatic case class binding is supported via Shapeless HLists:
     case class Point(x: Int, y: Int, z: Int)
     implicit val pointIso = Iso.hlist(Point.apply _, Point.unapply _)
 
-    val pointCodec = (int8 :~: int8 :~: int8).as[Point]
+    val pointCodec = (int8 :: int8 :: int8).as[Point]
 
     val encoded: String \/ BitVector = pointCodec.encode(Point(-5, 10, 1))
     // \/-(BitVector(24 bits, 0xfb0a01))
@@ -89,9 +89,11 @@ There are a number of built in combinators:
    - `a <~ b` - creates a `Codec[A]` that decodes first with `a` and then with `b` and throws away the decoded `b`. For encoding, the zero value of type `B`s monoid is encoded.
    - `a >>~ f` - creates a `Codec[(A, B)]` that decodes first with `a` and then with the codec returned from `f(decodedA)`. The non-operator version of this is `flatZip(f: A => Codec[B]): Codec[(A, B)]`.
  - HList Support
-   - `a :~: b` - creates a `Codec[A :: B :: HNil]` or if `B` is an HList, a `Codec[A :: B]`.
+   - `a :: b` - creates a `Codec[A :: B :: HNil]` or if `B` is an HList, a `Codec[A :: B]`.
    - `a :~>: b` - creates a `Codec[B]` (if B is an HList) that decodes and throws away the decoded `a` and encodes `a`s zero value.
    - `a >>:~ f` - creates a `Codec[A :: B]` that decodes first with `a` and then with the HList codec returned from `f(decodedA)`. The non-operator version of this is `flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L]`.
+   - `l :+ a` - creates a codec that decodes first with the HList codec `l` and then with the codec `a`. This is the codec equivalent of HList append.
+   - `k ::: l` - creates a codec that decodes first with the HList codec `k` and then with the HList codec `l`. This is the codec equivalent of HList concat.
    - `a.hlist` - creates a `Codec[A :: HNil]`.
  - Sizing
    - `fixedSizeBits(size, a)` and `fixedSizeBytes(size, a)` - creates a `Codec[A]` that always encodes/decodes `size` bits/bytes.
@@ -120,20 +122,20 @@ This library works with Scala 2.10.*.
 
 ### Releases
 
-The latest released version is 1.0.0.SNAP1, which is a stable snapshot of 1.0.0.
+The latest released version is 1.0.0.SNAP3, which is a stable snapshot of 1.0.0.
 
 For SBT users:
 
-    libraryDependencies += "com.github.mpilquist" %% "scodec" % "1.0.0.SNAP1"
+    libraryDependencies += "com.github.mpilquist" %% "scodec" % "1.0.0.SNAP3"
 
 
 For Maven users:
-    
+
     <dependencies>
       <dependency>
         <groupId>com.github.mpilquist</groupId>
         <artifactId>scodec_2.10</artifactId>
-        <version>1.0.0.SNAP1</version>
+        <version>1.0.0.SNAP3</version>
       </dependency>
     </dependencies>
 
@@ -158,7 +160,7 @@ For Maven users:
         <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
       </repository>
     </repositories>
-    
+
     <dependencies>
       <dependency>
         <groupId>com.github.mpilquist</groupId>

@@ -17,10 +17,10 @@ class UdpDatagramExample extends CodecSuite {
     import Codecs._
 
     implicit val datagram = {
-      ("source_port" | uint16        ) :~:
-      ("dest_port"   | uint16        ) :~:
+      ("source_port" | uint16        ) ::
+      ("dest_port"   | uint16        ) ::
       ("length"      | uint16        ).>>:~ { length =>
-      ("checksum"    | uint16        ) :~:
+      ("checksum"    | uint16        ) ::
       ("data"        | bytes(length) )
     }}.as[Datagram]
   }

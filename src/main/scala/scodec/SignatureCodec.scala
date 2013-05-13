@@ -113,7 +113,7 @@ class SignatureCodec[A](codec: Codec[A])(implicit signatureFactory: SignatureFac
   private def sign(bits: BitVector): Error \/ BitVector = {
     try {
       val signature = signatureFactory.newSigner
-      signature.update(bits.toByteVector.toArray)
+      signature.update(bits.toByteArray)
       \/-(BitVector(signature.sign))
     } catch {
       case e: SignatureException =>

@@ -16,7 +16,7 @@ class CertificateCodec(certType: String) extends Codec[Certificate] {
   def decode(buffer: BitVector) = {
     try {
       val factory = CertificateFactory.getInstance(certType)
-      val cert = factory.generateCertificate(new ByteArrayInputStream(buffer.toByteVector.toArray))
+      val cert = factory.generateCertificate(new ByteArrayInputStream(buffer.toByteArray))
       \/-((BitVector.empty, cert))
     } catch {
       case e: CertificateException =>

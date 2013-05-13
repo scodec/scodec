@@ -37,11 +37,11 @@ object PcapCodec {
 
   implicit val pcapHeader = {
     ("magic_number"     | byteOrdering             ) >>:~ { implicit ordering =>
-    ("version_major"    | guint16                  ) :~:
-    ("version_minor"    | guint16                  ) :~:
-    ("thiszone"         | gint32                   ) :~:
-    ("sigfigs"          | guint32                  ) :~:
-    ("snaplen"          | guint32                  ) :~:
+    ("version_major"    | guint16                  ) ::
+    ("version_minor"    | guint16                  ) ::
+    ("thiszone"         | gint32                   ) ::
+    ("sigfigs"          | guint32                  ) ::
+    ("snaplen"          | guint32                  ) ::
     ("network"          | guint32                  )
   }}.as[PcapHeader]
 
@@ -52,9 +52,9 @@ object PcapCodec {
   implicit val pcapRecordHeaderIso = Iso.hlist(PcapRecordHeader.apply _, PcapRecordHeader.unapply _)
 
   implicit def pcapRecordHeader(implicit ordering: ByteOrdering) = {
-    ("ts_sec"           | guint32                  ) :~:
-    ("ts_usec"          | guint32                  ) :~:
-    ("incl_len"         | guint32                  ) :~:
+    ("ts_sec"           | guint32                  ) ::
+    ("ts_usec"          | guint32                  ) ::
+    ("incl_len"         | guint32                  ) ::
     ("orig_len"         | guint32                  )
   }.as[PcapRecordHeader]
 

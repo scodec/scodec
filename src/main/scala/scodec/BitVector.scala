@@ -158,6 +158,16 @@ trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] with BitwiseOper
   def toByteVector: ByteVector
 
   /**
+   * Converts the contents of this vector to a byte array.
+   *
+   * If this vector's size does not divide evenly by 8, the last byte of the returned vector
+   * will be zero-padded to the right.
+   *
+   * @group conversions
+   */
+  def toByteArray: Array[Byte]
+
+  /**
    * Converts the contents of this vector to a `java.nio.ByteBuffer`.
    *
    * The returned buffer is freshly allocated with limit set to the minimum number of bytes needed
@@ -343,6 +353,8 @@ object BitVector {
       BitVector(bytes.reverse.map(BitVector.reverseBitsInBytes _))
 
     def toByteVector = bytes
+
+    def toByteArray = bytes.toArray
 
     def toByteBuffer = ByteBuffer.wrap(bytes.toArray)
 
