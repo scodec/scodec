@@ -2,7 +2,7 @@ organization := "com.github.mpilquist"
 
 name := "scodec"
 
-version := "1.0.0.SNAP1"
+version := "1.0.0.SNAP2"
 
 scalaVersion := "2.10.1"
 
