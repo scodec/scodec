@@ -3,18 +3,17 @@ package scodec
 import scalaz.\/-
 
 import shapeless._
-import TypeOperators._
 import UnaryTCConstraint._
 
 
 object HListCodec {
 
-  val emptyHListCodec: Codec[HNil] = new Codec[HNil] {
+  val hnilCodec: Codec[HNil] = new Codec[HNil] {
     def encode(hn: HNil) = \/-(BitVector.empty)
     def decode(buffer: BitVector) = \/-((buffer, HNil))
   }
 
-  def prependCodec[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
+  def prepend[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
     override def encode(xs: A :: L) = Codec.encodeBoth(a, l)(xs.head, xs.tail)
     override def decode(buffer: BitVector) = (for {
       decA <- Codec.DecodingContext(a.decode)
@@ -22,11 +21,11 @@ object HListCodec {
     } yield decA :: decL).run(buffer)
   }
 
-  object PrependCodec extends Poly2 {
-    implicit def caseCodecAndCodecHList[A, L <: HList] = at[Codec[A], Codec[L]](prependCodec)
+  object Prepend extends Poly2 {
+    implicit def caseCodecAndCodecHList[A, L <: HList] = at[Codec[A], Codec[L]](prepend)
   }
 
-  def appendCodec[L <: HList, A, LA <: HList](l: Codec[L], a: Codec[A])(implicit
+  def append[L <: HList, A, LA <: HList](l: Codec[L], a: Codec[A])(implicit
     prepend: PrependAux[L, A :: HNil, LA],
     init: Init[LA] { type Out = L },
     last: Last[LA] { type Out = A }
@@ -38,7 +37,7 @@ object HListCodec {
     } yield decL :+ decA).run(buffer)
   }
 
-  def concatCodecs[K <: HList, L <: HList, KL <: HList, KLen <: Nat](ck: Codec[K], cl: Codec[L])(implicit
+  def concat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](ck: Codec[K], cl: Codec[L])(implicit
     prepend: PrependAux[K, L, KL],
     lengthK: Length[K] { type Out = KLen },
     split: Split[KL, KLen] { type P = K; type S = L }
@@ -53,8 +52,8 @@ object HListCodec {
     } yield decK ::: decL).run(buffer)
   }
 
-  def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolder[L, Codec[HNil], PrependCodec.type]) = {
-    l.foldRight(emptyHListCodec)(PrependCodec)
+  def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolderAux[L, Codec[HNil], Prepend.type, Codec[M]]): Codec[M] = {
+    l.foldRight(hnilCodec)(Prepend)
   }
 }
 
@@ -65,7 +64,7 @@ trait HListCodecSyntax {
   implicit class EnrichedHListCodec[L <: HList](l: Codec[L]) {
 
     /** Returns a new codec representing `Codec[A :: L]`. */
-    def ::[A](a: Codec[A]): Codec[A :: L] = prependCodec(a, l)
+    def ::[A](a: Codec[A]): Codec[A :: L] = prepend(a, l)
 
     /** Returns a new codec that encodes/decodes `A :: L` but only returns `L`.  HList equivalent of `~>`. */
     def :~>:[A: scalaz.Monoid](a: Codec[A]): Codec[L] = Codec.dropLeft(a, l)
@@ -76,14 +75,14 @@ trait HListCodecSyntax {
       init: Init[LA] { type Out = L },
       last: Last[LA] { type Out = A }
     ): Codec[LA] =
-      appendCodec(l, a)
+      append(l, a)
 
     /** Returns a new codec the encodes/decodes the `HList K` followed by the `HList L`. */
     def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
       prepend: PrependAux[K, L, KL],
       lengthK: Length[K] { type Out = KLen },
       split: Split[KL, KLen] { type P = K; type S = L }
-    ): Codec[KL] = concatCodecs(k, l)
+    ): Codec[KL] = concat(k, l)
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
@@ -91,7 +90,7 @@ trait HListCodecSyntax {
 
     /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
     def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
-      prependCodec(codecB, prependCodec(codecA, emptyHListCodec))
+      prepend(codecB, prepend(codecA, hnilCodec))
 
     def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
       override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
