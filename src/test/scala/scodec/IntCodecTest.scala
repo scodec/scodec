@@ -7,16 +7,25 @@ import Codecs._
 
 
 class IntCodecTest extends CodecSuite {
-
   test("int32") { forAll { (n: Int) => roundtrip(int32, n) } }
+  test("int32L") { forAll(Gen.choose(0, 15)) { (n: Int) => roundtrip(int32L, n) } }
   test("int16") { forAll(Gen.choose(-32768, 32767)) { (n: Int) => roundtrip(int16, n) } }
   test("uint16") { forAll(Gen.choose(0, 65535)) { (n: Int) => roundtrip(uint16, n) } }
-  test("uint4") { forAll(Gen.choose(0, 15)) { (n: Int) => roundtrip(uint16, n) } }
+  test("uint16L") { forAll(Gen.choose(0, 65535)) { (n: Int) => roundtrip(uint16L, n) } }
+  test("uint4") { forAll(Gen.choose(0, 15)) { (n: Int) => roundtrip(uint4, n) } }
+  test("uint4L") { forAll(Gen.choose(0, 15)) { (n: Int) => roundtrip(uint4L, n) } }
+  test("int4") { forAll(Gen.choose(0, 7)) { (n: Int) => roundtrip(int(4), n) } }
+  test("int4L") { forAll(Gen.choose(0, 7)) { (n: Int) => roundtrip(intL(4), n) } }
 
   test("endianess") {
     forAll { (n: Int) =>
       val bigEndian = int32.encode(n).toOption.get.toByteVector
       val littleEndian = int32L.encode(n).toOption.get.toByteVector
+      littleEndian shouldBe bigEndian.reverse
+    }
+    forAll(Gen.choose(0, 15)) { (n: Int) =>
+      val bigEndian = uint4.encode(n).toOption.get.toByteVector
+      val littleEndian = uint4L.encode(n).toOption.get.toByteVector
       littleEndian shouldBe bigEndian.reverse
     }
   }

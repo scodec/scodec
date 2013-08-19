@@ -17,8 +17,9 @@ abstract class CodecSuite extends FunSuite with Matchers with GeneratorDrivenPro
   protected def roundtrip[A](codec: Codec[A], a: A) {
     val encoded = codec.encode(a)
     encoded should be ('right)
-    val decoded = codec.decode(encoded.toOption.get)
-    decoded shouldBe (BitVector.empty, a).right
+    val (remainder, decoded) = codec.decode(encoded.toOption.get).toEither.right.get
+    remainder shouldEqual BitVector.empty
+    decoded shouldEqual  a
   }
 
   protected def roundtripAll[A](codec: Codec[A], as: GenTraversable[A]) {
