@@ -7,11 +7,16 @@ import Codecs._
 
 
 class LongCodecTest extends CodecSuite {
+  def check(low: Long, high: Long)(f: (Long) => Unit) {
+    forAll(Gen.choose(low, high)) { n =>
+      whenever(n >= low) { f(n) }
+    }
+  }
 
   test("int64") { forAll { (n: Long) => roundtrip(int64, n) } }
   test("int64L") { forAll { (n: Long) => roundtrip(int64L, n) } }
-  test("long(48)") { forAll { (n: Long) => whenever (n >= -(1L << 48) && n < (1L << 48)) { roundtrip(long(48), n) } } }
-  test("uint32") { forAll(Gen.choose(0L, (1L << 32) - 1)) { (n: Long) => roundtrip(uint32, n) } }
+  test("uint32") { check(0, 1L << (32 - 1)) { (n: Long) => roundtrip(uint32, n) } }
+  test("uint32L") { check(0L, (1L << 32) - 1) { (n: Long) => roundtrip(uint32L, n) } }
 
   test("endianess") {
     forAll { (n: Long) =>
