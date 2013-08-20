@@ -23,7 +23,15 @@ class IntCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) ext
     } else {
       val buffer = ByteBuffer.allocate(4).order(if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN).putInt(i)
       buffer.flip()
-      (BitVector(buffer) << (32 - bits)).take(bits).right
+      val vec = BitVector(buffer)
+      val res = if(bigEndian) {
+        vec << (32 - bits)
+      } else if (bits < 8) {
+        vec << (8 - bits)
+      } else {
+        vec
+      }
+      res.take(bits).right
     }
   }
 
