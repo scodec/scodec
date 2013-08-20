@@ -148,6 +148,13 @@ trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] with BitwiseOper
   def padTo(n: Int): BitVector
 
   /**
+   * Returns a new vector of the same size with the byte order reversed.
+   *
+   * @group collection
+   */
+  def flipEndianness: BitVector
+
+  /**
    * Converts the contents of this vector to a byte vector.
    *
    * If this vector's size does not divide evenly by 8, the last byte of the returned vector
@@ -298,6 +305,13 @@ object BitVector {
       else this ++ BitVector.low(n - size)
     }
 
+    def flipEndianness = {
+      val validBitsInLastByte = 8 - invalidBits
+      val last = take(validBitsInLastByte)
+      val init = drop(validBitsInLastByte).toByteVector.reverse.toBitVector.take(size - last.size)
+      (init ++ last)
+    }
+
     def ++(other: BitVector): BitVector = {
       val otherBytes = other.toByteVector
       if (isEmpty) {
@@ -350,7 +364,7 @@ object BitVector {
       BitVector(size min other.size, (bytes zipWithI other.toByteVector)(op))
 
     override def reverse: BitVector =
-      BitVector(bytes.reverse.map(BitVector.reverseBitsInBytes _))
+      BitVector(bytes.reverse.map(BitVector.reverseBitsInBytes _)).drop(invalidBits)
 
     def toByteVector = bytes
 

@@ -18,6 +18,10 @@ class LongCodecTest extends CodecSuite {
   test("uint32") { check(0, 1L << (32 - 1)) { (n: Long) => roundtrip(uint32, n) } }
   test("uint32L") { check(0L, (1L << 32) - 1) { (n: Long) => roundtrip(uint32L, n) } }
 
+  test("ulong(13)") { ulong(13).encode(1) shouldBe BitVector.low(13).set(12).right }
+  test("ulongL(13)") { ulongL(13).encode(1) shouldBe BitVector.low(13).set(7).right }
+
+
   test("endianess") {
     forAll { (n: Long) =>
       val bigEndian = int64.encode(n).toOption.get.toByteVector

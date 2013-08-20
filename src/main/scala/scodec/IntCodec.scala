@@ -21,17 +21,10 @@ class IntCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) ext
     } else if (i < MinValue) {
       s"$i is less than minimum value $MinValue for $description".left
     } else {
-      val buffer = ByteBuffer.allocate(4).order(if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN).putInt(i)
+      val buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN).putInt(i)
       buffer.flip()
-      val vec = BitVector(buffer)
-      val res = if(bigEndian) {
-        vec << (32 - bits)
-      } else if (bits < 8) {
-        vec << (8 - bits)
-      } else {
-        vec
-      }
-      res.take(bits).right
+      val relevantBits = (BitVector(buffer) << (32 - bits)).take(bits)
+      (if (bigEndian) relevantBits else relevantBits.flipEndianness).right
     }
   }
 

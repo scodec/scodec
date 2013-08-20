@@ -1,6 +1,7 @@
 package scodec
 
 import scalaz.syntax.id._
+import scalaz.syntax.std.option._
 import org.scalacheck.Gen
 
 import Codecs._
@@ -24,16 +25,32 @@ class IntCodecTest extends CodecSuite {
   test("uint4") { check(0, 1 << 3) { (n: Int) => roundtrip(uint4, n) } }
   test("uint4L") { check(0, (1 << 4) - 1) { (n: Int) => roundtrip(uint4L, n) } }
 
+  test("uint(13)") { uint(13).encode(1) shouldBe BitVector.low(13).set(12).right }
+  test("uintL(13)") { uintL(13).encode(1) shouldBe BitVector.low(13).set(7).right }
+
   test("endianess") {
     forAll { (n: Int) =>
-      val bigEndian = int32.encode(n).toOption.get.toByteVector
-      val littleEndian = int32L.encode(n).toOption.get.toByteVector
+      val bigEndian = int32.encode(n).toOption.err("big").toByteVector
+      val littleEndian = int32L.encode(n).toOption.err("little").toByteVector
       littleEndian shouldBe bigEndian.reverse
     }
-    forAll(Gen.choose(0, 15)) { (n: Int) =>
-      val bigEndian = uint4.encode(n).toOption.get.toByteVector
-      val littleEndian = uint4L.encode(n).toOption.get.toByteVector
+    check(0, 15) { (n: Int) =>
+      val bigEndian = uint4.encode(n).valueOr(sys.error).toByteVector
+      val littleEndian = uint4L.encode(n).valueOr(sys.error).toByteVector
       littleEndian shouldBe bigEndian.reverse
+    }
+    check(0, (1 << 24) - 1) { (n: Int) =>
+      val bigEndian = uint24.encode(n).valueOr(sys.error).toByteVector
+      val littleEndian = uint24L.encode(n).valueOr(sys.error).toByteVector
+      littleEndian shouldBe bigEndian.reverse
+    }
+    check(0, 8191) { (n: Int) =>
+      whenever(n >= 0 && n <= 8191) {
+        val bigEndian = uint(13).encode(n).valueOr(sys.error)
+        val littleEndian = uintL(13).encode(n).valueOr(sys.error).toByteVector
+        val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
+        flipped shouldBe bigEndian
+      }
     }
   }
 

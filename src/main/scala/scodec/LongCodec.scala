@@ -21,15 +21,10 @@ class LongCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) ex
     } else if (i < MinValue) {
       s"$i is less than minimum value $MinValue for $description".left
     } else {
-      val buffer = ByteBuffer.allocate(8).order(if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN).putLong(i)
+      val buffer = ByteBuffer.allocate(8).order(ByteOrder.BIG_ENDIAN).putLong(i)
       buffer.flip()
-      val vec = BitVector(buffer)
-      val res = if(bigEndian) {
-        vec << (64 - bits)
-      } else {
-        vec
-      }
-      res.take(bits).right
+      val relevantBits = (BitVector(buffer) << (64 - bits)).take(bits)
+      (if (bigEndian) relevantBits else relevantBits.flipEndianness).right
     }
   }
 

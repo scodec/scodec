@@ -146,5 +146,6 @@ class BitVectorTest extends FunSuite with Matchers {
     BitVector(0x03).reverse shouldBe BitVector(0xc0)
     BitVector(0x03, 0x80).reverse shouldBe BitVector(0x01, 0xc0)
     BitVector(0x01, 0xc0).reverse shouldBe BitVector(0x03, 0x80)
+    BitVector(0x30).take(4).reverse shouldBe BitVector(0xc0).take(4)
   }
 }
