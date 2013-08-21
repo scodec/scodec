@@ -31,24 +31,24 @@ class IntCodecTest extends CodecSuite {
   test("endianess") {
     forAll { (n: Int) =>
       val bigEndian = int32.encode(n).toOption.err("big").toByteVector
-      val reverseByteOrder = int32L.encode(n).toOption.err("little").toByteVector
-      reverseByteOrder shouldBe bigEndian.reverse
+      val littleEndian = int32L.encode(n).toOption.err("little").toByteVector
+      littleEndian shouldBe bigEndian.reverse
     }
     check(0, 15) { (n: Int) =>
       val bigEndian = uint4.encode(n).valueOr(sys.error).toByteVector
-      val reverseByteOrder = uint4L.encode(n).valueOr(sys.error).toByteVector
-      reverseByteOrder shouldBe bigEndian.reverse
+      val littleEndian = uint4L.encode(n).valueOr(sys.error).toByteVector
+      littleEndian shouldBe bigEndian.reverse
     }
     check(0, (1 << 24) - 1) { (n: Int) =>
       val bigEndian = uint24.encode(n).valueOr(sys.error).toByteVector
-      val reverseByteOrder = uint24L.encode(n).valueOr(sys.error).toByteVector
-      reverseByteOrder shouldBe bigEndian.reverse
+      val littleEndian = uint24L.encode(n).valueOr(sys.error).toByteVector
+      littleEndian shouldBe bigEndian.reverse
     }
     check(0, 8191) { (n: Int) =>
       whenever(n >= 0 && n <= 8191) {
         val bigEndian = uint(13).encode(n).valueOr(sys.error)
-        val reverseByteOrder = uintL(13).encode(n).valueOr(sys.error).toByteVector
-        val flipped = BitVector(reverseByteOrder.last).take(5) ++ reverseByteOrder.init.reverse.toBitVector
+        val littleEndian = uintL(13).encode(n).valueOr(sys.error).toByteVector
+        val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
         flipped shouldBe bigEndian
       }
     }
