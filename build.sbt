@@ -30,9 +30,9 @@ triggeredMessage := (_ => Watched.clearScreen)
 parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
-  "org.scalaz" %% "scalaz-core" % "7.0.2",
+  "org.scalaz" %% "scalaz-core" % "7.0.3",
   "com.chuusai" %% "shapeless" % "1.2.4",
-  "org.scalatest" %% "scalatest" % "2.0.M6-SNAP36" % "test",
+  "org.scalatest" %% "scalatest" % "2.0.RC1-SNAP4" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.1" % "test",
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.49" % "test",
   "com.google.guava" % "guava" % "14.0.1" % "test"
