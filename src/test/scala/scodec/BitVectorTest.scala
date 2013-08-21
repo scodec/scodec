@@ -1,9 +1,20 @@
 package scodec
 
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 
-class BitVectorTest extends FunSuite with Matchers {
+class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
+
+  implicit val arbitraryBitVector: Arbitrary[BitVector] = Arbitrary(genBitVector(500, 7))
+
+  def genBitVector(maxBytes: Int, maxAdditionalBits: Int): Gen[BitVector] = for {
+    byteSize <- Gen.choose(0, maxBytes)
+    additionalBits <- Gen.choose(0, maxAdditionalBits)
+    size = byteSize * 8 + additionalBits
+    bytes <- Gen.listOfN((size + 7) / 8, Gen.choose(0, 255))
+  } yield BitVector(ByteVector(bytes: _*)).take(size)
 
   test("construction via high") {
     BitVector.high(1).toByteVector shouldBe ByteVector(0x80)
@@ -147,5 +158,14 @@ class BitVectorTest extends FunSuite with Matchers {
     BitVector(0x03, 0x80).reverse shouldBe BitVector(0x01, 0xc0)
     BitVector(0x01, 0xc0).reverse shouldBe BitVector(0x03, 0x80)
     BitVector(0x30).take(4).reverse shouldBe BitVector(0xc0).take(4)
+    forAll { (bv: BitVector) => bv.reverse.reverse shouldBe bv }
+  }
+
+  test("reverseByteOrder") {
+    BitVector(0x00, 0x01).reverseByteOrder shouldBe BitVector(0x01, 0x00)
+    // Double reversing should yield original if size is divisible by 8
+    forAll(genBitVector(500, 0)) { (bv: BitVector) =>
+      bv.reverseByteOrder.reverseByteOrder shouldBe bv
+    }
   }
 }

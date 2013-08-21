@@ -25,8 +25,8 @@ class LongCodecTest extends CodecSuite {
   test("endianess") {
     forAll { (n: Long) =>
       val bigEndian = int64.encode(n).toOption.get.toByteVector
-      val littleEndian = int64L.encode(n).toOption.get.toByteVector
-      littleEndian shouldBe bigEndian.reverse
+      val reverseByteOrder = int64L.encode(n).toOption.get.toByteVector
+      reverseByteOrder shouldBe bigEndian.reverse
     }
   }
 

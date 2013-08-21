@@ -152,7 +152,7 @@ trait BitVector extends IndexedSeqOptimized[Boolean, BitVector] with BitwiseOper
    *
    * @group collection
    */
-  def flipEndianness: BitVector
+  def reverseByteOrder: BitVector
 
   /**
    * Converts the contents of this vector to a byte vector.
@@ -305,7 +305,7 @@ object BitVector {
       else this ++ BitVector.low(n - size)
     }
 
-    def flipEndianness = {
+    def reverseByteOrder = {
       val validBitsInLastByte = 8 - invalidBits
       val last = take(validBitsInLastByte)
       val init = drop(validBitsInLastByte).toByteVector.reverse.toBitVector.take(size - last.size)
