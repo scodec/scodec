@@ -72,7 +72,13 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
 
   def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
-  def signed[A](codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] = new SignatureCodec(codec)(signatureFactory)
+
+  def fixedSizeSignature[A](byteSize: Int)(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
+    new SignatureCodec(codec, fixedSizeBytes(byteSize, BitVectorCodec))(signatureFactory)
+
+  def variableSizeSignature[A](byteSizeCodec: Codec[Int])(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
+    new SignatureCodec(codec, variableSizeBytes(byteSizeCodec, BitVectorCodec))(signatureFactory)
+
   val x509Certificate: Codec[Certificate] = new CertificateCodec("X.509")
 
   // Needed for the ignore combinator when used with <~, ~>, and :~>:

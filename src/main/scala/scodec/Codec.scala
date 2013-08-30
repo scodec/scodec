@@ -56,6 +56,11 @@ object Codec {
   object DecodingContext {
     def apply[A](f: BitVector => Error \/ (BitVector, A)): DecodingContext[A] =
       StateT[({type λ[+a] = Error \/ a})#λ, BitVector, A](f)
+
+    def liftE[A](e: Error \/ A): DecodingContext[A] =
+      apply { bv => e map { a => (bv, a) } }
+
+    def monadState = StateT.stateTMonadState[BitVector, ({type λ[+a] = Error \/ a})#λ]
   }
 
   /** Encodes the specified value to a bit vector. */

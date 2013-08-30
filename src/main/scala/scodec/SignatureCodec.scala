@@ -103,12 +103,14 @@ object SignatureFactory {
  * string (e.g., ascii, utf8), decoding an encoded vector will result in the string codec trying to
  * decode the signature bits as part of the string.
  */
-class SignatureCodec[A](codec: Codec[A])(implicit signatureFactory: SignatureFactory) extends Codec[A] {
+class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignatureFactory) extends Codec[A] {
+  import Codec._
 
   override def encode(a: A) = for {
     encoded <- codec.encode(a)
     sig <- sign(encoded)
-  } yield encoded ++ sig
+    encodedSig <- signatureCodec.encode(sig)
+  } yield encoded ++ encodedSig
 
   private def sign(bits: BitVector): Error \/ BitVector = {
     try {
@@ -121,13 +123,14 @@ class SignatureCodec[A](codec: Codec[A])(implicit signatureFactory: SignatureFac
     }
   }
 
-  override def decode(buffer: BitVector) = for {
-    result <- codec.decode(buffer)
-    (remaining, a) = result
-    allBytes = buffer.toByteVector
-    consumed = allBytes.take(allBytes.size - remaining.toByteVector.size)
-    _ <- verify(consumed, remaining.toByteVector)
-  } yield (BitVector.empty, a)
+  override def decode(buffer: BitVector) = (for {
+    initialBits <- DecodingContext.monadState.get
+    value <- DecodingContext(codec.decode)
+    bitsAfterValueDecoding <- DecodingContext.monadState.get
+    valueBits = initialBits take (initialBits.size - bitsAfterValueDecoding.size)
+    decodedSig <- DecodingContext(signatureCodec.decode)
+    _ <- DecodingContext liftE verify(valueBits.toByteVector, decodedSig.toByteVector)
+  } yield value).run(buffer)
 
   private def verify(data: ByteVector, signatureBytes: ByteVector): Error \/ Unit = {
     val verifier = signatureFactory.newVerifier
