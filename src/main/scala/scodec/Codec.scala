@@ -26,6 +26,7 @@ trait Codec[A] {
   final def xmap[B](f: A => B, g: B => A): Codec[B] = Codec.xmap(this)(f, g)
 
   /** Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`. */
+  // TODO: results in: could not find implicit value for parameter gen: shapeless.Generic.Aux[Bar,Int]
   final def as[B](implicit gen: Generic.Aux[B, A]): Codec[B] = Codec.xmap(this)(gen.from, gen.to(_))
 
   /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`. */
