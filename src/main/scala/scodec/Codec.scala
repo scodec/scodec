@@ -14,7 +14,7 @@ import shapeless._
  * Note: the decode function can be lifted to a state action via `StateT[Error \/ ?, BitVector, A]`. This type alias
  * and associated constructor is provided by `Codec.DecodingContext`.
  */
-trait Codec[A] {
+trait Codec[A] { self =>
 
   /** Attempts to encode the specified value in to a bit vector. */
   def encode(a: A): Error \/ BitVector
@@ -25,10 +25,6 @@ trait Codec[A] {
   /** Maps to a codec of type `B`. */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = Codec.xmap(this)(f, g)
 
-  /** Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`. */
-  // TODO: results in: could not find implicit value for parameter gen: shapeless.Generic.Aux[Bar,Int]
-  final def as[B](implicit gen: Generic.Aux[B, A]): Codec[B] = Codec.xmap(this)(gen.from, gen.to(_))
-
   /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`. */
   final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = Codec.flatZip(this)(f)
 
@@ -37,6 +33,29 @@ trait Codec[A] {
 
   /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
   final def hlist: Codec[A :: HNil] = Codec.xmap(this)(_ :: HNil, _.head)
+
+  /** Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`. */
+  final def as[B](implicit as: CodecAsAux[B, A]) = as(this)
+}
+
+/**
+ * Typeclass that witnesses that a `Codec[A]` can be xmapped in to a `Codec[B]`.
+ * Automatic case class conversion is provided by Shapeless.
+ *
+ * Credit: Miles Sabin
+ */
+abstract class CodecAsAux[B, A] {
+  def apply(ca: Codec[A]): Codec[B]
+}
+
+object CodecAsAux {
+  implicit def mkAs[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): CodecAsAux[B, A]  = new CodecAsAux[B, A] {
+    def apply(ca: Codec[A]): Codec[B] = {
+      val from: A => B = a => gen.from(aToR(a))
+      val to: B => A = b => rToA(gen.to(b))
+      ca.xmap(from, to)
+    }
+  }
 }
 
 object Codec {

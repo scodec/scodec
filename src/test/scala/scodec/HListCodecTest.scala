@@ -1,6 +1,7 @@
 package scodec
 
 import shapeless._
+import nat._
 
 import Codecs._
 
@@ -8,6 +9,7 @@ import Codecs._
 class HListCodecTest extends CodecSuite {
 
   case class Foo(x: Int, y: Int, s: String)
+  case class Bar(x: Int)
 
   test("roundtrip") {
     roundtripAll((uint8 :: uint8 :: ascii), Seq(1 :: 2 :: "test" :: HNil))
@@ -15,7 +17,6 @@ class HListCodecTest extends CodecSuite {
   }
 
   test("xmap non-hlist codec to case class") {
-    case class Bar(x: Int)
     roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
   }
 
@@ -31,8 +32,8 @@ class HListCodecTest extends CodecSuite {
     roundtrip(((uint8 :: uint8) :+ ascii).as[Foo], Foo(1, 2, "test"))
   }
 
+  case class Baz(a: Int, b: Int, c: Int, d: Int)
   test("concat via :::") {
-    case class Bar(a: Int, b: Int, c: Int, d: Int)
-    roundtrip(((uint8 :: uint8) ::: (uint8 :: uint8)).as[Bar], Bar(1, 2, 3, 4))
+    roundtrip(((uint8 :: uint8) ::: (uint8 :: uint8)).as[Baz], Baz(1, 2, 3, 4))
   }
 }
