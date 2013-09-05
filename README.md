@@ -53,7 +53,6 @@ Automatic case class binding is supported via Shapeless HLists:
     import shapeless._
 
     case class Point(x: Int, y: Int, z: Int)
-    implicit val pointIso = Iso.hlist(Point.apply _, Point.unapply _)
 
     val pointCodec = (int8 :: int8 :: int8).as[Point]
 
@@ -102,7 +101,7 @@ There are a number of built in combinators:
  - `repeated(a)` - creates a `Codec[IndexedSeq[A]]`
  - Type Conversions
    - `a.xmap(f, g)` - creates a `Codec[B]` given bidirectional functions `f: A => B` and `g: B => A`.
-   - `a.as[B]` - creates a `Codec[B]` if a `shapeless.Iso[B, A]` is in implicit scope
+   - `a.as[B]` - creates a `Codec[B]` if a `shapeless.Generic.Aux[B, A]` is in implicit scope
 
 
 Examples

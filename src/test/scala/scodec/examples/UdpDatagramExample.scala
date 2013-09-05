@@ -11,7 +11,6 @@ class UdpDatagramExample extends CodecSuite {
     length: Int,
     checksum: Int,
     data: BitVector)
-  implicit val datagramIso = Iso.hlist(Datagram.apply _, Datagram.unapply _)
 
   object UdpCodec {
     import Codecs._

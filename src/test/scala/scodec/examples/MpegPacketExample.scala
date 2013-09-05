@@ -23,7 +23,6 @@ object MpegCodecs {
     def adaptationFieldIncluded: Boolean = adaptationFieldControl >= 2
     def payloadIncluded: Boolean = adaptationFieldControl == 1 || adaptationFieldControl == 3
   }
-  implicit def tsHeaderIso = Iso.hlist(TransportStreamHeader.apply _, TransportStreamHeader.unapply _)
 
   case class AdaptationFieldFlags(
     discontinuity: Boolean,
@@ -34,7 +33,6 @@ object MpegCodecs {
     splicingPointFlag: Boolean,
     transportPrivateDataFlag: Boolean,
     adaptationFieldExtension: Boolean)
-  implicit def mpegAdaptationFieldFlagsIso = Iso.hlist(AdaptationFieldFlags.apply _, AdaptationFieldFlags.unapply _)
 
   case class AdaptationField(
     flags: AdaptationFieldFlags,
@@ -42,14 +40,12 @@ object MpegCodecs {
     opcr: Option[BitVector],
     spliceCountdown: Option[Int]
   )
-  implicit def mpegAdaptationFieldIso = Iso.hlist(AdaptationField.apply _, AdaptationField.unapply _)
 
   case class MpegPacket(
     header: TransportStreamHeader,
     adaptationField: Option[AdaptationField],
     payload: Option[BitVector]
   )
-  implicit def mpegPacketIso = Iso.hlist(MpegPacket.apply _, MpegPacket.unapply _)
 
   import Codecs._
 

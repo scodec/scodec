@@ -1,7 +1,7 @@
 package scodec
 
 import shapeless._
-import TypeOperators._
+import ops.hlist.RightFolder
 import UnaryTCConstraint._
 
 import scalaz.Applicative

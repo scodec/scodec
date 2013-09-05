@@ -31,7 +31,7 @@ parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.0.3",
-  "com.chuusai" %% "shapeless" % "1.2.4",
+  "com.chuusai" % "shapeless_2.10.2" % "2.0.0-M1",
   "org.scalatest" %% "scalatest" % "2.0.RC1-SNAP4" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.1" % "test",
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.49" % "test",

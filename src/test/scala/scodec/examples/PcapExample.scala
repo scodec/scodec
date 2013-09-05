@@ -33,7 +33,6 @@ object PcapCodec {
   def guint32(implicit ordering: ByteOrdering): Codec[Long] = if (ordering == BigEndian) uint32 else uint32L
 
   case class PcapHeader(ordering: ByteOrdering, versionMajor: Int, versionMinor: Int, thiszone: Int, sigfigs: Long, snaplen: Long, network: Long)
-  implicit val pcapHeaderIso = Iso.hlist(PcapHeader.apply _, PcapHeader.unapply _)
 
   implicit val pcapHeader = {
     ("magic_number"     | byteOrdering             ) >>:~ { implicit ordering =>
@@ -49,7 +48,6 @@ object PcapCodec {
   case class PcapRecordHeader(timestampSeconds: Long, timestampMicros: Long, includedLength: Long, originalLength: Long) {
     def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
   }
-  implicit val pcapRecordHeaderIso = Iso.hlist(PcapRecordHeader.apply _, PcapRecordHeader.unapply _)
 
   implicit def pcapRecordHeader(implicit ordering: ByteOrdering) = {
     ("ts_sec"           | guint32                  ) ::
@@ -59,7 +57,6 @@ object PcapCodec {
   }.as[PcapRecordHeader]
 
   case class PcapRecord(header: PcapRecordHeader, data: BitVector)
-  implicit val pcapRecordIso = Iso.hlist(PcapRecord.apply _, PcapRecord.unapply _)
 
   implicit def pcapRecord(implicit ordering: ByteOrdering) = {
     ("record_header"    | pcapRecordHeader         ) >>:~ { hdr =>
@@ -67,7 +64,6 @@ object PcapCodec {
   }}.as[PcapRecord]
 
   case class PcapFile(header: PcapHeader, records: IndexedSeq[PcapRecord])
-  implicit val pcapFileIso = Iso.hlist(PcapFile.apply _, PcapFile.unapply _)
 
   implicit val pcapFile = {
     pcapHeader >>:~ { hdr => repeated(pcapRecord(hdr.ordering)).hlist

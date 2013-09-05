@@ -3,6 +3,7 @@ package scodec
 import scalaz.\/-
 
 import shapeless._
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split}
 import UnaryTCConstraint._
 
 
@@ -21,14 +22,14 @@ object HListCodec {
     } yield decA :: decL).run(buffer)
   }
 
-  object Prepend extends Poly2 {
+  object PrependCodec extends Poly2 {
     implicit def caseCodecAndCodecHList[A, L <: HList] = at[Codec[A], Codec[L]](prepend)
   }
 
   def append[L <: HList, A, LA <: HList](l: Codec[L], a: Codec[A])(implicit
-    prepend: PrependAux[L, A :: HNil, LA],
-    init: Init[LA] { type Out = L },
-    last: Last[LA] { type Out = A }
+    prepend: Prepend.Aux[L, A :: HNil, LA],
+    init: Init.Aux[LA, L],
+    last: Last.Aux[LA, A]
   ): Codec[LA] = new Codec[LA] {
     override def encode(xs: LA) = Codec.encodeBoth(l, a)(xs.init, xs.last)
     override def decode(buffer: BitVector) = (for {
@@ -38,9 +39,9 @@ object HListCodec {
   }
 
   def concat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](ck: Codec[K], cl: Codec[L])(implicit
-    prepend: PrependAux[K, L, KL],
-    lengthK: Length[K] { type Out = KLen },
-    split: Split[KL, KLen] { type P = K; type S = L }
+    prepend: Prepend.Aux[K, L, KL],
+    lengthK: Length.Aux[K, KLen],
+    split: Split.Aux[KL, KLen, (K, L)]
   ): Codec[KL] = new Codec[KL] {
     override def encode(xs: KL) = {
       val (k, l) = xs.split[KLen]
@@ -52,8 +53,8 @@ object HListCodec {
     } yield decK ::: decL).run(buffer)
   }
 
-  def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolderAux[L, Codec[HNil], Prepend.type, Codec[M]]): Codec[M] = {
-    l.foldRight(hnilCodec)(Prepend)
+  def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolder.Aux[L, Codec[HNil], PrependCodec.type, Codec[M]]): Codec[M] = {
+    l.foldRight(hnilCodec)(PrependCodec)
   }
 }
 
@@ -71,17 +72,17 @@ trait HListCodecSyntax {
 
     /** Returns a new codec that encodes/decodes the `HList L` followed by an `A`. */
     def :+[A, LA <: HList](a: Codec[A])(implicit
-      prepend: PrependAux[L, A :: HNil, LA],
-      init: Init[LA] { type Out = L },
-      last: Last[LA] { type Out = A }
+      prepend: Prepend.Aux[L, A :: HNil, LA],
+      init: Init.Aux[LA, L],
+      last: Last.Aux[LA, A]
     ): Codec[LA] =
       append(l, a)
 
     /** Returns a new codec the encodes/decodes the `HList K` followed by the `HList L`. */
     def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
-      prepend: PrependAux[K, L, KL],
-      lengthK: Length[K] { type Out = KLen },
-      split: Split[KL, KLen] { type P = K; type S = L }
+      prepend: Prepend.Aux[K, L, KL],
+      lengthK: Length.Aux[K, KLen],
+      split: Split.Aux[KL, KLen, (K, L)]
     ): Codec[KL] = concat(k, l)
   }
 

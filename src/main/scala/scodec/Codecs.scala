@@ -4,7 +4,7 @@ import java.nio.charset.Charset
 import java.security.cert.Certificate
 import java.util.UUID
 
-import shapeless.Iso
+import shapeless.Generic
 
 
 object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSyntax {
@@ -83,13 +83,4 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
 
   // Needed for the ignore combinator when used with <~, ~>, and :~>:
   implicit val unitInstance = scalaz.std.anyVal.unitInstance
-
-  def isoFromFunctions[A, B](to: A => B, from: B => A): Iso[A, B] = {
-    val toFn = to
-    val fromFn = from
-    new Iso[A, B] {
-      def to(a: A) = toFn(a)
-      def from(b: B) = fromFn(b)
-    }
-  }
 }
