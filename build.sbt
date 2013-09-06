@@ -90,3 +90,5 @@ pomPostProcess := { (node) =>
   new RuleTransformer(stripTestScope).transform(node)(0)
 }
 
+releaseSettings
+
