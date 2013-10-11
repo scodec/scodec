@@ -2,7 +2,7 @@ organization := "com.github.mpilquist"
 
 name := "scodec"
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.3"
 
 scalacOptions ++= Seq(
   "-feature",
@@ -28,7 +28,7 @@ triggeredMessage := (_ => Watched.clearScreen)
 parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
-  "org.scalaz" %% "scalaz-core" % "7.0.3",
+  "org.scalaz" %% "scalaz-core" % "7.0.4",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.0.RC1-SNAP4" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.1" % "test",
