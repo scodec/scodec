@@ -393,7 +393,7 @@ object BitVector {
       if (isEmpty) {
         "BitVector(0 bits)"
       } else {
-        val hex = Bytes.toHexadecimal(bytes.toIterable)
+        val hex = bytes.toHex
         val truncatedHex = if (invalidBits >= 4) {
           hex.substring(0, hex.size - 1)
         } else hex

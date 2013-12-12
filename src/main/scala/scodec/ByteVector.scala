@@ -1,7 +1,10 @@
 package scodec
 
 import scala.collection.{IndexedSeqLike, IndexedSeqOptimized}
-import scalaz.Monoid
+import scalaz.{\/, Monoid}
+import scalaz.std.vector._
+import scalaz.syntax.id._
+import scalaz.syntax.traverse._
 import java.nio.ByteBuffer
 
 
@@ -33,7 +36,14 @@ trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] with BitwiseOpera
 
   def toBitVector: BitVector = BitVector(this)
 
-  def toHexadecimal: String
+  def toHex: String = {
+    import ByteVector.HexChars
+    val bldr = new StringBuilder
+    foreach { b =>
+      bldr.append(HexChars(b >> 4 & 0x0f)).append(HexChars(b & 0x0f))
+    }
+    bldr.toString
+  }
 
   def leftShift(n: Int): ByteVector =
     BitVector(this).leftShift(n).toByteVector
@@ -54,6 +64,8 @@ trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] with BitwiseOpera
 }
 
 object ByteVector {
+
+  private val HexChars: Array[Char] = Array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
 
   val empty: ByteVector = StandardByteVector(Vector.empty)
 
@@ -79,6 +91,17 @@ object ByteVector {
 
   def low(size: Int): ByteVector = fill(size)(0)
   def high(size: Int): ByteVector = fill(size)(0xff)
+
+  def fromHex(str: String): String \/ ByteVector = {
+    val withoutPrefix = if (str startsWith "0x") str.substring(2) else str
+    withoutPrefix.replaceAll("\\s", "").sliding(2, 2).toVector.map { h =>
+      try java.lang.Integer.valueOf(h, 16).toByte.right
+      catch { case e: NumberFormatException => s"Invalid octet '$h'".left }
+    }.sequenceU.map { v => ByteVector(v) }
+  }
+
+  def fromValidHex(str: String): ByteVector =
+    fromHex(str) valueOr { msg => throw new IllegalArgumentException(msg) }
 
   implicit val monoidInstance: Monoid[ByteVector] = new Monoid[ByteVector] {
     override def zero: ByteVector = ByteVector.empty

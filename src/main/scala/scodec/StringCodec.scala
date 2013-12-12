@@ -25,7 +25,7 @@ class StringCodec(charset: Charset) extends Codec[String] {
       (BitVector.empty, decoder.decode(buffer.toByteBuffer).toString).right
     } catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        s"${charset.displayName} cannot decode string from '${buffer.toByteVector.toHexadecimal}'".left
+        s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'".left
     }
   }
 

@@ -55,9 +55,7 @@ class StandardByteVector(private val bytes: Vector[Byte]) extends ByteVector {
 
   override protected[this] def thisCollection = bytes
 
-  override def toHexadecimal: String = Bytes.toHexadecimal(bytes)
-
-  override def toString: String = s"ByteVector(${toHexadecimal})"
+  override def toString: String = s"ByteVector(0x${toHex})"
 
   override def hashCode: Int = bytes.hashCode
 

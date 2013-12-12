@@ -18,6 +18,6 @@ class StringCodecTest extends CodecSuite {
   }
 
   test("decoding buffer with chars unsupported by charset results in error") {
-    utf8.decode(BitVector(Bytes.fromValidHexadecimal("0xf4ffffff"))) shouldBe "UTF-8 cannot decode string from '0xf4ffffff'".left
+    utf8.decode(BitVector(ByteVector.fromValidHex("0xf4ffffff"))) shouldBe "UTF-8 cannot decode string from '0xf4ffffff'".left
   }
 }
