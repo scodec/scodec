@@ -227,6 +227,127 @@ sealed trait Bits {
    */
   def toByteBuffer: java.nio.ByteBuffer = toByteVector.toByteBuffer
 
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
+   *
+   * @group bitwise
+   */
+  final def <<(n: Int): Bits = leftShift(n)
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
+   *
+   * @group bitwise
+   */
+  def leftShift(n: Int): Bits = drop(n).padTo(size)
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are sign extended.
+   *
+   * @group bitwise
+   */
+  final def >>(n: Int): Bits = rightShift(n, true)
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are low.
+   *
+   * @group bitwise
+   */
+  final def >>>(n: Int): Bits = rightShift(n, false)
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the right `n` bits.
+   *
+   * @param signExtension whether the `n` left-most bits should take on the value of bit 0
+   *
+   * @group bitwise
+   */
+  def rightShift(n: Int, signExtension: Boolean): Bits =
+    if (signExtension && lift(0).getOrElse(false))
+      Bits.fill(n.toLong min size)(true) ++ dropRight(n)
+    else Bits.fill(n.toLong min size)(false) ++ dropRight(n)
+
+  /**
+   * Returns a bitwise complement of this vector.
+   *
+   * @group bitwise
+   */
+  final def unary_~(): Bits = not
+
+  private def mapBytes(f: ByteVector => ByteVector): Bits = this match {
+    case Bytes(bytes, n) => Bytes(f(bytes), n)
+    case Append(l,r) => Append(l.mapBytes(f), r.mapBytes(f))
+    case Take(b,n) => Take(b.mapBytes(f), n)
+    case Drop(b,n) => Drop(b.mapBytes(f), n)
+  }
+
+  private def zipBytesWith(other: Bits)(op: (Byte, Byte) => Int): Bits = {
+    // todo: this has a much more efficient recursive algorithm -
+    // only need to flatten close to leaves of the tree
+    Bytes(this.flatten.bytes.zipWithI(other.flatten.bytes)(op), this.size min other.size)
+  }
+
+  /**
+   * Returns a bitwise complement of this vector.
+   *
+   * @group bitwise
+   */
+  def not: Bits = mapBytes(_.not)
+
+  /**
+   * Returns a bitwise AND of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  final def &(other: Bits): Bits = and(other)
+
+  /**
+   * Returns a bitwise AND of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  def and(other: Bits): Bits = zipBytesWith(other)(_ & _)
+
+  /**
+   * Returns a bitwise OR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  final def |(other: Bits): Bits = or(other)
+
+  /**
+   * Returns a bitwise OR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  def or(other: Bits): Bits = zipBytesWith(other)(_ | _)
+
+  /**
+   * Returns a bitwise XOR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  final def ^(other: Bits): Bits = xor(other)
+
+  /**
+   * Returns a bitwise XOR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  def xor(other: Bits): Bits = zipBytesWith(other)(_ ^ _)
+
   // impl details
 
   protected def checkBounds(n: Int): Unit =
