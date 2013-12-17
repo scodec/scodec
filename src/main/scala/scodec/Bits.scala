@@ -110,6 +110,11 @@ sealed trait Bits {
     if (n >= size || n < 0) this
     else Take(this, (size - n.toLong))
 
+  /**
+   * Convert this `Bits` to a flat `Bytes`.
+   *
+   * @group collection
+   */
   def flatten: Bytes = {
     if (bytesNeededForBits(size) > Int.MaxValue)
       throw new IllegalArgumentException(s"cannot flatten bit vector of size ${size.toDouble / 8 / 1e6} MB")
@@ -199,7 +204,7 @@ sealed trait Bits {
    *
    * @group conversions
    */
-  def toByteVector: ByteVector = ???
+  def toByteVector: ByteVector = flatten.bytes
 
   /**
    * Converts the contents of this vector to a byte array.
