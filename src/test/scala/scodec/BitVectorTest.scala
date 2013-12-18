@@ -64,6 +64,7 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     BitVector.high(8).drop(4).toByteVector shouldBe ByteVector(0xf0)
     BitVector.high(8).drop(3).toByteVector shouldBe ByteVector(0xf8)
     BitVector.high(10).drop(3).toByteVector shouldBe ByteVector(0xfe)
+    BitVector.high(10).drop(3) shouldBe BitVector.high(7)
     BitVector.high(12).drop(3).toByteVector shouldBe ByteVector(0xff, 0x80)
     BitVector.empty.drop(4) shouldBe BitVector.empty
     BitVector.high(4).drop(8) shouldBe BitVector.empty
@@ -71,9 +72,13 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
 
   test("take") {
     BitVector.high(8).take(4).toByteVector shouldBe ByteVector(0xf0)
+    BitVector.high(8).take(4) shouldBe BitVector.high(4)
     BitVector.high(8).take(5).toByteVector shouldBe ByteVector(0xf8)
+    BitVector.high(8).take(5) shouldBe BitVector.high(5)
     BitVector.high(10).take(7).toByteVector shouldBe ByteVector(0xfe)
+    BitVector.high(10).take(7) shouldBe BitVector.high(7)
     BitVector.high(12).take(9).toByteVector shouldBe ByteVector(0xff, 0x80)
+    BitVector.high(12).take(9) shouldBe BitVector.high(9)
     BitVector.high(4).take(100).toByteVector shouldBe ByteVector(0xf0)
   }
 

@@ -116,6 +116,7 @@ sealed trait BitVector {
    */
   def drop(n: Long): BitVector =
     if (n >= size) BitVector.empty
+    else if (n == 0) this
     else Drop(this, n max 0)
 
   /**
@@ -146,8 +147,10 @@ sealed trait BitVector {
         else {
           val b2 = b.flatten.bytes.drop((n/8).toInt)
           val (hd, tl) = (b2.take(1), b2.drop(1))
-          val out = Bytes(ByteVector(hd.head << (n%8)), 8-(n%8)).combine(Bytes(tl, tl.size * 8))
-          Bytes(clearUnneededBits(b.size - n, out.bytes), b.size - n)
+          val out = Bytes(ByteVector(hd.head << (n%8)), 8-(n%8))
+                  . combine(Bytes(tl, tl.size * 8))
+          val expectedSize = (b.size - n) max 0
+          Bytes(out.bytes, expectedSize)
         }
     }
     go(this)
@@ -288,7 +291,8 @@ sealed trait BitVector {
    *
    * @group conversions
    */
-  def toByteVector: ByteVector = flatten.bytes
+  def toByteVector: ByteVector =
+    clearUnneededBits(size, flatten.bytes.take(bytesNeededForBits(size).toInt))
 
   /**
    * Converts the contents of this vector to a byte array.
@@ -432,9 +436,17 @@ sealed trait BitVector {
   def xor(other: BitVector): BitVector = zipBytesWith(other)(_ ^ _)
 
   override def equals(other: Any): Boolean = other match {
-    case o: BitVector => toIndexedSeq == o.toIndexedSeq // toByteVector == o.toByteVector
+    case o: BitVector if size == o.size => {
+      var i = 0L
+      while (i < size) {
+        if (get(i) != o.get(i)) return false
+        i += 1
+      }
+      return true
+    }
     case _ => false
   }
+
   override def toString =
     "BitVector("+toIndexedSeq.map(b => if (b) 1 else 0).mkString+")"
 
