@@ -127,7 +127,7 @@ sealed trait BitVector {
    */
   def dropRight(n: Long): BitVector =
     if (n >= size || n < 0) this
-    else Take(this, (size - n.toLong))
+    else take(size - n.toLong)
 
   /**
    * Convert this `BitVector` to a flat `Bytes`.
@@ -140,7 +140,6 @@ sealed trait BitVector {
     def go(b: BitVector): Bytes = b match {
       case b@Bytes(_,_) => b
       case Append(l,r) => l.flatten.combine(r.flatten)
-      case Take(b, n) => Bytes(go(b).bytes.take(bytesNeededForBits(n).toInt), n)
       case Drop(b, n) =>
         if (n == 0) go(b)
         else if (n%8 == 0) Bytes(b.flatten.bytes.drop((n / 8).toInt), b.size - n)
@@ -234,9 +233,13 @@ sealed trait BitVector {
    * @see acquire
    * @group collection
    */
-  def take(n: Long): BitVector =
-    if (n >= size) this
-    else Take(this, n min size)
+  def take(n: Long): BitVector = this match {
+    case Bytes(underlying, m) => Bytes(underlying, n min m)
+    case Drop(underlying, m) => Drop(underlying.take(m + n), m)
+    case Append(l, r) =>
+      if (l.size <= n) l.take(n)
+      else Append(l, r.take(n-l.size))
+  }
 
   /**
    * Returns a vector whose contents are the results of taking the last `n` bits of this vector.
@@ -251,7 +254,7 @@ sealed trait BitVector {
   def takeRight(n: Long): BitVector =
     if (n < 0) throw new IllegalArgumentException(s"takeRight($n)")
     else if (n >= size) this
-    else Drop(this, size-n)
+    else this.drop(size-n)
 
   /**
    * Return the sequence of bits in this vector.
@@ -358,7 +361,6 @@ sealed trait BitVector {
   private def mapBytes(f: ByteVector => ByteVector): BitVector = this match {
     case Bytes(bytes, n) => Bytes(f(bytes), n)
     case Append(l,r) => Append(l.mapBytes(f), r.mapBytes(f))
-    case Take(b,n) => Take(b.mapBytes(f), n)
     case Drop(b,n) => Drop(b.mapBytes(f), n)
   }
 
@@ -507,18 +509,6 @@ object BitVector {
     }
   }
 
-  private[scodec] case class Take(underlying: BitVector, size: Long) extends BitVector {
-    def get(n: Long): Boolean = {
-      checkBounds(n)
-      underlying.get(n)
-    }
-    def updated(n: Long, high: Boolean): BitVector = {
-      checkBounds(n)
-      Take(underlying.updated(n, high), size)
-    }
-    override def take(n: Long): BitVector =
-      Take(underlying, n min size)
-  }
   private[scodec] case class Drop(underlying: BitVector, m: Long) extends BitVector {
     val size = underlying.size - m
     def get(n: Long): Boolean =
