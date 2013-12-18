@@ -103,9 +103,11 @@ sealed trait BitVector {
    *
    * @group collection
    */
-  def consume[A](n: Long)(decode: BitVector => String \/ A): String \/ (BitVector, A) =
-    if (n <= size) decode(take(n)).map((drop(n), _))
-    else left(s"cannot acquire $n bits from a vector that contains $size bits")
+   def consume[A](n: Long)(decode: BitVector => String \/ A): String \/ (BitVector, A) =
+     for {
+       toDecode <- acquire(n)
+       decoded <- decode(toDecode)
+     } yield (drop(n), decoded)
 
   /**
    * Returns a vector whose contents are the results of skipping the first `n` bits of this vector and taking the rest.
@@ -144,7 +146,7 @@ sealed trait BitVector {
       case Append(l,r) => l.flatten.combine(r.flatten)
       case Drop(b, n) =>
         if (n == 0) go(b)
-        else if (n%8 == 0) Bytes(b.flatten.bytes.drop((n / 8).toInt), b.size - n)
+        else if (n%8 == 0) Bytes(b.flatten.bytes.drop((n / 8).toInt), (b.size - n) max 0)
         else {
           val b2 = b.flatten.bytes.drop((n/8).toInt)
           val (hd, tl) = (b2.take(1), b2.drop(1))
@@ -238,7 +240,11 @@ sealed trait BitVector {
    * @group collection
    */
   def take(n: Long): BitVector = this match {
-    case Bytes(underlying, m) => Bytes(underlying, n min m)
+    case Bytes(underlying, m) =>
+      // eagerly trim from underlying here
+      val m2 = n min m
+      val underlyingN = bytesNeededForBits(m2).toInt
+      Bytes(underlying.take(underlyingN), m2)
     case Drop(underlying, m) => Drop(underlying.take(m + n), m)
     case Append(l, r) =>
       if (l.size <= n) l.take(n)
@@ -349,7 +355,10 @@ sealed trait BitVector {
    *
    * @group bitwise
    */
-  def leftShift(n: Long): BitVector = drop(n).padTo(size)
+  def leftShift(n: Long): BitVector =
+    if (n <= 0) this
+    else if (n >= size) BitVector.low(size)
+    else drop(n) ++ BitVector.low(n)
 
   /**
    * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are sign extended.
@@ -372,10 +381,19 @@ sealed trait BitVector {
    *
    * @group bitwise
    */
-  def rightShift(n: Long, signExtension: Boolean): BitVector =
-    if (signExtension && lift(0).getOrElse(false))
-      BitVector.fill(n min size)(true) ++ dropRight(n)
-    else BitVector.fill(n min size)(false) ++ dropRight(n)
+  def rightShift(n: Long, signExtension: Boolean): BitVector = {
+    if (isEmpty || n <= 0) this
+    else {
+      val extensionHigh = signExtension && head
+      if (n >= size) {
+        if (extensionHigh) BitVector.high(size) else BitVector.low(size)
+      }
+      else {
+        (if (extensionHigh) BitVector.high(n) else BitVector.low(n)) ++
+        take(size - n)
+      }
+    }
+  }
 
   /**
    * Returns a bitwise complement of this vector.
