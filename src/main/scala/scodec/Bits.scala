@@ -117,14 +117,19 @@ sealed trait Bits {
    */
   def flatten: Bytes = {
     if (bytesNeededForBits(size) > Int.MaxValue)
-      throw new IllegalArgumentException(s"cannot flatten bit vector of size ${size.toDouble / 8 / 1e6} MB")
+      throw new IllegalArgumentException(s"cannot flatten bit vector of size ${size.toDouble / 8 / 1e9} GB")
     def go(b: Bits): Bytes = b match {
       case b@Bytes(_,_) => b
       case Append(l,r) => l.flatten.combine(r.flatten)
       case Take(b, n) => Bytes(go(b).bytes.take(bytesNeededForBits(n).toInt), n)
       case Drop(b, n) =>
-        if (n%8 == 0) Bytes(b.flatten.bytes.drop(n / 8), b.size - n)
-        else Bytes(b.flatten.bytes.drop(n/8).leftShift(n%8), b.size - n)
+        if (n == 0) go(b)
+        else if (n%8 == 0) Bytes(b.flatten.bytes.drop(n / 8), b.size - n)
+        else {
+          val b2 = b.flatten.bytes.drop(n/8)
+          val (hd, tl) = (b2.take(1), b2.drop(1))
+          Bytes(ByteVector(hd.head << (n%8)), 8-(n%8)).combine(Bytes(tl, tl.size * 8))
+        }
     }
     go(this)
   }
@@ -363,7 +368,7 @@ object Bits {
   val zero: Bits = Bytes(ByteVector(0), 1)
   val one: Bits = Bytes(ByteVector(1), 1)
   val highByte: Bits = Bytes(ByteVector.fill(8)(1), 8)
-  val lowByte: Bits = Bytes(ByteVector.fill(8)(1), 8)
+  val lowByte: Bits = Bytes(ByteVector.fill(8)(0), 8)
 
   def apply(bytes: ByteVector): Bits = Bytes(bytes, bytes.size.toLong * 8)
 
