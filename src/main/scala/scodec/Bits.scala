@@ -127,7 +127,8 @@ sealed trait BitVector {
    * @group collection
    */
   def dropRight(n: Long): BitVector =
-    if (n >= size || n < 0) this
+    if (n <= 0) this
+    else if (n >= size) BitVector.empty
     else take(size - n.toLong)
 
   /**
@@ -352,8 +353,8 @@ sealed trait BitVector {
    */
   def rightShift(n: Long, signExtension: Boolean): BitVector =
     if (signExtension && lift(0).getOrElse(false))
-      BitVector.fill(n.toLong min size)(true) ++ dropRight(n)
-    else BitVector.fill(n.toLong min size)(false) ++ dropRight(n)
+      BitVector.fill(n min size)(true) ++ dropRight(n)
+    else BitVector.fill(n min size)(false) ++ dropRight(n)
 
   /**
    * Returns a bitwise complement of this vector.
