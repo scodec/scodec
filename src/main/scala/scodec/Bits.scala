@@ -86,8 +86,8 @@ sealed trait BitVector {
    * @group collection
    */
   def acquire(n: Long): String \/ BitVector =
-    if (n < size) right(take(n))
-    else left(s"index $n of bounds for vector of size: $size")
+    if (n <= size) right(take(n))
+    else left(s"cannot acquire $n bits from a vector that contains $size bits")
 
   /**
    * Returns a new bit vector with the `n`th bit low (and all other bits unmodified).
@@ -104,8 +104,8 @@ sealed trait BitVector {
    * @group collection
    */
   def consume[A](n: Long)(decode: BitVector => String \/ A): String \/ (BitVector, A) =
-    if (n < size) decode(take(n)).map((drop(n), _))
-    else left(s"index $n of bounds for vector of size: $size")
+    if (n <= size) decode(take(n)).map((drop(n), _))
+    else left(s"cannot acquire $n bits from a vector that contains $size bits")
 
   /**
    * Returns a vector whose contents are the results of skipping the first `n` bits of this vector and taking the rest.
@@ -116,7 +116,7 @@ sealed trait BitVector {
    */
   def drop(n: Long): BitVector =
     if (n >= size) BitVector.empty
-    else if (n == 0) this
+    else if (n <= 0) this
     else Drop(this, n max 0)
 
   /**
@@ -129,7 +129,7 @@ sealed trait BitVector {
   def dropRight(n: Long): BitVector =
     if (n <= 0) this
     else if (n >= size) BitVector.empty
-    else take(size - n.toLong)
+    else take(size - n)
 
   /**
    * Convert this `BitVector` to a flat `Bytes`.
@@ -191,7 +191,7 @@ sealed trait BitVector {
   /**
    * Returns an `n`-bit vector whose contents are this vector's contents followed by 0 or more low bits.
    *
-   * @throws IllegalArgumentException if `n` < `size`
+   * @throws IllegalArgumentException if `n < size`
    * @group collection
    */
   def padTo(n: Long): BitVector =
@@ -261,15 +261,21 @@ sealed trait BitVector {
     else this.drop(size-n)
 
   /**
-   * Return the sequence of bits in this vector.
+   * Return the sequence of bits in this vector. The returned
+   * `Iterable` is just a view; nothing is actually copied.
    *
    * @throws IllegalArgumentException if this vector's size exceeds Int.MaxValue
    * @see acquire
+   * @see toIndexedSeq
    * @group collection
    */
-  def toIterable: Iterable[Boolean] =
-    intSize.map(n => (0 until n).map(get(_)))
-           .getOrElse(throw new IllegalArgumentException(s"BitVector too big for Iterable: $size"))
+  def toIterable: Iterable[Boolean] = {
+    intSize.map { n =>
+      new Iterable[Boolean] {
+        def iterator = Iterator.range(0, n).map(BitVector.this.get(_))
+      }
+    }.getOrElse { throw new IllegalArgumentException(s"BitVector too big for Iterable: $size") }
+  }
 
   /**
    * Returns a new vector of the same size with the byte order reversed.
@@ -277,13 +283,28 @@ sealed trait BitVector {
    * @group collection
    */
   def reverseByteOrder: BitVector = {
-    val validFinalBits = validBitsInLastByte(size)
-    val invalidBits = 8 - validFinalBits
-    val last = take(validFinalBits)
-    val init = BitVector(drop(validFinalBits.toInt).toByteVector.reverse).take(size - last.size)
-    (init ++ last)
+    if (size % 8 == 0) Bytes(flatten.bytes.reverse, size)
+    else {
+      val validFinalBits = validBitsInLastByte(size)
+      // println(s"valid final bits: $validFinalBits")
+      val last = take(validFinalBits).flatten
+      // println(s"last: ${last.size}")
+      val b = drop(validFinalBits).toByteVector.reverse
+      // println("b: "+b.size*8)
+      val init = Bytes(b, size-last.size)
+      val res = (init ++ last)
+      require(res.size == size)
+      // println(s"res: ${res.size}")
+      res
+    }
   }
 
+//    def reverseByteOrder = {
+//      val validBitsInLastByte = 8 - invalidBits
+//      val last = take(validBitsInLastByte)
+//      val init = drop(validBitsInLastByte).toByteVector.reverse.toBitVector.take(size - last.size)
+//      (init ++ last)
+//    }
   /**
    * Converts the contents of this vector to a byte vector.
    *
@@ -535,10 +556,10 @@ object BitVector {
     val size = left.size + right.size
     def get(n: Long): Boolean =
       if (n < left.size) left.get(n)
-      else right.get(n)
+      else right.get(n - left.size)
     def updated(n: Long, high: Boolean): BitVector =
       if (n < left.size) Append(left.updated(n, high), right)
-      else Append(left, right.updated(n, high))
+      else Append(left, right.updated(n - left.size, high))
   }
 
   implicit val monoidInstance: scalaz.Monoid[BitVector] = new scalaz.Monoid[BitVector] {
@@ -558,7 +579,7 @@ object BitVector {
 
   private def validBitsInLastByte(size: Long): Long = {
     val mod = size % 8
-    (if (mod == 0) 8 else mod).toLong
+    (if (mod == 0) 8 else mod)
   }
 
   /** Gets a byte mask with the top `n` bits enabled. */
