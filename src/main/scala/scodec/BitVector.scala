@@ -47,7 +47,6 @@ sealed trait BitVector {
    * @group collection
    */
   def size: Long
-  def intSize: Option[Int] = if (size <= Int.MaxValue) Some(size.toInt) else None
 
   // derived functions
 
@@ -88,16 +87,62 @@ sealed trait BitVector {
     else go(this, b2)
   }
 
-  def depthExceeds(d: Int): Boolean = {
-    def go(node: BitVector, cur: Int): Boolean =
-      (cur > d) ||
-      (node match {
-        case Append(l,r) => go(l, cur+1) || go(r, cur+1)
-        case Drop(u,n) => go(u, cur+1)
-        case Bytes(b,n) => false
-      })
-    go(this, 0)
-  }
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
+   *
+   * @group bitwise
+   */
+  final def <<(n: Long): BitVector = leftShift(n)
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are sign extended.
+   *
+   * @group bitwise
+   */
+  final def >>(n: Long): BitVector = rightShift(n, true)
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are low.
+   *
+   * @group bitwise
+   */
+  final def >>>(n: Long): BitVector = rightShift(n, false)
+
+  /**
+   * Returns a bitwise AND of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  final def &(other: BitVector): BitVector = and(other)
+
+  /**
+   * Returns a bitwise OR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  final def |(other: BitVector): BitVector = or(other)
+
+  /**
+   * Returns a bitwise XOR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  final def ^(other: BitVector): BitVector = xor(other)
+
+  /**
+   * Returns a bitwise AND of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  def and(other: BitVector): BitVector = zipBytesWith(other)(_ & _)
 
   /**
    * Alias for `get`.
@@ -140,6 +185,21 @@ sealed trait BitVector {
      } yield (drop(n), decoded)
 
   /**
+   * Returns `true` if the depth of this tree is `> d`. The result
+   * of `flatten` has depth 0.
+   */
+  def depthExceeds(d: Int): Boolean = {
+    def go(node: BitVector, cur: Int): Boolean =
+      (cur > d) ||
+      (node match {
+        case Append(l,r) => go(l, cur+1) || go(r, cur+1)
+        case Drop(u,n) => go(u, cur+1)
+        case Bytes(b,n) => false
+      })
+    go(this, 0)
+  }
+
+  /**
    * Returns a vector whose contents are the results of skipping the first `n` bits of this vector and taking the rest.
    *
    * The resulting vector's size is `0 max (size - n)`
@@ -173,7 +233,13 @@ sealed trait BitVector {
     else take(size - n)
 
   /**
-   * Convert this `BitVector` to a flat `Bytes`.
+   * Return a `BitVector` with the same contents as `this`, but
+   * based off a single `ByteVector`.
+   *
+   * This may involve copying data to a fresh `ByteVector`, but
+   * has the advantage that lookups index directly into a single
+   * `ByteVector` rather than traversing a logarithmic number of nodes
+   * in this tree.
    *
    * @group collection
    */
@@ -223,6 +289,24 @@ sealed trait BitVector {
   final def isEmpty = size == 0L
 
   /**
+   * Returns the number of bits in this vector, or `None` if the size does not
+   * fit into an `Int`.
+   *
+   * @group collection
+   */
+  def intSize: Option[Int] = if (size <= Int.MaxValue) Some(size.toInt) else None
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
+   *
+   * @group bitwise
+   */
+  def leftShift(n: Long): BitVector =
+    if (n <= 0) this
+    else if (n >= size) BitVector.low(size)
+    else drop(n) ++ BitVector.low(n)
+
+  /**
    * Returns `Some(true)` if the `n`th bit is high, `Some(false)` if low, and `None` if `n >= size`.
    *
    * @group individual
@@ -237,6 +321,22 @@ sealed trait BitVector {
    * @group collection
    */
   final def nonEmpty = size > 0L
+
+  /**
+   * Returns a bitwise complement of this vector.
+   *
+   * @group bitwise
+   */
+  def not: BitVector = mapBytes(_.not)
+
+  /**
+   * Returns a bitwise OR of this vector with the specified vector.
+   *
+   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+   *
+   * @group bitwise
+   */
+  def or(other: BitVector): BitVector = zipBytesWith(other)(_ | _)
 
   /**
    * Returns an `n`-bit vector whose contents are this vector's contents followed by 0 or more low bits.
@@ -254,6 +354,45 @@ sealed trait BitVector {
   def reverse: BitVector =
     // todo: this has a log time implementation, assuming a balanced tree
     BitVector(flatten.bytes.reverse.map(reverseBitsInBytes _)).drop(8 - validBitsInLastByte(size))
+
+  /**
+   * Returns a new vector of the same size with the byte order reversed.
+   *
+   * @group collection
+   */
+  def reverseByteOrder: BitVector = {
+    if (size % 8 == 0) Bytes(flatten.bytes.reverse, size)
+    else {
+      val validFinalBits = validBitsInLastByte(size)
+      val last = take(validFinalBits).flatten
+      val b = drop(validFinalBits).toByteVector.reverse
+      val init = Bytes(b, size-last.size)
+      val res = (init ++ last)
+      require(res.size == size)
+      res
+    }
+  }
+
+  /**
+   * Returns a bit vector of the same size with each bit shifted to the right `n` bits.
+   *
+   * @param signExtension whether the `n` left-most bits should take on the value of bit 0
+   *
+   * @group bitwise
+   */
+  def rightShift(n: Long, signExtension: Boolean): BitVector = {
+    if (isEmpty || n <= 0) this
+    else {
+      val extensionHigh = signExtension && head
+      if (n >= size) {
+        if (extensionHigh) BitVector.high(size) else BitVector.low(size)
+      }
+      else {
+        (if (extensionHigh) BitVector.high(n) else BitVector.low(n)) ++
+        take(size - n)
+      }
+    }
+  }
 
   /**
    * Returns a new bit vector with the `n`th bit high (and all other bits unmodified).
@@ -325,24 +464,6 @@ sealed trait BitVector {
   }
 
   /**
-   * Returns a new vector of the same size with the byte order reversed.
-   *
-   * @group collection
-   */
-  def reverseByteOrder: BitVector = {
-    if (size % 8 == 0) Bytes(flatten.bytes.reverse, size)
-    else {
-      val validFinalBits = validBitsInLastByte(size)
-      val last = take(validFinalBits).flatten
-      val b = drop(validFinalBits).toByteVector.reverse
-      val init = Bytes(b, size-last.size)
-      val res = (init ++ last)
-      require(res.size == size)
-      res
-    }
-  }
-
-  /**
    * Converts the contents of this vector to a byte vector.
    *
    * If this vector's size does not divide evenly by 8, the last byte of the returned vector
@@ -375,127 +496,11 @@ sealed trait BitVector {
   def toByteBuffer: java.nio.ByteBuffer = toByteVector.toByteBuffer
 
   /**
-   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
-   *
-   * @group bitwise
-   */
-  final def <<(n: Long): BitVector = leftShift(n)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the left `n` bits.
-   *
-   * @group bitwise
-   */
-  def leftShift(n: Long): BitVector =
-    if (n <= 0) this
-    else if (n >= size) BitVector.low(size)
-    else drop(n) ++ BitVector.low(n)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are sign extended.
-   *
-   * @group bitwise
-   */
-  final def >>(n: Long): BitVector = rightShift(n, true)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the right `n` bits where the `n` left-most bits are low.
-   *
-   * @group bitwise
-   */
-  final def >>>(n: Long): BitVector = rightShift(n, false)
-
-  /**
-   * Returns a bit vector of the same size with each bit shifted to the right `n` bits.
-   *
-   * @param signExtension whether the `n` left-most bits should take on the value of bit 0
-   *
-   * @group bitwise
-   */
-  def rightShift(n: Long, signExtension: Boolean): BitVector = {
-    if (isEmpty || n <= 0) this
-    else {
-      val extensionHigh = signExtension && head
-      if (n >= size) {
-        if (extensionHigh) BitVector.high(size) else BitVector.low(size)
-      }
-      else {
-        (if (extensionHigh) BitVector.high(n) else BitVector.low(n)) ++
-        take(size - n)
-      }
-    }
-  }
-
-  /**
    * Returns a bitwise complement of this vector.
    *
    * @group bitwise
    */
   final def unary_~(): BitVector = not
-
-  private def mapBytes(f: ByteVector => ByteVector): BitVector = this match {
-    case Bytes(bytes, n) => Bytes(f(bytes), n)
-    case Append(l,r) => Append(l.mapBytes(f), r.mapBytes(f))
-    case Drop(b,n) => Drop(b.mapBytes(f).flatten, n)
-  }
-
-  private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector = {
-    // todo: this has a much more efficient recursive algorithm -
-    // only need to flatten close to leaves of the tree
-    Bytes(this.flatten.bytes.zipWithI(other.flatten.bytes)(op), this.size min other.size)
-  }
-
-  /**
-   * Returns a bitwise complement of this vector.
-   *
-   * @group bitwise
-   */
-  def not: BitVector = mapBytes(_.not)
-
-  /**
-   * Returns a bitwise AND of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  final def &(other: BitVector): BitVector = and(other)
-
-  /**
-   * Returns a bitwise AND of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  def and(other: BitVector): BitVector = zipBytesWith(other)(_ & _)
-
-  /**
-   * Returns a bitwise OR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  final def |(other: BitVector): BitVector = or(other)
-
-  /**
-   * Returns a bitwise OR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  def or(other: BitVector): BitVector = zipBytesWith(other)(_ | _)
-
-  /**
-   * Returns a bitwise XOR of this vector with the specified vector.
-   *
-   * The resulting vector's size is the minimum of this vector's size and the specified vector's size.
-   *
-   * @group bitwise
-   */
-  final def ^(other: BitVector): BitVector = xor(other)
 
   /**
    * Returns a bitwise XOR of this vector with the specified vector.
@@ -518,7 +523,47 @@ sealed trait BitVector {
     case _ => false
   }
 
-  def pretty(prefix: String): String = this match {
+  /**
+   * Computed by sampling bits `Stream.iterate(0L)(n => (n*1.7).toLong + 1)`,
+   * up until the maximum index. The result is cached.
+   */
+  override lazy val hashCode = {
+    // todo: this could be recomputed more efficiently using the tree structure
+    // given an associative hash function
+    var i = 0L
+    val buf = new collection.mutable.ArrayBuffer[Boolean]
+    while (i < size) {
+      buf += get(i)
+      i = (i * 1.7).toLong + 1 // 0, 1, 2, 4, 7, 12, 21, ...
+    }
+    buf.hashCode ^ size.hashCode
+  }
+
+  /**
+   * Prettyprint this `BitVector`, showing its tree structure.
+   * For flat byte vector nodes beyond a certain size, only a
+   * hash of the contents is shown.
+   */
+  override def toString = "\n" + pretty("")
+
+  // impl details
+
+  protected def checkBounds(n: Long): Unit =
+    if (n >= size) outOfBounds(n)
+
+  protected def outOfBounds(n: Long): Nothing =
+    throw new NoSuchElementException(s"invalid index: $n of $size")
+
+  private def mapBytes(f: ByteVector => ByteVector): BitVector = this match {
+    case Bytes(bytes, n) => Bytes(f(bytes), n)
+    case Append(l,r) => Append(l.mapBytes(f), r.mapBytes(f))
+    case Drop(b,n) => Drop(b.mapBytes(f).flatten, n)
+  }
+
+  /**
+   * Pretty print this `BitVector`.
+   */
+  private[scodec] def pretty(prefix: String): String = this match {
     case Append(l,r) => prefix + "append\n" +
                         l.pretty(prefix + "  ") + "\n" +
                         r.pretty(prefix + "  ")
@@ -529,16 +574,12 @@ sealed trait BitVector {
                        u.pretty(prefix + "  ")
   }
 
-  override def toString = "\n" + pretty("")
-    // "BitVector("+toIndexedSeq.map(b => if (b) 1 else 0).mkString+")"
+  private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector = {
+    // todo: this has a much more efficient recursive algorithm -
+    // only need to flatten close to leaves of the tree
+    Bytes(this.flatten.bytes.zipWithI(other.flatten.bytes)(op), this.size min other.size)
+  }
 
-  // impl details
-
-  protected def checkBounds(n: Long): Unit =
-    if (n >= size) outOfBounds(n)
-
-  protected def outOfBounds(n: Long): Nothing =
-    throw new NoSuchElementException(s"invalid index: $n of $size")
 }
 
 object BitVector {

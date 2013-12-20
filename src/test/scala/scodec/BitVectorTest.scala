@@ -16,7 +16,10 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
 
   implicit val shrinkBitVector: Shrink[BitVector] =
     Shrink[BitVector] { b =>
-      Stream.iterate(b.take(b.size / 2))(b2 => b2.take(b2.size / 2)).take(10)
+      if (b.nonEmpty)
+        Stream.iterate(b.take(b.size / 2))(b2 => b2.take(b2.size / 2)).takeWhile(_.nonEmpty) ++
+        Stream(BitVector.empty)
+      else Stream.empty
     }
 
   def genBitVector(maxBytes: Int, maxAdditionalBits: Int): Gen[BitVector] = for {
@@ -40,6 +43,17 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
         (acc,high) => acc ++ BitVector.bit(high)
       )
     }
+
+  test("hashCode/equals") {
+    forAll { (b: BitVector, b2: BitVector, m: Long) =>
+      val n = if (b.nonEmpty) (m % b.size).abs else 0
+      (b.take(m) ++ b.drop(m)).hashCode shouldBe b.hashCode
+      if (b.take(3) == b2.take(3)) {
+        // kind of weak, since this will only happen 1/8th of attempts on average
+        b.take(3).hashCode shouldBe b2.take(3).hashCode
+      }
+    }
+  }
 
   test("construction via high") {
     BitVector.high(1).toByteVector shouldBe ByteVector(0x80)
@@ -121,10 +135,22 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
 
   test("dropRight") {
     BitVector.high(12).clear(0).dropRight(4).toByteVector shouldBe ByteVector(0x7f)
+    forAll { (x: BitVector, n0: Long, m0: Long) =>
+      val m = if (x.nonEmpty) (m0 % x.size).abs else 0
+      val n =  if (x.nonEmpty) (n0 % x.size).abs else 0
+      x.dropRight(m).dropRight(n) shouldBe x.dropRight(m + n)
+      x.dropRight(m) shouldBe x.take(x.size - m)
+    }
   }
 
   test("takeRight") {
     BitVector.high(12).clear(0).takeRight(4).toByteVector shouldBe ByteVector(0xf0)
+    forAll { (x: BitVector, n0: Long, m0: Long) =>
+      val m = if (x.nonEmpty) (m0 % x.size).abs else 0
+      val n =  if (x.nonEmpty) (n0 % x.size).abs else 0
+      x.takeRight(m max n).takeRight(n).flatten shouldBe x.takeRight(n)
+      x.takeRight(m) shouldBe x.drop(x.size - m)
+    }
   }
 
   test("flatten") {
