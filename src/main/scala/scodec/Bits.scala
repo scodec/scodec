@@ -351,7 +351,7 @@ sealed trait BitVector {
    * @group conversions
    */
   def toByteVector: ByteVector =
-    flatten.bytes
+    clearUnneededBits(size, flatten.bytes)
 
   /**
    * Converts the contents of this vector to a byte array.
@@ -580,7 +580,8 @@ object BitVector {
       val needed = bytesNeededForBits(size)
       require(needed <= bytes.size)
       val b = if (bytes.size > needed) bytes.take(needed.toInt) else bytes
-      new Bytes(clearUnneededBits(size, b), size)
+      // new Bytes(clearUnneededBits(size, b), size)
+      new Bytes(b, size)
     }
 
     def unapply(b: BitVector): Option[(ByteVector, Long)] = b match {
@@ -613,7 +614,7 @@ object BitVector {
       } else if (invalidBits == 0) {
         Bytes(bytes ++ otherBytes, size + other.size)
       } else {
-        val bytesCleared = bytes
+        val bytesCleared = clearUnneededBits(size, bytes) // this is key
         val hi = bytesCleared(bytesCleared.size - 1)
         val otherInvalidBits = (if (other.size % 8 == 0) 0 else (8 - (other.size % 8))).toInt
         val lo = (((otherBytes.head & topNBits(invalidBits.toInt)) & 0x000000ff) >>> validBitsInLastByte(size)).toByte

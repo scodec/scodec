@@ -97,7 +97,7 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     }
   }
 
-  test("take") {
+  test("take/drop") {
     BitVector.high(8).take(4).toByteVector shouldBe ByteVector(0xf0)
     BitVector.high(8).take(4) shouldBe BitVector.high(4)
     BitVector.high(8).take(5).toByteVector shouldBe ByteVector(0xf8)
@@ -111,6 +111,8 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
       val m = if (x.nonEmpty) (m0 % x.size).abs else 0
       val n =  if (x.nonEmpty) (n0 % x.size).abs else 0
       x.take(m+n).flatten.take(n) shouldBe x.take(n)
+      x.drop(m+n).flatten shouldBe x.drop(m).flatten.drop(n)
+      x.drop(n).take(m).toIndexedSeq shouldBe BitVector.bits(x.drop(n).toIndexedSeq).take(m).toIndexedSeq
     }
   }
 
@@ -231,13 +233,5 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
       bv.reverseByteOrder.reverseByteOrder shouldBe bv
     }
   }
-
-  // properties
-  // b.take(n) ++ b.drop(n) == b
-  // b.drop(n).take(m) == b.take(m+n).drop(n)
-  // b.drop(n).take(m) == bits(b.toIterable).drop(n).take(m)
-  // b.take(n).take(m) == b.take(n+m)
-  // b.drop(n).drop(m) == b.drop(n+m)
-  //
 
 }
