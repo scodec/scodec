@@ -127,6 +127,7 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     forAll { (x: BitVector, n0: Long, m0: Long) =>
       val m = if (x.nonEmpty) (m0 % x.size).abs else 0
       val n =  if (x.nonEmpty) (n0 % x.size).abs else 0
+      (x.take(m) ++ x.drop(m)).flatten shouldBe x
       x.take(m+n).flatten.take(n) shouldBe x.take(n)
       x.drop(m+n).flatten shouldBe x.drop(m).flatten.drop(n)
       x.drop(n).take(m).toIndexedSeq shouldBe BitVector.bits(x.drop(n).toIndexedSeq).take(m).toIndexedSeq
