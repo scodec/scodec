@@ -57,11 +57,8 @@ sealed trait BitVector {
    */
   def ++(b2: BitVector): BitVector = {
     def go(x: BitVector, y: BitVector, force: Boolean = false): BitVector =
-      //if ((((x.size+y.size) % 8 == 0) && x.size <= 256 && y.size <= 256) ||
-      //    ((x.size >= 256 && x.size < 512 && y.size >= 256 && y.size > 512)))
-      if ((((x.size+y.size) % 8 == 0) && x.size <= 16 && y.size <= 16) ||
-          ((x.size >= 16 && x.size < 32 && y.size >= 16 && y.size > 32)))
-      // if (false)
+      if ((((x.size+y.size) % 8 == 0) && x.size <= 256 && y.size <= 256) ||
+          ((x.size >= 256 && x.size <= 512 && y.size >= 256 && y.size <= 512)))
         // coalesce small bit vectors, preferring to obtain a byte-aligned result
         x.flatten.combine(y.flatten)
       else if (x.size >= y.size) x match {
