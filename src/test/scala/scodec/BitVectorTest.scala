@@ -8,8 +8,11 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
 
   implicit val arbitraryBitVector: Arbitrary[BitVector] =
-    Arbitrary(Gen.oneOf(genBitVector(500, 7), genConcat, genSplit))
-    // Arbitrary(genSplit)
+    Arbitrary(Gen.oneOf(
+      genBitVector(500, 7),             // regular flat bit vectors
+      genConcat(genBitVector(2000, 7)), // balanced trees of concatenations
+      genSplit(5000),                   // split bit vectors: b.take(m) ++ b.drop(m)
+      genConcat(genSplit(5000))))       // concatenated split bit vectors
 
   implicit val shrinkBitVector: Shrink[BitVector] =
     Shrink[BitVector] { b =>
@@ -23,15 +26,15 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     bytes <- Gen.listOfN((size + 7) / 8, Gen.choose(0, 255))
   } yield BitVector(ByteVector(bytes: _*)).take(size)
 
-  val genSplit = for {
-    n <- Gen.choose(0L, 10L)
+  def genSplit(maxSize: Long) = for {
+    n <- Gen.choose(0L, maxSize)
     b <- genBitVector(15, 7)
   } yield {
     val m = if (b.nonEmpty) (n % b.size).abs else 0
     b.take(m) ++ b.drop(m)
   }
 
-  val genConcat =
+  def genConcat(g: Gen[BitVector]) =
     genBitVector(2000, 7).map { b =>
       b.toIndexedSeq.foldLeft(BitVector.empty)(
         (acc,high) => acc ++ BitVector.bit(high)
