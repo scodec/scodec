@@ -157,6 +157,7 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
   test("flatten") {
     forAll { (x: BitVector) =>
       x.flatten shouldBe x
+      x.depthExceeds(16) shouldBe false
     }
   }
 
