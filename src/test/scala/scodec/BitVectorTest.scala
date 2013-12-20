@@ -77,8 +77,11 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     BitVector.high(4).take(100).toByteVector shouldBe ByteVector(0xf0)
   }
 
-  test("drop+take property") {
-    forAll { (bv: BitVector, n: Int) => whenever(n <= bv.size) { bv.take(n) ++ bv.drop(n) shouldBe bv } }
+  test("bv.take(n) ++ bv.drop(n) == bv") {
+    forAll { (bv: BitVector, n: Int) =>
+      val m = n % bv.size
+      bv.take(m) ++ bv.drop(m) shouldBe bv
+    }
   }
 
   test("dropRight") {
