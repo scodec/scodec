@@ -322,8 +322,7 @@ object BitVector {
         new SimpleBitVector(size + other.size, bytes ++ otherBytes)
       } else {
         val hi = bytes(bytes.size - 1)
-        val otherInvalidBits = if (other.size % 8 == 0) 0 else (8 - (other.size % 8))
-        val lo = (((otherBytes.head & topNBits(8 - otherInvalidBits)) & 0x000000ff) >>> validBitsInLastByte(size)).toByte
+        val lo = (((otherBytes.head & topNBits(invalidBits)) & 0x000000ff) >>> validBitsInLastByte(size)).toByte
         val updatedOurBytes = bytes.updated(bytes.size - 1, (hi | lo).toByte)
         val updatedOtherBytes = other.drop(invalidBits).toByteVector
         new SimpleBitVector(size + other.size, updatedOurBytes ++ updatedOtherBytes)
