@@ -44,6 +44,8 @@ abstract class DiscriminatorCodec[A, B] extends Codec[A] {
       value <- DecodingContext(valueCodec.decode)
     } yield value
   }.run(buffer)
+
+  override def toString = s"discriminated($discriminatorCodec)"
 }
 
 object DiscriminatorCodec {
