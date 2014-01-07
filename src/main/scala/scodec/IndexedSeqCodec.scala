@@ -31,4 +31,6 @@ class IndexedSeqCodec[A](codec: Codec[A]) extends Codec[IndexedSeq[A]] {
     error.toLeftDisjunction((BitVector.empty, bldr.result))
   }
 
+  override def toString = s"ixseq($codec)"
+
 }

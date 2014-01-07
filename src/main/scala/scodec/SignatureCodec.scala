@@ -146,4 +146,6 @@ class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(impli
         -\/("Signature verification failed: " + e)
     }
   }
+
+  override def toString = s"signature($codec, $signatureCodec)"
 }

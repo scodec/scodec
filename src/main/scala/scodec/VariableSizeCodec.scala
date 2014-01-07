@@ -18,4 +18,6 @@ class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A]) extends 
 
   override def decode(buffer: BitVector) =
     decoder.decode(buffer).map { case (rest, (sz, value)) => (rest, value) }
+
+  override def toString = s"variable-size($sizeCodec, $valueCodec)"
 }

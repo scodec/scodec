@@ -7,7 +7,7 @@ import java.util.UUID
 import shapeless.Iso
 
 
-object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSyntax {
+object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSyntax with DiscriminatorCodecSyntax {
 
   val int8: Codec[Int] = new IntCodec(8)
   val int16: Codec[Int] = new IntCodec(16)
@@ -70,6 +70,8 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
+
+  def provide[A](value: A): Codec[A] = new ProvideCodec(value)
 
   def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
 

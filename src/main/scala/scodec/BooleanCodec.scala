@@ -10,4 +10,6 @@ object BooleanCodec extends Codec[Boolean] {
 
   override def decode(buffer: BitVector) =
     buffer.consume(1) { b => \/-(b.head) }
+
+  override def toString = "bool"
 }

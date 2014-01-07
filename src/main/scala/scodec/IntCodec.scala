@@ -52,5 +52,5 @@ class IntCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) ext
       result.right
     }
 
-  override def toString = description + " codec"
+  override def toString = description
 }

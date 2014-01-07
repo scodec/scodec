@@ -14,4 +14,6 @@ class ConstantCodec(constant: BitVector, validate: Boolean = true) extends Codec
     else
       \/-((buffer drop constant.size, ()))
 
+  override def toString = s"constant($constant)"
+
 }

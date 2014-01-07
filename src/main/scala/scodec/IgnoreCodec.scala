@@ -10,4 +10,6 @@ class IgnoreCodec(bits: Int) extends Codec[Unit] {
 
   override def decode(buffer: BitVector) =
     buffer.consume(bits) { _ => \/-(()) }
+
+  override def toString = s"ignore($bits bits)"
 }

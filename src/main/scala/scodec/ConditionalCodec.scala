@@ -18,4 +18,6 @@ class ConditionalCodec[A](included: Boolean, codec: Codec[A]) extends Codec[Opti
       \/-((buffer, none))
   }
 
+  override def toString = s"conditional($included, $codec)"
+
 }

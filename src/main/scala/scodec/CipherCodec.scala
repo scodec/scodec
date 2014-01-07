@@ -103,4 +103,6 @@ class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) ext
         -\/("Failed to decrypt: " + e.getMessage)
     }
   }
+
+  override def toString = s"cipher($codec)"
 }

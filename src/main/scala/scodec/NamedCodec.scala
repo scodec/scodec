@@ -9,11 +9,14 @@ class NamedCodec[A](name: String, target: Codec[A]) extends Codec[A] {
   override def decode(buffer: BitVector) =
     target.decode(buffer).leftMap { e => s"$name: $e" }
 
+  override def toString = s"$name($target)"
+
 }
 
-trait NamedCodecSyntax {
+private[scodec] trait NamedCodecSyntax {
 
-  implicit class StringEnrichedWithCodecNamingSupport(name: String) {
+  final implicit class StringEnrichedWithCodecNamingSupport(val name: String) {
+    /** Names the specified codec, resulting in the name being included in error messages. */
     def |[A](codec: Codec[A]): Codec[A] = new NamedCodec(name, codec)
   }
 

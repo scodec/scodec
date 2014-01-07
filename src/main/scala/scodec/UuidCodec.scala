@@ -12,4 +12,6 @@ object UuidCodec extends Codec[UUID] with TupleCodecSyntax {
 
   override def decode(bits: BitVector) =
     codec.decode(bits) map { case (remaining, (m, l)) => (remaining, new UUID(m, l)) }
+
+  override def toString = "uuid"
 }

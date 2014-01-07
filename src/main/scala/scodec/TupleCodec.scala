@@ -12,6 +12,8 @@ class TupleCodec[A, B](codecA: Codec[A], codecB: Codec[B]) extends Codec[(A, B)]
 
   override def decode(buffer: BitVector) =
     Codec.decodeBoth(codecA, codecB)(buffer)
+
+  override def toString = s"($codecA, $codecB)"
 }
 
 /**
@@ -37,14 +39,14 @@ class TupleCodec[A, B](codecA: Codec[A], codecB: Codec[B]) extends Codec[(A, B)]
  *
  * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
  */
-trait TupleCodecSyntax extends TupleCodecSyntax0 {
+private[scodec] trait TupleCodecSyntax extends TupleCodecSyntax0 {
 
   /** Type alias for Tuple2 in order to allow left nested tuples to be written as A ~ B ~ C ~ .... */
-  type ~[+A, +B] = (A, B)
+  final type ~[+A, +B] = (A, B)
 
 
   /** Allows two codecs to be combined in to a single codec that produces a tuple. */
-  implicit class CodecEnrichedWithTuplingSupport[A](val codecA: Codec[A]) {
+  final implicit class CodecEnrichedWithTuplingSupport[A](val codecA: Codec[A]) {
 
     def ~[B](codecB: Codec[B]): Codec[(A, B)] =
       new TupleCodec(codecA, codecB)
@@ -61,33 +63,33 @@ trait TupleCodecSyntax extends TupleCodecSyntax0 {
     def unapply[A, B](t: (A, B)): Option[(A, B)] = Some(t)
   }
 
-  implicit def liftF2ToNestedTupleF[A, B, X](fn: (A, B) => X): ((A, B)) => X =
+  final implicit def liftF2ToNestedTupleF[A, B, X](fn: (A, B) => X): ((A, B)) => X =
     fn.tupled
-  implicit def liftF3ToNestedTupleF[A, B, C, X](fn: (A, B, C) => X): (((A, B), C)) => X = {
+  final implicit def liftF3ToNestedTupleF[A, B, C, X](fn: (A, B, C) => X): (((A, B), C)) => X = {
     case a ~ b ~ c => fn(a, b, c)
   }
-  implicit def liftF4ToNestedTupleF[A, B, C, D, X](fn: (A, B, C, D) => X): ((((A, B), C), D)) => X = {
+  final implicit def liftF4ToNestedTupleF[A, B, C, D, X](fn: (A, B, C, D) => X): ((((A, B), C), D)) => X = {
     case a ~ b ~ c ~ d => fn(a, b, c, d)
   }
-  implicit def liftF5ToNestedTupleF[A, B, C, D, E, X](fn: (A, B, C, D, E) => X): (((((A, B), C), D), E)) => X = {
+  final implicit def liftF5ToNestedTupleF[A, B, C, D, E, X](fn: (A, B, C, D, E) => X): (((((A, B), C), D), E)) => X = {
     case a ~ b ~ c ~ d ~ e => fn(a, b, c, d, e)
   }
-  implicit def liftF6ToNestedTupleF[A, B, C, D, E, F, X](fn: (A, B, C, D, E, F) => X): ((((((A, B), C), D), E), F)) => X = {
+  final implicit def liftF6ToNestedTupleF[A, B, C, D, E, F, X](fn: (A, B, C, D, E, F) => X): ((((((A, B), C), D), E), F)) => X = {
     case a ~ b ~ c ~ d ~ e ~ f => fn(a, b, c, d, e, f)
   }
-  implicit def liftF7ToNestedTupleF[A, B, C, D, E, F, G, X](fn: (A, B, C, D, E, F, G) => X): (((((((A, B), C), D), E), F), G)) => X = {
+  final implicit def liftF7ToNestedTupleF[A, B, C, D, E, F, G, X](fn: (A, B, C, D, E, F, G) => X): (((((((A, B), C), D), E), F), G)) => X = {
     case a ~ b ~ c ~ d ~ e ~ f ~ g => fn(a, b, c, d, e, f, g)
   }
-  implicit def liftF8ToNestedTupleF[A, B, C, D, E, F, G, H, X](fn: (A, B, C, D, E, F, G, H) => X): ((((((((A, B), C), D), E), F), G), H)) => X = {
+  final implicit def liftF8ToNestedTupleF[A, B, C, D, E, F, G, H, X](fn: (A, B, C, D, E, F, G, H) => X): ((((((((A, B), C), D), E), F), G), H)) => X = {
     case a ~ b ~ c ~ d ~ e ~ f ~ g ~ h => fn(a, b, c, d, e, f, g, h)
   }
 }
 
 /** Low priority implicits related to tupling. */
-trait TupleCodecSyntax0 {
+private[scodec] trait TupleCodecSyntax0 {
 
   /** Allows creation of left nested tuples by successive usage of `~` operator. */
-  implicit class ValueEnrichedWithTuplingSupport[A](val a: A) {
+  final implicit class ValueEnrichedWithTuplingSupport[A](val a: A) {
     def ~[B](b: B): (A, B) = (a, b)
   }
 }

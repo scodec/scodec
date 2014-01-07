@@ -9,8 +9,9 @@ import UnaryTCConstraint._
 object HListCodec {
 
   val hnilCodec: Codec[HNil] = new Codec[HNil] {
-    def encode(hn: HNil) = \/-(BitVector.empty)
-    def decode(buffer: BitVector) = \/-((buffer, HNil))
+    override def encode(hn: HNil) = \/-(BitVector.empty)
+    override def decode(buffer: BitVector) = \/-((buffer, HNil))
+    override def toString = s"HNil"
   }
 
   def prepend[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
@@ -19,6 +20,7 @@ object HListCodec {
       decA <- Codec.DecodingContext(a.decode)
       decL <- Codec.DecodingContext(l.decode)
     } yield decA :: decL).run(buffer)
+    override def toString = s"$a :: $l"
   }
 
   object Prepend extends Poly2 {
@@ -35,6 +37,7 @@ object HListCodec {
       decL <- Codec.DecodingContext(l.decode)
       decA <- Codec.DecodingContext(a.decode)
     } yield decL :+ decA).run(buffer)
+    override def toString = s"append($l, $a)"
   }
 
   def concat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](ck: Codec[K], cl: Codec[L])(implicit
@@ -50,6 +53,7 @@ object HListCodec {
       decK <- Codec.DecodingContext(ck.decode)
       decL <- Codec.DecodingContext(cl.decode)
     } yield decK ::: decL).run(buffer)
+    override def toString = s"concat($ck, $cl)"
   }
 
   def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolderAux[L, Codec[HNil], Prepend.type, Codec[M]]): Codec[M] = {
@@ -57,11 +61,11 @@ object HListCodec {
   }
 }
 
-trait HListCodecSyntax {
+private[scodec] trait HListCodecSyntax {
   import HListCodec._
 
   /** Provides common operations on a `Codec[HList]`. */
-  implicit class EnrichedHListCodec[L <: HList](l: Codec[L]) {
+  final implicit class EnrichedHListCodec[L <: HList](l: Codec[L]) {
 
     /** Returns a new codec representing `Codec[A :: L]`. */
     def ::[A](a: Codec[A]): Codec[A :: L] = prepend(a, l)
@@ -86,7 +90,7 @@ trait HListCodecSyntax {
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
-  implicit class EnrichedCodec[A](codecA: Codec[A]) {
+  final implicit class EnrichedCodec[A](codecA: Codec[A]) {
 
     /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
     def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
@@ -98,6 +102,7 @@ trait HListCodecSyntax {
         a <- Codec.DecodingContext(codecA.decode)
         l <- Codec.DecodingContext(f(a).decode)
       } yield a :: l).run(buffer)
+      override def toString = s"flatPrepend($codecA, $f)"
     }
 
     def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))

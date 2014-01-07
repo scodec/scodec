@@ -23,4 +23,6 @@ class CertificateCodec(certType: String) extends Codec[Certificate] {
         -\/("Failed to decode certificate: " + e.getMessage)
     }
   }
+
+  override def toString = s"certificate($certType)"
 }
