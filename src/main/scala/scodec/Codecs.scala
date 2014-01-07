@@ -65,7 +65,7 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def variableSizeBytes[A](size: Codec[Int], value: Codec[A]): Codec[A] = variableSizeBits(size.xmap(_ * 8, _ / 8), value)
 
   def bits(size: Int): Codec[BitVector] = fixedSizeBits(size, BitVectorCodec)
-  def bytes(size: Int): Codec[BitVector] = fixedSizeBytes(size, BitVectorCodec)
+  def bytes(size: Int): Codec[ByteVector] = fixedSizeBytes(size, BitVectorCodec).xmap(_.toByteVector, _.toBitVector)
 
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
