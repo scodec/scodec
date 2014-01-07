@@ -3,13 +3,13 @@ package scodec
 import Codecs._
 import scalaz.\/._
 
-class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A]) extends Codec[A] {
+class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A], sizePadding: Int = 0) extends Codec[A] {
 
-  private val decoder = sizeCodec flatZip { sz => fixedSizeBits(sz, valueCodec) }
+  private val decoder = sizeCodec flatZip { sz => fixedSizeBits(sz - sizePadding, valueCodec) }
 
   override def encode(a: A) = for {
     encA <- valueCodec.encode(a)
-    encSize <- encA.intSize.map(n => sizeCodec.encode(n).leftMap { fail(a, _) })
+    encSize <- encA.intSize.map { n => sizeCodec.encode(n + sizePadding).leftMap { fail(a, _) } }
                            .getOrElse(left(fail(a, s"${encA.size} exceeds maximum 32-bit integer value ${Int.MaxValue}")))
   } yield encSize ++ encA
 
@@ -19,5 +19,5 @@ class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A]) extends 
   override def decode(buffer: BitVector) =
     decoder.decode(buffer).map { case (rest, (sz, value)) => (rest, value) }
 
-  override def toString = s"variable-size($sizeCodec, $valueCodec)"
+  override def toString = s"variableSizeBits($sizeCodec, $valueCodec)"
 }

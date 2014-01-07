@@ -36,6 +36,8 @@ trait Codec[A] {
 
   /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
   final def hlist: Codec[A :: HNil] = Codec.xmap(this)(_ :: HNil, _.head)
+
+  final def withToString(str: String): Codec[A] = Codec.withToString(this)(str)
 }
 
 object Codec {
@@ -118,10 +120,16 @@ object Codec {
   } yield (a, b)).run(buffer)
 
   def flatZip[A, B](codecA: Codec[A])(f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)] {
-    def encode(t: (A, B)) = encodeBoth(codecA, f(t._1))(t._1, t._2)
-    def decode(buffer: BitVector) = (for {
+    override def encode(t: (A, B)) = encodeBoth(codecA, f(t._1))(t._1, t._2)
+    override def decode(buffer: BitVector) = (for {
       a <- DecodingContext(codecA.decode)
       b <- DecodingContext(f(a).decode)
     } yield (a, b)).run(buffer)
+  }
+
+  def withToString[A](codec: Codec[A])(str: String): Codec[A] = new Codec[A] {
+    override def encode(a: A) = codec.encode(a)
+    override def decode(buffer: BitVector) = codec.decode(buffer)
+    override def toString = str
   }
 }

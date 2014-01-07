@@ -18,5 +18,5 @@ class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
   override def decode(buffer: BitVector) =
     buffer.consume(size) { b => codec.decode(b) map { case (rest, res) => res } }
 
-  override def toString = s"fixed-size($size, $codec)"
+  override def toString = s"fixedSizeBits($size, $codec)"
 }

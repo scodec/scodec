@@ -60,12 +60,15 @@ object Codecs extends NamedCodecSyntax with TupleCodecSyntax with HListCodecSynt
   def constant[A: Integral](bits: A*): Codec[Unit] = new ConstantCodec(BitVector(bits: _*))
 
   def fixedSizeBits[A](size: Int, codec: Codec[A]): Codec[A] = new FixedSizeCodec(size, codec)
-  def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = fixedSizeBits(size * 8, codec)
-  def variableSizeBits[A](size: Codec[Int], value: Codec[A]): Codec[A] = new VariableSizeCodec(size, value)
-  def variableSizeBytes[A](size: Codec[Int], value: Codec[A]): Codec[A] = variableSizeBits(size.xmap(_ * 8, _ / 8), value)
+  def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = fixedSizeBits(size * 8, codec).withToString(s"fixedSizeBytes($size, $codec)")
 
-  def bits(size: Int): Codec[BitVector] = fixedSizeBits(size, BitVectorCodec)
-  def bytes(size: Int): Codec[ByteVector] = fixedSizeBytes(size, BitVectorCodec).xmap(_.toByteVector, _.toBitVector)
+  def variableSizeBits[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
+    new VariableSizeCodec(size, value, sizePadding)
+  def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
+    variableSizeBits(size.xmap[Int](_ * 8, _ / 8).withToString(size.toString), value, sizePadding * 8).withToString(s"variableSizeBytes($size, $value)")
+
+  def bits(size: Int): Codec[BitVector] = fixedSizeBits(size, BitVectorCodec).withToString(s"bits($size)")
+  def bytes(size: Int): Codec[ByteVector] = fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes($size)")
 
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
