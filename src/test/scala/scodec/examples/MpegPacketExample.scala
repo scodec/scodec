@@ -47,7 +47,7 @@ object MpegCodecs {
   case class MpegPacket(
     header: TransportStreamHeader,
     adaptationField: Option[AdaptationField],
-    payload: Option[BitVector]
+    payload: Option[ByteVector]
   )
   implicit def mpegPacketIso = Iso.hlist(MpegPacket.apply _, MpegPacket.unapply _)
 
@@ -95,7 +95,7 @@ class MpegPacketExample extends CodecSuite {
   import MpegCodecs._
 
   test("manually roundtripping a packet") {
-    val pkt = MpegPacket(TransportStreamHeader(false, true, false, 0, 0, 1, 15), None, Some(BitVector.low(184 * 8)))
+    val pkt = MpegPacket(TransportStreamHeader(false, true, false, 0, 0, 1, 15), None, Some(BitVector.low(184 * 8).toByteVector))
     val encoded = Codec.encode(pkt)
     val decoded = Codec.decode[MpegPacket](encoded.toOption.get)
     decoded shouldBe \/-(pkt)

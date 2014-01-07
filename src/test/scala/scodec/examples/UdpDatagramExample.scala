@@ -10,7 +10,7 @@ class UdpDatagramExample extends CodecSuite {
     destinationPort: Int,
     length: Int,
     checksum: Int,
-    data: BitVector)
+    data: ByteVector)
   implicit val datagramIso = Iso.hlist(Datagram.apply _, Datagram.unapply _)
 
   object UdpCodec {
@@ -28,6 +28,6 @@ class UdpDatagramExample extends CodecSuite {
   import UdpCodec._
 
   test("roundtrip") {
-    roundtrip(Datagram(1234, 2345, 100, 0, BitVector.high(100 * 8)))
+    roundtrip(Datagram(1234, 2345, 100, 0, BitVector.high(100 * 8).toByteVector))
   }
 }

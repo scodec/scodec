@@ -62,8 +62,8 @@ object PcapCodec {
   implicit val pcapRecordIso = Iso.hlist(PcapRecord.apply _, PcapRecord.unapply _)
 
   implicit def pcapRecord(implicit ordering: ByteOrdering) = {
-    ("record_header"    | pcapRecordHeader         ) >>:~ { hdr =>
-    ("record_data"      | bytes(hdr.includedLength.toInt) ).hlist
+    ("record_header"    | pcapRecordHeader                   ) >>:~ { hdr =>
+    ("record_data"      | bits(hdr.includedLength.toInt * 8) ).hlist
   }}.as[PcapRecord]
 
   case class PcapFile(header: PcapHeader, records: IndexedSeq[PcapRecord])
