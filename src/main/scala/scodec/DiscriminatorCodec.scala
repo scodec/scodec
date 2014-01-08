@@ -8,38 +8,34 @@ import Codec.DecodingContext
 
 /**
  * Codec that supports encoding/decoding some values of type `A` by including a value discriminator in the binary encoding.
- * The binary encoding is the encoded discriminator followed by the encoded value.
+ * The binary encoding is the encoded discriminator value followed by the encoded value.
  *
  * Enconding is performed by:
- *  - determining the discriminator for the value using `discriminate`
- *  - determining the codec for the value by passing the discriminator to `codecFor`
+ *  - determining the discriminator for the value using `discriminator.discriminate`
+ *  - determining the codec for the value by passing the discriminator value to `discriminator.codec`
  *  - encoding the discriminator using the `disciminatorCodec`
  *  - encoding the value using the looked up codec
  *
  * Decoding is performed by:
  *  - decoding a discriminator value using the `discriminatorCodec`
- *  - looking up the value codec by passing the discriminator to `codecFor`
+ *  - looking up the value codec by passing the discriminator value to `discriminator.codec`
  *  - decoding the value
  */
-abstract class DiscriminatorCodec[A, B] extends Codec[A] {
-
-  protected def discriminate: PartialFunction[A, B]
-  protected def discriminatorCodec: Codec[B]
-  protected def codecFor: PartialFunction[B, Codec[_ <: A]]
+class DiscriminatorCodec[A, B](discriminator: Discriminator[A, B], discriminatorCodec: Codec[B]) extends Codec[A] {
 
   override def encode(value: A) = {
-    val discriminator = discriminate(value)
     for {
-      valueCodec <- codecFor.lift(discriminator) \/> s"No codec defined for discriminator '$discriminator' for value '$value'"
-      result <- Codec.encodeBoth(discriminatorCodec, valueCodec.asInstanceOf[Codec[A]])(discriminator, value)
+      discriminatorValue <- discriminator.discriminate(value) \/> s"No discriminator defined for value '$value'"
+      valueCodec <- discriminator.codec(discriminatorValue) \/> s"No codec defined for discriminator '$discriminator' for value '$value'"
+      result <- Codec.encodeBoth(discriminatorCodec, valueCodec)(discriminatorValue, value)
     } yield result
   }
 
   override def decode(buffer: BitVector) = {
     for {
-      discriminator <- DecodingContext(discriminatorCodec.decode)
+      discriminatorValue <- DecodingContext(discriminatorCodec.decode)
       valueCodec <- IndexedStateT.StateMonadTrans.liftM[({type λ[+α] = Error \/ α})#λ, Codec[A]](
-        codecFor.lift(discriminator).asInstanceOf[Option[Codec[A]]] \/> s"No codec defined for discriminator '$discriminator'"
+        discriminator.codec(discriminatorValue) \/> s"No codec defined for discriminator '$discriminator'"
       )
       value <- DecodingContext(valueCodec.decode)
     } yield value
@@ -48,38 +44,42 @@ abstract class DiscriminatorCodec[A, B] extends Codec[A] {
   override def toString = s"discriminated($discriminatorCodec)"
 }
 
+/** Companion for [[Discriminator]]. */
 object DiscriminatorCodec {
-  def apply[A, B](discriminatorCodec: Codec[B], discriminate: PartialFunction[A, B], codecFor: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B] = {
-    val dc = discriminatorCodec
-    val d = discriminate
-    val cf = codecFor
-    new DiscriminatorCodec[A, B] {
-      val discriminatorCodec = dc
-      val discriminate = d
-      val codecFor = cf
-    }
-  }
+  def apply[A, B](discriminatorCodec: Codec[B], discriminate: PartialFunction[A, B], codecFor: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B] =
+    new DiscriminatorCodec(Discriminator[A, B](discriminate, codecFor), discriminatorCodec)
 }
 
+/** Companion for [[DiscriminatorCodecSyntax]]. */
 object DiscriminatorCodecSyntax {
 
-  sealed trait NeedDiscriminator[A] {
-    def by[B](discriminatorCodec: Codec[B])(discriminate: PartialFunction[A, B]): NeedCodecs[A, B]
+  sealed trait NeedDiscriminatorCodec[A] {
+    def by[B](discriminatorCodec: Codec[B]): NeedDiscriminator[A, B]
   }
 
-  sealed trait NeedCodecs[A, B] {
-    def withCodecs(codecFor: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B]
+  sealed trait NeedDiscriminator[A, B] {
+    def using(discriminator: Discriminator[A, B]): DiscriminatorCodec[A, B]
+    def using(discriminate: PartialFunction[A, B], codec: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B]
   }
 }
 
-private[scodec] trait DiscriminatorCodecSyntax {
+/** Provides syntax for constructing a [[DiscriminatorCodec]] and related types. */
+private[scodec] trait DiscriminatorCodecSyntax extends TypeDiscriminatorSyntax {
   import DiscriminatorCodecSyntax._
 
-  /** Provides syntax for building a [[DiscriminatorCodec]]. */
-  final def discriminated[A]: NeedDiscriminator[A] = new NeedDiscriminator[A] {
-    final def by[B](discriminatorCodec: Codec[B])(discriminate: PartialFunction[A, B]): NeedCodecs[A, B] = new NeedCodecs[A, B] {
-      final def withCodecs(codecFor: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B] =
-        DiscriminatorCodec[A, B](discriminatorCodec, discriminate, codecFor)
+  /**
+   * Provides syntax for building a [[DiscriminatorCodec]].
+   * Usage: {{{
+   val discriminator: Discriminator[AnyVal, Int] = ???
+   val codec = discriminated[AnyVal] by uint8 using discriminator
+   }}}
+   */
+  final def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
+    final def by[B](discriminatorCodec: Codec[B]): NeedDiscriminator[A, B] = new NeedDiscriminator[A, B] {
+      final def using(discriminator: Discriminator[A, B]): DiscriminatorCodec[A, B] =
+        new DiscriminatorCodec(discriminator, discriminatorCodec)
+      final def using(discriminate: PartialFunction[A, B], codec: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B] =
+        new DiscriminatorCodec(Discriminator[A, B](discriminate, codec), discriminatorCodec)
     }
   }
 }
