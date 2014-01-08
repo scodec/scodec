@@ -122,11 +122,11 @@ This library works with Scala 2.10.*.
 
 ### Releases
 
-The latest released version is 1.0.0-SNAP6, which is a stable snapshot of 1.0.0.
+The latest released version is 1.0.0-SNAP7, which is a stable snapshot of 1.0.0.
 
 For SBT users:
 
-    libraryDependencies += "com.github.mpilquist" %% "scodec" % "1.0.0-SNAP6"
+    libraryDependencies += "com.github.mpilquist" %% "scodec" % "1.0.0-SNAP7"
 
 
 For Maven users:
@@ -135,7 +135,7 @@ For Maven users:
       <dependency>
         <groupId>com.github.mpilquist</groupId>
         <artifactId>scodec_2.10</artifactId>
-        <version>1.0.0-SNAP6</version>
+        <version>1.0.0-SNAP7</version>
       </dependency>
     </dependencies>
 
