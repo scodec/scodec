@@ -19,7 +19,12 @@ class ByteVectorTest extends FunSuite with Matchers {
     ByteVector.fromHex("DEADBEEF") should be (deadbeef.right)
     ByteVector.fromHex("de ad be ef") should be (deadbeef.right)
     ByteVector.fromHex("de\tad\nbe\tef") should be (deadbeef.right)
-    ByteVector.fromHex("garbage") should be ("Invalid octet 'ga'".left)
+    ByteVector.fromHex("garbage") should be ("Invalid octet 'ga' at position 0".left)
+    ByteVector.fromHex("deadbefg") should be ("Invalid octet 'fg' at position 6".left)
+  }
+
+  test("toBin") {
+    deadbeef.toBin shouldBe "11011110101011011011111011101111"
   }
 
   test("<<") {

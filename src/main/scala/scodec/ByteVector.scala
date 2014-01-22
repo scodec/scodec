@@ -36,11 +36,25 @@ trait ByteVector extends IndexedSeqOptimized[Byte, ByteVector] with BitwiseOpera
 
   def toBitVector: BitVector = BitVector(this)
 
+  /** Converts the contents of this byte vector to a hexadecimal string of `size * 2` nibbles.  */
   def toHex: String = {
     import ByteVector.HexChars
     val bldr = new StringBuilder
     foreach { b =>
       bldr.append(HexChars(b >> 4 & 0x0f)).append(HexChars(b & 0x0f))
+    }
+    bldr.toString
+  }
+
+  /** Converts the contents of this byte vector to a binary string of `size * 8` digits.  */
+  def toBin: String = {
+    val bldr = new StringBuilder
+    foreach { b =>
+      var n = 7
+      while (n >= 0) {
+        bldr.append(if ((0x01 & (b >> n)) != 0) "1" else "0")
+        n -= 1
+      }
     }
     bldr.toString
   }
@@ -94,9 +108,9 @@ object ByteVector {
 
   def fromHex(str: String): String \/ ByteVector = {
     val withoutPrefix = if (str startsWith "0x") str.substring(2) else str
-    withoutPrefix.replaceAll("\\s", "").sliding(2, 2).toVector.map { h =>
-      try java.lang.Integer.valueOf(h, 16).toByte.right
-      catch { case e: NumberFormatException => s"Invalid octet '$h'".left }
+    withoutPrefix.replaceAll("\\s", "").sliding(2, 2).zipWithIndex.toVector.map { case (octet, idx) =>
+      try java.lang.Integer.valueOf(octet, 16).toByte.right
+      catch { case e: NumberFormatException => s"Invalid octet '$octet' at position ${idx * 2}".left }
     }.sequenceU.map { v => ByteVector(v) }
   }
 

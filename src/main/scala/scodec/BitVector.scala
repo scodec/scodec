@@ -509,7 +509,7 @@ sealed trait BitVector {
   def xor(other: BitVector): BitVector = zipBytesWith(other)(_ ^ _)
 
   /**
-   * Converts the contents of this bit vector to a hexadecimal string of ceil(size / 4) nibbles.
+   * Converts the contents of this bit vector to a hexadecimal string of `ceil(size / 4)` nibbles.
    *
    * The last nibble is right-padded with zeros if the size is not evenly divisible by 4.
    */
@@ -521,6 +521,9 @@ sealed trait BitVector {
       case other => full
     }
   }
+
+  /** Converts the contents of this bit vector to a binary string of `size` digits.  */
+  def toBin: String = toByteVector.toBin.take(size.toInt)
 
   override def equals(other: Any): Boolean = other match {
     case o: BitVector if size == o.size => {

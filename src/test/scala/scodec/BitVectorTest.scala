@@ -274,4 +274,12 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
       else bv.toHex shouldBe bv.toByteVector.toHex.init
     }
   }
+
+  test("toBin") {
+    BitVector(0x01, 0x02, 0xff).toBin shouldBe "000000010000001011111111"
+    BitVector(0x01, 0x02, 0xff).drop(3).toBin shouldBe "000010000001011111111"
+    forAll { (bv: BitVector) =>
+      bv.toBin shouldBe bv.toByteVector.toBin.take(bv.size.toInt)
+    }
+  }
 }
