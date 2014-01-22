@@ -56,7 +56,7 @@ class ByteVectorTest extends FunSuite with Matchers {
     hex"deadbeef" shouldBe deadbeef
     val x = "bee"
     hex"dead${x}f" shouldBe deadbeef
-    evaluating { bin"deadgg" } should produce[IllegalArgumentException]
+    evaluating { hex"deadgg" } should produce[IllegalArgumentException]
   }
 
 }
