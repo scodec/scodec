@@ -311,4 +311,11 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     }
     evaluating { BitVector.fromValidBin("0x0102") } should produce[IllegalArgumentException]
   }
+
+  test("bin string interpolator") {
+    bin"0010" shouldBe BitVector(0x20).take(4)
+    val x = "10"
+    bin"00$x" shouldBe BitVector(0x20).take(4)
+    evaluating { bin"asdf" } should produce[IllegalArgumentException]
+  }
 }

@@ -51,4 +51,12 @@ class ByteVectorTest extends FunSuite with Matchers {
     ByteVector(0x55, 0x55, 0x55) >>> 1 shouldBe ByteVector(0x2a, 0xaa, 0xaa)
     ByteVector(0xaa, 0xaa, 0xaa) >>> 1 shouldBe ByteVector(0x55, 0x55, 0x55)
   }
+
+  test("hex string interpolator") {
+    hex"deadbeef" shouldBe deadbeef
+    val x = "bee"
+    hex"dead${x}f" shouldBe deadbeef
+    evaluating { bin"deadgg" } should produce[IllegalArgumentException]
+  }
+
 }
