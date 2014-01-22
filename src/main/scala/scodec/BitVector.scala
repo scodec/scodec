@@ -508,6 +508,20 @@ sealed trait BitVector {
    */
   def xor(other: BitVector): BitVector = zipBytesWith(other)(_ ^ _)
 
+  /**
+   * Converts the contents of this bit vector to a hexadecimal string of ceil(size / 4) nibbles.
+   *
+   * The last nibble is right-padded with zeros if the size is not evenly divisible by 4.
+   */
+  def toHex: String = {
+    val full = toByteVector.toHex
+    size % 8 match {
+      case 0 => full
+      case n if n <= 4 => full.init
+      case other => full
+    }
+  }
+
   override def equals(other: Any): Boolean = other match {
     case o: BitVector if size == o.size => {
       var i = 0L
@@ -543,7 +557,7 @@ sealed trait BitVector {
    * contents are shown.
    */
   override def toString =
-    if (size < 512) s"BitVector($size bits, 0x${toByteVector.toHex})"
+    if (size < 512) s"BitVector($size bits, 0x${toHex})"
     else s"BitVector($size bits, #${hashCode})"
 
   // impl details

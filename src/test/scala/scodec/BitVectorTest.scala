@@ -265,4 +265,13 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
     }
   }
 
+  test("toHex") {
+    BitVector(0x01, 0x02).toHex shouldBe "0102"
+    BitVector(0x01, 0x02).drop(4).toHex shouldBe "102"
+    BitVector(0x01, 0x02).drop(5).toHex shouldBe "204"
+    forAll { (bv: BitVector) =>
+      if (bv.size % 8 == 0 || bv.size % 8 > 4) bv.toHex shouldBe bv.toByteVector.toHex
+      else bv.toHex shouldBe bv.toByteVector.toHex.init
+    }
+  }
 }
