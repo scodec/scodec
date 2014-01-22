@@ -1,5 +1,6 @@
 package scodec
 
+import scalaz.syntax.id._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
@@ -273,6 +274,20 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
       if (bv.size % 8 == 0 || bv.size % 8 > 4) bv.toHex shouldBe bv.toByteVector.toHex
       else bv.toHex shouldBe bv.toByteVector.toHex.init
     }
+  }
+
+  test("fromHex") {
+    BitVector.fromHex("0x012") shouldBe BitVector(0x01, 0x20).take(12).right
+    BitVector.fromHex("0x01gg") shouldBe "Invalid octet 'gg' at position 2".left
+    forAll { (bv: BitVector) =>
+      val x = bv.padTo((bv.size + 3) / 4 * 4)
+      BitVector.fromValidHex(x.toHex) shouldBe x
+    }
+  }
+
+  test("fromValidHex") {
+    BitVector.fromValidHex("0x012") shouldBe BitVector(0x01, 0x20).take(12)
+    evaluating { BitVector.fromValidHex("0x01gg") } should produce[IllegalArgumentException]
   }
 
   test("toBin") {

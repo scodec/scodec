@@ -633,6 +633,16 @@ object BitVector {
     }
   }
 
+  /** Creates a bit vector from the specified hexadecimal string or returns an error message if the string is not valid hexadecimal. */
+  def fromHex(str: String): String \/ BitVector = {
+    if (str.size % 2 == 0) ByteVector.fromHex(str).map { _.toBitVector }
+    else ByteVector.fromHex(str :+ '0').map { bytes => bytes.toBitVector.take(bytes.size * 8 - 4) }
+  }
+
+  /** Creates a bit vector from the specified hexadecimal string or throws an IllegalArgumentException if the string is not valid hexadecimal. */
+  def fromValidHex(str: String): BitVector =
+    fromHex(str) valueOr { msg => throw new IllegalArgumentException(msg) }
+
   object Bytes {
     def apply(bytes: ByteVector, size: Long): Bytes = {
       val needed = bytesNeededForBits(size)
