@@ -106,6 +106,11 @@ object ByteVector {
   def low(size: Int): ByteVector = fill(size)(0)
   def high(size: Int): ByteVector = fill(size)(0xff)
 
+  /**
+   * Constructs a `ByteVector` from a hexadecimal string or returns an error message if the string is not valid hexadecimal.
+   *
+   * The string may start with a `0x` and it may contain whitespace characters.
+   */
   def fromHex(str: String): String \/ ByteVector = {
     val withoutPrefix = if (str startsWith "0x") str.substring(2) else str
     withoutPrefix.replaceAll("\\s", "").sliding(2, 2).zipWithIndex.toVector.map { case (octet, idx) =>
@@ -114,8 +119,38 @@ object ByteVector {
     }.sequenceU.map { v => ByteVector(v) }
   }
 
+  /**
+   * Constructs a `ByteVector` from a hexadecimal string or throws an IllegalArgumentException if the string is not valid hexadecimal.
+   *
+   * The string may start with a `0x` and it may contain whitespace characters.
+   */
   def fromValidHex(str: String): ByteVector =
     fromHex(str) valueOr { msg => throw new IllegalArgumentException(msg) }
+
+  /**
+   * Constructs a `ByteVector` from a binary string or returns an error message if the string is not valid binary.
+   *
+   * The string may contain whitespace characters.
+   */
+  def fromBin(str: String): String \/ ByteVector = {
+    str.replaceAll("\\s", "").sliding(8, 8).zipWithIndex.toVector.map { case (bits, idx) =>
+      try java.lang.Integer.valueOf(bits, 2).toByte.right
+      catch { case e: NumberFormatException =>
+        val (invalidBit, invalidIdx) = bits.zipWithIndex.find {
+          case (bit, idx) => bit != '0' && bit != '1'
+        }.get
+        s"Invalid bit '$invalidBit' at position ${idx * 8 + invalidIdx}".left
+      }
+    }.sequenceU.map { v => ByteVector(v) }
+  }
+
+  /**
+   * Constructs a `ByteVector` from a binary string or throws an IllegalArgumentException if the string is not valid binary.
+   *
+   * The string may contain whitespace characters.
+   */
+  def fromValidBin(str: String): ByteVector =
+    fromBin(str) valueOr { msg => throw new IllegalArgumentException(msg) }
 
   implicit val monoidInstance: Monoid[ByteVector] = new Monoid[ByteVector] {
     override def zero: ByteVector = ByteVector.empty

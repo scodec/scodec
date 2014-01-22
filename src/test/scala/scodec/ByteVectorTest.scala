@@ -13,18 +13,29 @@ class ByteVectorTest extends FunSuite with Matchers {
   }
 
   test("fromHex") {
-    ByteVector.fromHex("0xdeadbeef") should be (deadbeef.right)
-    ByteVector.fromHex("0xDEADBEEF") should be (deadbeef.right)
-    ByteVector.fromHex("deadbeef") should be (deadbeef.right)
-    ByteVector.fromHex("DEADBEEF") should be (deadbeef.right)
-    ByteVector.fromHex("de ad be ef") should be (deadbeef.right)
-    ByteVector.fromHex("de\tad\nbe\tef") should be (deadbeef.right)
-    ByteVector.fromHex("garbage") should be ("Invalid octet 'ga' at position 0".left)
-    ByteVector.fromHex("deadbefg") should be ("Invalid octet 'fg' at position 6".left)
+    ByteVector.fromHex("0xdeadbeef") shouldBe deadbeef.right
+    ByteVector.fromHex("0xDEADBEEF") shouldBe deadbeef.right
+    ByteVector.fromHex("deadbeef") shouldBe deadbeef.right
+    ByteVector.fromHex("DEADBEEF") shouldBe deadbeef.right
+    ByteVector.fromHex("de ad be ef") shouldBe deadbeef.right
+    ByteVector.fromHex("de\tad\nbe\tef") shouldBe deadbeef.right
+    ByteVector.fromHex("garbage") shouldBe "Invalid octet 'ga' at position 0".left
+    ByteVector.fromHex("deadbefg") shouldBe "Invalid octet 'fg' at position 6".left
   }
 
   test("toBin") {
     deadbeef.toBin shouldBe "11011110101011011011111011101111"
+  }
+
+  test("fromBin") {
+    ByteVector.fromBin(deadbeef.toBin) shouldBe deadbeef.right
+    ByteVector.fromBin(deadbeef.toBin.grouped(4).mkString(" ")) shouldBe deadbeef.right
+    ByteVector.fromBin("1101a000") shouldBe "Invalid bit 'a' at position 4".left
+  }
+
+  test("fromValidBin") {
+    ByteVector.fromValidBin(deadbeef.toBin) shouldBe deadbeef
+    evaluating { ByteVector.fromValidBin("1101a000") } should produce[IllegalArgumentException]
   }
 
   test("<<") {

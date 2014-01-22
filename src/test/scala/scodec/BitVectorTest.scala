@@ -297,4 +297,18 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
       bv.toBin shouldBe bv.toByteVector.toBin.take(bv.size.toInt)
     }
   }
+
+  test("fromBin") {
+    forAll { (bv: BitVector) =>
+      BitVector.fromBin(bv.toBin) shouldBe bv.right
+    }
+    BitVector.fromBin("0102") shouldBe "Invalid bit '2' at position 3".left
+  }
+
+  test("fromValidBin") {
+    forAll { (bv: BitVector) =>
+      BitVector.fromValidBin(bv.toBin) shouldBe bv
+    }
+    evaluating { BitVector.fromValidBin("0x0102") } should produce[IllegalArgumentException]
+  }
 }

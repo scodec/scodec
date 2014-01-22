@@ -643,6 +643,17 @@ object BitVector {
   def fromValidHex(str: String): BitVector =
     fromHex(str) valueOr { msg => throw new IllegalArgumentException(msg) }
 
+  /** Creates a bit vector from the specified binary string or returns an error message if the string is not valid binary. */
+  def fromBin(str: String): String \/ BitVector = {
+    if (str.size % 8 == 0) ByteVector.fromBin(str).map { _.toBitVector }
+    else ByteVector.fromBin(str ++ ("0" * (8 - (str.size % 8)))).map { bytes => bytes.toBitVector.take(str.size) }
+  }
+
+  /** Creates a bit vector from the specified binary string or throws an IllegalArgumentException if the string is not valid binary. */
+  def fromValidBin(str: String): BitVector =
+    fromBin(str) valueOr { msg => throw new IllegalArgumentException(msg) }
+
+
   object Bytes {
     def apply(bytes: ByteVector, size: Long): Bytes = {
       val needed = bytesNeededForBits(size)
