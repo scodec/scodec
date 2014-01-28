@@ -48,6 +48,17 @@ sealed trait BitVector {
    */
   def size: Long
 
+  /**
+   * Returns `true` if the size of this `BitVector` is less than `n`. Unlike `size`, this
+   * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
+   */
+  def sizeLessThan(n: Long): Boolean = this match {
+    case Append(l, r) => if (l.size < n) true else r.sizeLessThan(n - l.size)
+    case s@Suspend(_) => s.underlying.sizeLessThan(n)
+    case Drop(b, m) => b.sizeLessThan(m+n) // b.drop(m).size < n == (b.size - m) < n == b.size < m+n
+    case _ => this.size < n
+  }
+
   // derived functions
 
   /**
@@ -191,7 +202,8 @@ sealed trait BitVector {
       (node match {
         case Append(l,r) => go(l, cur+1) || go(r, cur+1)
         case Drop(u,n) => go(u, cur+1)
-        case Bytes(b,n) => false
+        case Bytes_(b,n) => false
+        case s@Suspend(_) => go(s.underlying, cur+1)
       })
     go(this, 0)
   }
@@ -207,14 +219,15 @@ sealed trait BitVector {
     if (n >= size) BitVector.empty
     else if (n <= 0) this
     else this match {
-      case Bytes(bytes, m) =>
+      case Bytes_(bytes, m) =>
         if (n % 8 == 0) Bytes(bytes.drop((n/8).toInt), m-n)
-        else Drop(this.asInstanceOf[Bytes], n)
+        else Drop(this.asInstanceOf[Bytes_], n)
       case Append(l,r) =>
         if (l.size <= n) r.drop(n - l.size)
         else l.drop(n) ++ r
       case Drop(bytes, m) =>
         bytes.drop(m + n)
+      case s@Suspend(_) => s.underlying.drop(n)
     }
 
   /**
@@ -240,11 +253,12 @@ sealed trait BitVector {
    *
    * @group collection
    */
-  def compact: Bytes = {
+  def compact: Bytes_ = {
     if (bytesNeededForBits(size) > Int.MaxValue)
       throw new IllegalArgumentException(s"cannot compact bit vector of size ${size.toDouble / 8 / 1e9} GB")
-    def go(b: BitVector): Bytes = b match {
-      case Bytes(x,n) => Bytes(x,n)
+    def go(b: BitVector): Bytes_ = b match {
+      case s@Suspend(_) => go(s.underlying)
+      case Bytes_(x,n) => Bytes_(x,n)
       case Append(l,r) => l.compact.combine(r.compact)
       case Drop(b, from) =>
         val low = from max 0
@@ -268,6 +282,14 @@ sealed trait BitVector {
         }
     }
     go(this)
+  }
+
+  /** Forces any `Suspend` nodes in this `BitVector`. */
+  def force: BitVector = this match {
+    case Bytes_(x,n) => Bytes_(x,n)
+    case Append(l,r) => Append(l.force, r.force)
+    case Drop(b, from) => Drop(b.force.compact, from)
+    case s@Suspend(_) => s.underlying.force
   }
 
   /**
@@ -410,10 +432,11 @@ sealed trait BitVector {
    */
   def take(n0: Long): BitVector = {
     val n = n0 max 0
-    if (n >= size) this
+    if (n >= size) this // todo - make this lazier
     else if (n == 0) BitVector.empty
     else this match {
-      case Bytes(underlying, m) =>
+      case s@Suspend(_) => s.underlying.take(n0)
+      case Bytes_(underlying, m) =>
         // eagerly trim from underlying here
         val m2 = n min m
         val underlyingN = bytesNeededForBits(m2).toInt
@@ -572,9 +595,10 @@ sealed trait BitVector {
     throw new NoSuchElementException(s"invalid index: $n of $size")
 
   private def mapBytes(f: ByteVector => ByteVector): BitVector = this match {
-    case Bytes(bytes, n) => Bytes(f(bytes), n)
+    case Bytes_(bytes, n) => Bytes(f(bytes), n)
     case Append(l,r) => Append(l.mapBytes(f), r.mapBytes(f))
     case Drop(b,n) => Drop(b.mapBytes(f).compact, n)
+    case s@Suspend(_) => Suspend(() => s.underlying.mapBytes(f))
   }
 
   /**
@@ -584,17 +608,18 @@ sealed trait BitVector {
     case Append(l,r) => prefix + "append\n" +
                         l.internalPretty(prefix + "  ") + "\n" +
                         r.internalPretty(prefix + "  ")
-    case Bytes(b, n) =>
+    case Bytes_(b, n) =>
       if (n > 16) prefix + s"bits $n #:${b.hashCode}"
       else        prefix + s"bits $n 0x${b.toHex}"
     case Drop(u, n) => prefix + s"drop ${n}\n" +
                        u.internalPretty(prefix + "  ")
+    case s@Suspend(_) => s.underlying.internalPretty(prefix)
   }
 
   private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector = {
     // todo: this has a much more efficient recursive algorithm -
     // only need to compact close to leaves of the tree
-    Bytes(this.compact.bytes.zipWithI(other.compact.bytes)(op), this.size min other.size)
+    Bytes_(this.compact.bytes.zipWithI(other.compact.bytes)(op), this.size min other.size)
   }
 
 }
@@ -655,20 +680,20 @@ object BitVector {
 
 
   object Bytes {
-    def apply(bytes: ByteVector, size: Long): Bytes = {
+    def apply(bytes: ByteVector, size: Long): Bytes_ = {
       val needed = bytesNeededForBits(size)
       require(needed <= bytes.size)
       val b = if (bytes.size > needed) bytes.take(needed.toInt) else bytes
       // new Bytes(clearUnneededBits(size, b), size)
-      new Bytes(b, size)
+      Bytes_(b, size)
     }
 
-    def unapply(b: BitVector): Option[(ByteVector, Long)] = b match {
-      case bs: Bytes => Some((bs.bytes, bs.size))
-      case _ => None
-    }
+    //def unapply(b: BitVector): Option[(ByteVector, Long)] = b match {
+    //  case bs: Bytes => Some((bs.bytes, bs.size))
+    //  case _ => None
+    //}
   }
-  private[scodec] class Bytes(val bytes: ByteVector, val size: Long) extends BitVector {
+  private[scodec] case class Bytes_(val bytes: ByteVector, val size: Long) extends BitVector {
     private val invalidBits = 8 - validBitsInLastByte(size)
     def get(n: Long): Boolean = {
       checkBounds(n)
@@ -682,9 +707,9 @@ object BitVector {
           outOfBounds(n)
         }
       )
-      Bytes(b2, size)
+      Bytes_(b2, size)
     }
-    def combine(other: Bytes): Bytes = {
+    def combine(other: Bytes_): Bytes_ = {
       val otherBytes = other.bytes
       if (isEmpty) {
         other
@@ -705,7 +730,7 @@ object BitVector {
     }
   }
 
-  private[scodec] case class Drop(underlying: Bytes, m: Long) extends BitVector {
+  private[scodec] case class Drop(underlying: Bytes_, m: Long) extends BitVector {
     val size = underlying.size - m
     def get(n: Long): Boolean =
       underlying.get(m + n)
@@ -713,13 +738,19 @@ object BitVector {
       Drop(underlying.updated(m + n, high).compact, m)
   }
   private[scodec] case class Append(left: BitVector, right: BitVector) extends BitVector {
-    val size = left.size + right.size
+    lazy val size = left.size + right.size
     def get(n: Long): Boolean =
       if (n < left.size) left.get(n)
       else right.get(n - left.size)
     def updated(n: Long, high: Boolean): BitVector =
       if (n < left.size) Append(left.updated(n, high), right)
       else Append(left, right.updated(n - left.size, high))
+  }
+  private[scodec] case class Suspend(thunk: () => BitVector) extends BitVector {
+    lazy val underlying = thunk()
+    def get(n: Long): Boolean = underlying.get(n)
+    def updated(n: Long, high: Boolean): BitVector = underlying.updated(n, high)
+    def size = underlying.size
   }
 
   implicit val monoidInstance: scalaz.Monoid[BitVector] = new scalaz.Monoid[BitVector] {
