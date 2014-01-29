@@ -49,13 +49,24 @@ sealed trait BitVector {
   def size: Long
 
   /**
+   * Returns `true` if the size of this `BitVector` is greater than `n`. Unlike `size`, this
+   * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
+   */
+  def sizeGreaterThan(n: Long): Boolean = this match {
+    case Append(l, r) => if (l.size > n) true else r.sizeGreaterThan(n - l.size)
+    case s@Suspend(_) => s.underlying.sizeGreaterThan(n)
+    case Drop(b, m) => b.sizeGreaterThan(m+n)
+    case _ => this.size > n
+  }
+
+  /**
    * Returns `true` if the size of this `BitVector` is less than `n`. Unlike `size`, this
    * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
    */
   def sizeLessThan(n: Long): Boolean = this match {
-    case Append(l, r) => if (l.size < n) true else r.sizeLessThan(n - l.size)
+    case Append(l, r) => if (l.size >= n) false else r.sizeLessThan(n - l.size)
     case s@Suspend(_) => s.underlying.sizeLessThan(n)
-    case Drop(b, m) => b.sizeLessThan(m+n) // b.drop(m).size < n == (b.size - m) < n == b.size < m+n
+    case Drop(b, m) => b.sizeLessThan(m+n)
     case _ => this.size < n
   }
 
@@ -215,20 +226,22 @@ sealed trait BitVector {
    *
    * @group collection
    */
-  def drop(n: Long): BitVector =
-    if (n >= size) BitVector.empty
-    else if (n <= 0) this
+  def drop(n0: Long): BitVector = {
+    val n = n0 max 0
+    if (n <= 0) this
+    else if (sizeLessThan(n+1)) BitVector.empty
     else this match {
       case Bytes_(bytes, m) =>
         if (n % 8 == 0) Bytes(bytes.drop((n/8).toInt), m-n)
         else Drop(this.asInstanceOf[Bytes_], n)
       case Append(l,r) =>
         if (l.size <= n) r.drop(n - l.size)
-        else l.drop(n) ++ r
+        else Append(l.drop(n), r)
       case Drop(bytes, m) =>
         bytes.drop(m + n)
       case s@Suspend(_) => s.underlying.drop(n)
     }
+  }
 
   /**
    * Returns a vector whose contents are the results of skipping the last `n` bits of this vector.
@@ -432,8 +445,8 @@ sealed trait BitVector {
    */
   def take(n0: Long): BitVector = {
     val n = n0 max 0
-    if (n >= size) this // todo - make this lazier
-    else if (n == 0) BitVector.empty
+    if (n == 0) BitVector.empty
+    else if (sizeLessThan(n+1)) this
     else this match {
       case s@Suspend(_) => s.underlying.take(n0)
       case Bytes_(underlying, m) =>
@@ -443,8 +456,8 @@ sealed trait BitVector {
         Bytes(underlying.take(underlyingN), m2)
       case Drop(underlying, m) => underlying.take(m + n).drop(m)
       case Append(l, r) =>
-        if (n <= l.size) l.take(n)
-        else l ++ r.take(n-l.size)
+        if (l.size >= n) l.take(n)
+        else Append(l, r.take(n-l.size))
     }
   }
 
@@ -731,7 +744,7 @@ object BitVector {
   }
 
   private[scodec] case class Drop(underlying: Bytes_, m: Long) extends BitVector {
-    val size = underlying.size - m
+    val size = (underlying.size - m) max 0
     def get(n: Long): Boolean =
       underlying.get(m + n)
     def updated(n: Long, high: Boolean): BitVector =
