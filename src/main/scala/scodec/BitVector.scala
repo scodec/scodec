@@ -297,10 +297,10 @@ sealed trait BitVector {
     go(this)
   }
 
-  /** Forces any `Suspend` nodes in this `BitVector`. */
+  /** Forces any `Suspend` nodes in this `BitVector` and ensures the tree is balanced. */
   def force: BitVector = this match {
     case Bytes_(x,n) => Bytes_(x,n)
-    case Append(l,r) => Append(l.force, r.force)
+    case Append(l,r) => l.force ++ r.force
     case Drop(b, from) => Drop(b.force.compact, from)
     case s@Suspend(_) => s.underlying.force
   }
@@ -691,6 +691,20 @@ object BitVector {
   def fromValidBin(str: String): BitVector =
     fromBin(str) valueOr { msg => throw new IllegalArgumentException(msg) }
 
+  /**
+   * Create a lazy `BitVector` by repeatedly extracting chunks from `S`.
+   * The returned `BitVector` will have the structure of a fully lazy
+   * right-associated cons list. Thus, `get`, `take`, and `drop` will
+   * be efficient when operating on the head of the list, but accessing
+   * later indices (for `takeRight`, say, or `get(size-1)` will require
+   * forcing the stream up to that point.
+   *
+   * Use `force` if you wish to convert the result to an in-memory strict
+   * `BitVector` backed by a balanced tree.
+   */
+  def unfold[S](s: S)(f: S => Option[(BitVector, S)]): BitVector =
+    Suspend { () => f(s).map { case (h,t) => Append(h, unfold(t)(f)) }
+                        .getOrElse { BitVector.empty } }
 
   object Bytes {
     def apply(bytes: ByteVector, size: Long): Bytes_ = {
