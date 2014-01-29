@@ -706,6 +706,30 @@ object BitVector {
     Suspend { () => f(s).map { case (h,t) => Append(h, unfold(t)(f)) }
                         .getOrElse { BitVector.empty } }
 
+  /**
+   * Produce a lazy `BitVector` from the given `InputStream`, using `chunkSizeInBytes`
+   * to control the number of bytes read in each chunk (defaulting to 4MB).
+   * This simply calls [[scodec.BitVector.unfold]] with a function to extract a series
+   * of flat byte arrays from the `InputStream`.
+   *
+   * This function does not handle closing the `InputStream` and has all the usual
+   * drawbacks of lazy I/O - `I/O` exceptions may be raised unexpectedly in pure code as
+   * chunks are forced, and it must memoize the results to prevent the underlying side
+   * effects from being observed. Streaming applications should take care to ensure
+   * that the head of the stream is not left on the stack, as this will cause the entire
+   * stream to be retained in memory.
+   *
+   * @param chunkSizeInBytes the number of bytes to read in each chunk
+   */
+  def fromInputStream(in: java.io.InputStream, chunkSizeInBytes: Int = 4096000): BitVector =
+    unfold(in) { in =>
+      val buf = new Array[Byte](chunkSizeInBytes)
+      val nRead = in.read(buf)
+      if (nRead == chunkSizeInBytes) Some((BitVector(buf), in))
+      else if (nRead == -1) None
+      else Some((BitVector(buf.take(nRead): Array[Byte]), in))
+    }
+
   object Bytes {
     def apply(bytes: ByteVector, size: Long): Bytes_ = {
       val needed = bytesNeededForBits(size)
