@@ -751,6 +751,15 @@ object BitVector {
       else Some((BitVector(ByteVector.view(ind => buf.get(ind), nRead)), in))
     }
 
+  /**
+   * Produce a lazy `BitVector` from the given `FileChannel`, using `chunkSizeInBytes`
+   * to control the number of bytes read in each chunk (defaulting to 16MB). Unlike
+   * [[scodec.BitVector.fromChannel]], this memory-maps chunks in, rather than copying
+   * them explicitly.
+   */
+  def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 16): BitVector =
+    ???
+
   /** Smart constructor for `Bytes`. */
   private[scodec] def bytes(bs: ByteVector, size: Long): Bytes = {
     val needed = bytesNeededForBits(size)
