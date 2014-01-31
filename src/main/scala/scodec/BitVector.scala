@@ -632,7 +632,7 @@ sealed trait BitVector {
   private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector = {
     // todo: this has a much more efficient recursive algorithm -
     // only need to compact close to leaves of the tree
-    Bytes(this.compact.underlying.zipWithI(other.compact.underlying)(op), this.size min other.size)
+    bytes(this.compact.underlying.zipWithI(other.compact.underlying)(op), this.size min other.size)
   }
 
 }
