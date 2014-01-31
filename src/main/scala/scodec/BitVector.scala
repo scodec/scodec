@@ -271,7 +271,7 @@ sealed trait BitVector {
       throw new IllegalArgumentException(s"cannot compact bit vector of size ${size.toDouble / 8 / 1e9} GB")
     def go(b: BitVector): Bytes = b match {
       case s@Suspend(_) => go(s.underlying)
-      case Bytes(x,n) => Bytes(x,n)
+      case b@Bytes(_,_) => b
       case Append(l,r) => l.compact.combine(r.compact)
       case Drop(b, from) =>
         val low = from max 0
@@ -299,7 +299,7 @@ sealed trait BitVector {
 
   /** Forces any `Suspend` nodes in this `BitVector` and ensures the tree is balanced. */
   def force: BitVector = this match {
-    case Bytes(x,n) => Bytes(x,n)
+    case b@Bytes(_,_) => b
     case Append(l,r) => l.force ++ r.force
     case Drop(b, from) => Drop(b.force.compact, from)
     case s@Suspend(_) => s.underlying.force
