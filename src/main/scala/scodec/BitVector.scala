@@ -660,6 +660,12 @@ object BitVector {
   def apply(bs: Array[Byte]): BitVector = bytes(ByteVector(bs), bs.size.toLong * 8)
   def apply[A: Integral](bytes: A*): BitVector = apply(ByteVector(bytes: _*))
 
+  /** Like `apply`, but no copy of the underlying `ByteBuffer` is made. */
+  def view(buffer: ByteBuffer): BitVector = bytes(ByteVector.view(buffer), buffer.limit.toLong * 8)
+
+  /** Like `apply`, but no copy of the underlying array is made. */
+  def view(bs: Array[Byte]): BitVector = bytes(ByteVector.view(bs), bs.size.toLong * 8)
+
   def fill(n: Long)(high: Boolean): BitVector = {
     val needed = bytesNeededForBits(n)
     if (needed < Int.MaxValue) {
@@ -728,6 +734,21 @@ object BitVector {
       if (nRead == chunkSizeInBytes) Some((BitVector(buf), in))
       else if (nRead == -1) None
       else Some((BitVector(buf.take(nRead): Array[Byte]), in))
+    }
+
+  /**
+   * Produce a lazy `BitVector` from the given `ReadableByteChannel`, using `chunkSizeInBytes`
+   * to control the number of bytes read in each chunk (defaulting to 4MB). This function
+   * does lazy I/O, see [[scodec.BitVector.fromInputStream]] for caveats.
+   */
+  def fromChannel(in: java.nio.channels.ReadableByteChannel, chunkSizeInBytes: Int = 4096000): BitVector =
+    unfold(in) { in =>
+      val buf = java.nio.ByteBuffer.allocate(chunkSizeInBytes)
+      val nRead = in.read(buf)
+      buf.flip
+      if (nRead == chunkSizeInBytes) Some((BitVector.view(buf), in))
+      else if (nRead == -1) None
+      else Some((BitVector(ByteVector.view(ind => buf.get(ind), nRead)), in))
     }
 
   /** Smart constructor for `Bytes`. */

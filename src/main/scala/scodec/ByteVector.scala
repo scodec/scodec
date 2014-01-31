@@ -98,6 +98,28 @@ object ByteVector {
     apply(arr)
   }
 
+  /**
+   * Create a `ByteVector` from an `Array[Byte]`. Unlike `apply`, this
+   * does not make a copy of the input array, so callers should take care
+   * not to modify the contents of the array passed to this function.
+   */
+  def view(bytes: Array[Byte]): ByteVector =
+    new SliceByteVector(ind => bytes(ind), 0, bytes.size)
+
+  /**
+   * Create a `ByteVector` from a `ByteBuffer`. Unlike `apply`, this
+   * does not make a copy of the input buffer, so callers should take care
+   * not to modify the contents of the buffer passed to this function.
+   */
+  def view(bytes: ByteBuffer): ByteVector =
+    new SliceByteVector(ind => bytes.get(ind), 0, bytes.limit)
+
+  /**
+   * Create a `ByteVector` from a function from `Int => Byte` and a size.
+   */
+  def view(at: Int => Byte, size: Int): ByteVector =
+    new SliceByteVector(at, 0, size)
+
   def fill[A: Integral](size: Int)(b: A): ByteVector = {
     val integral = implicitly[Integral[A]]
     StandardByteVector(Vector.fill[Byte](size)(integral.toInt(b).toByte))
