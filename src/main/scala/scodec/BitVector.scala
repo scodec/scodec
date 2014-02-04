@@ -305,6 +305,20 @@ sealed trait BitVector {
     case s@Suspend(_) => s.underlying.force
   }
 
+  /** Replace any `Suspend` nodes with the given `BitVector`. */
+  def replaceSuspended(bits: BitVector): BitVector = this match {
+    case b@Bytes(_,_) => b
+    case Append(l,r) => l.replaceSuspended(bits) ++ r.replaceSuspended(bits)
+    case Drop(b, from) => Drop(b.replaceSuspended(bits).compact, from)
+    case s@Suspend(_) => bits
+  }
+
+  /**
+   * Replace any `Suspend` nodes with the empty `BitVector`. Used to 'close'
+   * a lazy I/O backed `BitVector`.
+   */
+  def trimSuspended: BitVector = replaceSuspended(BitVector.empty)
+
   /**
    * Returns the first bit in this vector.
    *
@@ -756,9 +770,19 @@ object BitVector {
    * to control the number of bytes read in each chunk (defaulting to 16MB). Unlike
    * [[scodec.BitVector.fromChannel]], this memory-maps chunks in, rather than copying
    * them explicitly.
+   *
+   * Behavior is unspecified if this function is used concurrently with the underlying
+   * file being written.
    */
   def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 16): BitVector =
-    ???
+    unfold(in -> 0L) { case (in,pos) =>
+      if (pos == in.size) None
+      else {
+        val bytesToRead = (in.size - pos) min chunkSizeInBytes.toLong
+        val buf = in.map(java.nio.channels.FileChannel.MapMode.READ_ONLY, pos, bytesToRead)
+        Some((BitVector.view(buf), (in -> (pos + bytesToRead))))
+      }
+    }
 
   /** Smart constructor for `Bytes`. */
   private[scodec] def bytes(bs: ByteVector, size: Long): Bytes = {
