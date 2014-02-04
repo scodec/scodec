@@ -66,7 +66,7 @@ sealed trait BitVector {
   def sizeLessThan(n: Long): Boolean = this match {
     case Append(l, r) => if (l.size >= n) false else r.sizeLessThan(n - l.size)
     case s@Suspend(_) => s.underlying.sizeLessThan(n)
-    case Drop(b, m) => b.sizeLessThan(m+n)
+    case Drop(b, m) => (b.size - m).max(0L) < n
     case _ => this.size < n
   }
 
@@ -332,7 +332,7 @@ sealed trait BitVector {
    *
    * @group collection
    */
-  final def isEmpty = size == 0L
+  final def isEmpty = sizeLessThan(1)
 
   /**
    * Returns the number of bits in this vector, or `None` if the size does not
@@ -741,7 +741,7 @@ object BitVector {
    *
    * @param chunkSizeInBytes the number of bytes to read in each chunk
    */
-  def fromInputStream(in: java.io.InputStream, chunkSizeInBytes: Int = 4096000): BitVector =
+  def fromInputStream(in: java.io.InputStream, chunkSizeInBytes: Int = 4096 * 2): BitVector =
     unfold(in) { in =>
       val buf = new Array[Byte](chunkSizeInBytes)
       val nRead = in.read(buf)
@@ -752,10 +752,12 @@ object BitVector {
 
   /**
    * Produce a lazy `BitVector` from the given `ReadableByteChannel`, using `chunkSizeInBytes`
-   * to control the number of bytes read in each chunk (defaulting to 4MB). This function
+   * to control the number of bytes read in each chunk (defaulting to 4k). This function
    * does lazy I/O, see [[scodec.BitVector.fromInputStream]] for caveats.
+   *
+   * @param chunkSizeInBytes the number of bytes to read in each chunk
    */
-  def fromChannel(in: java.nio.channels.ReadableByteChannel, chunkSizeInBytes: Int = 4096000): BitVector =
+  def fromChannel(in: java.nio.channels.ReadableByteChannel, chunkSizeInBytes: Int = 4096 * 2): BitVector =
     unfold(in) { in =>
       val buf = java.nio.ByteBuffer.allocate(chunkSizeInBytes)
       val nRead = in.read(buf)
@@ -767,14 +769,16 @@ object BitVector {
 
   /**
    * Produce a lazy `BitVector` from the given `FileChannel`, using `chunkSizeInBytes`
-   * to control the number of bytes read in each chunk (defaulting to 16MB). Unlike
+   * to control the number of bytes read in each chunk (defaulting to 4MB). Unlike
    * [[scodec.BitVector.fromChannel]], this memory-maps chunks in, rather than copying
    * them explicitly.
    *
    * Behavior is unspecified if this function is used concurrently with the underlying
    * file being written.
+   *
+   * @param chunkSizeInBytes the number of bytes to read in each chunk
    */
-  def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 16): BitVector =
+  def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 4): BitVector =
     unfold(in -> 0L) { case (in,pos) =>
       if (pos == in.size) None
       else {
