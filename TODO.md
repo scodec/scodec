@@ -1,7 +1,6 @@
 Before 1.0
 ============
  - Better ScalaDoc
- - Implement a choice codec
 
 Future Improvements
 ===================
