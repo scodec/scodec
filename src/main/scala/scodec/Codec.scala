@@ -52,7 +52,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   /** Gets the implicitly available codec for type `A`. */
   def apply[A: Codec]: Codec[A] = implicitly[Codec[A]]
 
-    /** Maps a `Codec[A]` in to a `Codec[B]`. */
+  /** Maps a `Codec[A]` in to a `Codec[B]`. */
   def xmap[A, B](codec: Codec[A])(f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B): Error \/ BitVector = codec.encode(g(b))
     def decode(buffer: BitVector): Error \/ (BitVector, B) = codec.decode(buffer).map { case (rest, a) => (rest, f(a)) }
@@ -63,11 +63,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
 
   def dropRight[A, B: Monoid](codecA: Codec[A], codecB: Codec[B]): Codec[A] =
     xmap[(A, B), A](new TupleCodec(codecA, codecB))({ case (a, b) => a }, a => (a, Monoid[B].zero))
-
-    def decodeBoth[A, B](codecA: Codec[A], codecB: Codec[B])(buffer: BitVector): Error \/ (BitVector, (A, B)) = (for {
-    a <- DecodingContext(codecA.decode)
-    b <- DecodingContext(codecB.decode)
-  } yield (a, b)).run(buffer)
 
   def flatZip[A, B](codecA: Codec[A])(f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)] {
     override def encode(t: (A, B)) = encodeBoth(codecA, f(t._1))(t._1, t._2)

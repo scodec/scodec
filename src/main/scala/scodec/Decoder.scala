@@ -28,10 +28,16 @@ trait Decoder[+A] { self =>
 trait DecoderFunctions {
 
   /** Decodes the specified bit vector using the specified codec and discards the remaining bits. */
-  def decode[A](dec: Decoder[A], bits: BitVector): Error \/ A = dec.decode(bits) map { case (_, value) => value }
+  final def decode[A](dec: Decoder[A], bits: BitVector): Error \/ A = dec.decode(bits) map { case (_, value) => value }
 
   /** Decodes the specified bit vector in to a value of type `A` using an implicitly available codec and discards the remaining bits. */
-  def decode[A: Decoder](bits: BitVector): Error \/ A = decode(Decoder[A], bits)
+  final def decode[A: Decoder](bits: BitVector): Error \/ A = decode(Decoder[A], bits)
+
+  /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`. */
+  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): Error \/ (BitVector, (A, B)) = (for {
+    a <- DecodingContext(decA.decode)
+    b <- DecodingContext(decB.decode)
+  } yield (a, b)).run(buffer)
 
   /**
    * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type `B` using the `Monoid[B]`.
@@ -39,7 +45,7 @@ trait DecoderFunctions {
    *
    * @return tuple consisting of the terminating error if any and the accumulated value
    */
-  def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[Error], B) = {
+  final def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[Error], B) = {
     val decoder = Decoder[A]
     var remaining = buffer
     var acc = Monoid[B].zero
