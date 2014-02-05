@@ -305,20 +305,6 @@ sealed trait BitVector {
     case s@Suspend(_) => s.underlying.force
   }
 
-  /** Replace any `Suspend` nodes with the given `BitVector`. */
-  def replaceSuspended(bits: BitVector): BitVector = this match {
-    case b@Bytes(_,_) => b
-    case Append(l,r) => l.replaceSuspended(bits) ++ r.replaceSuspended(bits)
-    case Drop(b, from) => Drop(b.replaceSuspended(bits).compact, from)
-    case s@Suspend(_) => bits
-  }
-
-  /**
-   * Replace any `Suspend` nodes with the empty `BitVector`. Used to 'close'
-   * a lazy I/O backed `BitVector`.
-   */
-  def trimSuspended: BitVector = replaceSuspended(BitVector.empty)
-
   /**
    * Returns the first bit in this vector.
    *
