@@ -1,8 +1,11 @@
+import scalaz.{ \/, StateT }
+
 package object scodec {
 
   type Error = String
 
-  // TODO implement bin/hex with macros that enforce format of parts.
+  /** Alias for state/either transformer that simplifies calling decode on a series of codecs, wiring the remaining bit vector of each in to the next entry. */
+  type DecodingContext[+A] = StateT[({type λ[+a] = Error \/ a})#λ, BitVector, A]
 
   /**
    * Provides the `bin` string interpolator, which returns `BitVector` instances from binary strings.

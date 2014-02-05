@@ -17,8 +17,8 @@ object HListCodec {
   def prepend[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
     override def encode(xs: A :: L) = Codec.encodeBoth(a, l)(xs.head, xs.tail)
     override def decode(buffer: BitVector) = (for {
-      decA <- Codec.DecodingContext(a.decode)
-      decL <- Codec.DecodingContext(l.decode)
+      decA <- DecodingContext(a.decode)
+      decL <- DecodingContext(l.decode)
     } yield decA :: decL).run(buffer)
     override def toString = s"$a :: $l"
   }
@@ -34,8 +34,8 @@ object HListCodec {
   ): Codec[LA] = new Codec[LA] {
     override def encode(xs: LA) = Codec.encodeBoth(l, a)(xs.init, xs.last)
     override def decode(buffer: BitVector) = (for {
-      decL <- Codec.DecodingContext(l.decode)
-      decA <- Codec.DecodingContext(a.decode)
+      decL <- DecodingContext(l.decode)
+      decA <- DecodingContext(a.decode)
     } yield decL :+ decA).run(buffer)
     override def toString = s"append($l, $a)"
   }
@@ -50,8 +50,8 @@ object HListCodec {
       Codec.encodeBoth(ck, cl)(k, l)
     }
     override def decode(buffer: BitVector) = (for {
-      decK <- Codec.DecodingContext(ck.decode)
-      decL <- Codec.DecodingContext(cl.decode)
+      decK <- DecodingContext(ck.decode)
+      decL <- DecodingContext(cl.decode)
     } yield decK ::: decL).run(buffer)
     override def toString = s"concat($ck, $cl)"
   }
@@ -99,8 +99,8 @@ private[scodec] trait HListCodecSyntax {
     def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
       override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
       override def decode(buffer: BitVector) = (for {
-        a <- Codec.DecodingContext(codecA.decode)
-        l <- Codec.DecodingContext(f(a).decode)
+        a <- DecodingContext(codecA.decode)
+        l <- DecodingContext(f(a).decode)
       } yield a :: l).run(buffer)
       override def toString = s"flatPrepend($codecA, $f)"
     }

@@ -2,8 +2,6 @@ package scodec
 
 import scalaz.Monoid
 
-import Codec.DecodingContext
-
 
 class TupleCodec[A, B](codecA: Codec[A], codecB: Codec[B]) extends Codec[(A, B)] {
 
