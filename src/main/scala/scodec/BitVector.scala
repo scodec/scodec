@@ -51,6 +51,8 @@ sealed trait BitVector {
   /**
    * Returns `true` if the size of this `BitVector` is greater than `n`. Unlike `size`, this
    * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
+   *
+   * @group collection
    */
   def sizeGreaterThan(n: Long): Boolean = this match {
     case Append(l, r) => if (l.size > n) true else r.sizeGreaterThan(n - l.size)
@@ -62,6 +64,8 @@ sealed trait BitVector {
   /**
    * Returns `true` if the size of this `BitVector` is less than `n`. Unlike `size`, this
    * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
+   *
+   * @group collection
    */
   def sizeLessThan(n: Long): Boolean = this match {
     case Append(l, r) => if (l.size >= n) false else r.sizeLessThan(n - l.size)
@@ -297,7 +301,11 @@ sealed trait BitVector {
     go(this)
   }
 
-  /** Forces any `Suspend` nodes in this `BitVector` and ensures the tree is balanced. */
+  /**
+   * Forces any `Suspend` nodes in this `BitVector` and ensures the tree is balanced.
+   *
+   * @group collection
+   */
   def force: BitVector = this match {
     case b@Bytes(_,_) => b
     case Append(l,r) => l.force ++ r.force
@@ -382,6 +390,8 @@ sealed trait BitVector {
 
   /**
    * Reverse the bits of this vector.
+   *
+   * @group collection
    */
   def reverse: BitVector =
     // todo: this has a log time implementation, assuming a balanced tree
@@ -548,6 +558,8 @@ sealed trait BitVector {
    * Converts the contents of this bit vector to a hexadecimal string of `ceil(size / 4)` nibbles.
    *
    * The last nibble is right-padded with zeros if the size is not evenly divisible by 4.
+   *
+   * @group conversions
    */
   def toHex: String = {
     val full = toByteVector.toHex
@@ -558,7 +570,11 @@ sealed trait BitVector {
     }
   }
 
-  /** Converts the contents of this bit vector to a binary string of `size` digits.  */
+  /**
+   * Converts the contents of this bit vector to a binary string of `size` digits.
+   *
+   * @group conversions
+   */
   def toBin: String = toByteVector.toBin.take(size.toInt)
 
   override def equals(other: Any): Boolean = other match {
@@ -637,6 +653,7 @@ sealed trait BitVector {
 
 }
 
+/** Companion for [[BitVector]]. */
 object BitVector {
 
   val empty: BitVector = bytes(ByteVector.empty, 0)
