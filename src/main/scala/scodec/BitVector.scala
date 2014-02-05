@@ -660,8 +660,20 @@ object BitVector {
   def apply(bs: Array[Byte]): BitVector = bytes(ByteVector(bs), bs.size.toLong * 8)
   def apply[A: Integral](bytes: A*): BitVector = apply(ByteVector(bytes: _*))
 
-  /** Like `apply`, but no copy of the underlying `ByteBuffer` is made. */
+  /**
+   * Like `apply`, but no copy of the underlying `ByteBuffer` is made. Uses `buffer.limit`
+   * to compute the size.
+   */
   def view(buffer: ByteBuffer): BitVector = bytes(ByteVector.view(buffer), buffer.limit.toLong * 8)
+
+  /**
+   * Like `apply`, but no copy of the underlying `ByteBuffer` is made.
+   */
+  def view(buffer: ByteBuffer, sizeInBits: Long): BitVector = {
+    if (bytesNeededForBits(sizeInBits) > Int.MaxValue)
+      sys.error("Cannot have BitVector chunk larger than Int.MaxValue bytes: " + sizeInBits)
+    bytes(ByteVector.view(ind => buffer.get(ind), bytesNeededForBits(sizeInBits).toInt), sizeInBits)
+  }
 
   /** Like `apply`, but no copy of the underlying array is made. */
   def view(bs: Array[Byte]): BitVector = bytes(ByteVector.view(bs), bs.size.toLong * 8)
@@ -738,24 +750,30 @@ object BitVector {
 
   /**
    * Produce a lazy `BitVector` from the given `ReadableByteChannel`, using `chunkSizeInBytes`
-   * to control the number of bytes read in each chunk (defaulting to 4k). This function
-   * does lazy I/O, see [[scodec.BitVector.fromInputStream]] for caveats.
+   * to control the number of bytes read in each chunk (defaulting to 8k). This function
+   * does lazy I/O, see [[scodec.BitVector.fromInputStream]] for caveats. The `direct`
+   * parameter, if `true`, allows for (but does not enforce) using a 'direct' [[java.nio.ByteBuffer]]
+   * for each chunk, which means the buffer and corresponding `BitVector` chunk may be backed by a
+   * 'view' rather than an in-memory array. This may be more efficient for some workloads. See
+   * [[java.nio.ByteBuffer]] for more information.
    *
    * @param chunkSizeInBytes the number of bytes to read in each chunk
+   * @param direct true if we should attempt to use a 'direct' [[java.nio.ByteBuffer]] for reads
    */
-  def fromChannel(in: java.nio.channels.ReadableByteChannel, chunkSizeInBytes: Int = 4096 * 2): BitVector =
+  def fromChannel(in: java.nio.channels.ReadableByteChannel, chunkSizeInBytes: Int = 4096 * 2,
+                  direct: Boolean = false): BitVector =
     unfold(in) { in =>
-      val buf = java.nio.ByteBuffer.allocate(chunkSizeInBytes)
+      val buf = if (direct) java.nio.ByteBuffer.allocateDirect(chunkSizeInBytes)
+                else        java.nio.ByteBuffer.allocate(chunkSizeInBytes)
       val nRead = in.read(buf)
       buf.flip
-      if (nRead == chunkSizeInBytes) Some((BitVector.view(buf), in))
-      else if (nRead == -1) None
-      else Some((BitVector(ByteVector.view(ind => buf.get(ind), nRead)), in))
+      if (nRead != -1) Some((BitVector.view(buf, nRead.toLong*8), in))
+      else None
     }
 
   /**
    * Produce a lazy `BitVector` from the given `FileChannel`, using `chunkSizeInBytes`
-   * to control the number of bytes read in each chunk (defaulting to 4MB). Unlike
+   * to control the number of bytes read in each chunk (defaulting to 16MB). Unlike
    * [[scodec.BitVector.fromChannel]], this memory-maps chunks in, rather than copying
    * them explicitly.
    *
@@ -764,23 +782,23 @@ object BitVector {
    *
    * @param chunkSizeInBytes the number of bytes to read in each chunk
    */
-  def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 4): BitVector =
+  def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 16): BitVector =
     unfold(in -> 0L) { case (in,pos) =>
       if (pos == in.size) None
       else {
         val bytesToRead = (in.size - pos) min chunkSizeInBytes.toLong
         val buf = in.map(java.nio.channels.FileChannel.MapMode.READ_ONLY, pos, bytesToRead)
+        require(buf.limit == bytesToRead)
         Some((BitVector.view(buf), (in -> (pos + bytesToRead))))
       }
     }
 
   /** Smart constructor for `Bytes`. */
-  private[scodec] def bytes(bs: ByteVector, size: Long): Bytes = {
-    val needed = bytesNeededForBits(size)
+  private[scodec] def bytes(bs: ByteVector, sizeInBits: Long): Bytes = {
+    val needed = bytesNeededForBits(sizeInBits)
     require(needed <= bs.size)
     val b = if (bs.size > needed) bs.take(needed.toInt) else bs
-    // new bytes(clearUnneededBits(size, b), size)
-    Bytes(b, size)
+    Bytes(b, sizeInBits)
   }
 
   private[scodec] case class Bytes(val underlying: ByteVector, val size: Long) extends BitVector {
