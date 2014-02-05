@@ -24,7 +24,7 @@ scalacOptions ++= Seq(
 
 scalacOptions in (Compile, doc) += "-groups"
 
-licenses += ("Three-clause BSD-style", url("http://github.com/mpilquist/scodec/blob/master/LICENSE"))
+licenses += ("Three-clause BSD-style", url("http://github.com/scodec/scodec/blob/master/LICENSE"))
 
 unmanagedResources in Compile <++= baseDirectory map { base => (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get }
 
