@@ -148,7 +148,7 @@ For SBT users:
 
     resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.mpilquist" %% "scodec" % "1.0.0-SNAPSHOT"
+    libraryDependencies += "com.github.scodec" %% "scodec" % "1.0.0-SNAPSHOT"
 
 
 For Maven users:
@@ -163,7 +163,7 @@ For Maven users:
 
     <dependencies>
       <dependency>
-        <groupId>com.github.mpilquist</groupId>
+        <groupId>com.github.scodec</groupId>
         <artifactId>scodec_2.10</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>

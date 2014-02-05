@@ -3,7 +3,7 @@ import ReleaseStateTransformations._
 import ReleasePlugin._
 import ReleaseKeys._
 
-organization := "com.github.mpilquist"
+organization := "com.github.scodec"
 
 name := "scodec"
 
@@ -69,16 +69,21 @@ publishArtifact in Test := false
 pomIncludeRepository := { x => false }
 
 pomExtra := (
-  <url>http://github.com/mpilquist/scodec</url>
+  <url>http://github.com/scodec/scodec</url>
   <scm>
-    <url>git@github.com:mpilquist/scodec.git</url>
-    <connection>scm:git:git@github.com:mpilquist/scodec.git</connection>
+    <url>git@github.com:scodec/scodec.git</url>
+    <connection>scm:git:git@github.com:scodec/scodec.git</connection>
   </scm>
   <developers>
     <developer>
       <id>mpilquist</id>
       <name>Michael Pilquist</name>
       <url>http://github.com/mpilquist</url>
+    </developer>
+    <developer>
+      <id>pchiusano</id>
+      <name>Paul Chiusano</name>
+      <url>http://github.com/pchiusano</url>
     </developer>
   </developers>
 )
