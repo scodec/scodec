@@ -8,12 +8,17 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
 
-  implicit val arbitraryBitVector: Arbitrary[BitVector] =
-    Arbitrary(Gen.oneOf(
-      genBitVector(500, 7),             // regular flat bit vectors
-      genConcat(genBitVector(2000, 7)), // balanced trees of concatenations
-      genSplit(5000),                   // split bit vectors: b.take(m) ++ b.drop(m)
-      genConcat(genSplit(5000))))       // concatenated split bit vectors
+  val flatBytes = genBitVector(500, 7)                 // regular flat bit vectors
+  val balancedTrees = genConcat(genBitVector(2000, 7)) // balanced trees of concatenations
+  val splitVectors = genSplit(5000)                    // split bit vectors: b.take(m) ++ b.drop(m)
+  val concatSplitVectors = genConcat(genSplit(5000))   // concatenated split bit vectors
+
+  val chunk = Gen.oneOf(flatBytes, balancedTrees, splitVectors, concatSplitVectors)
+  val bitStreams = genBitStream(chunk, Gen.choose(0,5)) // streams of chunks
+
+  implicit val arbitraryBitVector: Arbitrary[BitVector] = Arbitrary {
+    Gen.oneOf(flatBytes, balancedTrees, splitVectors, concatSplitVectors, bitStreams)
+  }
 
   implicit val shrinkBitVector: Shrink[BitVector] =
     Shrink[BitVector] { b =>
@@ -22,6 +27,11 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
         Stream(BitVector.empty)
       else Stream.empty
     }
+
+  def genBitStream(g: Gen[BitVector], steps: Gen[Int]): Gen[BitVector] = for {
+    n <- steps
+    chunks <- Gen.listOfN(n, g)
+  } yield BitVector.unfold(chunks)(s => s.headOption.map((_,s.tail)))
 
   def genBitVector(maxBytes: Int, maxAdditionalBits: Int): Gen[BitVector] = for {
     byteSize <- Gen.choose(0, maxBytes)
@@ -158,7 +168,7 @@ class BitVectorTest extends FunSuite with Matchers with GeneratorDrivenPropertyC
   test("compact") {
     forAll { (x: BitVector) =>
       x.compact shouldBe x
-      x.depthExceeds(16) shouldBe false
+      x.force.depthExceeds(16) shouldBe false
     }
   }
 

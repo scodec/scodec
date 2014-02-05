@@ -48,6 +48,28 @@ sealed trait BitVector {
    */
   def size: Long
 
+  /**
+   * Returns `true` if the size of this `BitVector` is greater than `n`. Unlike `size`, this
+   * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
+   */
+  def sizeGreaterThan(n: Long): Boolean = this match {
+    case Append(l, r) => if (l.size > n) true else r.sizeGreaterThan(n - l.size)
+    case s@Suspend(_) => s.underlying.sizeGreaterThan(n)
+    case Drop(b, m) => b.sizeGreaterThan(m+n)
+    case _ => this.size > n
+  }
+
+  /**
+   * Returns `true` if the size of this `BitVector` is less than `n`. Unlike `size`, this
+   * forces this `BitVector` from left to right, halting as soon as it has a definite answer.
+   */
+  def sizeLessThan(n: Long): Boolean = this match {
+    case Append(l, r) => if (l.size >= n) false else r.sizeLessThan(n - l.size)
+    case s@Suspend(_) => s.underlying.sizeLessThan(n)
+    case Drop(b, m) => (b.size - m).max(0L) < n
+    case _ => this.size < n
+  }
+
   // derived functions
 
   /**
@@ -192,6 +214,7 @@ sealed trait BitVector {
         case Append(l,r) => go(l, cur+1) || go(r, cur+1)
         case Drop(u,n) => go(u, cur+1)
         case Bytes(b,n) => false
+        case s@Suspend(_) => go(s.underlying, cur+1)
       })
     go(this, 0)
   }
@@ -203,19 +226,22 @@ sealed trait BitVector {
    *
    * @group collection
    */
-  def drop(n: Long): BitVector =
-    if (n >= size) BitVector.empty
-    else if (n <= 0) this
+  def drop(n0: Long): BitVector = {
+    val n = n0 max 0
+    if (n <= 0) this
+    else if (sizeLessThan(n+1)) BitVector.empty
     else this match {
-      case Bytes(bytes, m) =>
-        if (n % 8 == 0) Bytes(bytes.drop((n/8).toInt), m-n)
+      case Bytes(bs, m) =>
+        if (n % 8 == 0) bytes(bs.drop((n/8).toInt), m-n)
         else Drop(this.asInstanceOf[Bytes], n)
       case Append(l,r) =>
         if (l.size <= n) r.drop(n - l.size)
-        else l.drop(n) ++ r
+        else Append(l.drop(n), r)
       case Drop(bytes, m) =>
         bytes.drop(m + n)
+      case s@Suspend(_) => s.underlying.drop(n)
     }
+  }
 
   /**
    * Returns a vector whose contents are the results of skipping the last `n` bits of this vector.
@@ -244,7 +270,8 @@ sealed trait BitVector {
     if (bytesNeededForBits(size) > Int.MaxValue)
       throw new IllegalArgumentException(s"cannot compact bit vector of size ${size.toDouble / 8 / 1e9} GB")
     def go(b: BitVector): Bytes = b match {
-      case Bytes(x,n) => Bytes(x,n)
+      case s@Suspend(_) => go(s.underlying)
+      case b@Bytes(_,_) => b
       case Append(l,r) => l.compact.combine(r.compact)
       case Drop(b, from) =>
         val low = from max 0
@@ -252,7 +279,7 @@ sealed trait BitVector {
         if (newSize == 0) BitVector.empty.compact
         else {
           val lowByte = (low / 8).toInt
-          val shiftedByWholeBytes = b.compact.bytes.slice(lowByte, lowByte + bytesNeededForBits(newSize).toInt + 1)
+          val shiftedByWholeBytes = b.compact.underlying.slice(lowByte, lowByte + bytesNeededForBits(newSize).toInt + 1)
           val bitsToShiftEachByte = (low % 8).toInt
           val newBytes = {
             if (bitsToShiftEachByte == 0) shiftedByWholeBytes
@@ -264,10 +291,18 @@ sealed trait BitVector {
               }
             }
           }
-          Bytes(if (newSize <= (newBytes.size - 1) * 8) newBytes.dropRight(1) else newBytes, newSize)
+          bytes(if (newSize <= (newBytes.size - 1) * 8) newBytes.dropRight(1) else newBytes, newSize)
         }
     }
     go(this)
+  }
+
+  /** Forces any `Suspend` nodes in this `BitVector` and ensures the tree is balanced. */
+  def force: BitVector = this match {
+    case b@Bytes(_,_) => b
+    case Append(l,r) => l.force ++ r.force
+    case Drop(b, from) => Drop(b.force.compact, from)
+    case s@Suspend(_) => s.underlying.force
   }
 
   /**
@@ -283,7 +318,7 @@ sealed trait BitVector {
    *
    * @group collection
    */
-  final def isEmpty = size == 0L
+  final def isEmpty = sizeLessThan(1)
 
   /**
    * Returns the number of bits in this vector, or `None` if the size does not
@@ -350,7 +385,7 @@ sealed trait BitVector {
    */
   def reverse: BitVector =
     // todo: this has a log time implementation, assuming a balanced tree
-    BitVector(compact.bytes.reverse.map(reverseBitsInBytes _)).drop(8 - validBitsInLastByte(size))
+    BitVector(compact.underlying.reverse.map(reverseBitsInBytes _)).drop(8 - validBitsInLastByte(size))
 
   /**
    * Returns a new vector of the same size with the byte order reversed.
@@ -358,12 +393,12 @@ sealed trait BitVector {
    * @group collection
    */
   def reverseByteOrder: BitVector = {
-    if (size % 8 == 0) Bytes(compact.bytes.reverse, size)
+    if (size % 8 == 0) bytes(compact.underlying.reverse, size)
     else {
       val validFinalBits = validBitsInLastByte(size)
       val last = take(validFinalBits).compact
       val b = drop(validFinalBits).toByteVector.reverse
-      val init = Bytes(b, size-last.size)
+      val init = bytes(b, size-last.size)
       val res = (init ++ last)
       require(res.size == size)
       res
@@ -410,18 +445,19 @@ sealed trait BitVector {
    */
   def take(n0: Long): BitVector = {
     val n = n0 max 0
-    if (n >= size) this
-    else if (n == 0) BitVector.empty
+    if (n == 0) BitVector.empty
+    else if (sizeLessThan(n+1)) this
     else this match {
+      case s@Suspend(_) => s.underlying.take(n0)
       case Bytes(underlying, m) =>
         // eagerly trim from underlying here
         val m2 = n min m
         val underlyingN = bytesNeededForBits(m2).toInt
-        Bytes(underlying.take(underlyingN), m2)
+        bytes(underlying.take(underlyingN), m2)
       case Drop(underlying, m) => underlying.take(m + n).drop(m)
       case Append(l, r) =>
-        if (n <= l.size) l.take(n)
-        else l ++ r.take(n-l.size)
+        if (l.size >= n) l.take(n)
+        else Append(l, r.take(n-l.size))
     }
   }
 
@@ -469,7 +505,7 @@ sealed trait BitVector {
    * @group conversions
    */
   def toByteVector: ByteVector =
-    clearUnneededBits(size, compact.bytes)
+    clearUnneededBits(size, compact.underlying)
 
   /**
    * Converts the contents of this vector to a byte array.
@@ -572,9 +608,10 @@ sealed trait BitVector {
     throw new NoSuchElementException(s"invalid index: $n of $size")
 
   private def mapBytes(f: ByteVector => ByteVector): BitVector = this match {
-    case Bytes(bytes, n) => Bytes(f(bytes), n)
+    case Bytes(bs, n) => bytes(f(bs), n)
     case Append(l,r) => Append(l.mapBytes(f), r.mapBytes(f))
     case Drop(b,n) => Drop(b.mapBytes(f).compact, n)
+    case s@Suspend(_) => Suspend(() => s.underlying.mapBytes(f))
   }
 
   /**
@@ -589,23 +626,24 @@ sealed trait BitVector {
       else        prefix + s"bits $n 0x${b.toHex}"
     case Drop(u, n) => prefix + s"drop ${n}\n" +
                        u.internalPretty(prefix + "  ")
+    case s@Suspend(_) => s.underlying.internalPretty(prefix)
   }
 
   private def zipBytesWith(other: BitVector)(op: (Byte, Byte) => Int): BitVector = {
     // todo: this has a much more efficient recursive algorithm -
     // only need to compact close to leaves of the tree
-    Bytes(this.compact.bytes.zipWithI(other.compact.bytes)(op), this.size min other.size)
+    bytes(this.compact.underlying.zipWithI(other.compact.underlying)(op), this.size min other.size)
   }
 
 }
 
 object BitVector {
 
-  val empty: BitVector = Bytes(ByteVector.empty, 0)
-  val zero: BitVector = Bytes(ByteVector(0), 1)
-  val one: BitVector = Bytes(ByteVector(1), 1)
-  val highByte: BitVector = Bytes(ByteVector.fill(8)(1), 8)
-  val lowByte: BitVector = Bytes(ByteVector.fill(8)(0), 8)
+  val empty: BitVector = bytes(ByteVector.empty, 0)
+  val zero: BitVector = bytes(ByteVector(0), 1)
+  val one: BitVector = bytes(ByteVector(1), 1)
+  val highByte: BitVector = bytes(ByteVector.fill(8)(1), 8)
+  val lowByte: BitVector = bytes(ByteVector.fill(8)(0), 8)
 
   def bit(high: Boolean): BitVector = fill(1)(high)
 
@@ -617,16 +655,34 @@ object BitVector {
   def high(n: Long): BitVector = fill(n)(true)
   def low(n: Long): BitVector = fill(n)(false)
 
-  def apply(bytes: ByteVector): BitVector = Bytes(bytes, bytes.size.toLong * 8)
+  def apply(bs: ByteVector): BitVector = bytes(bs, bs.size.toLong * 8)
   def apply(buffer: ByteBuffer): BitVector = apply(ByteVector(buffer))
-  def apply(bytes: Array[Byte]): BitVector = Bytes(ByteVector(bytes), bytes.size.toLong * 8)
+  def apply(bs: Array[Byte]): BitVector = bytes(ByteVector(bs), bs.size.toLong * 8)
   def apply[A: Integral](bytes: A*): BitVector = apply(ByteVector(bytes: _*))
+
+  /**
+   * Like `apply`, but no copy of the underlying `ByteBuffer` is made. Uses `buffer.limit`
+   * to compute the size.
+   */
+  def view(buffer: ByteBuffer): BitVector = bytes(ByteVector.view(buffer), buffer.limit.toLong * 8)
+
+  /**
+   * Like `apply`, but no copy of the underlying `ByteBuffer` is made.
+   */
+  def view(buffer: ByteBuffer, sizeInBits: Long): BitVector = {
+    if (bytesNeededForBits(sizeInBits) > Int.MaxValue)
+      sys.error("Cannot have BitVector chunk larger than Int.MaxValue bytes: " + sizeInBits)
+    bytes(ByteVector.view(ind => buffer.get(ind), bytesNeededForBits(sizeInBits).toInt), sizeInBits)
+  }
+
+  /** Like `apply`, but no copy of the underlying array is made. */
+  def view(bs: Array[Byte]): BitVector = bytes(ByteVector.view(bs), bs.size.toLong * 8)
 
   def fill(n: Long)(high: Boolean): BitVector = {
     val needed = bytesNeededForBits(n)
     if (needed < Int.MaxValue) {
-      val bytes = ByteVector.fill(needed.toInt)(if (high) -1 else 0)
-      Bytes(bytes, n)
+      val bs = ByteVector.fill(needed.toInt)(if (high) -1 else 0)
+      bytes(bs, n)
     }
     else {
       fill(n / 2)(high) ++ fill(n - (n/2))(high)
@@ -653,73 +709,156 @@ object BitVector {
   def fromValidBin(str: String): BitVector =
     fromBin(str) valueOr { msg => throw new IllegalArgumentException(msg) }
 
+  /**
+   * Create a lazy `BitVector` by repeatedly extracting chunks from `S`.
+   * The returned `BitVector` will have the structure of a fully lazy
+   * right-associated cons list. Thus, `get`, `take`, and `drop` will
+   * be efficient when operating on the head of the list, but accessing
+   * later indices (for `takeRight`, say, or `get(size-1)` will require
+   * forcing the stream up to that point.
+   *
+   * Use `force` if you wish to convert the result to an in-memory strict
+   * `BitVector` backed by a balanced tree.
+   */
+  def unfold[S](s: S)(f: S => Option[(BitVector, S)]): BitVector =
+    Suspend { () => f(s).map { case (h,t) => Append(h, unfold(t)(f)) }
+                        .getOrElse { BitVector.empty } }
 
-  object Bytes {
-    def apply(bytes: ByteVector, size: Long): Bytes = {
-      val needed = bytesNeededForBits(size)
-      require(needed <= bytes.size)
-      val b = if (bytes.size > needed) bytes.take(needed.toInt) else bytes
-      // new Bytes(clearUnneededBits(size, b), size)
-      new Bytes(b, size)
+  /**
+   * Produce a lazy `BitVector` from the given `InputStream`, using `chunkSizeInBytes`
+   * to control the number of bytes read in each chunk (defaulting to 4MB).
+   * This simply calls [[scodec.BitVector.unfold]] with a function to extract a series
+   * of flat byte arrays from the `InputStream`.
+   *
+   * This function does not handle closing the `InputStream` and has all the usual
+   * drawbacks of lazy I/O - `I/O` exceptions may be raised unexpectedly in pure code as
+   * chunks are forced, and it must memoize the results to prevent the underlying side
+   * effects from being observed. Streaming applications should take care to ensure
+   * that the head of the stream is not left on the stack, as this will cause the entire
+   * stream to be retained in memory.
+   *
+   * @param chunkSizeInBytes the number of bytes to read in each chunk
+   */
+  def fromInputStream(in: java.io.InputStream, chunkSizeInBytes: Int = 4096 * 2): BitVector =
+    unfold(in) { in =>
+      val buf = new Array[Byte](chunkSizeInBytes)
+      val nRead = in.read(buf)
+      if (nRead == chunkSizeInBytes) Some((BitVector(buf), in))
+      else if (nRead == -1) None
+      else Some((BitVector(buf.take(nRead): Array[Byte]), in))
     }
 
-    def unapply(b: BitVector): Option[(ByteVector, Long)] = b match {
-      case bs: Bytes => Some((bs.bytes, bs.size))
-      case _ => None
+  /**
+   * Produce a lazy `BitVector` from the given `ReadableByteChannel`, using `chunkSizeInBytes`
+   * to control the number of bytes read in each chunk (defaulting to 8k). This function
+   * does lazy I/O, see [[scodec.BitVector.fromInputStream]] for caveats. The `direct`
+   * parameter, if `true`, allows for (but does not enforce) using a 'direct' [[java.nio.ByteBuffer]]
+   * for each chunk, which means the buffer and corresponding `BitVector` chunk may be backed by a
+   * 'view' rather than an in-memory array. This may be more efficient for some workloads. See
+   * [[java.nio.ByteBuffer]] for more information.
+   *
+   * @param chunkSizeInBytes the number of bytes to read in each chunk
+   * @param direct true if we should attempt to use a 'direct' [[java.nio.ByteBuffer]] for reads
+   */
+  def fromChannel(in: java.nio.channels.ReadableByteChannel, chunkSizeInBytes: Int = 4096 * 2,
+                  direct: Boolean = false): BitVector =
+    unfold(in) { in =>
+      val buf = if (direct) java.nio.ByteBuffer.allocateDirect(chunkSizeInBytes)
+                else        java.nio.ByteBuffer.allocate(chunkSizeInBytes)
+      val nRead = in.read(buf)
+      buf.flip
+      if (nRead != -1) Some((BitVector.view(buf, nRead.toLong*8), in))
+      else None
     }
+
+  /**
+   * Produce a lazy `BitVector` from the given `FileChannel`, using `chunkSizeInBytes`
+   * to control the number of bytes read in each chunk (defaulting to 16MB). Unlike
+   * [[scodec.BitVector.fromChannel]], this memory-maps chunks in, rather than copying
+   * them explicitly.
+   *
+   * Behavior is unspecified if this function is used concurrently with the underlying
+   * file being written.
+   *
+   * @param chunkSizeInBytes the number of bytes to read in each chunk
+   */
+  def fromMmap(in: java.nio.channels.FileChannel, chunkSizeInBytes: Int = 1024 * 1000 * 16): BitVector =
+    unfold(in -> 0L) { case (in,pos) =>
+      if (pos == in.size) None
+      else {
+        val bytesToRead = (in.size - pos) min chunkSizeInBytes.toLong
+        val buf = in.map(java.nio.channels.FileChannel.MapMode.READ_ONLY, pos, bytesToRead)
+        require(buf.limit == bytesToRead)
+        Some((BitVector.view(buf), (in -> (pos + bytesToRead))))
+      }
+    }
+
+  /** Smart constructor for `Bytes`. */
+  private[scodec] def bytes(bs: ByteVector, sizeInBits: Long): Bytes = {
+    val needed = bytesNeededForBits(sizeInBits)
+    require(needed <= bs.size)
+    val b = if (bs.size > needed) bs.take(needed.toInt) else bs
+    Bytes(b, sizeInBits)
   }
-  private[scodec] class Bytes(val bytes: ByteVector, val size: Long) extends BitVector {
+
+  private[scodec] case class Bytes(val underlying: ByteVector, val size: Long) extends BitVector {
     private val invalidBits = 8 - validBitsInLastByte(size)
     def get(n: Long): Boolean = {
       checkBounds(n)
-      getBit(bytes((n / 8).toInt), (n % 8).toInt)
+      getBit(underlying((n / 8).toInt), (n % 8).toInt)
     }
     def updated(n: Long, high: Boolean): BitVector = {
       checkBounds(n)
-      val b2 = bytes.updated(
+      val b2 = underlying.updated(
         (n / 8).toInt,
-        bytes.lift((n / 8).toInt).map(setBit(_, (n % 8).toInt, high)).getOrElse {
+        underlying.lift((n / 8).toInt).map(setBit(_, (n % 8).toInt, high)).getOrElse {
           outOfBounds(n)
         }
       )
       Bytes(b2, size)
     }
     def combine(other: Bytes): Bytes = {
-      val otherBytes = other.bytes
+      val otherBytes = other.underlying
       if (isEmpty) {
         other
       } else if (otherBytes.isEmpty) {
         this
       } else if (invalidBits == 0) {
-        Bytes(bytes ++ otherBytes, size + other.size)
+        bytes(underlying ++ otherBytes, size + other.size)
       } else {
-        val bytesCleared = clearUnneededBits(size, bytes) // this is key
+        val bytesCleared = clearUnneededBits(size, underlying) // this is key
         val hi = bytesCleared(bytesCleared.size - 1)
         val otherInvalidBits = (if (other.size % 8 == 0) 0 else (8 - (other.size % 8))).toInt
         val lo = (((otherBytes.head & topNBits(invalidBits.toInt)) & 0x000000ff) >>> validBitsInLastByte(size)).toByte
         //val lo = (((otherBytes.head & topNBits(8 - otherInvalidBits)) & 0x000000ff) >>> validBitsInLastByte(size)).toByte
         val updatedOurBytes = bytesCleared.updated(bytesCleared.size - 1, (hi | lo).toByte)
         val updatedOtherBytes = other.drop(invalidBits).toByteVector
-        Bytes(updatedOurBytes ++ updatedOtherBytes, size + other.size)
+        bytes(updatedOurBytes ++ updatedOtherBytes, size + other.size)
       }
     }
   }
 
   private[scodec] case class Drop(underlying: Bytes, m: Long) extends BitVector {
-    val size = underlying.size - m
+    val size = (underlying.size - m) max 0
     def get(n: Long): Boolean =
       underlying.get(m + n)
     def updated(n: Long, high: Boolean): BitVector =
       Drop(underlying.updated(m + n, high).compact, m)
   }
   private[scodec] case class Append(left: BitVector, right: BitVector) extends BitVector {
-    val size = left.size + right.size
+    lazy val size = left.size + right.size
     def get(n: Long): Boolean =
       if (n < left.size) left.get(n)
       else right.get(n - left.size)
     def updated(n: Long, high: Boolean): BitVector =
       if (n < left.size) Append(left.updated(n, high), right)
       else Append(left, right.updated(n - left.size, high))
+  }
+  private[scodec] case class Suspend(thunk: () => BitVector) extends BitVector {
+    lazy val underlying = thunk()
+    def get(n: Long): Boolean = underlying.get(n)
+    def updated(n: Long, high: Boolean): BitVector = underlying.updated(n, high)
+    def size = underlying.size
   }
 
   implicit val monoidInstance: scalaz.Monoid[BitVector] = new scalaz.Monoid[BitVector] {
