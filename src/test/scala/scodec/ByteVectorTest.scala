@@ -54,9 +54,10 @@ class ByteVectorTest extends FunSuite with Matchers {
 
   test("hex string interpolator") {
     hex"deadbeef" shouldBe deadbeef
-    val x = "bee"
-    hex"dead${x}f" shouldBe deadbeef
-    evaluating { hex"deadgg" } should produce[IllegalArgumentException]
+    val x = ByteVector.fromValidHex("be")
+    hex"dead${x}ef" shouldBe deadbeef
+    // TODO Upon upgrade to ScalaTest 2.1, make this "..." shouldNot compile
+    // evaluating { hex"deadgg" } should produce[IllegalArgumentException]
   }
 
 }
