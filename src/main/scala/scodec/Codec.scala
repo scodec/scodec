@@ -32,7 +32,7 @@ trait Codec[A] extends GenCodec[A, A] {
   final def hlist: Codec[A :: HNil] = Codec.xmap(this)(_ :: HNil, _.head)
 
   /** Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`. */
-  final def ~[B](codecB: Codec[B]): Codec[(A, B)] = new TupleCodec(this, codecB)
+  final def ~[B](codecB: Codec[B]): Codec[(A, B)] = new codecs.TupleCodec(this, codecB)
 
   /**
    * Creates a `Codec[A]` that:
@@ -86,7 +86,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * - Decodes an `A` followed by a `B` and discards the decoded `A`.
    */
   def dropLeft[A: Monoid, B](codecA: Codec[A], codecB: Codec[B]): Codec[B] =
-    xmap[(A, B), B](new TupleCodec(codecA, codecB))({ case (a, b) => b }, b => (Monoid[A].zero, b))
+    xmap[(A, B), B](new codecs.TupleCodec(codecA, codecB))({ case (a, b) => b }, b => (Monoid[A].zero, b))
 
   /**
    * Creates a `Codec[A]` that:
@@ -94,7 +94,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * - Decodes an `A` followed by a `B` and discards the decoded `B`.
    */
   def dropRight[A, B: Monoid](codecA: Codec[A], codecB: Codec[B]): Codec[A] =
-    xmap[(A, B), A](new TupleCodec(codecA, codecB))({ case (a, b) => a }, a => (a, Monoid[B].zero))
+    xmap[(A, B), A](new codecs.TupleCodec(codecA, codecB))({ case (a, b) => a }, a => (a, Monoid[B].zero))
 
   def flatZip[A, B](codecA: Codec[A])(f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)] {
     override def encode(t: (A, B)) = encodeBoth(codecA, f(t._1))(t._1, t._2)
