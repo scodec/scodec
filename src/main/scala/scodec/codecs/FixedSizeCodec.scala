@@ -1,7 +1,8 @@
 package scodec
 package codecs
 
-import scalaz.{\/-, -\/}
+import scalaz.\/
+import scalaz.syntax.std.either._
 
 
 class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
@@ -10,14 +11,14 @@ class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
     encoded <- codec.encode(a)
     result <- {
       if (encoded.size > size)
-        -\/(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
+        \/.left(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
       else
-        \/-(encoded.padTo(size))
+        \/.right(encoded.padTo(size))
     }
   } yield result
 
   override def decode(buffer: BitVector) =
-    buffer.consume(size) { b => codec.decode(b) map { case (rest, res) => res } }
+    buffer.consume(size) { b => codec.decode(b).map { case (rest, res) => res }.toEither }.disjunction
 
   override def toString = s"fixedSizeBits($size, $codec)"
 }

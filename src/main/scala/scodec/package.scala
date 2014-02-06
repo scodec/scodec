@@ -1,4 +1,4 @@
-import scalaz.{ \/, StateT }
+import scalaz.{ \/, Monoid, StateT }
 
 /**
  * Combinator library for working with binary data.
@@ -10,26 +10,13 @@ package object scodec {
   /** Alias for state/either transformer that simplifies calling decode on a series of codecs, wiring the remaining bit vector of each in to the next entry. */
   type DecodingContext[+A] = StateT[({type λ[+a] = Error \/ a})#λ, BitVector, A]
 
-  /** Implicit conversion from `ByteVector` to `BitVector`. */
-  implicit def byteVectorToBitVector(byteVector: ByteVector): BitVector = byteVector.toBitVector
+  type BitVector = scodec.bits.BitVector
+  val BitVector = scodec.bits.BitVector
 
-  /**
-   * Provides the `bin` string interpolator, which returns `BitVector` instances from binary strings.
-   *
-   * Named arguments are supported in the same manner as the standard `s` interpolator but they must be
-   * of type `BitVector`.
-   */
-  final implicit class BinStringSyntax(val sc: StringContext) extends AnyVal {
-    def bin(args: BitVector*): BitVector = macro LiteralSyntaxMacros.binStringInterpolator
-  }
+  type ByteVector = scodec.bits.ByteVector
+  val ByteVector = scodec.bits.ByteVector
 
-  /**
-   * Provides the `hex` string interpolator, which returns `ByteVector` instances from hexadecimal strings.
-   *
-   * Named arguments are supported in the same manner as the standard `s` interpolator but they must be
-   * of type `ByteVector`.
-   */
-  final implicit class HexStringSyntax(val sc: StringContext) extends AnyVal {
-    def hex(args: ByteVector*): ByteVector = macro LiteralSyntaxMacros.hexStringInterpolator
-  }
+  implicit val bitVectorMonoidInstance: Monoid[BitVector] = Monoid.instance(_ ++ _, BitVector.empty)
+
+  implicit val byteVectorMonoidInstance: Monoid[ByteVector] = Monoid.instance(_ ++ _, ByteVector.empty)
 }

@@ -33,7 +33,7 @@ triggeredMessage := (_ => Watched.clearScreen)
 parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
-  "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+  "com.github.scodec" %% "scodec-bits" % "1.0.0-M1",
   "org.scalaz" %% "scalaz-core" % "7.0.5",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.0" % "test",

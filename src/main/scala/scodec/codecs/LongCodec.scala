@@ -2,6 +2,7 @@ package scodec
 package codecs
 
 import scalaz.syntax.id._
+import scalaz.syntax.std.either._
 import scalaz.syntax.std.option._
 
 import java.nio.{ByteBuffer, ByteOrder}
@@ -50,8 +51,8 @@ class LongCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) ex
         val toShift = 64 - bits
         result = (result << toShift) >> toShift
       }
-      result.right
-    }
+      Right(result)
+    }.disjunction
 
   override def toString = description
 }

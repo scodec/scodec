@@ -1,16 +1,17 @@
 package scodec
 package codecs
 
-import scalaz.\/-
+import scalaz.\/
+import scalaz.syntax.std.either._
 
 
 class IgnoreCodec(bits: Int) extends Codec[Unit] {
 
   override def encode(unit: Unit) =
-    \/-(BitVector.low(bits))
+    \/.right(BitVector.low(bits))
 
   override def decode(buffer: BitVector) =
-    buffer.consume(bits) { _ => \/-(()) }
+    buffer.consume(bits) { _ => Right(()) }.disjunction
 
   override def toString = s"ignore($bits bits)"
 }
