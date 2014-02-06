@@ -1,5 +1,8 @@
 import scalaz.{ \/, StateT }
 
+/**
+ * Combinator library for working with binary data.
+  */
 package object scodec {
 
   type Error = String
@@ -16,7 +19,7 @@ package object scodec {
    * Named arguments are supported in the same manner as the standard `s` interpolator but they must be
    * of type `BitVector`.
    */
-  implicit class BinStringSyntax(val sc: StringContext) extends AnyVal {
+  final implicit class BinStringSyntax(val sc: StringContext) extends AnyVal {
     def bin(args: BitVector*): BitVector = macro LiteralSyntaxMacros.binStringInterpolator
   }
 
@@ -26,7 +29,7 @@ package object scodec {
    * Named arguments are supported in the same manner as the standard `s` interpolator but they must be
    * of type `ByteVector`.
    */
-  implicit class HexStringSyntax(val sc: StringContext) extends AnyVal {
+  final implicit class HexStringSyntax(val sc: StringContext) extends AnyVal {
     def hex(args: ByteVector*): ByteVector = macro LiteralSyntaxMacros.hexStringInterpolator
   }
 }

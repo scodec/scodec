@@ -29,11 +29,11 @@ Introduction
 The primary abstraction is a [`Codec[A]`](src/main/scala/scodec/Codec.scala), which supports encoding a value of type `A` to a
 [`BitVector`](src/main/scala/scodec/BitVector.scala) and decoding a `BitVector` to a value of type `A`.
 
-The [`Codecs`](src/main/scala/scodec/Codecs.scala) object provides a number of predefined codecs and combinators.
+The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a number of predefined codecs and combinators.
 
 ```scala
     import scodec._
-    import Codecs._
+    import codecs._
     import scalaz.\/
 
     // Create a codec for an 8-bit unsigned int followed by an 8-bit unsigned int followed by a 16-bit unsigned int

@@ -2,9 +2,10 @@ package scodec
 package examples
 
 import scalaz.\/-
+import scalaz.std.anyVal.unitInstance
 import shapeless._
 
-
+import scodec.codecs._
 
 // Define MPEG codecs
 object MpegCodecs {
@@ -50,8 +51,6 @@ object MpegCodecs {
     payload: Option[ByteVector]
   )
   implicit def mpegPacketIso = Iso.hlist(MpegPacket.apply _, MpegPacket.unapply _)
-
-  import Codecs._
 
   implicit val transportStreamHeader: Codec[TransportStreamHeader] = {
     ("syncByte"                  | constant(0x47)          ) :~>:

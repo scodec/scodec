@@ -2,8 +2,7 @@ package scodec
 
 import shapeless._
 
-import Codecs._
-
+import scodec.codecs._
 
 class CodecTest extends CodecSuite {
 

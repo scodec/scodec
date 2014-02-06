@@ -13,7 +13,7 @@ import shapeless._
  * @see http://wiki.wireshark.org/Development/LibpcapFileFormat
  */
 object PcapCodec {
-  import Codecs._
+  import scodec.codecs._
 
   sealed trait ByteOrdering
   case object BigEndian extends ByteOrdering

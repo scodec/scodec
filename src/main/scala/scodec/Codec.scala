@@ -31,6 +31,28 @@ trait Codec[A] extends GenCodec[A, A] {
   /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
   final def hlist: Codec[A :: HNil] = Codec.xmap(this)(_ :: HNil, _.head)
 
+  /** Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`. */
+  final def ~[B](codecB: Codec[B]): Codec[(A, B)] = new TupleCodec(this, codecB)
+
+  /**
+   * Creates a `Codec[A]` that:
+   * - Encodes an `A` followed by the zero element of the `Monoid` of `B`.
+   * - Decodes an `A` followed by a `B` and discards the decoded `B`.
+   *
+   * Operator alias for `Codec.dropRight`.
+   */
+  final def <~[B: Monoid](codecB: Codec[B]): Codec[A] = Codec.dropRight(this, codecB)
+
+  /**
+   * Creates a `Codec[B]` that:
+   * - Encodes the zero element of the `Monoid` of A` followed by a `B`.
+   * - Decodes an `A` followed by a `B` and discards the decoded `A`.
+   *
+   * Operator alias for `Codec.dropLeft`.
+   */
+  final def ~>[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] = Codec.dropLeft(this, codecB)
+
+  /** Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`. */
   final def withToString(str: String): Codec[A] = Codec.withToString(this)(str)
 }
 
@@ -58,9 +80,19 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     def decode(buffer: BitVector): Error \/ (BitVector, B) = codec.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
 
+  /**
+   * Creates a `Codec[B]` that:
+   * - Encodes the zero element of the `Monoid` of A` followed by a `B`.
+   * - Decodes an `A` followed by a `B` and discards the decoded `A`.
+   */
   def dropLeft[A: Monoid, B](codecA: Codec[A], codecB: Codec[B]): Codec[B] =
     xmap[(A, B), B](new TupleCodec(codecA, codecB))({ case (a, b) => b }, b => (Monoid[A].zero, b))
 
+  /**
+   * Creates a `Codec[A]` that:
+   * - Encodes an `A` followed by the zero element of the `Monoid` of `B`.
+   * - Decodes an `A` followed by a `B` and discards the decoded `B`.
+   */
   def dropRight[A, B: Monoid](codecA: Codec[A], codecB: Codec[B]): Codec[A] =
     xmap[(A, B), A](new TupleCodec(codecA, codecB))({ case (a, b) => a }, a => (a, Monoid[B].zero))
 
