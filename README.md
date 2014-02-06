@@ -27,7 +27,7 @@ Introduction
 ------------
 
 The primary abstraction is a [`Codec[A]`](src/main/scala/scodec/Codec.scala), which supports encoding a value of type `A` to a
-[`BitVector`](src/main/scala/scodec/BitVector.scala) and decoding a `BitVector` to a value of type `A`.
+`BitVector` and decoding a `BitVector` to a value of type `A`.
 
 The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a number of predefined codecs and combinators.
 
