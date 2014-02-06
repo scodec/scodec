@@ -44,9 +44,10 @@ libraryDependencies ++= Seq(
 
 osgiSettings
 
-OsgiKeys.exportPackage := Seq("scodec.*;version=${Bundle-Version}")
+OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}")
 
 OsgiKeys.importPackage := Seq(
+  """scodec.bits.*;version="$<range;[==,=+);$<@>>"""",
   """scala.*;version="$<range;[==,=+);$<@>>"""",
   """scalaz.*;version="$<range;[==,=+);$<@>>"""",
   "*"
