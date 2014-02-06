@@ -33,7 +33,7 @@ class DiscriminatorCodec[A, B](discriminator: Discriminator[A, B], discriminator
   override def decode(buffer: BitVector) = {
     for {
       discriminatorValue <- DecodingContext(discriminatorCodec.decode)
-      valueCodec <- IndexedStateT.StateMonadTrans.liftM[({type λ[+α] = Error \/ α})#λ, Codec[A]](
+      valueCodec <- IndexedStateT.StateMonadTrans.liftM[({type λ[+α] = String \/ α})#λ, Codec[A]](
         discriminator.codec(discriminatorValue) \/> s"No codec defined for discriminator '$discriminator'"
       )
       value <- DecodingContext(valueCodec.decode)

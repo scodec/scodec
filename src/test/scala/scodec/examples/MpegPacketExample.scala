@@ -13,7 +13,7 @@ object MpegCodecs {
   // Define case classes that describe MPEG packets and define an HList iso for each
 
   case class TransportStreamHeader(
-    transportErrorIndicator: Boolean,
+    transportStringIndicator: Boolean,
     payloadUnitStartIndicator: Boolean,
     transportPriority: Boolean,
     pid: Int,
@@ -54,7 +54,7 @@ object MpegCodecs {
 
   implicit val transportStreamHeader: Codec[TransportStreamHeader] = {
     ("syncByte"                  | constant(0x47)          ) :~>:
-    ("transportErrorIndicator"   | bool                    ) ::
+    ("transportStringIndicator"   | bool                    ) ::
     ("payloadUnitStartIndicator" | bool                    ) ::
     ("transportPriority"         | bool                    ) ::
     ("pid"                       | uint(13)                ) ::

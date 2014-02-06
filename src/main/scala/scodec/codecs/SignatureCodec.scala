@@ -113,7 +113,7 @@ class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(impli
     encodedSig <- signatureCodec.encode(sig)
   } yield encoded ++ encodedSig
 
-  private def sign(bits: BitVector): Error \/ BitVector = {
+  private def sign(bits: BitVector): String \/ BitVector = {
     try {
       val signature = signatureFactory.newSigner
       signature.update(bits.toByteArray)
@@ -133,7 +133,7 @@ class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(impli
     _ <- DecodingContext liftE verify(valueBits.toByteVector, decodedSig.toByteVector)
   } yield value).run(buffer)
 
-  private def verify(data: ByteVector, signatureBytes: ByteVector): Error \/ Unit = {
+  private def verify(data: ByteVector, signatureBytes: ByteVector): String \/ Unit = {
     val verifier = signatureFactory.newVerifier
     verifier.update(data.toArray)
     try {

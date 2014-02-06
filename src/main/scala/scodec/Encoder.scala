@@ -11,7 +11,7 @@ trait Encoder[-A] { self =>
    * @param value value to encode
    * @param return error or binary encoding of the value
    */
-  def encode(value: A): Error \/ BitVector
+  def encode(value: A): String \/ BitVector
 
   /** Converts this encoder to an `Encoder[B]` using the supplied `B => A`. */
   def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
@@ -23,13 +23,13 @@ trait Encoder[-A] { self =>
 trait EncoderFunctions {
 
   /** Encodes the specified value to a bit vector. */
-  final def encode[A](enc: Encoder[A], a: A): Error \/ BitVector = enc encode a
+  final def encode[A](enc: Encoder[A], a: A): String \/ BitVector = enc encode a
 
   /** Encodes the specified value to a bit vector using an implicitly available encoder. */
-  final def encode[A: Encoder](a: A): Error \/ BitVector = encode(Encoder[A], a)
+  final def encode[A: Encoder](a: A): String \/ BitVector = encode(Encoder[A], a)
 
   /** Encodes the specified values, one after the other, to a bit vector using the specified encoders. */
-  final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): Error \/ BitVector = for {
+  final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): String \/ BitVector = for {
     encodedA <- encA.encode(a)
     encodedB <- encB.encode(b)
   } yield encodedA ++ encodedB

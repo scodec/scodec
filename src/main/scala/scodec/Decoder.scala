@@ -11,7 +11,7 @@ trait Decoder[+A] { self =>
    * @param bits bits to decode
    * @return error if value could not be decoded or the remaining bits and the decoded value
    */
-  def decode(bits: BitVector): Error \/ (BitVector, A)
+  def decode(bits: BitVector): String \/ (BitVector, A)
 
   /** Converts this decoder to a `Decoder[B]` using the supplied `A => B`. */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
@@ -28,13 +28,13 @@ trait Decoder[+A] { self =>
 trait DecoderFunctions {
 
   /** Decodes the specified bit vector using the specified codec and discards the remaining bits. */
-  final def decode[A](dec: Decoder[A], bits: BitVector): Error \/ A = dec.decode(bits) map { case (_, value) => value }
+  final def decode[A](dec: Decoder[A], bits: BitVector): String \/ A = dec.decode(bits) map { case (_, value) => value }
 
   /** Decodes the specified bit vector in to a value of type `A` using an implicitly available codec and discards the remaining bits. */
-  final def decode[A: Decoder](bits: BitVector): Error \/ A = decode(Decoder[A], bits)
+  final def decode[A: Decoder](bits: BitVector): String \/ A = decode(Decoder[A], bits)
 
   /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`. */
-  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): Error \/ (BitVector, (A, B)) = (for {
+  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): String \/ (BitVector, (A, B)) = (for {
     a <- DecodingContext(decA.decode)
     b <- DecodingContext(decB.decode)
   } yield (a, b)).run(buffer)
@@ -45,7 +45,7 @@ trait DecoderFunctions {
    *
    * @return tuple consisting of the terminating error if any and the accumulated value
    */
-  final def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[Error], B) = {
+  final def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[String], B) = {
     val decoder = Decoder[A]
     var remaining = buffer
     var acc = Monoid[B].zero

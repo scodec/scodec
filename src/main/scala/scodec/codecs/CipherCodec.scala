@@ -81,7 +81,7 @@ class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) ext
   override def encode(a: A) =
     codec.encode(a) >>= encrypt
 
-  private def encrypt(bits: BitVector): Error \/ BitVector = {
+  private def encrypt(bits: BitVector): String \/ BitVector = {
     val blocks = bits.toByteArray
     try {
       val encrypted = cipherFactory.newEncryptCipher.doFinal(blocks)
@@ -94,7 +94,7 @@ class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) ext
   override def decode(buffer: BitVector) =
     (decrypt(buffer) >>= codec.decode) map { case (remaining, a) => (BitVector.empty, a) }
 
-  private def decrypt(buffer: BitVector): Error \/ BitVector = {
+  private def decrypt(buffer: BitVector): String \/ BitVector = {
     val blocks = buffer.toByteArray
     try {
       val decrypted = cipherFactory.newDecryptCipher.doFinal(blocks)

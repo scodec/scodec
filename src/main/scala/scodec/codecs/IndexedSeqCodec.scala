@@ -15,10 +15,10 @@ class IndexedSeqCodec[A](codec: Codec[A]) extends Codec[IndexedSeq[A]] {
     ixSeq.traverseU { v => codec.encode(v) }.map { _.concatenate }
   }
 
-  def decode(buffer: BitVector): Error \/ (BitVector, IndexedSeq[A]) = {
+  def decode(buffer: BitVector): String \/ (BitVector, IndexedSeq[A]) = {
     val bldr = Vector.newBuilder[A]
     var remaining = buffer
-    var error: Option[Error] = None
+    var error: Option[String] = None
     while (remaining.nonEmpty) {
       codec.decode(remaining) match {
         case \/-((rest, value)) =>
