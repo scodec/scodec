@@ -1,4 +1,4 @@
-1.0.0-m8
+1.0.0-M1
 ========
  - JAR restructuring
    - scodec-bits: no dependency JAR containing BitVector, ByteVector, and supporting types
