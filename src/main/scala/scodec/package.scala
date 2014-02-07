@@ -44,14 +44,14 @@ package object scodec {
   implicit val byteVectorMonoidInstance: Monoid[ByteVector] = Monoid.instance(_ ++ _, ByteVector.empty)
 
   /** Provides common operations on a `Codec[HList]`. */
-  final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val l: Codec[L]) extends AnyVal {
+  final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val selfHList: Codec[L]) extends AnyVal {
     import codecs.HListCodec._
 
     /** Returns a new codec representing `Codec[A :: L]`. */
-    def ::[A](a: Codec[A]): Codec[A :: L] = prepend(a, l)
+    def ::[A](a: Codec[A]): Codec[A :: L] = prepend(a, selfHList)
 
     /** Returns a new codec that encodes/decodes `A :: L` but only returns `L`.  HList equivalent of `~>`. */
-    def :~>:[A: scalaz.Monoid](a: Codec[A]): Codec[L] = Codec.dropLeft(a, l)
+    def :~>:[A: scalaz.Monoid](a: Codec[A]): Codec[L] = Codec.dropLeft(a, selfHList)
 
     /** Returns a new codec that encodes/decodes the `HList L` followed by an `A`. */
     def :+[A, LA <: HList](a: Codec[A])(implicit
@@ -59,25 +59,25 @@ package object scodec {
       init: Init[LA] { type Out = L },
       last: Last[LA] { type Out = A }
     ): Codec[LA] =
-      append(l, a)
+      append(selfHList, a)
 
     /** Returns a new codec the encodes/decodes the `HList K` followed by the `HList L`. */
     def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
       prepend: PrependAux[K, L, KL],
       lengthK: Length[K] { type Out = KLen },
       split: Split[KL, KLen] { type P = K; type S = L }
-    ): Codec[KL] = concat(k, l)
+    ): Codec[KL] = concat(k, selfHList)
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
-  final implicit class ValueCodecEnrichedWithHListSupport[A](val codecA: Codec[A]) extends AnyVal {
+  final implicit class ValueCodecEnrichedWithHListSupport[A](val self: Codec[A]) extends AnyVal {
     import codecs.HListCodec._
 
     /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
     def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
-      codecs.HListCodec.prepend(codecB, prepend(codecA, hnilCodec))
+      codecs.HListCodec.prepend(codecB, prepend(self, hnilCodec))
 
-    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = codecs.HListCodec.flatPrepend(codecA, f)
+    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = codecs.HListCodec.flatPrepend(self, f)
 
     def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
 
