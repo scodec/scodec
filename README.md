@@ -120,7 +120,7 @@ Getting Binaries
 
 This library works with Scala 2.10.*.
 
-ScalaDoc for the latest version is available here: [http://scodec.github.io/scodec/api/latest].
+ScalaDoc for the latest version is available here: http://scodec.github.io/scodec/latest/api.
 
 ### Releases
 
