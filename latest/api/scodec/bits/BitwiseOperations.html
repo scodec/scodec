@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>CipherFactory - scodec.codecs.CipherFactory</title>
-          <meta name="description" content="CipherFactory - scodec.codecs.CipherFactory" />
-          <meta name="keywords" content="CipherFactory scodec.codecs.CipherFactory" />
+          <title>BitwiseOperations - scodec.bits.BitwiseOperations</title>
+          <meta name="description" content="BitwiseOperations - scodec.bits.BitwiseOperations" />
+          <meta name="keywords" content="BitwiseOperations scodec.bits.BitwiseOperations" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'scodec.codecs.CipherFactory$';
+            var hash = 'scodec.bits.BitwiseOperations';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -22,26 +22,31 @@
    	  </script>
     
         </head>
-        <body class="value">
+        <body class="type">
       <div id="definition">
-        <a href="CipherFactory.html" title="Go to companion"><img src="../../lib/object_to_trait_big.png" /></a>
-        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
-        <h1><a href="CipherFactory.html" title="Go to companion">CipherFactory</a></h1>
+        <img src="../../lib/trait_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.bits">bits</a></p>
+        <h1>BitwiseOperations</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">object</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">CipherFactory</span>
+        <span class="name">BitwiseOperations</span><span class="tparams">[<span name="Repr">Repr</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Bitwise operations on a value of type <code>Repr</code>.
+</p></div><dl class="paramcmts block"><dt class="tparam">Repr</dt><dd class="cmt"><p>type that supports that supports bitwise operations
+</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="ByteVector.html" class="extype" name="scodec.bits.ByteVector">ByteVector</a>, <a href="SliceByteVector.html" class="extype" name="scodec.bits.SliceByteVector">SliceByteVector</a>, <a href="StandardByteVector.html" class="extype" name="scodec.bits.StandardByteVector">StandardByteVector</a></div>
         </div></div>
         
 
@@ -50,7 +55,7 @@
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -59,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.codecs.CipherFactory"><span>CipherFactory</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.bits.BitwiseOperations"><span>BitwiseOperations</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -81,10 +86,96 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="scodec.bits.BitwiseOperations#and" visbl="pub" data-isabs="true" fullComment="yes" group="bitwise">
+      <a id="and(other:Repr):Repr"></a>
+      <a id="and(Repr):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">and</span><span class="params">(<span name="other">other: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise AND of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise AND of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitwiseOperations#leftShift" visbl="pub" data-isabs="true" fullComment="no" group="bitwise">
+      <a id="leftShift(n:Int):Repr"></a>
+      <a id="leftShift(Int):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leftShift</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the left <code>n</code> bits.</p>
+    </li><li name="scodec.bits.BitwiseOperations#not" visbl="pub" data-isabs="true" fullComment="no" group="bitwise">
+      <a id="not:Repr"></a>
+      <a id="not:Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">not</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise complement of this vector.</p>
+    </li><li name="scodec.bits.BitwiseOperations#or" visbl="pub" data-isabs="true" fullComment="yes" group="bitwise">
+      <a id="or(other:Repr):Repr"></a>
+      <a id="or(Repr):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">or</span><span class="params">(<span name="other">other: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise OR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise OR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitwiseOperations#rightShift" visbl="pub" data-isabs="true" fullComment="yes" group="bitwise">
+      <a id="rightShift(n:Int,signExtension:Boolean):Repr"></a>
+      <a id="rightShift(Int,Boolean):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rightShift</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>, <span name="signExtension">signExtension: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits.
+</p></div><dl class="paramcmts block"><dt class="param">signExtension</dt><dd class="cmt"><p>whether the <code>n</code> left-msot bits should take on the value of bit 0
+</p></dd></dl></div>
+    </li><li name="scodec.bits.BitwiseOperations#xor" visbl="pub" data-isabs="true" fullComment="yes" group="bitwise">
+      <a id="xor(other:Repr):Repr"></a>
+      <a id="xor(Repr):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">xor</span><span class="params">(<span name="other">other: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise XOR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise XOR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:AnyRef):Boolean"></a>
       <a id="!=(AnyRef):Boolean"></a>
@@ -124,6 +215,33 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.bits.BitwiseOperations#&amp;" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="&amp;(other:Repr):Repr"></a>
+      <a id="&amp;(Repr):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $amp" class="name">&amp;</span><span class="params">(<span name="other">other: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise AND of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise AND of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitwiseOperations#&lt;&lt;" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="&lt;&lt;(n:Int):Repr"></a>
+      <a id="&lt;&lt;(Int):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less$less" class="name">&lt;&lt;</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the left <code>n</code> bits.</p>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:AnyRef):Boolean"></a>
       <a id="==(AnyRef):Boolean"></a>
@@ -150,48 +268,46 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.codecs.CipherFactory#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(transformation:String,key:java.security.Key,spec:java.security.spec.AlgorithmParameterSpec):scodec.codecs.CipherFactory"></a>
-      <a id="apply(String,Key,AlgorithmParameterSpec):CipherFactory"></a>
+    </li><li name="scodec.bits.BitwiseOperations#&gt;&gt;" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="&gt;&gt;(n:Int):Repr"></a>
+      <a id="&gt;&gt;(Int):Repr"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="transformation">transformation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="key">key: <span class="extype" name="java.security.Key">Key</span></span>, <span name="spec">spec: <span class="extype" name="java.security.spec.AlgorithmParameterSpec">AlgorithmParameterSpec</span></span>)</span><span class="result">: <a href="CipherFactory.html" class="extype" name="scodec.codecs.CipherFactory">CipherFactory</a></span>
+        <span title="gt4s: $greater$greater" class="name">&gt;&gt;</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a cipher factory for the specified transformation (via <code>Cipher.getInstance(transformation)</code>).</p><div class="fullcomment"><div class="comment cmt"><p>Creates a cipher factory for the specified transformation (via <code>Cipher.getInstance(transformation)</code>).</p><p>Ciphers are initialized with the specified key and algorithm parameter specification.
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits where the <code>n</code> left-most bits are sign extended.</p>
+    </li><li name="scodec.bits.BitwiseOperations#&gt;&gt;&gt;" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="&gt;&gt;&gt;(n:Int):Repr"></a>
+      <a id="&gt;&gt;&gt;(Int):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater$greater$greater" class="name">&gt;&gt;&gt;</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits where the <code>n</code> left-most bits are low.</p>
+    </li><li name="scodec.bits.BitwiseOperations#^" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="^(other:Repr):Repr"></a>
+      <a id="^(Repr):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $up" class="name">^</span><span class="params">(<span name="other">other: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise XOR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise XOR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
 </p></div></div>
-    </li><li name="scodec.codecs.CipherFactory#apply" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="apply(transformation:String,key:java.security.Key):scodec.codecs.CipherFactory"></a>
-      <a id="apply(String,Key):CipherFactory"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="transformation">transformation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="key">key: <span class="extype" name="java.security.Key">Key</span></span>)</span><span class="result">: <a href="CipherFactory.html" class="extype" name="scodec.codecs.CipherFactory">CipherFactory</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a cipher factory for the specified transformation (via <code>Cipher.getInstance(transformation)</code>).</p><div class="fullcomment"><div class="comment cmt"><p>Creates a cipher factory for the specified transformation (via <code>Cipher.getInstance(transformation)</code>).</p><p>Ciphers are initialized with the specified key only.
-</p></div></div>
-    </li><li name="scodec.codecs.CipherFactory#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(transformation:String,initForEncryption:javax.crypto.Cipher=&gt;Unit,initForDecryption:javax.crypto.Cipher=&gt;Unit):scodec.codecs.CipherFactory"></a>
-      <a id="apply(String,(Cipher)⇒Unit,(Cipher)⇒Unit):CipherFactory"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="transformation">transformation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="initForEncryption">initForEncryption: (<span class="extype" name="javax.crypto.Cipher">Cipher</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>, <span name="initForDecryption">initForDecryption: (<span class="extype" name="javax.crypto.Cipher">Cipher</span>) ⇒ <span class="extype" name="scala.Unit">Unit</span></span>)</span><span class="result">: <a href="CipherFactory.html" class="extype" name="scodec.codecs.CipherFactory">CipherFactory</a></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a cipher factory for the specified transformation (via <code>Cipher.getInstance(transformation)</code>)
-and using the specified functions for initializing for encryption and decryption respectively.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -373,6 +489,19 @@ and using the specified functions for initializing for encryption and decryption
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.bits.BitwiseOperations#unary_~" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="unary_~():Repr"></a>
+      <a id="unary_~():Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: unary_$tilde" class="name">unary_~</span><span class="params">()</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise complement of this vector.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -430,6 +559,20 @@ and using the specified functions for initializing for encryption and decryption
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scodec.bits.BitwiseOperations#|" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="|(other:Repr):Repr"></a>
+      <a id="|(Repr):Repr"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bar" class="name">|</span><span class="params">(<span name="other">other: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitwiseOperations.Repr">Repr</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise OR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise OR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
     </li></ol>
             </div>
 
@@ -448,7 +591,10 @@ and using the specified functions for initializing for encryption and decryption
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="bitwise">
+              <h3>Bitwise Operations</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

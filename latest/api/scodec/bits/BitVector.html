@@ -1,0 +1,1085 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>BitVector - scodec.bits.BitVector</title>
+          <meta name="description" content="BitVector - scodec.bits.BitVector" />
+          <meta name="keywords" content="BitVector scodec.bits.BitVector" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'scodec.bits.BitVector';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="type">
+      <div id="definition">
+        <a href="BitVector$.html" title="Go to companion"><img src="../../lib/trait_to_object_big.png" /></a>
+        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.bits">bits</a></p>
+        <h1><a href="BitVector$.html" title="Go to companion">BitVector</a></h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <span class="name">BitVector</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Persistent vector of bits, stored as bytes.</p><p>Bits are numbered left to right, starting at 0.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                <li class="group out"><span>Grouped</span></li>
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="scodec.bits.BitVector"><span>BitVector</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="scodec.bits.BitVector#get" visbl="pub" data-isabs="true" fullComment="yes" group="individual">
+      <a id="get(n:Long):Boolean"></a>
+      <a id="get(Long):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">get</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns true if the <code>n</code>th bit is high, false otherwise.</p><div class="fullcomment"><div class="comment cmt"><p>Returns true if the <code>n</code>th bit is high, false otherwise.
+</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">NoSuchElementException<p>if <code>n &gt;= size</code>
+</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#size" visbl="pub" data-isabs="true" fullComment="no" group="collection">
+      <a id="size:Long"></a>
+      <a id="size:Long"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">size</span><span class="result">: <span class="extype" name="scala.Long">Long</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns number of bits in this vector.</p>
+    </li><li name="scodec.bits.BitVector#updated" visbl="pub" data-isabs="true" fullComment="no" group="individual">
+      <a id="updated(n:Long,high:Boolean):scodec.bits.BitVector"></a>
+      <a id="updated(Long,Boolean):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">updated</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>, <span name="high">high: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a new bit vector with the <code>n</code>th bit high if <code>high</code> is true or low if <code>high</code> is false.</p>
+    </li></ol>
+            </div>
+
+        <div id="values" class="values members">
+              <h3>Concrete Value Members</h3>
+              <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:AnyRef):Boolean"></a>
+      <a id="!=(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:Any):Boolean"></a>
+      <a id="!=(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="##():Int"></a>
+      <a id="##():Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#&amp;" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="&amp;(other:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="&amp;(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $amp" class="name">&amp;</span><span class="params">(<span name="other">other: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise AND of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise AND of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#++" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="++(b2:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="++(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $plus$plus" class="name">++</span><span class="params">(<span name="b2">b2: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a new bit vector representing this vector's contents followed by the specified vector's contents.</p>
+    </li><li name="scodec.bits.BitVector#&lt;&lt;" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="&lt;&lt;(n:Long):scodec.bits.BitVector"></a>
+      <a id="&lt;&lt;(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $less$less" class="name">&lt;&lt;</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the left <code>n</code> bits.</p>
+    </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:AnyRef):Boolean"></a>
+      <a id="==(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:Any):Boolean"></a>
+      <a id="==(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#&gt;&gt;" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="&gt;&gt;(n:Long):scodec.bits.BitVector"></a>
+      <a id="&gt;&gt;(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater$greater" class="name">&gt;&gt;</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits where the <code>n</code> left-most bits are sign extended.</p>
+    </li><li name="scodec.bits.BitVector#&gt;&gt;&gt;" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="&gt;&gt;&gt;(n:Long):scodec.bits.BitVector"></a>
+      <a id="&gt;&gt;&gt;(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $greater$greater$greater" class="name">&gt;&gt;&gt;</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits where the <code>n</code> left-most bits are low.</p>
+    </li><li name="scodec.bits.BitVector#^" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="^(other:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="^(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $up" class="name">^</span><span class="params">(<span name="other">other: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise XOR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise XOR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#acquire" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="acquire(n:Long):Either[String,scodec.bits.BitVector]"></a>
+      <a id="acquire(Long):Either[String,BitVector]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">acquire</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a vector whose contents are the results of taking the first <code>n</code> bits of this vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a vector whose contents are the results of taking the first <code>n</code> bits of this vector.</p><p>If this vector does not contain at least <code>n</code> bits, an error message is returned.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>take</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#and" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="and(other:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="and(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">and</span><span class="params">(<span name="other">other: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise AND of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise AND of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#apply" visbl="pub" data-isabs="false" fullComment="yes" group="individual">
+      <a id="apply(n:Long):Boolean"></a>
+      <a id="apply(Long):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Alias for <code>get</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Alias for <code>get</code>.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>get(Long)
+</p></span></dd></dl></div>
+    </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="asInstanceOf[T0]:T0"></a>
+      <a id="asInstanceOf[T0]:T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#checkBounds" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="checkBounds(n:Long):Unit"></a>
+      <a id="checkBounds(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">checkBounds</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scodec.bits.BitVector#clear" visbl="pub" data-isabs="false" fullComment="no" group="individual">
+      <a id="clear(n:Long):scodec.bits.BitVector"></a>
+      <a id="clear(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clear</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a new bit vector with the <code>n</code>th bit low (and all other bits unmodified).</p>
+    </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="clone():Object"></a>
+      <a id="clone():AnyRef"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scodec.bits.BitVector#compact" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="compact:scodec.bits.BitVector.Bytes"></a>
+      <a id="compact:Bytes"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compact</span><span class="result">: <span class="extype" name="scodec.bits.BitVector.Bytes">Bytes</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Return a <code>BitVector</code> with the same contents as <code>this</code>, but
+based off a single <code>ByteVector</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Return a <code>BitVector</code> with the same contents as <code>this</code>, but
+based off a single <code>ByteVector</code>.</p><p>This may involve copying data to a fresh <code>ByteVector</code>, but
+has the advantage that lookups index directly into a single
+<code>ByteVector</code> rather than traversing a logarithmic number of nodes
+in this tree.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#consume" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="consume[A](n:Long)(decode:scodec.bits.BitVector=&gt;Either[String,A]):Either[String,(scodec.bits.BitVector,A)]"></a>
+      <a id="consume[A](Long)((BitVector)⇒Either[String,A]):Either[String,(BitVector,A)]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">consume</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="params">(<span name="decode">decode: (<a href="" class="extype" name="scodec.bits.BitVector">BitVector</a>) ⇒ <span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector.consume.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scala.Predef.String">String</span>, (<a href="" class="extype" name="scodec.bits.BitVector">BitVector</a>, <span class="extype" name="scodec.bits.BitVector.consume.A">A</span>)]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Consumes the first <code>n</code> bits of this vector and decodes them with the specified function,
+resulting in a vector of the remaining bits and the decoded value.</p><div class="fullcomment"><div class="comment cmt"><p>Consumes the first <code>n</code> bits of this vector and decodes them with the specified function,
+resulting in a vector of the remaining bits and the decoded value. If this vector
+does not have <code>n</code> bits or an error occurs while decoding, an error is returned instead.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#drop" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="drop(n0:Long):scodec.bits.BitVector"></a>
+      <a id="drop(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">drop</span><span class="params">(<span name="n0">n0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a vector whose contents are the results of skipping the first <code>n</code> bits of this vector and taking the rest.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a vector whose contents are the results of skipping the first <code>n</code> bits of this vector and taking the rest.</p><p>The resulting vector's size is <code>0 max (size - n)</code>
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#dropRight" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="dropRight(n:Long):scodec.bits.BitVector"></a>
+      <a id="dropRight(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dropRight</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a vector whose contents are the results of skipping the last <code>n</code> bits of this vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a vector whose contents are the results of skipping the last <code>n</code> bits of this vector.</p><p>The resulting vector's size is <code>0 max (size - n)</code>
+</p></div></div>
+    </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="eq(x$1:AnyRef):Boolean"></a>
+      <a id="eq(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(other:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scodec.bits.BitVector">BitVector</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="finalize():Unit"></a>
+      <a id="finalize():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[java.lang.Throwable]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scodec.bits.BitVector#force" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="force:scodec.bits.BitVector"></a>
+      <a id="force:BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">force</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Forces any <code>Suspend</code> nodes in this <code>BitVector</code> and ensures the tree is balanced.</p>
+    </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="getClass():Class[_]"></a>
+      <a id="getClass():Class[_]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode:Int"></a>
+      <a id="hashCode:Int"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hashCode</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Computed by sampling bits <code>Stream.iterate(0L)(n =&gt; (n*1.7).toLong + 1)</code>,
+up until the maximum index.</p><div class="fullcomment"><div class="comment cmt"><p>Computed by sampling bits <code>Stream.iterate(0L)(n =&gt; (n*1.7).toLong + 1)</code>,
+up until the maximum index. The result is cached.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scodec.bits.BitVector">BitVector</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#head" visbl="pub" data-isabs="false" fullComment="yes" group="individual">
+      <a id="head:Boolean"></a>
+      <a id="head:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">head</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns the first bit in this vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the first bit in this vector.
+</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>if this vector is empty</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#intSize" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="intSize:Option[Int]"></a>
+      <a id="intSize:Option[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">intSize</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns the number of bits in this vector, or <code>None</code> if the size does not
+fit into an <code>Int</code>.</p>
+    </li><li name="scodec.bits.BitVector#isEmpty" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="isEmpty:Boolean"></a>
+      <a id="isEmpty:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns true if this bit vector has no bits.</p>
+    </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <a id="isInstanceOf[T0]:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#leftShift" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="leftShift(n:Long):scodec.bits.BitVector"></a>
+      <a id="leftShift(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">leftShift</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the left <code>n</code> bits.</p>
+    </li><li name="scodec.bits.BitVector#lift" visbl="pub" data-isabs="false" fullComment="no" group="individual">
+      <a id="lift(n:Long):Option[Boolean]"></a>
+      <a id="lift(Long):Option[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lift</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns <code>Some(true)</code> if the <code>n</code>th bit is high, <code>Some(false)</code> if low, and <code>None</code> if <code>n &gt;= size</code>.</p>
+    </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ne(x$1:AnyRef):Boolean"></a>
+      <a id="ne(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#nonEmpty" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="nonEmpty:Boolean"></a>
+      <a id="nonEmpty:Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nonEmpty</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns true if this bit vector has a non-zero number of bits.</p>
+    </li><li name="scodec.bits.BitVector#not" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="not:scodec.bits.BitVector"></a>
+      <a id="not:BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">not</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise complement of this vector.</p>
+    </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notify():Unit"></a>
+      <a id="notify():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="notifyAll():Unit"></a>
+      <a id="notifyAll():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#or" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="or(other:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="or(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">or</span><span class="params">(<span name="other">other: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise OR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise OR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#outOfBounds" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="outOfBounds(n:Long):Nothing"></a>
+      <a id="outOfBounds(Long):Nothing"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">outOfBounds</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Nothing">Nothing</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
+    </li><li name="scodec.bits.BitVector#padTo" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="padTo(n:Long):scodec.bits.BitVector"></a>
+      <a id="padTo(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">padTo</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns an <code>n</code>-bit vector whose contents are this vector's contents followed by 0 or more low bits.</p><div class="fullcomment"><div class="comment cmt"><p>Returns an <code>n</code>-bit vector whose contents are this vector's contents followed by 0 or more low bits.
+</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>if <code>n &lt; size</code></p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#reverse" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="reverse:scodec.bits.BitVector"></a>
+      <a id="reverse:BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reverse</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Reverse the bits of this vector.</p>
+    </li><li name="scodec.bits.BitVector#reverseByteOrder" visbl="pub" data-isabs="false" fullComment="no" group="collection">
+      <a id="reverseByteOrder:scodec.bits.BitVector"></a>
+      <a id="reverseByteOrder:BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reverseByteOrder</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a new vector of the same size with the byte order reversed.</p>
+    </li><li name="scodec.bits.BitVector#rightShift" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="rightShift(n:Long,signExtension:Boolean):scodec.bits.BitVector"></a>
+      <a id="rightShift(Long,Boolean):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">rightShift</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>, <span name="signExtension">signExtension: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bit vector of the same size with each bit shifted to the right <code>n</code> bits.
+</p></div><dl class="paramcmts block"><dt class="param">signExtension</dt><dd class="cmt"><p>whether the <code>n</code> left-most bits should take on the value of bit 0
+</p></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#set" visbl="pub" data-isabs="false" fullComment="no" group="individual">
+      <a id="set(n:Long):scodec.bits.BitVector"></a>
+      <a id="set(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">set</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a new bit vector with the <code>n</code>th bit high (and all other bits unmodified).</p>
+    </li><li name="scodec.bits.BitVector#sizeGreaterThan" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="sizeGreaterThan(n:Long):Boolean"></a>
+      <a id="sizeGreaterThan(Long):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sizeGreaterThan</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns <code>true</code> if the size of this <code>BitVector</code> is greater than <code>n</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Returns <code>true</code> if the size of this <code>BitVector</code> is greater than <code>n</code>. Unlike <code>size</code>, this
+forces this <code>BitVector</code> from left to right, halting as soon as it has a definite answer.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#sizeLessThan" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="sizeLessThan(n:Long):Boolean"></a>
+      <a id="sizeLessThan(Long):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sizeLessThan</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns <code>true</code> if the size of this <code>BitVector</code> is less than <code>n</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Returns <code>true</code> if the size of this <code>BitVector</code> is less than <code>n</code>. Unlike <code>size</code>, this
+forces this <code>BitVector</code> from left to right, halting as soon as it has a definite answer.
+</p></div></div>
+    </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
+      <a id="synchronized[T0](⇒T0):T0"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#take" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="take(n0:Long):scodec.bits.BitVector"></a>
+      <a id="take(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">take</span><span class="params">(<span name="n0">n0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a vector whose contents are the results of taking the first <code>n</code> bits of this vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a vector whose contents are the results of taking the first <code>n</code> bits of this vector.</p><p>The resulting vector's size is <code>n min size</code>.</p><p>Note: if an <code>n</code>-bit vector is required, use the <code>acquire</code> method instead.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>acquire</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#takeRight" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="takeRight(n:Long):scodec.bits.BitVector"></a>
+      <a id="takeRight(Long):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">takeRight</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a vector whose contents are the results of taking the last <code>n</code> bits of this vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a vector whose contents are the results of taking the last <code>n</code> bits of this vector.</p><p>The resulting vector's size is <code>n min size</code>.</p><p>Note: if an <code>n</code>-bit vector is required, use the <code>acquire</code> method instead.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>acquire</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#toBin" visbl="pub" data-isabs="false" fullComment="no" group="conversions">
+      <a id="toBin:String"></a>
+      <a id="toBin:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toBin</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts the contents of this bit vector to a binary string of <code>size</code> digits.</p>
+    </li><li name="scodec.bits.BitVector#toByteArray" visbl="pub" data-isabs="false" fullComment="yes" group="conversions">
+      <a id="toByteArray:Array[Byte]"></a>
+      <a id="toByteArray:Array[Byte]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toByteArray</span><span class="result">: <span class="extype" name="scala.Array">Array</span>[<span class="extype" name="scala.Byte">Byte</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts the contents of this vector to a byte array.</p><div class="fullcomment"><div class="comment cmt"><p>Converts the contents of this vector to a byte array.</p><p>If this vector's size does not divide evenly by 8, the last byte of the returned vector
+will be zero-padded to the right.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#toByteBuffer" visbl="pub" data-isabs="false" fullComment="yes" group="conversions">
+      <a id="toByteBuffer:java.nio.ByteBuffer"></a>
+      <a id="toByteBuffer:ByteBuffer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toByteBuffer</span><span class="result">: <span class="extype" name="java.nio.ByteBuffer">ByteBuffer</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts the contents of this vector to a <code>java.nio.ByteBuffer</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Converts the contents of this vector to a <code>java.nio.ByteBuffer</code>.</p><p>The returned buffer is freshly allocated with limit set to the minimum number of bytes needed
+to represent the contents of this vector, position set to zero, and remaining set to the limit.
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p>toByteVector</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#toByteVector" visbl="pub" data-isabs="false" fullComment="yes" group="conversions">
+      <a id="toByteVector:scodec.bits.ByteVector"></a>
+      <a id="toByteVector:ByteVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toByteVector</span><span class="result">: <a href="ByteVector.html" class="extype" name="scodec.bits.ByteVector">ByteVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts the contents of this vector to a byte vector.</p><div class="fullcomment"><div class="comment cmt"><p>Converts the contents of this vector to a byte vector.</p><p>If this vector's size does not divide evenly by 8, the last byte of the returned vector
+will be zero-padded to the right.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#toHex" visbl="pub" data-isabs="false" fullComment="yes" group="conversions">
+      <a id="toHex:String"></a>
+      <a id="toHex:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toHex</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts the contents of this bit vector to a hexadecimal string of <code>ceil(size / 4)</code> nibbles.</p><div class="fullcomment"><div class="comment cmt"><p>Converts the contents of this bit vector to a hexadecimal string of <code>ceil(size / 4)</code> nibbles.</p><p>The last nibble is right-padded with zeros if the size is not evenly divisible by 4.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#toIndexedSeq" visbl="pub" data-isabs="false" fullComment="yes" group="collection">
+      <a id="toIndexedSeq:IndexedSeq[Boolean]"></a>
+      <a id="toIndexedSeq:IndexedSeq[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toIndexedSeq</span><span class="result">: <span class="extype" name="scala.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Return the sequence of bits in this vector.</p><div class="fullcomment"><div class="comment cmt"><p>Return the sequence of bits in this vector. The returned
+<code>IndexedSeq</code> is just a view; nothing is actually copied.
+</p></div><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>if this vector's size exceeds Int.MaxValue</p></span></dd><dt>See also</dt><dd><span class="cmt"><p>toIndexedSeq</p></span><span class="cmt"><p>acquire</p></span></dd></dl></div>
+    </li><li name="scodec.bits.BitVector#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="toString():String"></a>
+      <a id="toString():String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Display the size and bytes of this <code>BitVector</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Display the size and bytes of this <code>BitVector</code>.
+For bit vectors beyond a certain size, only a hash of the
+contents are shown.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scodec.bits.BitVector">BitVector</a> → AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.bits.BitVector#unary_~" visbl="pub" data-isabs="false" fullComment="no" group="bitwise">
+      <a id="unary_~():scodec.bits.BitVector"></a>
+      <a id="unary_~():BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: unary_$tilde" class="name">unary_~</span><span class="params">()</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise complement of this vector.</p>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait():Unit"></a>
+      <a id="wait():Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long,x$2:Int):Unit"></a>
+      <a id="wait(Long,Int):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="wait(x$1:Long):Unit"></a>
+      <a id="wait(Long):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="classOf[java.lang.InterruptedException]">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="scodec.bits.BitVector#xor" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="xor(other:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="xor(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">xor</span><span class="params">(<span name="other">other: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise XOR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise XOR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li><li name="scodec.bits.BitVector#|" visbl="pub" data-isabs="false" fullComment="yes" group="bitwise">
+      <a id="|(other:scodec.bits.BitVector):scodec.bits.BitVector"></a>
+      <a id="|(BitVector):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bar" class="name">|</span><span class="params">(<span name="other">other: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.bits.BitVector">BitVector</a></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Returns a bitwise OR of this vector with the specified vector.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a bitwise OR of this vector with the specified vector.</p><p>The resulting vector's size is the minimum of this vector's size and the specified vector's size.
+</p></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="collection">
+              <h3>Collection Like Methods</h3>
+              
+            </div><div class="group" name="individual">
+              <h3>Operations on Individual Bits</h3>
+              
+            </div><div class="group" name="bitwise">
+              <h3>Bitwise Operations</h3>
+              
+            </div><div class="group" name="conversions">
+              <h3>Conversions</h3>
+              
+            </div><div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+    </body>
+      </html>
