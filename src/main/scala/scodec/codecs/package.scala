@@ -4,7 +4,7 @@ import java.nio.charset.Charset
 import java.security.cert.Certificate
 import java.util.UUID
 
-import shapeless._
+import shapeless.Iso
 
 /**
  * Provides codecs for common types and combinators for building larger codecs.
@@ -135,48 +135,6 @@ package object codecs {
   final implicit class StringEnrichedWithCodecNamingSupport(val name: String) extends AnyVal {
     /** Names the specified codec, resulting in the name being included in error messages. */
     def |[A](codec: Codec[A]): Codec[A] = new NamedCodec(name, codec)
-  }
-
-  /** Provides common operations on a `Codec[HList]`. */
-  final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val l: Codec[L]) extends AnyVal {
-    import HListCodec._
-
-    /** Returns a new codec representing `Codec[A :: L]`. */
-    def ::[A](a: Codec[A]): Codec[A :: L] = prepend(a, l)
-
-    /** Returns a new codec that encodes/decodes `A :: L` but only returns `L`.  HList equivalent of `~>`. */
-    def :~>:[A: scalaz.Monoid](a: Codec[A]): Codec[L] = Codec.dropLeft(a, l)
-
-    /** Returns a new codec that encodes/decodes the `HList L` followed by an `A`. */
-    def :+[A, LA <: HList](a: Codec[A])(implicit
-      prepend: PrependAux[L, A :: HNil, LA],
-      init: Init[LA] { type Out = L },
-      last: Last[LA] { type Out = A }
-    ): Codec[LA] =
-      append(l, a)
-
-    /** Returns a new codec the encodes/decodes the `HList K` followed by the `HList L`. */
-    def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
-      prepend: PrependAux[K, L, KL],
-      lengthK: Length[K] { type Out = KLen },
-      split: Split[KL, KLen] { type P = K; type S = L }
-    ): Codec[KL] = concat(k, l)
-  }
-
-  /** Provides `HList` related syntax for codecs of any type. */
-  final implicit class ValueCodecEnrichedWithHListSupport[A](val codecA: Codec[A]) extends AnyVal {
-    import HListCodec._
-
-    /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
-    def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
-      prepend(codecB, prepend(codecA, hnilCodec))
-
-    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = HListCodec.flatPrepend(codecA, f)
-
-    def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
-
-    /** Operator alias for `flatPrepend`. */
-    def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
   }
 
   /** Builds an `Iso[A, B]` from two functions. */

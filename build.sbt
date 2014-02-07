@@ -26,6 +26,7 @@ scalacOptions in (Compile, doc) ++= Seq(
   //"-diagrams", https://issues.scala-lang.org/browse/SI-7950
   "-groups",
   "-implicits",
+  "-implicits-show-all",
   "-skip-packages", "scalaz")
 
 licenses += ("Three-clause BSD-style", url("http://github.com/scodec/scodec/blob/master/LICENSE"))
