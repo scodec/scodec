@@ -1,0 +1,1148 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>codecs - scodec.codecs</title>
+          <meta name="description" content="codecs - scodec.codecs" />
+          <meta name="keywords" content="codecs scodec.codecs" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'scodec.codecs.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a></p>
+        <h1>codecs</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">codecs</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides codecs for common types and combinators for building larger codecs.</p><h5> Basic Codecs </h5><p>There are built-in codecs for <code>Int</code>, <code>Long</code>, <code>Boolean</code>, <code>String</code>, and <code>UUID</code>.</p><p>There are a number of predefined integral codecs named using the form: </p><pre>[u]int${size}[L]</pre><p>where <code>u</code> stands for unsigned, <code>size</code> is replaced by one of <code>8, 16, 24, 32, 64</code>, and <code>L</code> stands for little-endian.
+For each codec of that form, the type is <code>Codec[Int]</code> or <code>Codec[Long]</code> depending on the specified size.
+For example, <code>int32</code> supports 32-bit big-endian 2s complement signed integers, and uint16L supports 16-bit little-endian
+unsigned integers.
+Note: <code>uint64[L]</code> is not provided because it does not fit in to a <code>Long</code>.</p><p>Additionally, methods of the form <code>[u]int[L](size: Int)</code> and <code>[u]long[L](size: Int)</code> exist to build arbitrarily
+sized codecs, within the limitations of <code>Int</code> and <code>Long</code>.</p><h5> Tuple Codecs </h5><p>The <code>~</code> operator supports combining a <code>Codec[A]</code> and a <code>Codec[B]</code> in to a <code>Codec[(A, B)]</code>.</p><p>For example: </p><pre><span class="kw">val</span> codec: Codec[<span class="std">Int</span> ~ <span class="std">Int</span> ~ <span class="std">Int</span>] = uint8 ~ uint8 ~ uint8</pre><p>Codecs generated with <code>~</code> result in left nested tuples. These left nested tuples can
+be pulled back apart by pattern matching with <code>~</code>. For example: </p><pre>Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map { <span class="kw">case</span> a ~ b ~ c <span class="kw">=&gt;</span> a + b + c }</pre><p>Alternatively, a function of N arguments can be lifted to a function of left-nested tuples. For example: </p><pre><span class="kw">val</span> add3 = (_: <span class="std">Int</span>) + (_: <span class="std">Int</span>) + (_: <span class="std">Int</span>)
+Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map add3</pre><p>Similarly, a left nested tuple can be created with the <code>~</code> operator. This is useful when creating the tuple structure
+to pass to encode. For example: </p><pre>(uint8 ~ uint8 ~ uint8).encode(<span class="num">1</span> ~ <span class="num">2</span> ~ <span class="num">3</span>)</pre><p>Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="scodec.codecs"><span>codecs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="scodec.codecs.CipherFactory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CipherFactoryextendsAnyRef"></a>
+      <a id="CipherFactory:CipherFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="CipherFactory.html"><span class="name">CipherFactory</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Represents the ability to create a <span class="extype" name="Cipher">Cipher</span> for encryption or decryption.</p>
+    </li><li name="scodec.codecs.Discriminator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Discriminator[A,B]extendsAnyRef"></a>
+      <a id="Discriminator[A,B]:Discriminator[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Discriminator.html"><span class="name">Discriminator</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Provides support for building codecs that encode/decode multiple disparate types by using a discriminator value to
+indicate the type.</p>
+    </li><li name="scodec.codecs.HListCodecEnrichedWithHListSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HListCodecEnrichedWithHListSupport[L&lt;:shapeless.HList]extendsAnyVal"></a>
+      <a id="HListCodecEnrichedWithHListSupport[L&lt;:HList]:HListCodecEnrichedWithHListSupport[L]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$HListCodecEnrichedWithHListSupport.html"><span class="name">HListCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Provides common operations on a <code>Codec[HList]</code>.</p>
+    </li><li name="scodec.codecs.SignatureFactory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SignatureFactoryextendsAnyRef"></a>
+      <a id="SignatureFactory:SignatureFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SignatureFactory.html"><span class="name">SignatureFactory</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Represents the ability to create a <span class="extype" name="java.security.Signature">java.security.Signature</span> for use with <span class="extype" name="SignatureCodec">SignatureCodec</span>.</p>
+    </li><li name="scodec.codecs.StringEnrichedWithCodecNamingSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="StringEnrichedWithCodecNamingSupportextendsAnyVal"></a>
+      <a id="StringEnrichedWithCodecNamingSupport:StringEnrichedWithCodecNamingSupport"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$StringEnrichedWithCodecNamingSupport.html"><span class="name">StringEnrichedWithCodecNamingSupport</span></a><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Provides the <code>|</code> method on <code>String</code> that allows creation of a named codec.</p>
+    </li><li name="scodec.codecs.TypeDiscriminator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TypeDiscriminator[A,B]extendsDiscriminator[A,B]"></a>
+      <a id="TypeDiscriminator[A,B]:TypeDiscriminator[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="TypeDiscriminator.html"><span class="name">TypeDiscriminator</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.TypeDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.TypeDiscriminator.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Discriminator that matches based on the runtime type of the value.</p>
+    </li><li name="scodec.codecs.TypeDiscriminatorCase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TypeDiscriminatorCase[A,B]extendsProductwithSerializable"></a>
+      <a id="TypeDiscriminatorCase[A,B]:TypeDiscriminatorCase[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TypeDiscriminatorCase.html"><span class="name">TypeDiscriminatorCase</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="discriminatorValue">discriminatorValue: <span class="extype" name="scodec.codecs.TypeDiscriminatorCase.B">B</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.TypeDiscriminatorCase.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scodec.codecs.TypeDiscriminatorCase.A">A</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">A case in a type based discriminator.</p>
+    </li><li name="scodec.codecs.ValueCodecEnrichedWithHListSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ValueCodecEnrichedWithHListSupport[A]extendsAnyVal"></a>
+      <a id="ValueCodecEnrichedWithHListSupport[A]:ValueCodecEnrichedWithHListSupport[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$ValueCodecEnrichedWithHListSupport.html"><span class="name">ValueCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Provides <code>HList</code> related syntax for codecs of any type.</p>
+    </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ValueEnrichedWithTuplingSupport[A]extendsAnyRef"></a>
+      <a id="ValueEnrichedWithTuplingSupport[A]:ValueEnrichedWithTuplingSupport[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$ValueEnrichedWithTuplingSupport.html"><span class="name">ValueEnrichedWithTuplingSupport</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Allows creation of left nested tuples by successive usage of <code>~</code> operator.</p>
+    </li><li name="scodec.codecs.~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="~[+A,+B]=(A,B)"></a>
+      <a id="~[+A,+B]:(A,B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $tilde" class="name">~</span><span class="tparams">[<span name="A">+A</span>, <span name="B">+B</span>]</span><span class="result"> = (<span class="extype" name="scodec.codecs.~.A">A</span>, <span class="extype" name="scodec.codecs.~.B">B</span>)</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Type alias for Tuple2 in order to allow left nested tuples to be written as A ~ B ~ C ~ .</p><div class="fullcomment"><div class="comment cmt"><p>Type alias for Tuple2 in order to allow left nested tuples to be written as A ~ B ~ C ~ ....</p></div></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="scodec.codecs.CipherFactory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CipherFactory"></a>
+      <a id="CipherFactory:CipherFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="CipherFactory$.html"><span class="name">CipherFactory</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.Discriminator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Discriminator"></a>
+      <a id="Discriminator:Discriminator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Discriminator$.html"><span class="name">Discriminator</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion for <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>.</p>
+    </li><li name="scodec.codecs.DiscriminatorCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DiscriminatorCodec"></a>
+      <a id="DiscriminatorCodec:DiscriminatorCodec"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DiscriminatorCodec$.html"><span class="name">DiscriminatorCodec</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion for <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>.</p>
+    </li><li name="scodec.codecs.DiscriminatorCodecSyntax" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DiscriminatorCodecSyntax"></a>
+      <a id="DiscriminatorCodecSyntax:DiscriminatorCodecSyntax"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DiscriminatorCodecSyntax$.html"><span class="name">DiscriminatorCodecSyntax</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.SignatureFactory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SignatureFactory"></a>
+      <a id="SignatureFactory:SignatureFactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SignatureFactory$.html"><span class="name">SignatureFactory</span></a>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#ascii" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ascii:scodec.Codec[String]"></a>
+      <a id="ascii:Codec[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ascii</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#bits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bits(size:Int):scodec.Codec[scodec.BitVector]"></a>
+      <a id="bits(Int):Codec[BitVector]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bits</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="../package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#bool" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bool:scodec.Codec[Boolean]"></a>
+      <a id="bool:Codec[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bool</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#bytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bytes(size:Int):scodec.Codec[scodec.ByteVector]"></a>
+      <a id="bytes(Int):Codec[ByteVector]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bytes</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="../package.html#ByteVector=scodec.bits.ByteVector" class="extmbr" name="scodec.ByteVector">ByteVector</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#conditional" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="conditional[A](included:Boolean,codec:scodec.Codec[A]):scodec.Codec[Option[A]]"></a>
+      <a id="conditional[A](Boolean,Codec[A]):Codec[Option[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">conditional</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="included">included: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.conditional.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.conditional.A">A</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#constant" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="constant[A](bits:A*)(implicitevidence$1:Integral[A]):scodec.Codec[Unit]"></a>
+      <a id="constant[A](A*)(Integral[A]):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constant</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.codecs.constant.A">A</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Integral">Integral</span>[<span class="extype" name="scodec.codecs.constant.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#constant" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="constant(bits:scodec.BitVector):scodec.Codec[Unit]"></a>
+      <a id="constant(BitVector):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constant</span><span class="params">(<span name="bits">bits: <a href="../package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#discriminated" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="discriminated[A]:scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminatorCodec[A]"></a>
+      <a id="discriminated[A]:NeedDiscriminatorCodec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">discriminated</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a href="DiscriminatorCodecSyntax$$NeedDiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.discriminated.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Provides syntax for building a <span class="extype" name="DiscriminatorCodec">DiscriminatorCodec</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides syntax for building a <span class="extype" name="DiscriminatorCodec">DiscriminatorCodec</span>.
+Usage: </p><pre><span class="kw">val</span> discriminator: Discriminator[<span class="std">AnyVal</span>, <span class="std">Int</span>] = ???
+<span class="kw">val</span> codec = discriminated[<span class="std">AnyVal</span>] by uint8 using discriminator</pre></div></div>
+    </li><li name="scodec.codecs.package#encrypted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="encrypted[A](codec:scodec.Codec[A])(implicitcipherFactory:scodec.codecs.CipherFactory):scodec.Codec[A]"></a>
+      <a id="encrypted[A](Codec[A])(CipherFactory):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">encrypted</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.encrypted.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cipherFactory">cipherFactory: <a href="CipherFactory.html" class="extype" name="scodec.codecs.CipherFactory">CipherFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.encrypted.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#fixedSizeBits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fixedSizeBits[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]"></a>
+      <a id="fixedSizeBits[A](Int,Codec[A]):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fixedSizeBits</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBits.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBits.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#fixedSizeBytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fixedSizeBytes[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]"></a>
+      <a id="fixedSizeBytes[A](Int,Codec[A]):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fixedSizeBytes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBytes.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBytes.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#fixedSizeSignature" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="fixedSizeSignature[A](byteSize:Int)(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]"></a>
+      <a id="fixedSizeSignature[A](Int)(Codec[A])(SignatureFactory):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">fixedSizeSignature</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="byteSize">byteSize: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeSignature.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="signatureFactory">signatureFactory: <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeSignature.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#ignore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ignore(bits:Int):scodec.Codec[Unit]"></a>
+      <a id="ignore(Int):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ignore</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int(bits:Int):scodec.Codec[Int]"></a>
+      <a id="int(Int):Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int16" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int16:scodec.Codec[Int]"></a>
+      <a id="int16:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int16</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int16L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int16L:scodec.Codec[Int]"></a>
+      <a id="int16L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int16L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int24" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int24:scodec.Codec[Int]"></a>
+      <a id="int24:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int24</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int24L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int24L:scodec.Codec[Int]"></a>
+      <a id="int24L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int24L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int32" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int32:scodec.Codec[Int]"></a>
+      <a id="int32:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int32</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int32L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int32L:scodec.Codec[Int]"></a>
+      <a id="int32L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int32L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int64" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int64:scodec.Codec[Long]"></a>
+      <a id="int64:Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int64</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int64L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int64L:scodec.Codec[Long]"></a>
+      <a id="int64L:Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int64L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int8" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int8:scodec.Codec[Int]"></a>
+      <a id="int8:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#int8L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="int8L:scodec.Codec[Int]"></a>
+      <a id="int8L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">int8L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#intL" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="intL(bits:Int):scodec.Codec[Int]"></a>
+      <a id="intL(Int):Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">intL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#isoFromFunctions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="isoFromFunctions[A,B](to:A=&gt;B,from:B=&gt;A):shapeless.Iso[A,B]"></a>
+      <a id="isoFromFunctions[A,B]((A)⇒B,(B)⇒A):Iso[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">isoFromFunctions</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="to">to: (<span class="extype" name="scodec.codecs.isoFromFunctions.A">A</span>) ⇒ <span class="extype" name="scodec.codecs.isoFromFunctions.B">B</span></span>, <span name="from">from: (<span class="extype" name="scodec.codecs.isoFromFunctions.B">B</span>) ⇒ <span class="extype" name="scodec.codecs.isoFromFunctions.A">A</span></span>)</span><span class="result">: <span class="extype" name="shapeless.Iso">Iso</span>[<span class="extype" name="scodec.codecs.isoFromFunctions.A">A</span>, <span class="extype" name="scodec.codecs.isoFromFunctions.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Builds an <code>Iso[A, B]</code> from two functions.</p>
+    </li><li name="scodec.codecs.package#liftF2ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF2ToNestedTupleF[A,B,X](fn:(A,B)=&gt;X):((A,B))=&gt;X"></a>
+      <a id="liftF2ToNestedTupleF[A,B,X]((A,B)⇒X):((A,B))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF2ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF2ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF2ToNestedTupleF.B">B</span>) ⇒ <span class="extype" name="scodec.codecs.liftF2ToNestedTupleF.X">X</span></span>)</span><span class="result">: ((<span class="extype" name="scodec.codecs.liftF2ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF2ToNestedTupleF.B">B</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF2ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#liftF3ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF3ToNestedTupleF[A,B,C,X](fn:(A,B,C)=&gt;X):(((A,B),C))=&gt;X"></a>
+      <a id="liftF3ToNestedTupleF[A,B,C,X]((A,B,C)⇒X):(((A,B),C))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF3ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.B">B</span>, <span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.C">C</span>) ⇒ <span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.X">X</span></span>)</span><span class="result">: (((<span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.B">B</span>), <span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.C">C</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF3ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#liftF4ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF4ToNestedTupleF[A,B,C,D,X](fn:(A,B,C,D)=&gt;X):((((A,B),C),D))=&gt;X"></a>
+      <a id="liftF4ToNestedTupleF[A,B,C,D,X]((A,B,C,D)⇒X):((((A,B),C),D))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF4ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>, <span name="D">D</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.B">B</span>, <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.C">C</span>, <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.D">D</span>) ⇒ <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.X">X</span></span>)</span><span class="result">: ((((<span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.B">B</span>), <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.C">C</span>), <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.D">D</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF4ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#liftF5ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF5ToNestedTupleF[A,B,C,D,E,X](fn:(A,B,C,D,E)=&gt;X):(((((A,B),C),D),E))=&gt;X"></a>
+      <a id="liftF5ToNestedTupleF[A,B,C,D,E,X]((A,B,C,D,E)⇒X):(((((A,B),C),D),E))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF5ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>, <span name="D">D</span>, <span name="E">E</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.B">B</span>, <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.C">C</span>, <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.D">D</span>, <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.E">E</span>) ⇒ <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.X">X</span></span>)</span><span class="result">: (((((<span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.B">B</span>), <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.C">C</span>), <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.D">D</span>), <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.E">E</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF5ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#liftF6ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF6ToNestedTupleF[A,B,C,D,E,F,X](fn:(A,B,C,D,E,F)=&gt;X):((((((A,B),C),D),E),F))=&gt;X"></a>
+      <a id="liftF6ToNestedTupleF[A,B,C,D,E,F,X]((A,B,C,D,E,F)⇒X):((((((A,B),C),D),E),F))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF6ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>, <span name="D">D</span>, <span name="E">E</span>, <span name="F">F</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.B">B</span>, <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.C">C</span>, <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.D">D</span>, <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.E">E</span>, <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.F">F</span>) ⇒ <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.X">X</span></span>)</span><span class="result">: ((((((<span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.B">B</span>), <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.C">C</span>), <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.D">D</span>), <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.E">E</span>), <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.F">F</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF6ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#liftF7ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF7ToNestedTupleF[A,B,C,D,E,F,G,X](fn:(A,B,C,D,E,F,G)=&gt;X):(((((((A,B),C),D),E),F),G))=&gt;X"></a>
+      <a id="liftF7ToNestedTupleF[A,B,C,D,E,F,G,X]((A,B,C,D,E,F,G)⇒X):(((((((A,B),C),D),E),F),G))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF7ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>, <span name="D">D</span>, <span name="E">E</span>, <span name="F">F</span>, <span name="G">G</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.B">B</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.C">C</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.D">D</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.E">E</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.F">F</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.G">G</span>) ⇒ <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.X">X</span></span>)</span><span class="result">: (((((((<span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.B">B</span>), <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.C">C</span>), <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.D">D</span>), <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.E">E</span>), <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.F">F</span>), <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.G">G</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF7ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#liftF8ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftF8ToNestedTupleF[A,B,C,D,E,F,G,H,X](fn:(A,B,C,D,E,F,G,H)=&gt;X):((((((((A,B),C),D),E),F),G),H))=&gt;X"></a>
+      <a id="liftF8ToNestedTupleF[A,B,C,D,E,F,G,H,X]((A,B,C,D,E,F,G,H)⇒X):((((((((A,B),C),D),E),F),G),H))⇒X"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftF8ToNestedTupleF</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>, <span name="C">C</span>, <span name="D">D</span>, <span name="E">E</span>, <span name="F">F</span>, <span name="G">G</span>, <span name="H">H</span>, <span name="X">X</span>]</span><span class="params">(<span name="fn">fn: (<span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.B">B</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.C">C</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.D">D</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.E">E</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.F">F</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.G">G</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.H">H</span>) ⇒ <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.X">X</span></span>)</span><span class="result">: ((((((((<span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.A">A</span>, <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.B">B</span>), <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.C">C</span>), <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.D">D</span>), <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.E">E</span>), <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.F">F</span>), <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.G">G</span>), <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.H">H</span>)) ⇒ <span class="extype" name="scodec.codecs.liftF8ToNestedTupleF.X">X</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#long" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="long(bits:Int):scodec.Codec[Long]"></a>
+      <a id="long(Int):Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">long</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#longL" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="longL(bits:Int):scodec.Codec[Long]"></a>
+      <a id="longL(Int):Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">longL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#provide" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="provide[A](value:A):scodec.Codec[A]"></a>
+      <a id="provide[A](A):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">provide</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="value">value: <span class="extype" name="scodec.codecs.provide.A">A</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.provide.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#repeated" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="repeated[A](codec:scodec.Codec[A]):scodec.Codec[scala.collection.immutable.IndexedSeq[A]]"></a>
+      <a id="repeated[A](Codec[A]):Codec[IndexedSeq[A]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">repeated</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.repeated.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scodec.codecs.repeated.A">A</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#string" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="string(implicitcharset:java.nio.charset.Charset):scodec.Codec[String]"></a>
+      <a id="string(Charset):Codec[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">string</span><span class="params">(<span class="implicit">implicit </span><span name="charset">charset: <span class="extype" name="java.nio.charset.Charset">Charset</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#typeDiscriminator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="typeDiscriminator[A,B](cases:scodec.codecs.TypeDiscriminatorCase[_&lt;:A,B]*):scodec.codecs.Discriminator[A,B]"></a>
+      <a id="typeDiscriminator[A,B](TypeDiscriminatorCase[_&lt;:A,B]*):Discriminator[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">typeDiscriminator</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="cases">cases: <a href="TypeDiscriminatorCase.html" class="extype" name="scodec.codecs.TypeDiscriminatorCase">TypeDiscriminatorCase</a>[_ &lt;: <span class="extype" name="scodec.codecs.typeDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.typeDiscriminator.B">B</span>]*</span>)</span><span class="result">: <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.typeDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.typeDiscriminator.B">B</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#typeDiscriminatorCase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="typeDiscriminatorCase[A,B](discriminatorValue:B,codec:scodec.Codec[A])(implicitevidence$3:Manifest[A]):scodec.codecs.TypeDiscriminatorCase[A,B]"></a>
+      <a id="typeDiscriminatorCase[A,B](B,Codec[A])(Manifest[A]):TypeDiscriminatorCase[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">typeDiscriminatorCase</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="discriminatorValue">discriminatorValue: <span class="extype" name="scodec.codecs.typeDiscriminatorCase.B">B</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.typeDiscriminatorCase.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scodec.codecs.typeDiscriminatorCase.A">A</span>]</span>)</span><span class="result">: <a href="TypeDiscriminatorCase.html" class="extype" name="scodec.codecs.TypeDiscriminatorCase">TypeDiscriminatorCase</a>[<span class="extype" name="scodec.codecs.typeDiscriminatorCase.A">A</span>, <span class="extype" name="scodec.codecs.typeDiscriminatorCase.B">B</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint(bits:Int):scodec.Codec[Int]"></a>
+      <a id="uint(Int):Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint16" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint16:scodec.Codec[Int]"></a>
+      <a id="uint16:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint16</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint16L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint16L:scodec.Codec[Int]"></a>
+      <a id="uint16L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint16L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint2" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint2:scodec.Codec[Int]"></a>
+      <a id="uint2:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint2</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint24" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint24:scodec.Codec[Int]"></a>
+      <a id="uint24:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint24</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint24L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint24L:scodec.Codec[Int]"></a>
+      <a id="uint24L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint24L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint2L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint2L:scodec.Codec[Int]"></a>
+      <a id="uint2L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint2L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint32" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint32:scodec.Codec[Long]"></a>
+      <a id="uint32:Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint32</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint32L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint32L:scodec.Codec[Long]"></a>
+      <a id="uint32L:Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint32L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint4" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint4:scodec.Codec[Int]"></a>
+      <a id="uint4:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint4</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint4L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint4L:scodec.Codec[Int]"></a>
+      <a id="uint4L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint4L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint8" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint8:scodec.Codec[Int]"></a>
+      <a id="uint8:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uint8L" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uint8L:scodec.Codec[Int]"></a>
+      <a id="uint8L:Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uint8L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uintL" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uintL(bits:Int):scodec.Codec[Int]"></a>
+      <a id="uintL(Int):Codec[Int]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uintL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#ulong" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ulong(bits:Int):scodec.Codec[Long]"></a>
+      <a id="ulong(Int):Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ulong</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#ulongL" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ulongL(bits:Int):scodec.Codec[Long]"></a>
+      <a id="ulongL(Int):Codec[Long]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ulongL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#utf8" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="utf8:scodec.Codec[String]"></a>
+      <a id="utf8:Codec[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">utf8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#uuid" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="uuid:scodec.Codec[java.util.UUID]"></a>
+      <a id="uuid:Codec[UUID]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">uuid</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="java.util.UUID">UUID</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#variableSizeBits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="variableSizeBits[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]"></a>
+      <a id="variableSizeBits[A](Codec[Int],Codec[A],Int):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">variableSizeBits</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="value">value: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBits.A">A</span>]</span>, <span name="sizePadding">sizePadding: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBits.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#variableSizeBytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="variableSizeBytes[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]"></a>
+      <a id="variableSizeBytes[A](Codec[Int],Codec[A],Int):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">variableSizeBytes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="value">value: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBytes.A">A</span>]</span>, <span name="sizePadding">sizePadding: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBytes.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#variableSizeSignature" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="variableSizeSignature[A](byteSizeCodec:scodec.Codec[Int])(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]"></a>
+      <a id="variableSizeSignature[A](Codec[Int])(Codec[A])(SignatureFactory):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">variableSizeSignature</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="byteSizeCodec">byteSizeCodec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeSignature.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="signatureFactory">signatureFactory: <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeSignature.A">A</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#x509Certificate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="x509Certificate:scodec.Codec[java.security.cert.Certificate]"></a>
+      <a id="x509Certificate:Codec[Certificate]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">x509Certificate</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="java.security.cert.Certificate">Certificate</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.~" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="~"></a>
+      <a id="~:~"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$$tilde$.html"><span title="gt4s: $tilde" class="name">~</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Extractor that allows pattern matching on the tuples created by tupling codecs.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+    </body>
+      </html>
