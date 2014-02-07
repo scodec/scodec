@@ -3,8 +3,7 @@ package codecs
 
 import java.util.UUID
 
-
-object UuidCodec extends Codec[UUID] {
+private[codecs] object UuidCodec extends Codec[UUID] {
 
   val codec = int64 ~ int64
 

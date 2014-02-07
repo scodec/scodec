@@ -9,9 +9,25 @@ import shapeless._
 /**
  * Provides codecs for common types and combinators for building larger codecs.
  *
+ * === Basic Codecs ===
+ *
+ * There are built-in codecs for `Int`, `Long`, `Boolean`, `String`, and `UUID`.
+ *
+ * There are a number of predefined integral codecs named using the form: {{{
+ [u]int${size}[L]
+ }}}
+ * where `u` stands for unsigned, `size` is replaced by one of `8, 16, 24, 32, 64`, and `L` stands for little-endian.
+ * For each codec of that form, the type is `Codec[Int]` or `Codec[Long]` depending on the specified size.
+ * For example, `int32` supports 32-bit big-endian 2s complement signed integers, and uint16L supports 16-bit little-endian
+ * unsigned integers.
+ * Note: `uint64[L]` is not provided because it does not fit in to a `Long`.
+ *
+ * Additionally, methods of the form `[u]int[L](size: Int)` and `[u]long[L](size: Int)` exist to build arbitrarily
+ * sized codecs, within the limitations of `Int` and `Long`.
+ *
  * === Tuple Codecs ===
  *
- * Provides support for combining codecs via the `~` operator.
+ * The `~` operator supports combining a `Codec[A]` and a `Codec[B]` in to a `Codec[(A, B)]`.
  *
  * For example: {{{
    val codec: Codec[Int ~ Int ~ Int] = uint8 ~ uint8 ~ uint8}}}
@@ -32,7 +48,6 @@ import shapeless._
  }}}
  *
  * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
- *
  */
 package object codecs {
 

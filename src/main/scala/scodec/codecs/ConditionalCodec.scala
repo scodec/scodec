@@ -6,7 +6,7 @@ import scalaz.std.option.{none, some}
 import scalaz.syntax.id._
 
 
-class ConditionalCodec[A](included: Boolean, codec: Codec[A]) extends Codec[Option[A]] {
+private[codecs] final class ConditionalCodec[A](included: Boolean, codec: Codec[A]) extends Codec[Option[A]] {
 
   override def encode(a: Option[A]) = {
     a.filter { _ => included }.fold(BitVector.empty.right[String]) { a => codec.encode(a) }

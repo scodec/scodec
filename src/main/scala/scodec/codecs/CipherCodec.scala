@@ -76,7 +76,7 @@ object CipherFactory {
  * specified codec. Successful decoding always returns no remaining bits, even if the specified
  * codec does not consume all decrypted bits.
  */
-class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) extends Codec[A] {
+private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) extends Codec[A] {
 
   override def encode(a: A) =
     codec.encode(a) >>= encrypt

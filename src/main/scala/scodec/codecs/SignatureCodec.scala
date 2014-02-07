@@ -104,7 +104,7 @@ object SignatureFactory {
  * string (e.g., ascii, utf8), decoding an encoded vector will result in the string codec trying to
  * decode the signature bits as part of the string.
  */
-class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignatureFactory) extends Codec[A] {
+private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignatureFactory) extends Codec[A] {
   import Codec._
 
   override def encode(a: A) = for {

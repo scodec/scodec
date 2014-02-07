@@ -3,12 +3,9 @@ package codecs
 
 import scalaz.\/-
 
+private[codecs] final class IdentityCodec extends Codec[BitVector] {
 
-class IdentityCodec extends Codec[BitVector] {
+  override def encode(bits: BitVector) = \/-(bits)
 
-  override def encode(bits: BitVector) =
-    \/-(bits)
-
-  override def decode(bits: BitVector) =
-    \/-((BitVector.empty, bits))
+  override def decode(bits: BitVector) = \/-((BitVector.empty, bits))
 }

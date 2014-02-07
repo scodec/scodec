@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.{\/, IndexedStateT}
+import scalaz.{ \/, IndexedStateT }
 import scalaz.syntax.id._
 import scalaz.syntax.std.option._
 
@@ -20,7 +20,7 @@ import scalaz.syntax.std.option._
  *  - looking up the value codec by passing the discriminator value to `discriminator.codec`
  *  - decoding the value
  */
-class DiscriminatorCodec[A, B](discriminator: Discriminator[A, B], discriminatorCodec: Codec[B]) extends Codec[A] {
+private[codecs] final class DiscriminatorCodec[A, B](discriminator: Discriminator[A, B], discriminatorCodec: Codec[B]) extends Codec[A] {
 
   override def encode(value: A) = {
     for {

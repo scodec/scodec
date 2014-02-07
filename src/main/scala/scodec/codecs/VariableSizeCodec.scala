@@ -3,7 +3,7 @@ package codecs
 
 import scalaz.\/._
 
-class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A], sizePadding: Int = 0) extends Codec[A] {
+private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A], sizePadding: Int = 0) extends Codec[A] {
 
   private val decoder = sizeCodec flatZip { sz => fixedSizeBits(sz - sizePadding, valueCodec) }
 

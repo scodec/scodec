@@ -5,7 +5,7 @@ import scalaz.\/
 import scalaz.syntax.std.either._
 
 
-object BooleanCodec extends Codec[Boolean] {
+private[codecs] object BooleanCodec extends Codec[Boolean] {
 
   override def encode(b: Boolean) =
     \/.right(if (b) BitVector.high(1) else BitVector.low(1))

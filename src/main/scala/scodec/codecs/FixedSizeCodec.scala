@@ -4,8 +4,7 @@ package codecs
 import scalaz.\/
 import scalaz.syntax.std.either._
 
-
-class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
+private[codecs] final class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
 
   override def encode(a: A) = for {
     encoded <- codec.encode(a)

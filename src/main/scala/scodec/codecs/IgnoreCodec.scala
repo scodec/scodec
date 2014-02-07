@@ -4,8 +4,7 @@ package codecs
 import scalaz.\/
 import scalaz.syntax.std.either._
 
-
-class IgnoreCodec(bits: Int) extends Codec[Unit] {
+private[codecs] final class IgnoreCodec(bits: Int) extends Codec[Unit] {
 
   override def encode(unit: Unit) =
     \/.right(BitVector.low(bits))

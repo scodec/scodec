@@ -9,7 +9,7 @@ import java.security.cert.{Certificate, CertificateException, CertificateFactory
 /**
  * Codec that supports encoding and decoding of [[java.security.cert.Certificate]]s using their default encoding.
  */
-class CertificateCodec(certType: String) extends Codec[Certificate] {
+private[codecs] final class CertificateCodec(certType: String) extends Codec[Certificate] {
 
   def encode(cert: Certificate) =
     \/-(BitVector(cert.getEncoded))

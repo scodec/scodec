@@ -7,7 +7,7 @@ import shapeless._
 import UnaryTCConstraint._
 
 
-object HListCodec {
+private[codecs] object HListCodec {
 
   val hnilCodec: Codec[HNil] = new Codec[HNil] {
     override def encode(hn: HNil) = \/-(BitVector.empty)
