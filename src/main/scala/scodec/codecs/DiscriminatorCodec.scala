@@ -44,7 +44,7 @@ private[codecs] final class DiscriminatorCodec[A, B](discriminator: Discriminato
 }
 
 /** Companion for [[Discriminator]]. */
-object DiscriminatorCodec {
+private[codecs] object DiscriminatorCodec {
   def apply[A, B](discriminatorCodec: Codec[B], discriminate: PartialFunction[A, B], codecFor: PartialFunction[B, Codec[_ <: A]]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec(Discriminator[A, B](discriminate, codecFor), discriminatorCodec)
 }

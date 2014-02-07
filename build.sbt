@@ -22,7 +22,11 @@ scalacOptions ++= Seq(
   "-Yinline",
   "-Ywarn-all")
 
-scalacOptions in (Compile, doc) += "-groups"
+scalacOptions in (Compile, doc) ++= Seq(
+  //"-diagrams", https://issues.scala-lang.org/browse/SI-7950
+  "-groups",
+  "-implicits",
+  "-skip-packages", "scalaz")
 
 licenses += ("Three-clause BSD-style", url("http://github.com/scodec/scodec/blob/master/LICENSE"))
 
@@ -110,7 +114,16 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   tagRelease,
   publishArtifacts.copy(action = publishSignedAction),
+  releaseTask(GhPagesKeys.pushSite),
   setNextVersion,
   commitNextVersion,
   pushChanges
 )
+
+site.settings
+
+site.includeScaladoc()
+
+ghpages.settings
+
+git.remoteRepo := "git@github.com:scodec/scodec.git"
