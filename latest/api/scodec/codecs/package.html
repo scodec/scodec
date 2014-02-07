@@ -117,19 +117,6 @@ to pass to encode. For example: </p><pre>(uint8 ~ uint8 ~ uint8).encode(<span cl
       </h4>
       <p class="comment cmt">Provides support for building codecs that encode/decode multiple disparate types by using a discriminator value to
 indicate the type.</p>
-    </li><li name="scodec.codecs.HListCodecEnrichedWithHListSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="HListCodecEnrichedWithHListSupport[L&lt;:shapeless.HList]extendsAnyVal"></a>
-      <a id="HListCodecEnrichedWithHListSupport[L&lt;:HList]:HListCodecEnrichedWithHListSupport[L]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="package$$HListCodecEnrichedWithHListSupport.html"><span class="name">HListCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Provides common operations on a <code>Codec[HList]</code>.</p>
     </li><li name="scodec.codecs.SignatureFactory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="SignatureFactoryextendsAnyRef"></a>
       <a id="SignatureFactory:SignatureFactory"></a>
@@ -182,19 +169,6 @@ indicate the type.</p>
       </span>
       </h4>
       <p class="comment cmt">A case in a type based discriminator.</p>
-    </li><li name="scodec.codecs.ValueCodecEnrichedWithHListSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ValueCodecEnrichedWithHListSupport[A]extendsAnyVal"></a>
-      <a id="ValueCodecEnrichedWithHListSupport[A]:ValueCodecEnrichedWithHListSupport[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="package$$ValueCodecEnrichedWithHListSupport.html"><span class="name">ValueCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">Provides <code>HList</code> related syntax for codecs of any type.</p>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ValueEnrichedWithTuplingSupport[A]extendsAnyRef"></a>
       <a id="ValueEnrichedWithTuplingSupport[A]:ValueEnrichedWithTuplingSupport[A]"></a>
@@ -790,7 +764,7 @@ Usage: </p><pre><span class="kw">val</span> discriminator: Discriminator[<span c
       </h4>
       
     </li><li name="scodec.codecs.package#typeDiscriminatorCase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="typeDiscriminatorCase[A,B](discriminatorValue:B,codec:scodec.Codec[A])(implicitevidence$3:Manifest[A]):scodec.codecs.TypeDiscriminatorCase[A,B]"></a>
+      <a id="typeDiscriminatorCase[A,B](discriminatorValue:B,codec:scodec.Codec[A])(implicitevidence$2:Manifest[A]):scodec.codecs.TypeDiscriminatorCase[A,B]"></a>
       <a id="typeDiscriminatorCase[A,B](B,Codec[A])(Manifest[A]):TypeDiscriminatorCase[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
