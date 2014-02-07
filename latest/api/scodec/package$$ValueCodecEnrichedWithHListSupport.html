@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scodec.ValueCodecEnrichedWithHListSupport#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(codecA:scodec.Codec[A]):scodec.package.ValueCodecEnrichedWithHListSupport[A]"></a>
+      <a id="&lt;init&gt;(self:scodec.Codec[A]):scodec.package.ValueCodecEnrichedWithHListSupport[A]"></a>
       <a id="&lt;init&gt;:ValueCodecEnrichedWithHListSupport[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ValueCodecEnrichedWithHListSupport</span><span class="params">(<span name="codecA">codecA: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]</span>)</span>
+        <span class="name">ValueCodecEnrichedWithHListSupport</span><span class="params">(<span name="self">self: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]</span>)</span>
       </span>
       </h4>
       
@@ -221,19 +221,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#codecA" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="codecA:scodec.Codec[A]"></a>
-      <a id="codecA:Codec[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">codecA</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((ValueCodecEnrichedWithHListSupport[A])⇒Boolean,⇒Any):ValueCodecEnrichedWithHListSupport[A]"></a>
@@ -374,6 +361,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#self" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="self:scodec.Codec[A]"></a>
+      <a id="self:Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">self</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -425,7 +425,7 @@
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>] to
             <span class="extype" name="scala.runtime.StringAdd">StringAdd</span> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueCodecEnrichedWithHListSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueCodecEnrichedWithHListSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
@@ -442,7 +442,7 @@
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>] to
             <span class="extype" name="scala.runtime.StringFormat">StringFormat</span> performed by method any2stringfmt in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueCodecEnrichedWithHListSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueCodecEnrichedWithHListSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
