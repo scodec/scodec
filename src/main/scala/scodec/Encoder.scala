@@ -1,6 +1,6 @@
 package scodec
 
-import scalaz.{ \/, Contravariant }
+import scalaz.{ \/, Contravariant, Corepresentable }
 
 /** Supports encoding a value of type `A` to a `BitVector`. */
 trait Encoder[-A] { self =>
@@ -41,9 +41,16 @@ object Encoder extends EncoderFunctions {
   /** Provides syntaax for summoning an `Encoder[A]` from implicit scope. */
   def apply[A](implicit enc: Encoder[A]): Encoder[A] = enc
 
+  def instance[A](f: A => String \/ BitVector): Encoder[A] = new Encoder[A] {
+    def encode(value: A) = f(value)
+  }
+
   implicit val contravariantInstance: Contravariant[Encoder] = new Contravariant[Encoder] {
     def contramap[A, B](e: Encoder[A])(f: B => A) = e contramap f
   }
+
+  implicit val corepresentableInstance: Corepresentable[Encoder, String \/ BitVector] = new Corepresentable[Encoder, String \/ BitVector] {
+    def corep[A](f: A => String \/ BitVector): Encoder[A] = Encoder.instance(f)
+    def uncorep[A](f: Encoder[A]): A => String \/ BitVector = f.encode
+  }
 }
-
-

@@ -10,7 +10,7 @@ import shapeless._
  * both `Encoder` and `Decoder` but allows the types to vary. Given these more general abstractions, a `Codec[A]` can be
  * represented as a `GenCodec[A, A]`.
  *
- * The more general abstracts are important because they allow operations on codecs that would not otherwise be possible.
+ * The more general abstractions are important because they allow operations on codecs that would not otherwise be possible.
  * For example, given a `Codec[A]`, mapping a function `A => B` over the codec yields a `GenCodec[A, B]`. Without the
  * more general abstractions, `map` is impossible to define (e.g., how would `codec.map(f).encode(b)` be implemented?).
  * Given a `GenCodec[A, B]`, the encoding functionality can be ignored by treating it as a `Decoder[B]`, or the encoding
