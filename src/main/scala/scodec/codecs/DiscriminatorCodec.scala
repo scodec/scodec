@@ -5,6 +5,8 @@ import scalaz.{ \/, IndexedStateT }
 import scalaz.syntax.id._
 import scalaz.syntax.std.option._
 
+import scodec.bits.BitVector
+
 /**
  * Codec that supports encoding/decoding some values of type `A` by including a value discriminator in the binary encoding.
  * The binary encoding is the encoded discriminator value followed by the encoded value.

@@ -3,6 +3,8 @@ package codecs
 
 import scalaz.syntax.id._
 
+import scodec.bits.BitVector
+
 /**
  * Codec that provides a constant value from decode and ignores the value to encode.
  *

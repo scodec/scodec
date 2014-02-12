@@ -6,6 +6,7 @@ import scalaz.{\/, \/-, -\/}
 import java.security.{KeyPair, PrivateKey, PublicKey, Signature, SignatureException}
 import java.security.cert.Certificate
 
+import scodec.bits.{ BitVector, ByteVector }
 
 /** Represents the ability to create a [[java.security.Signature]] for use with [[SignatureCodec]]. */
 trait SignatureFactory {

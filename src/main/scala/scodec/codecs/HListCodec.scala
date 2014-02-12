@@ -6,6 +6,7 @@ import scalaz.\/-
 import shapeless._
 import UnaryTCConstraint._
 
+import scodec.bits.BitVector
 
 private[scodec] object HListCodec {
 

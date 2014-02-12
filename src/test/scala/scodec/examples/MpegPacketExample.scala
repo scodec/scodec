@@ -5,6 +5,7 @@ import scalaz.\/-
 import scalaz.std.anyVal.unitInstance
 import shapeless._
 
+import scodec.bits.{ BitVector, ByteVector }
 import scodec.codecs._
 
 // Define MPEG codecs

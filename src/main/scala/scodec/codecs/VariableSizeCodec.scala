@@ -2,6 +2,7 @@ package scodec
 package codecs
 
 import scalaz.\/._
+import scodec.bits.BitVector
 
 private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A], sizePadding: Int = 0) extends Codec[A] {
 

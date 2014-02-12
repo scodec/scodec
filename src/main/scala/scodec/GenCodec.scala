@@ -2,6 +2,8 @@ package scodec
 
 import scalaz.{ \/, Profunctor }
 
+import scodec.bits.BitVector
+
 /** Generalized codec that allows the type to encode to vary from the type to decode. */
 trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
 

@@ -2,6 +2,7 @@ package scodec
 package codecs
 
 import java.util.UUID
+import scodec.bits.BitVector
 
 private[codecs] object UuidCodec extends Codec[UUID] {
 

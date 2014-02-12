@@ -7,6 +7,8 @@ import scalaz.syntax.std.option._
 
 import java.nio.{ ByteBuffer, ByteOrder }
 
+import scodec.bits.BitVector
+
 private[codecs] final class LongCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) extends Codec[Long] {
 
   require(bits > 0 && bits <= (if (signed) 64 else 63), "bits must be in range [1, 64] for signed and [1, 63] for unsigned")

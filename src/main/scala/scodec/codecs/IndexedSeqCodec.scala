@@ -8,6 +8,8 @@ import scalaz.std.indexedSeq._
 import scalaz.syntax.traverse._
 import scalaz.syntax.std.option._
 
+import scodec.bits.BitVector
+
 private[codecs] final class IndexedSeqCodec[A](codec: Codec[A]) extends Codec[IndexedSeq[A]] {
 
   def encode(ixSeq: IndexedSeq[A]) = {

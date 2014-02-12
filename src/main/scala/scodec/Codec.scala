@@ -3,6 +3,7 @@ package scodec
 import scalaz.{ \/, Monoid, StateT }
 import shapeless._
 
+import scodec.bits.BitVector
 
 /**
  * Supports encoding a value of type `A` to a `BitVector` and decoding a `BitVector` to a value of `A`.

@@ -3,6 +3,7 @@ package codecs
 
 import scalaz.syntax.id._
 import org.scalacheck.Gen
+import scodec.bits.BitVector
 
 class LongCodecTest extends CodecSuite {
   def check(low: Long, high: Long)(f: (Long) => Unit) {

@@ -4,9 +4,11 @@ package codecs
 import scalaz.\/-
 import scalaz.std.anyVal.unitInstance
 
+import scodec.bits.BitVector
+
 class IgnoreCodecTest extends CodecSuite {
 
-  // The scalatest ignore method shadoes this
+  // The scalatest ignore method shadows this
   def ign(size: Int) = scodec.codecs.ignore(size)
 
   test("roundtrip") {

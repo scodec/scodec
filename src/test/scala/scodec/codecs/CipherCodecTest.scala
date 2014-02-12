@@ -4,6 +4,8 @@ package codecs
 import javax.crypto.{Cipher, KeyGenerator}
 import javax.crypto.spec.IvParameterSpec
 
+import scodec.bits.ByteVector
+
 class CipherCodecTest extends CodecSuite {
 
   private val secretKey = {

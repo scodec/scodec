@@ -2,6 +2,7 @@ package scodec
 package codecs
 
 import scalaz.{\/-, -\/}
+import scodec.bits.BitVector
 
 class FixedSizeCodecTest extends CodecSuite {
 

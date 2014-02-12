@@ -7,6 +7,7 @@ import scalaz.syntax.id._
 import org.scalatest.{FunSuite, Matchers}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
+import scodec.bits.BitVector
 
 abstract class CodecSuite extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
 

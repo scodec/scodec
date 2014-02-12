@@ -2,6 +2,8 @@ package scodec
 
 import scalaz.{ \/, Contravariant, Corepresentable }
 
+import scodec.bits.BitVector
+
 /** Supports encoding a value of type `A` to a `BitVector`. */
 trait Encoder[-A] { self =>
 

@@ -3,6 +3,8 @@ package examples
 
 import shapeless._
 
+import scodec.bits.{ BitVector, ByteVector }
+
 class UdpDatagramExample extends CodecSuite {
 
   case class Datagram(

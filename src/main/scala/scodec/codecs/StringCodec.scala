@@ -7,6 +7,8 @@ import java.nio.CharBuffer
 import java.nio.charset.Charset
 import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
 
+import scodec.bits.BitVector
+
 private[codecs] final class StringCodec(charset: Charset) extends Codec[String] {
 
   override def encode(str: String) = {

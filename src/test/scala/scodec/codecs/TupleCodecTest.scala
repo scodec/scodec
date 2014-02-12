@@ -2,6 +2,7 @@ package scodec
 package codecs
 
 import scalaz.\/-
+import scodec.bits.{ BitVector, ByteVector }
 
 class TupleCodecTest extends CodecSuite {
 

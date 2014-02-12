@@ -7,6 +7,8 @@ import scalaz.std.AllInstances._
 import scalaz.std.indexedSeq._
 import shapeless._
 
+import scodec.bits.BitVector
+
 /**
  * Processes libpcap files.
  *

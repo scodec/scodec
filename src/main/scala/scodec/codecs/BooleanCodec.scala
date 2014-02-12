@@ -4,6 +4,7 @@ package codecs
 import scalaz.\/
 import scalaz.syntax.std.either._
 
+import scodec.bits.BitVector
 
 private[codecs] object BooleanCodec extends Codec[Boolean] {
 

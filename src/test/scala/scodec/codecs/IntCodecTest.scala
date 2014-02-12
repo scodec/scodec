@@ -4,6 +4,7 @@ package codecs
 import scalaz.syntax.id._
 import scalaz.syntax.std.option._
 import org.scalacheck.Gen
+import scodec.bits.BitVector
 
 class IntCodecTest extends CodecSuite {
   def check(low: Int, high: Int)(f: (Int) => Unit) {

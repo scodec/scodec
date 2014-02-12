@@ -5,6 +5,7 @@ import scalaz.{\/-, -\/}
 import java.io.ByteArrayInputStream
 import java.security.cert.{Certificate, CertificateException, CertificateFactory}
 
+import scodec.bits.BitVector
 
 /**
  * Codec that supports encoding and decoding of [[java.security.cert.Certificate]]s using their default encoding.

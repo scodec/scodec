@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scodec.bits.BitVector
+
 private[scodec] final class TupleCodec[A, B](codecA: Codec[A], codecB: Codec[B]) extends Codec[(A, B)] {
 
   override def encode(t: (A, B)) =

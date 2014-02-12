@@ -8,6 +8,8 @@ import java.security.Key
 import java.security.spec.AlgorithmParameterSpec
 import javax.crypto.{Cipher, IllegalBlockSizeException, BadPaddingException}
 
+import scodec.bits.BitVector
+
 /**
  * Represents the ability to create a [[Cipher]] for encryption or decryption.
  *

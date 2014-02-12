@@ -2,6 +2,8 @@ package scodec
 
 import scalaz.{ \/, StateT }
 
+import scodec.bits.BitVector
+
 /** Provides constructors for `DecodingContext`. */
 object DecodingContext {
 

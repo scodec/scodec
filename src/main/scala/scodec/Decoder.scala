@@ -2,6 +2,8 @@ package scodec
 
 import scalaz.{ \/, Monad, Monoid }
 
+import scodec.bits.BitVector
+
 /** Supports decoding a value of type `A` from a `BitVector`. */
 trait Decoder[+A] { self =>
 

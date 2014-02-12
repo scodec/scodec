@@ -5,6 +5,7 @@ import java.security.cert.Certificate
 import java.util.UUID
 
 import shapeless.Iso
+import scodec.bits.{ BitVector, ByteVector }
 
 /**
  * Provides codecs for common types and combinators for building larger codecs.

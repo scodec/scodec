@@ -4,6 +4,8 @@ package codecs
 import scalaz.\/
 import scalaz.syntax.std.either._
 
+import scodec.bits.BitVector
+
 private[codecs] final class FixedSizeCodec[A](size: Int, codec: Codec[A]) extends Codec[A] {
 
   override def encode(a: A) = for {

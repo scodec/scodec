@@ -5,6 +5,7 @@ import scalaz.{\/-, -\/}
 import scalaz.std.option.{none, some}
 import scalaz.syntax.id._
 
+import scodec.bits.BitVector
 
 private[codecs] final class ConditionalCodec[A](included: Boolean, codec: Codec[A]) extends Codec[Option[A]] {
 

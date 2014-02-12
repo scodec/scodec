@@ -4,6 +4,8 @@ package codecs
 import scalaz.\/
 import scalaz.syntax.std.either._
 
+import scodec.bits.BitVector
+
 private[codecs] final class ConstantCodec(constant: BitVector, validate: Boolean = true) extends Codec[Unit] {
 
   override def encode(ignore: Unit) =

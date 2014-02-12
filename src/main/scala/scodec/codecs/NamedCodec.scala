@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scodec.bits.BitVector
+
 /** Codec that prefixes error messages with the specified name. */
 private[codecs] final class NamedCodec[A](name: String, target: Codec[A]) extends Codec[A] {
 

@@ -33,10 +33,14 @@ package object scodec {
   /** Alias for state/either transformer that simplifies calling decode on a series of codecs, wiring the remaining bit vector of each in to the next entry. */
   type DecodingContext[+A] = StateT[({type λ[+a] = String \/ a})#λ, BitVector, A]
 
+  @deprecated("Use scodec.bits.BitVector")
   type BitVector = scodec.bits.BitVector
+  @deprecated("Use scodec.bits.BitVector")
   val BitVector = scodec.bits.BitVector
 
+  @deprecated("Use scodec.bits.ByteVector")
   type ByteVector = scodec.bits.ByteVector
+  @deprecated("Use scodec.bits.ByteVector")
   val ByteVector = scodec.bits.ByteVector
 
   implicit val bitVectorMonoidInstance: Monoid[BitVector] = Monoid.instance(_ ++ _, BitVector.empty)

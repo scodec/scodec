@@ -3,9 +3,9 @@ import ReleaseStateTransformations._
 import ReleasePlugin._
 import ReleaseKeys._
 
-organization := "com.github.scodec"
+organization := "org.typelevel"
 
-name := "scodec"
+name := "scodec-core"
 
 scalaVersion := "2.10.3"
 
@@ -38,7 +38,7 @@ triggeredMessage := (_ => Watched.clearScreen)
 parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
-  "com.github.scodec" %% "scodec-bits" % "1.0.0-M1",
+  "org.typelevel" %% "scodec-bits" % "1.0.0-SNAPSHOT",
   "org.scalaz" %% "scalaz-core" % "7.0.5",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.0" % "test",
@@ -128,3 +128,5 @@ site.includeScaladoc()
 ghpages.settings
 
 git.remoteRepo := "git@github.com:scodec/scodec.git"
+
+ScctPlugin.instrumentSettings
