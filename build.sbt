@@ -131,4 +131,3 @@ ghpages.settings
 
 git.remoteRepo := "git@github.com:scodec/scodec.git"
 
-ScctPlugin.instrumentSettings
