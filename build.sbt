@@ -9,6 +9,8 @@ name := "scodec-core"
 
 scalaVersion := "2.10.3"
 
+crossScalaVersions := Seq(scalaVersion.value)
+
 scalacOptions ++= Seq(
   "-feature",
   "-language:_",
