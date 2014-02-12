@@ -33,6 +33,7 @@ The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a nu
 
 ```scala
     import scodec._
+    import scodec.bits._
     import codecs._
     import scalaz.\/
 
@@ -124,20 +125,20 @@ ScalaDoc for the latest version is available here: http://scodec.github.io/scode
 
 ### Releases
 
-The latest released version is 1.0.0-M1. This release is mostly API stable.
+The latest released version is 1.0.0-M2. This release is mostly API stable.
 
 For SBT users:
 
-    libraryDependencies += "com.github.scodec" %% "scodec" % "1.0.0-M1"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0-M2"
 
 
 For Maven users:
 
     <dependencies>
       <dependency>
-        <groupId>com.github.scodec</groupId>
-        <artifactId>scodec_2.10</artifactId>
-        <version>1.0.0-M1</version>
+        <groupId>org.typelevel</groupId>
+        <artifactId>scodec-core_2.10</artifactId>
+        <version>1.0.0-M2</version>
       </dependency>
     </dependencies>
 
@@ -150,7 +151,7 @@ For SBT users:
 
     resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "com.github.scodec" %% "scodec" % "1.0.0-SNAPSHOT"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0-SNAPSHOT"
 
 
 For Maven users:
@@ -165,8 +166,8 @@ For Maven users:
 
     <dependencies>
       <dependency>
-        <groupId>com.github.scodec</groupId>
-        <artifactId>scodec_2.10</artifactId>
+        <groupId>org.typelevel</groupId>
+        <artifactId>scodec-core_2.10</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
