@@ -1,3 +1,13 @@
+1.0.0-M2
+========
+ - Changed group id from com.github.scodec to org.typelevel
+ - Changed artifact id from scodec to scodec-core
+ - Deprecated `scodec.{ BitVector, ByteVector }` in favor of `scodec.bits.{ BitVector, ByteVector }`
+   - Deprecated forwarders will be removed in M3
+ - Reduced public API
+   - made many types package private
+   - removed methods from `Codec` companion that existed directly on `Codec`
+
 1.0.0-M1
 ========
  - JAR restructuring
