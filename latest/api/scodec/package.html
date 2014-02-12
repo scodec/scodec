@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Combinator library for working with binary data.</p><p>The primary abstraction of this library is <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>, which provides the ability to encode/decode values to/from binary.</p><p>There are more general abstractions though, such as <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a> and <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>. There's also <a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a> which extends
 both <code>Encoder</code> and <code>Decoder</code> but allows the types to vary. Given these more general abstractions, a <code>Codec[A]</code> can be
-represented as a <code>GenCodec[A, A]</code>.</p><p>The more general abstracts are important because they allow operations on codecs that would not otherwise be possible.
+represented as a <code>GenCodec[A, A]</code>.</p><p>The more general abstractions are important because they allow operations on codecs that would not otherwise be possible.
 For example, given a <code>Codec[A]</code>, mapping a function <code>A =&gt; B</code> over the codec yields a <code>GenCodec[A, B]</code>. Without the
 more general abstractions, <code>map</code> is impossible to define (e.g., how would <code>codec.map(f).encode(b)</code> be implemented?).
 Given a <code>GenCodec[A, B]</code>, the encoding functionality can be ignored by treating it as a <code>Decoder[B]</code>, or the encoding
@@ -90,33 +90,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="scodec.BitVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BitVector=scodec.bits.BitVector"></a>
-      <a id="BitVector:BitVector"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">BitVector</span><span class="result"> = <span class="extype" name="scodec.bits.BitVector">scodec.bits.BitVector</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.ByteVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ByteVector=scodec.bits.ByteVector"></a>
-      <a id="ByteVector:ByteVector"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">type</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ByteVector</span><span class="result"> = <span class="extype" name="scodec.bits.ByteVector">scodec.bits.ByteVector</span></span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.Codec" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+              <ol><li name="scodec.Codec" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="Codec[A]extendsGenCodec[A,A]"></a>
       <a id="Codec[A]:Codec[A]"></a>
       <h4 class="signature">
@@ -233,6 +207,38 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
       </span>
       </h4>
       <p class="comment cmt">Provides <code>HList</code> related syntax for codecs of any type.</p>
+    </li><li name="scodec.BitVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="BitVector=scodec.bits.BitVector"></a>
+      <a id="BitVector:BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: Use scodec.bits.BitVector - will be removed in 1.0.0-M3">BitVector</span><span class="result"> = <span class="extype" name="scodec.bits.BitVector">scodec.bits.BitVector</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p>Use scodec.bits.BitVector - will be removed in 1.0.0-M3</p></dd></dl></div>
+    </li><li name="scodec.ByteVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ByteVector=scodec.bits.ByteVector"></a>
+      <a id="ByteVector:ByteVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: Use scodec.bits.ByteVector - will be removed in 1.0.0-M3">ByteVector</span><span class="result"> = <span class="extype" name="scodec.bits.ByteVector">scodec.bits.ByteVector</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p>Use scodec.bits.ByteVector - will be removed in 1.0.0-M3</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -240,33 +246,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="scodec.package#BitVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="BitVector:scodec.bits.BitVector.type"></a>
-      <a id="BitVector:scodec.bits.BitVector.type"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">BitVector</span><span class="result">: <span class="extype" name="scodec.bits.BitVector">scodec.bits.BitVector</span>.type</span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.package#ByteVector" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="ByteVector:scodec.bits.ByteVector.type"></a>
-      <a id="ByteVector:scodec.bits.ByteVector.type"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">ByteVector</span><span class="result">: <span class="extype" name="scodec.bits.ByteVector">scodec.bits.ByteVector</span>.type</span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.Codec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="scodec.Codec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Codec"></a>
       <a id="Codec:Codec"></a>
       <h4 class="signature">
@@ -375,7 +355,42 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="scodec.package#BitVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="BitVector:scodec.bits.BitVector.type"></a>
+      <a id="BitVector:scodec.bits.BitVector.type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: Use scodec.bits.BitVector - will be removed in 1.0.0-M3">BitVector</span><span class="result">: <span class="extype" name="scodec.bits.BitVector">scodec.bits.BitVector</span>.type</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p>Use scodec.bits.BitVector - will be removed in 1.0.0-M3</p></dd></dl></div>
+    </li><li name="scodec.package#ByteVector" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ByteVector:scodec.bits.ByteVector.type"></a>
+      <a id="ByteVector:scodec.bits.ByteVector.type"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: Use scodec.bits.ByteVector - will be removed in 1.0.0-M3">ByteVector</span><span class="result">: <span class="extype" name="scodec.bits.ByteVector">scodec.bits.ByteVector</span>.type</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p>Use scodec.bits.ByteVector - will be removed in 1.0.0-M3</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
