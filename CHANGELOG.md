@@ -1,3 +1,7 @@
+1.0.0-M3
+========
+ - Removed unnecessary dependencies from pom
+
 1.0.0-M2
 ========
  - Changed group id from com.github.scodec to org.typelevel
