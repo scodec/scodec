@@ -111,7 +111,10 @@ package object codecs {
   def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
     variableSizeBits(size.xmap[Int](_ * 8, _ / 8).withToString(size.toString), value, sizePadding * 8).withToString(s"variableSizeBytes($size, $value)")
 
+  def bits: Codec[BitVector] = BitVectorCodec.withToString("bits")
   def bits(size: Int): Codec[BitVector] = fixedSizeBits(size, BitVectorCodec).withToString(s"bits($size)")
+
+  def bytes: Codec[ByteVector] = BitVectorCodec.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes")
   def bytes(size: Int): Codec[ByteVector] = fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes($size)")
 
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)

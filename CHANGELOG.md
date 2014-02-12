@@ -1,3 +1,7 @@
+1.0.0-M4
+========
+ - Added `bits` and `bytes` codecs that behave like `bits(size)`/`bytes(size)` but with no size constraint
+
 1.0.0-M3
 ========
  - Removed unnecessary dependencies from pom
