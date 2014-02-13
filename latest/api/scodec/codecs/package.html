@@ -43,8 +43,8 @@
 For each codec of that form, the type is <code>Codec[Int]</code> or <code>Codec[Long]</code> depending on the specified size.
 For example, <code>int32</code> supports 32-bit big-endian 2s complement signed integers, and uint16L supports 16-bit little-endian
 unsigned integers.
-Note: <code>uint64[L]</code> is not provided because it does not fit in to a <code>Long</code>.</p><p>Additionally, methods of the form <code>[u]int[L](size: Int)</code> and <code>[u]long[L](size: Int)</code> exist to build arbitrarily
-sized codecs, within the limitations of <code>Int</code> and <code>Long</code>.</p><h5> Tuple Codecs </h5><p>The <code>~</code> operator supports combining a <code>Codec[A]</code> and a <code>Codec[B]</code> in to a <code>Codec[(A, B)]</code>.</p><p>For example: </p><pre><span class="kw">val</span> codec: Codec[<span class="std">Int</span> ~ <span class="std">Int</span> ~ <span class="std">Int</span>] = uint8 ~ uint8 ~ uint8</pre><p>Codecs generated with <code>~</code> result in left nested tuples. These left nested tuples can
+Note: <code>uint64[L]</code> are not provided because a 64-bit unsigned integer does not fit in to a <code>Long</code>.</p><p>Additionally, methods of the form <code>[u]int[L](size: Int)</code> and <code>[u]long[L](size: Int)</code> exist to build arbitrarily
+sized codecs, within the limitations of <code>Int</code> and <code>Long</code>.</p><p>IEEE 754 floating point values are supported by the <a href="#float:scodec.Codec[Float]" class="extmbr" name="scodec.codecs#float">float</a>, <a href="#floatL:scodec.Codec[Float]" class="extmbr" name="scodec.codecs#floatL">floatL</a>, <a href="#double:scodec.Codec[Double]" class="extmbr" name="scodec.codecs#double">double</a>, and <a href="#doubleL:scodec.Codec[Double]" class="extmbr" name="scodec.codecs#doubleL">doubleL</a> codecs.</p><p>Boolean values are supported by the <a href="#bool(n:Int):scodec.Codec[Boolean]" class="extmbr" name="scodec.codecs#bool">bool</a> codecs.</p><h5> Tuple Codecs </h5><p>The <code>~</code> operator supports combining a <code>Codec[A]</code> and a <code>Codec[B]</code> in to a <code>Codec[(A, B)]</code>.</p><p>For example: </p><pre><span class="kw">val</span> codec: Codec[<span class="std">Int</span> ~ <span class="std">Int</span> ~ <span class="std">Int</span>] = uint8 ~ uint8 ~ uint8</pre><p>Codecs generated with <code>~</code> result in left nested tuples. These left nested tuples can
 be pulled back apart by pattern matching with <code>~</code>. For example: </p><pre>Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map { <span class="kw">case</span> a ~ b ~ c <span class="kw">=&gt;</span> a + b + c }</pre><p>Alternatively, a function of N arguments can be lifted to a function of left-nested tuples. For example: </p><pre><span class="kw">val</span> add3 = (_: <span class="std">Int</span>) + (_: <span class="std">Int</span>) + (_: <span class="std">Int</span>)
 Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map add3</pre><p>Similarly, a left nested tuple can be created with the <code>~</code> operator. This is useful when creating the tuple structure
 to pass to encode. For example: </p><pre>(uint8 ~ uint8 ~ uint8).encode(<span class="num">1</span> ~ <span class="num">2</span> ~ <span class="num">3</span>)</pre><p>Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
@@ -280,6 +280,32 @@ indicate the type.</p>
       </span>
       </h4>
       
+    </li><li name="scodec.codecs.package#bits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bits:scodec.Codec[scodec.BitVector]"></a>
+      <a id="bits:Codec[BitVector]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bits</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="../package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#bool" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bool(n:Int):scodec.Codec[Boolean]"></a>
+      <a id="bool(Int):Codec[Boolean]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bool</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors.</p>
     </li><li name="scodec.codecs.package#bool" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="bool:scodec.Codec[Boolean]"></a>
       <a id="bool:Codec[Boolean]"></a>
@@ -292,7 +318,7 @@ indicate the type.</p>
         <span class="name">bool</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">1-bit boolean codec, where false corresponds to bit value 0 and true corresponds to bit value 1.</p>
     </li><li name="scodec.codecs.package#bytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="bytes(size:Int):scodec.Codec[scodec.ByteVector]"></a>
       <a id="bytes(Int):Codec[ByteVector]"></a>
@@ -303,6 +329,19 @@ indicate the type.</p>
       </span>
       <span class="symbol">
         <span class="name">bytes</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="../package.html#ByteVector=scodec.bits.ByteVector" class="extmbr" name="scodec.ByteVector">ByteVector</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.package#bytes" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="bytes:scodec.Codec[scodec.ByteVector]"></a>
+      <a id="bytes:Codec[ByteVector]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">bytes</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="../package.html#ByteVector=scodec.bits.ByteVector" class="extmbr" name="scodec.ByteVector">ByteVector</a>]</span>
       </span>
       </h4>
       
@@ -360,6 +399,47 @@ indicate the type.</p>
       <p class="shortcomment cmt">Provides syntax for building a <span class="extype" name="DiscriminatorCodec">DiscriminatorCodec</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides syntax for building a <span class="extype" name="DiscriminatorCodec">DiscriminatorCodec</span>.
 Usage: </p><pre><span class="kw">val</span> discriminator: Discriminator[<span class="std">AnyVal</span>, <span class="std">Int</span>] = ???
 <span class="kw">val</span> codec = discriminated[<span class="std">AnyVal</span>] by uint8 using discriminator</pre></div></div>
+    </li><li name="scodec.codecs.package#double" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="double:scodec.Codec[Double]"></a>
+      <a id="double:Codec[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">double</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">64-bit big endian IEEE 754 floating point number.</p>
+    </li><li name="scodec.codecs.package#doubleL" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="doubleL:scodec.Codec[Double]"></a>
+      <a id="doubleL:Codec[Double]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">doubleL</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Double">Double</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">64-bit little endian IEEE 754 floating point number.</p>
+    </li><li name="scodec.codecs.package#either" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="either[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[scalaz.\/[L,R]]"></a>
+      <a id="either[L,R](Codec[Boolean],Codec[L],Codec[R]):Codec[\/[L,R]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">either</span><span class="tparams">[<span name="L">L</span>, <span name="R">R</span>]</span><span class="params">(<span name="indicator">indicator: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="left">left: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.either.L">L</span>]</span>, <span name="right">right: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.either.R">R</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scodec.codecs.either.L">L</span>, <span class="extype" name="scodec.codecs.either.R">R</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Disjunction codec that supports vectors of form <code>indicator ++ (left or right)</code> where a
+value of <code>false</code> for the indicator indicates it is followed by a left value* and a value
+of <code>true</code> indicates it is followed by a right value.</p>
     </li><li name="scodec.codecs.package#encrypted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="encrypted[A](codec:scodec.Codec[A])(implicitcipherFactory:scodec.codecs.CipherFactory):scodec.Codec[A]"></a>
       <a id="encrypted[A](Codec[A])(CipherFactory):Codec[A]"></a>
@@ -412,6 +492,32 @@ Usage: </p><pre><span class="kw">val</span> discriminator: Discriminator[<span c
       </span>
       </h4>
       
+    </li><li name="scodec.codecs.package#float" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="float:scodec.Codec[Float]"></a>
+      <a id="float:Codec[Float]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">float</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Float">Float</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">32-bit big endian IEEE 754 floating point number.</p>
+    </li><li name="scodec.codecs.package#floatL" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="floatL:scodec.Codec[Float]"></a>
+      <a id="floatL:Codec[Float]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">floatL</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Float">Float</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">32-bit little endian IEEE 754 floating point number.</p>
     </li><li name="scodec.codecs.package#ignore" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ignore(bits:Int):scodec.Codec[Unit]"></a>
       <a id="ignore(Int):Codec[Unit]"></a>
