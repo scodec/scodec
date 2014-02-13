@@ -28,6 +28,8 @@ import scodec.bits.{ BitVector, ByteVector }
  *
  * IEEE 754 floating point values are supported by the [[float]], [[floatL]], [[double]], and [[doubleL]] codecs.
  *
+ * Boolean values are supported by the [[bool]] codecs.
+ *
  * === Tuple Codecs ===
  *
  * The `~` operator supports combining a `Codec[A]` and a `Codec[B]` in to a `Codec[(A, B)]`.
@@ -91,18 +93,26 @@ package object codecs {
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, signed = false, bigEndian = false)
 
   /** 32-bit big endian IEEE 754 floating point number. */
-  def float: Codec[Float] = new FloatCodec(bigEndian = true)
+  val float: Codec[Float] = new FloatCodec(bigEndian = true)
 
   /** 32-bit little endian IEEE 754 floating point number. */
-  def floatL: Codec[Float] = new FloatCodec(bigEndian = false)
+  val floatL: Codec[Float] = new FloatCodec(bigEndian = false)
 
   /** 64-bit big endian IEEE 754 floating point number. */
-  def double: Codec[Double] = new DoubleCodec(bigEndian = true)
+  val double: Codec[Double] = new DoubleCodec(bigEndian = true)
 
   /** 64-bit little endian IEEE 754 floating point number. */
-  def doubleL: Codec[Double] = new DoubleCodec(bigEndian = false)
+  val doubleL: Codec[Double] = new DoubleCodec(bigEndian = false)
 
+  /** 1-bit boolean codec, where false corresponds to bit value 0 and true corresponds to bit value 1. */
   val bool: Codec[Boolean] = BooleanCodec
+
+  /** n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors. */
+  def bool(n: Int): Codec[Boolean] = {
+    val zeros = BitVector.low(n)
+    val ones = BitVector.high(n)
+    bits(n).xmap[Boolean](bits => !(bits == zeros), b => if (b) ones else zeros).withToString(s"bool($n)")
+  }
 
   def string(implicit charset: Charset): Codec[String] = new StringCodec(charset)
   val ascii = string(Charset.forName("US-ASCII"))
