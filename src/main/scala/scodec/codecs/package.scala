@@ -150,7 +150,7 @@ package object codecs {
 
   /**
    * Disjunction codec that supports vectors of form `indicator ++ (left or right)` where a
-   * value of `false` for the indicator indicates it is followed by a left value* and a value
+   * value of `false` for the indicator indicates it is followed by a left value and a value
    * of `true` indicates it is followed by a right value.
    */
   def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] = new EitherCodec(indicator, left, right)
