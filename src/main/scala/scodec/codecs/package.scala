@@ -4,8 +4,9 @@ import java.nio.charset.Charset
 import java.security.cert.Certificate
 import java.util.UUID
 
-import shapeless.Iso
+import scalaz.\/
 import scodec.bits.{ BitVector, ByteVector }
+import shapeless.Iso
 
 /**
  * Provides codecs for common types and combinators for building larger codecs.
@@ -55,6 +56,14 @@ import scodec.bits.{ BitVector, ByteVector }
  * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
  */
 package object codecs {
+
+  def bits: Codec[BitVector] = BitVectorCodec.withToString("bits")
+  def bits(size: Int): Codec[BitVector] =
+    fixedSizeBits(size, BitVectorCodec).withToString(s"bits($size)")
+
+  def bytes: Codec[ByteVector] = BitVectorCodec.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes")
+  def bytes(size: Int): Codec[ByteVector] =
+    fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes($size)")
 
   val int8: Codec[Int] = new IntCodec(8)
   val int16: Codec[Int] = new IntCodec(16)
@@ -135,15 +144,16 @@ package object codecs {
   def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
     variableSizeBits(size.xmap[Int](_ * 8, _ / 8).withToString(size.toString), value, sizePadding * 8).withToString(s"variableSizeBytes($size, $value)")
 
-  def bits: Codec[BitVector] = BitVectorCodec.withToString("bits")
-  def bits(size: Int): Codec[BitVector] = fixedSizeBits(size, BitVectorCodec).withToString(s"bits($size)")
-
-  def bytes: Codec[ByteVector] = BitVectorCodec.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes")
-  def bytes(size: Int): Codec[ByteVector] = fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes($size)")
-
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
+
+  /**
+   * Disjunction codec that supports vectors of form `indicator ++ (left or right)` where a
+   * value of `false` for the indicator indicates it is followed by a left value* and a value
+   * of `true` indicates it is followed by a right value.
+   */
+  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] = new EitherCodec(indicator, left, right)
 
   def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
 
