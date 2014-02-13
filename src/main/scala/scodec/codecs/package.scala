@@ -21,10 +21,12 @@ import scodec.bits.{ BitVector, ByteVector }
  * For each codec of that form, the type is `Codec[Int]` or `Codec[Long]` depending on the specified size.
  * For example, `int32` supports 32-bit big-endian 2s complement signed integers, and uint16L supports 16-bit little-endian
  * unsigned integers.
- * Note: `uint64[L]` is not provided because it does not fit in to a `Long`.
+ * Note: `uint64[L]` are not provided because a 64-bit unsigned integer does not fit in to a `Long`.
  *
  * Additionally, methods of the form `[u]int[L](size: Int)` and `[u]long[L](size: Int)` exist to build arbitrarily
  * sized codecs, within the limitations of `Int` and `Long`.
+ *
+ * IEEE 754 floating point values are supported by the [[float]], [[floatL]], [[double]], and [[doubleL]] codecs.
  *
  * === Tuple Codecs ===
  *
@@ -87,6 +89,18 @@ package object codecs {
   def uintL(bits: Int): Codec[Int] = new IntCodec(bits, signed = false, bigEndian = false)
   def longL(bits: Int): Codec[Long] = new LongCodec(bits, bigEndian = false)
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, signed = false, bigEndian = false)
+
+  /** 32-bit big endian IEEE 754 floating point number. */
+  def float: Codec[Float] = new FloatCodec(bigEndian = true)
+
+  /** 32-bit little endian IEEE 754 floating point number. */
+  def floatL: Codec[Float] = new FloatCodec(bigEndian = false)
+
+  /** 64-bit big endian IEEE 754 floating point number. */
+  def double: Codec[Double] = new DoubleCodec(bigEndian = true)
+
+  /** 64-bit little endian IEEE 754 floating point number. */
+  def doubleL: Codec[Double] = new DoubleCodec(bigEndian = false)
 
   val bool: Codec[Boolean] = BooleanCodec
 
