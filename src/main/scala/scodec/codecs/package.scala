@@ -4,7 +4,7 @@ import java.nio.charset.Charset
 import java.security.cert.Certificate
 import java.util.UUID
 
-import scalaz.\/
+import scalaz.{\/, -\/, \/-}
 import scodec.bits.{ BitVector, ByteVector }
 import shapeless.Iso
 
@@ -153,7 +153,20 @@ package object codecs {
    * value of `false` for the indicator indicates it is followed by a left value and a value
    * of `true` indicates it is followed by a right value.
    */
-  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] = new EitherCodec(indicator, left, right)
+  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] =
+    discriminated[L \/ R].by(indicator)
+    .| (false) { case -\/(l) => l } (-\/(_)) (left) // i hate these ctor names
+    .| (true)  { case \/-(r) => r } (\/-(_)) (right)
+    .build
+
+  /**
+   * Like [[either]], but encodes the standard library `Either` type.
+   */
+  def stdEither[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[Either[L,R]] =
+    discriminated[Either[L,R]].by(indicator)
+    .| (false) { case Left(l)  => l } (Left.apply) (left)
+    .| (true)  { case Right(r) => r } (Right.apply) (right)
+    .build
 
   def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
 
@@ -225,6 +238,50 @@ package object codecs {
 
   import DiscriminatorCodecSyntax._
 
+
+  /**
+   * This function is used to build codecs that support encoding/decoding
+   * values of type `A`. Some usage examples: {{{
+
+     val codecT: Codec[T] = ...
+     val codecT2: Codec[T2] = ...
+
+     val codecEither: Codec[Either[T,T2]] =
+       discriminated[Either[L,R]].by(bool(8))
+       .? (false) { case Left(l)  => l } (Left.apply) (left)
+       .? (true)  { case Right(r) => r } (Right.apply) (right)
+       .build
+   }}}
+   *
+   * Codec that supports encoding/decoding some values of type `A`
+   * by including a value discriminator in the binary encoding.
+   * The binary encoding is the encoded discriminator value followed
+   * by the encoded value. Here
+   *
+   * Enconding is performed by:
+   *  - determining the discriminator for the value using `discriminator.discriminate`
+   *  - determining the codec for the value by passing the discriminator value to `discriminator.codec`
+   *  - encoding the discriminator using the `disciminatorCodec`
+   *  - encoding the value using the looked up codec
+   *
+   * Decoding is performed by:
+   *  - decoding a discriminator value using the `discriminatorCodec`
+   *  - looking up the value codec by passing the discriminator value to `discriminator.codec`
+   *  - decoding the value
+   */
+    /*
+    Target syntax:
+
+     discriminated[Either[Int,String]].by(bool)
+     .| (false)(Left.unapply)(Left.apply)(uint32)
+     .| (true)(Right.unapply)(Right.apply)(utf8)
+     .build
+
+     discriminated[Either[Int,String]].by(uint32)
+     .| (_ < 10)(Left.unapply)(Left.apply)(uint32)
+     .| (_ => true)(Right.unapply)(Right.apply)(utf8)
+     .build
+    */
   /**
    * Provides syntax for building a [[DiscriminatorCodec]].
    * Usage: {{{
