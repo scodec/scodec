@@ -1,6 +1,7 @@
 package scodec
 
 import scalaz.{ \/, Monoid, StateT }
+import \/.left
 import shapeless._
 
 import scodec.bits.BitVector
@@ -20,6 +21,16 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   /** Maps to a codec of type `B`. */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B): String \/ BitVector = self.encode(g(b))
+    def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
+  }
+
+  /**
+   * Maps to a `codec` of type `B`, where there is a partial function
+   * from `B` to `A`. The encoding will fail for any `B` that
+   * `f` maps to `None`.
+   */
+  final def pxmap[B](f: A => B, g: B => Option[A]): Codec[B] = new Codec[B] {
+    def encode(b: B): String \/ BitVector = g(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
     def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
 

@@ -1,6 +1,7 @@
 package scodec
 
 import scalaz.{ \/, Contravariant, Corepresentable }
+import \/.left
 
 import scodec.bits.BitVector
 
@@ -18,6 +19,16 @@ trait Encoder[-A] { self =>
   /** Converts this encoder to an `Encoder[B]` using the supplied `B => A`. */
   def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
     def encode(b: B) = self.encode(f(b))
+  }
+
+  /**
+   * Converts this encoder to an `Encoder[B]` using the supplied partial
+   * function from `B` to `A`. The encoding will fail for any `B` that
+   * `f` maps to `None`.
+   */
+  def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B] {
+    def encode(b: B): String \/ BitVector =
+      f(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
   }
 }
 
