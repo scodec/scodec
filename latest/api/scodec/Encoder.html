@@ -44,7 +44,7 @@
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
           <span class="toggle">Known Subclasses</span>
-          <div class="subClasses hiddenContent"><a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>, <a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a></div>
+          <div class="subClasses hiddenContent"><a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>, <a href="codecs/DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>, <a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a></div>
         </div></div>
         
 
@@ -468,6 +468,23 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.Encoder#pcontramap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="pcontramap[B](f:B=&gt;Option[A]):scodec.Encoder[B]"></a>
+      <a id="pcontramap[B]((B)⇒Option[A]):Encoder[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">pcontramap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.Encoder.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts this encoder to an <code>Encoder[B]</code> using the supplied partial
+function from <code>B</code> to <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Converts this encoder to an <code>Encoder[B]</code> using the supplied partial
+function from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</code> that
+<code>f</code> maps to <code>None</code>.
+</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

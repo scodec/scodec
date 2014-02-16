@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>NeedDiscriminator - scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator</title>
-          <meta name="description" content="NeedDiscriminator - scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator" />
-          <meta name="keywords" content="NeedDiscriminator scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator" />
+          <title>NeedDiscriminatorCodec - scodec.codecs.NeedDiscriminatorCodec</title>
+          <meta name="description" content="NeedDiscriminatorCodec - scodec.codecs.NeedDiscriminatorCodec" />
+          <meta name="keywords" content="NeedDiscriminatorCodec scodec.codecs.NeedDiscriminatorCodec" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'scodec.codecs.DiscriminatorCodecSyntax$$NeedDiscriminator';
+            var hash = 'scodec.codecs.package$$NeedDiscriminatorCodec';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -25,8 +25,8 @@
         <body class="type">
       <div id="definition">
         <img src="../../lib/trait_big.png" />
-        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a>.<a href="DiscriminatorCodecSyntax$.html" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax">DiscriminatorCodecSyntax</a></p>
-        <h1>NeedDiscriminator</h1>
+        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
+        <h1>NeedDiscriminatorCodec</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,11 @@
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">NeedDiscriminator</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">NeedDiscriminatorCodec</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Supports creation of a <a href="DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>. See <a href="package.html#discriminated[A]:scodec.codecs.package.NeedDiscriminatorCodec[A]" class="extmbr" name="scodec.codecs#discriminated">discriminated</a> for details.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator"><span>NeedDiscriminator</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.codecs.NeedDiscriminatorCodec"><span>NeedDiscriminatorCodec</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -88,29 +88,16 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator#using" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="using(discriminate:PartialFunction[A,B],codec:PartialFunction[B,scodec.Codec[_&lt;:A]]):scodec.codecs.DiscriminatorCodec[A,B]"></a>
-      <a id="using(PartialFunction[A,B],PartialFunction[B,Codec[_&lt;:A]]):DiscriminatorCodec[A,B]"></a>
+              <ol><li name="scodec.codecs.NeedDiscriminatorCodec#by" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="by[B](discriminatorCodec:scodec.Codec[B]):scodec.codecs.DiscriminatorCodec[A,B]"></a>
+      <a id="by[B](Codec[B]):DiscriminatorCodec[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">using</span><span class="params">(<span name="discriminate">discriminate: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>, <span name="codec">codec: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>, <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[_ &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>]]</span>)</span><span class="result">: <span class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator#using" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="using(discriminator:scodec.codecs.Discriminator[A,B]):scodec.codecs.DiscriminatorCodec[A,B]"></a>
-      <a id="using(Discriminator[A,B]):DiscriminatorCodec[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">using</span><span class="params">(<span name="discriminator">discriminator: <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>)</span><span class="result">: <span class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="name">by</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="discriminatorCodec">discriminatorCodec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.by.B">B</span>]</span>)</span><span class="result">: <a href="DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.by.B">B</span>]</span>
       </span>
       </h4>
       
@@ -171,25 +158,25 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
             <span class="extype" name="scala.runtime.StringAdd">StringAdd</span> performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
-      <a id="-&gt;[B](B):(NeedDiscriminator[A,B],B)"></a>
+      <a id="-&gt;[B](B):(NeedDiscriminatorCodec[A],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -223,19 +210,19 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#a" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="a:A"></a>
-      <a id="a:NeedDiscriminator[A,B]"></a>
+      <a id="a:NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -272,70 +259,70 @@
         </dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring((NeedDiscriminator[A,B])⇒Boolean,⇒Any):NeedDiscriminator[A,B]"></a>
+      <a id="ensuring((NeedDiscriminatorCodec[A])⇒Boolean,⇒Any):NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
-      <a id="ensuring((NeedDiscriminator[A,B])⇒Boolean):NeedDiscriminator[A,B]"></a>
+      <a id="ensuring((NeedDiscriminatorCodec[A])⇒Boolean):NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring(Boolean,⇒Any):NeedDiscriminator[A,B]"></a>
+      <a id="ensuring(Boolean,⇒Any):NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
-      <a id="ensuring(Boolean):NeedDiscriminator[A,B]"></a>
+      <a id="ensuring(Boolean):NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -396,7 +383,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
             <span class="extype" name="scala.runtime.StringFormat">StringFormat</span> performed by method any2stringfmt in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
@@ -566,36 +553,36 @@
         </dd></dl></div>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="~[B](b:B):(A,B)"></a>
-      <a id="~[B](B):(NeedDiscriminator[A,B],B)"></a>
+      <a id="~[B](B):(NeedDiscriminatorCodec[A],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>], <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
+        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>], <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
-      <a id="→[B](B):(NeedDiscriminator[A,B],B)"></a>
+      <a id="→[B](B):(NeedDiscriminatorCodec[A],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -616,10 +603,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
             <span class="extype" name="scala.runtime.StringAdd">StringAdd</span> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminator: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminatorCodec: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
@@ -633,10 +620,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
             <span class="extype" name="scala.runtime.StringFormat">StringFormat</span> performed by method any2stringfmt in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminator: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminatorCodec: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
@@ -644,41 +631,41 @@
               <h3>Deprecated Value Members</h3>
               <ol><li name="scala.Predef.any2ArrowAssoc#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:NeedDiscriminator[A,B]"></a>
+      <a id="x:NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminator: ArrowAssoc[NeedDiscriminator[A, B]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminatorCodec: ArrowAssoc[NeedDiscriminatorCodec[A]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>leftOfArrow<code> instead</code></u></code></p></dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:NeedDiscriminator[A,B]"></a>
+      <a id="x:NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]</span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminator: Ensuring[NeedDiscriminator[A, B]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(needDiscriminatorCodec: Ensuring[NeedDiscriminatorCodec[A]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>resultOfEnsuring<code> instead</code></u></code></p></dd></dl></div>
@@ -694,23 +681,23 @@
             </div>
         <div class="conversion" name="scodec.codecs.ValueEnrichedWithTuplingSupport">
               <h3>Inherited by implicit conversion ValueEnrichedWithTuplingSupport from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]]
+                <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to <span class="extype" name="scala.runtime.StringAdd">StringAdd</span>
+                <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to <span class="extype" name="scala.runtime.StringAdd">StringAdd</span>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringfmt">
               <h3>Inherited by implicit conversion any2stringfmt from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to <span class="extype" name="scala.runtime.StringFormat">StringFormat</span>
+                <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to <span class="extype" name="scala.runtime.StringFormat">StringFormat</span>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2ArrowAssoc">
               <h3>Inherited by implicit conversion any2ArrowAssoc from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]]
+                <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2Ensuring">
               <h3>Inherited by implicit conversion any2Ensuring from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator">NeedDiscriminator</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminator.B">B</span>]]
+                <a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.NeedDiscriminatorCodec.A">A</span>]]
               </h3>
             </div>
         </div>

@@ -103,20 +103,33 @@ to pass to encode. For example: </p><pre>(uint8 ~ uint8 ~ uint8).encode(<span cl
       </span>
       </h4>
       <p class="comment cmt">Represents the ability to create a <span class="extype" name="Cipher">Cipher</span> for encryption or decryption.</p>
-    </li><li name="scodec.codecs.Discriminator" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="Discriminator[A,B]extendsAnyRef"></a>
-      <a id="Discriminator[A,B]:Discriminator[A,B]"></a>
+    </li><li name="scodec.codecs.DiscriminatorCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DiscriminatorCodec[A,B]extendsCodec[A]"></a>
+      <a id="DiscriminatorCodec[A,B]:DiscriminatorCodec[A,B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DiscriminatorCodec.html"><span class="name">DiscriminatorCodec</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="comment cmt">Codec that supports the binary structure <code>tag ++ value</code> where the <code>tag</code> identifies the encoding/decoding of
+the value.</p>
+    </li><li name="scodec.codecs.NeedDiscriminatorCodec" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="NeedDiscriminatorCodec[A]extendsAnyRef"></a>
+      <a id="NeedDiscriminatorCodec[A]:NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">sealed </span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Discriminator.html"><span class="name">Discriminator</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="package$$NeedDiscriminatorCodec.html"><span class="name">NeedDiscriminatorCodec</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <p class="comment cmt">Provides support for building codecs that encode/decode multiple disparate types by using a discriminator value to
-indicate the type.</p>
+      <p class="comment cmt">Supports creation of a <a href="DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>.</p>
     </li><li name="scodec.codecs.SignatureFactory" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="SignatureFactoryextendsAnyRef"></a>
       <a id="SignatureFactory:SignatureFactory"></a>
@@ -143,32 +156,6 @@ indicate the type.</p>
       </span>
       </h4>
       <p class="comment cmt">Provides the <code>|</code> method on <code>String</code> that allows creation of a named codec.</p>
-    </li><li name="scodec.codecs.TypeDiscriminator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TypeDiscriminator[A,B]extendsDiscriminator[A,B]"></a>
-      <a id="TypeDiscriminator[A,B]:TypeDiscriminator[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="TypeDiscriminator.html"><span class="name">TypeDiscriminator</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="result"> extends <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.TypeDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.TypeDiscriminator.B">B</span>]</span>
-      </span>
-      </h4>
-      <p class="comment cmt">Discriminator that matches based on the runtime type of the value.</p>
-    </li><li name="scodec.codecs.TypeDiscriminatorCase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="TypeDiscriminatorCase[A,B]extendsProductwithSerializable"></a>
-      <a id="TypeDiscriminatorCase[A,B]:TypeDiscriminatorCase[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="TypeDiscriminatorCase.html"><span class="name">TypeDiscriminatorCase</span></a><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="discriminatorValue">discriminatorValue: <span class="extype" name="scodec.codecs.TypeDiscriminatorCase.B">B</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.TypeDiscriminatorCase.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="evidence$1">evidence$1: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scodec.codecs.TypeDiscriminatorCase.A">A</span>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4>
-      <p class="comment cmt">A case in a type based discriminator.</p>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="ValueEnrichedWithTuplingSupport[A]extendsAnyRef"></a>
       <a id="ValueEnrichedWithTuplingSupport[A]:ValueEnrichedWithTuplingSupport[A]"></a>
@@ -212,32 +199,6 @@ indicate the type.</p>
       </span>
       <span class="symbol">
         <a href="CipherFactory$.html"><span class="name">CipherFactory</span></a>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.codecs.Discriminator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="Discriminator"></a>
-      <a id="Discriminator:Discriminator"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="Discriminator$.html"><span class="name">Discriminator</span></a>
-      </span>
-      </h4>
-      <p class="comment cmt">Companion for <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>.</p>
-    </li><li name="scodec.codecs.DiscriminatorCodecSyntax" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DiscriminatorCodecSyntax"></a>
-      <a id="DiscriminatorCodecSyntax:DiscriminatorCodecSyntax"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">object</span>
-      </span>
-      <span class="symbol">
-        <a href="DiscriminatorCodecSyntax$.html"><span class="name">DiscriminatorCodecSyntax</span></a>
       </span>
       </h4>
       
@@ -385,7 +346,7 @@ indicate the type.</p>
       </h4>
       
     </li><li name="scodec.codecs.package#discriminated" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="discriminated[A]:scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminatorCodec[A]"></a>
+      <a id="discriminated[A]:scodec.codecs.package.NeedDiscriminatorCodec[A]"></a>
       <a id="discriminated[A]:NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -393,12 +354,35 @@ indicate the type.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">discriminated</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a href="DiscriminatorCodecSyntax$$NeedDiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodecSyntax.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.discriminated.A">A</span>]</span>
+        <span class="name">discriminated</span><span class="tparams">[<span name="A">A</span>]</span><span class="result">: <a href="package$$NeedDiscriminatorCodec.html" class="extype" name="scodec.codecs.NeedDiscriminatorCodec">NeedDiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.discriminated.A">A</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Provides syntax for building a <span class="extype" name="DiscriminatorCodec">DiscriminatorCodec</span>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides syntax for building a <span class="extype" name="DiscriminatorCodec">DiscriminatorCodec</span>.
-Usage: </p><pre><span class="kw">val</span> discriminator: Discriminator[<span class="std">AnyVal</span>, <span class="std">Int</span>] = ???
-<span class="kw">val</span> codec = discriminated[<span class="std">AnyVal</span>] by uint8 using discriminator</pre></div></div>
+      <p class="shortcomment cmt">Provides syntax for building a <a href="DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Provides syntax for building a <a href="DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>.</p><p>Usage: </p><pre><span class="kw">val</span> codecA: Codec[A] = ...
+<span class="kw">val</span> codecB: Codec[B] = ...
+
+<span class="kw">val</span> codecE: Codec[Either[A,B]] =
+  discriminated[Either[A,B]].by(uint8)
+  .| (<span class="num">0</span>) { <span class="kw">case</span> Left(l) <span class="kw">=&gt;</span> l } (Left.apply) (codecA)
+  .| (<span class="num">1</span>) { <span class="kw">case</span> Right(r) <span class="kw">=&gt;</span> r } (Right.apply) (codecB)
+  .build</pre><p>   This encodes an <code>Either[A,B]</code> by checking the given patterns
+   in sequence from top to bottom. For the first pattern that matches,
+   it emits the corresponding discriminator value: <code>0</code> for <code>Left</code>
+   and <code>1</code> for <code>Right</code>, encoded via the <code>uint8</code> codec. It then emits
+   either an encoded <code>A</code>, encoded using <code>codecA</code>, or an encoded <code>B</code>,
+   using <code>codecB</code>.</p><p>   Decoding is the mirror of this; the returned <code>codecE</code> will first
+   read an <code>Int</code>, using the <code>uint8</code> codec. If it is a <code>0</code>, it then
+   runs <code>codecA</code>, and injects the result into <code>Either</code> via <code>Left.apply</code>.
+   If it is a <code>1</code>, it runs <code>codecB</code> and injects the result into <code>Either</code>
+   via <code>Right.apply</code>.</p><p>   There are a few variations on this syntax, depending on whether you
+   have a <code>PartialFunction</code> from the base type or an <code>B =&gt; Option[S]</code>
+   function from the base type to the subcase.</p><p>   If you you already have a codec specific to the case, you can omit
+   the 'injection' function. For instance: </p><pre><span class="kw">val</span> leftCodec: Codec[Left[A,B]] = codecA.pxmap(Left.apply, Left.unapply)
+<span class="kw">val</span> rightCodec: Codec[Right[A,B]] = codecB.pxmap(Left.apply, Left.unapply)
+<span class="kw">val</span> codecE: Codec[Either[A,B]] =
+  discriminated[Either[A,B]].by(uint8)
+  .\ (<span class="num">0</span>) { <span class="kw">case</span> l@Left(_) <span class="kw">=&gt;</span> l } (leftCodec) <span class="cmt">// backslash instead of '|'</span>
+  .\ (<span class="num">1</span>) { <span class="kw">case</span> r@Right(_) <span class="kw">=&gt;</span> r } (rightCodec)</pre><p>   The actual formatted bits are identical with either formulation.
+</p></div></div>
     </li><li name="scodec.codecs.package#double" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="double:scodec.Codec[Double]"></a>
       <a id="double:Codec[Double]"></a>
@@ -438,7 +422,7 @@ Usage: </p><pre><span class="kw">val</span> discriminator: Discriminator[<span c
       </span>
       </h4>
       <p class="shortcomment cmt">Disjunction codec that supports vectors of form <code>indicator ++ (left or right)</code> where a
-value of <code>false</code> for the indicator indicates it is followed by a left value* and a value
+value of <code>false</code> for the indicator indicates it is followed by a left value and a value
 of <code>true</code> indicates it is followed by a right value.</p>
     </li><li name="scodec.codecs.package#encrypted" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="encrypted[A](codec:scodec.Codec[A])(implicitcipherFactory:scodec.codecs.CipherFactory):scodec.Codec[A]"></a>
@@ -843,6 +827,19 @@ of <code>true</code> indicates it is followed by a right value.</p>
       </span>
       </h4>
       
+    </li><li name="scodec.codecs.package#stdEither" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="stdEither[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[Either[L,R]]"></a>
+      <a id="stdEither[L,R](Codec[Boolean],Codec[L],Codec[R]):Codec[Either[L,R]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">stdEither</span><span class="tparams">[<span name="L">L</span>, <span name="R">R</span>]</span><span class="params">(<span name="indicator">indicator: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="left">left: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.stdEither.L">L</span>]</span>, <span name="right">right: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.stdEither.R">R</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scodec.codecs.stdEither.L">L</span>, <span class="extype" name="scodec.codecs.stdEither.R">R</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Like <a href="#either[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[scalaz.\/[L,R]]" class="extmbr" name="scodec.codecs#either">either</a>, but encodes the standard library <code>Either</code> type.</p>
     </li><li name="scodec.codecs.package#string" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="string(implicitcharset:java.nio.charset.Charset):scodec.Codec[String]"></a>
       <a id="string(Charset):Codec[String]"></a>
@@ -853,32 +850,6 @@ of <code>true</code> indicates it is followed by a right value.</p>
       </span>
       <span class="symbol">
         <span class="name">string</span><span class="params">(<span class="implicit">implicit </span><span name="charset">charset: <span class="extype" name="java.nio.charset.Charset">Charset</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Predef.String">String</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.codecs.package#typeDiscriminator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="typeDiscriminator[A,B](cases:scodec.codecs.TypeDiscriminatorCase[_&lt;:A,B]*):scodec.codecs.Discriminator[A,B]"></a>
-      <a id="typeDiscriminator[A,B](TypeDiscriminatorCase[_&lt;:A,B]*):Discriminator[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">typeDiscriminator</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="cases">cases: <a href="TypeDiscriminatorCase.html" class="extype" name="scodec.codecs.TypeDiscriminatorCase">TypeDiscriminatorCase</a>[_ &lt;: <span class="extype" name="scodec.codecs.typeDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.typeDiscriminator.B">B</span>]*</span>)</span><span class="result">: <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.typeDiscriminator.A">A</span>, <span class="extype" name="scodec.codecs.typeDiscriminator.B">B</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.codecs.package#typeDiscriminatorCase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="typeDiscriminatorCase[A,B](discriminatorValue:B,codec:scodec.Codec[A])(implicitevidence$2:Manifest[A]):scodec.codecs.TypeDiscriminatorCase[A,B]"></a>
-      <a id="typeDiscriminatorCase[A,B](B,Codec[A])(Manifest[A]):TypeDiscriminatorCase[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">typeDiscriminatorCase</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="discriminatorValue">discriminatorValue: <span class="extype" name="scodec.codecs.typeDiscriminatorCase.B">B</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.typeDiscriminatorCase.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scodec.codecs.typeDiscriminatorCase.A">A</span>]</span>)</span><span class="result">: <a href="TypeDiscriminatorCase.html" class="extype" name="scodec.codecs.TypeDiscriminatorCase">TypeDiscriminatorCase</a>[<span class="extype" name="scodec.codecs.typeDiscriminatorCase.A">A</span>, <span class="extype" name="scodec.codecs.typeDiscriminatorCase.B">B</span>]</span>
       </span>
       </h4>
       
