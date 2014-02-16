@@ -155,9 +155,8 @@ package object codecs {
    */
   def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] =
     discriminated[L \/ R].by(indicator)
-    .| (false) { case -\/(l) => l } (-\/(_)) (left) // i hate these ctor names
-    .| (true)  { case \/-(r) => r } (\/-(_)) (right)
-    .build
+    .| (false) { case -\/(l) => l } (\/.left) (left)
+    .| (true)  { case \/-(r) => r } (\/.right) (right)
 
   /**
    * Like [[either]], but encodes the standard library `Either` type.
@@ -166,7 +165,6 @@ package object codecs {
     discriminated[Either[L,R]].by(indicator)
     .| (false) { case Left(l)  => l } (Left.apply) (left)
     .| (true)  { case Right(r) => r } (Right.apply) (right)
-    .build
 
   def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
 
@@ -236,65 +234,57 @@ package object codecs {
 
   // DiscriminatorCodec syntax
 
-  import DiscriminatorCodecSyntax._
-
-
-  /**
-   * This function is used to build codecs that support encoding/decoding
-   * values of type `A`. Some usage examples: {{{
-
-     val codecT: Codec[T] = ...
-     val codecT2: Codec[T2] = ...
-
-     val codecEither: Codec[Either[T,T2]] =
-       discriminated[Either[L,R]].by(bool(8))
-       .? (false) { case Left(l)  => l } (Left.apply) (left)
-       .? (true)  { case Right(r) => r } (Right.apply) (right)
-       .build
-   }}}
-   *
-   * Codec that supports encoding/decoding some values of type `A`
-   * by including a value discriminator in the binary encoding.
-   * The binary encoding is the encoded discriminator value followed
-   * by the encoded value. Here
-   *
-   * Enconding is performed by:
-   *  - determining the discriminator for the value using `discriminator.discriminate`
-   *  - determining the codec for the value by passing the discriminator value to `discriminator.codec`
-   *  - encoding the discriminator using the `disciminatorCodec`
-   *  - encoding the value using the looked up codec
-   *
-   * Decoding is performed by:
-   *  - decoding a discriminator value using the `discriminatorCodec`
-   *  - looking up the value codec by passing the discriminator value to `discriminator.codec`
-   *  - decoding the value
-   */
-    /*
-    Target syntax:
-
-     discriminated[Either[Int,String]].by(bool)
-     .| (false)(Left.unapply)(Left.apply)(uint32)
-     .| (true)(Right.unapply)(Right.apply)(utf8)
-     .build
-
-     discriminated[Either[Int,String]].by(uint32)
-     .| (_ < 10)(Left.unapply)(Left.apply)(uint32)
-     .| (_ => true)(Right.unapply)(Right.apply)(utf8)
-     .build
-    */
   /**
    * Provides syntax for building a [[DiscriminatorCodec]].
+   *
    * Usage: {{{
-   val discriminator: Discriminator[AnyVal, Int] = ???
-   val codec = discriminated[AnyVal] by uint8 using discriminator
+   val codecA: Codec[A] = ...
+   val codecB: Codec[B] = ...
+
+   val codecE: Codec[Either[A,B]] =
+     discriminated[Either[A,B]].by(uint8)
+     .| (0) { case Left(l) => l } (Left.apply) (codecA)
+     .| (1) { case Right(r) => r } (Right.apply) (codecB)
+     .build
    }}}
+
+   This encodes an `Either[A,B]` by checking the given patterns
+   in sequence from top to bottom. For the first pattern that matches,
+   it emits the corresponding discriminator value: `0` for `Left`
+   and `1` for `Right`, encoded via the `uint8` codec. It then emits
+   either an encoded `A`, encoded using `codecA`, or an encoded `B`,
+   using `codecB`.
+
+   Decoding is the mirror of this; the returned `codecE` will first
+   read an `Int`, using the `uint8` codec. If it is a `0`, it then
+   runs `codecA`, and injects the result into `Either` via `Left.apply`.
+   If it is a `1`, it runs `codecB` and injects the result into `Either`
+   via `Right.apply`.
+
+   There are a few variations on this syntax, depending on whether you
+   have a `PartialFunction` from the base type or an `B => Option[S]`
+   function from the base type to the subcase.
+
+   If you you already have a codec specific to the case, you can omit
+   the 'injection' function. For instance: {{{
+     val leftCodec: Codec[Left[A,B]] = codecA.pxmap(Left.apply, Left.unapply)
+     val rightCodec: Codec[Right[A,B]] = codecB.pxmap(Left.apply, Left.unapply)
+     val codecE: Codec[Either[A,B]] =
+       discriminated[Either[A,B]].by(uint8)
+       .\ (0) { case l@Left(_) => l } (leftCodec) // backslash instead of '|'
+       .\ (1) { case r@Right(_) => r } (rightCodec)
+   }}}
+
+   The actual formatted bits are identical with either formulation.
    */
-  final def discriminated[A]: NeedDiscriminatorCodec[A] = DiscriminatorCodecSyntax.discriminated[A]
+  final def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
+    final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
+      new DiscriminatorCodec[A, B](discriminatorCodec, Vector())
+  }
 
-  final def typeDiscriminator[A, B](cases: TypeDiscriminatorCase[_ <: A, B]*): Discriminator[A, B] =
-    new TypeDiscriminator[A, B](cases.toIndexedSeq)
-
-  final def typeDiscriminatorCase[A: Manifest, B](discriminatorValue: B, codec: Codec[A]): TypeDiscriminatorCase[A, B] =
-    TypeDiscriminatorCase(discriminatorValue, codec)
+  /** Supports creation of a [[DiscriminatorCodec]]. See [[discriminated]] for details. */
+  sealed trait NeedDiscriminatorCodec[A] {
+    def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B]
+  }
 }
 

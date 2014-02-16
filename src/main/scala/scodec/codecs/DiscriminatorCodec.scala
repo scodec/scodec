@@ -1,16 +1,100 @@
 package scodec
 package codecs
 
-import scalaz.{ \/, IndexedStateT }
-import \/.{left,right}
+import scalaz.\/
+import \/.{ left, right }
 import scalaz.syntax.id._
 import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector
 import DiscriminatorCodec.Case
 
-private[codecs] final class DiscriminatorCodec[A,B](by: Codec[B], cases: Vector[Case[A,B]])
-    extends Codec[A] {
+/**
+ * Codec that supports the binary structure `tag ++ value` where the `tag` identifies the encoding/decoding of
+ * the value.
+ *
+ * To build an instance of this codec, call [[discrimated]] and specify the tag type via the `by` method. Then
+ * call one more more of the case combinators on this class, such as [[caseO]] or [[typecase]].
+ *
+ * @see [[discriminated]]
+ */
+final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A,B]]) extends Codec[A] {
+
+  def caseO[R](tag: B)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(left(tag), (f, inj, cr)))
+
+  def caseO[R](tag: B, g: B => Boolean)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(right(tag -> g), (f, inj, cr)))
+
+  def ?[R](tag: B)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseO(tag)(f)(inj)(cr)
+
+  def ?[R](tag: B, g: B => Boolean)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseO(tag, g)(f)(inj)(cr)
+
+  def caseP[R](tag: B)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(left(tag), (f.lift, inj, cr)))
+
+  def caseP[R](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(right(tag -> g), (f.lift, inj, cr)))
+
+  def |[R](tag: B)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseP(tag)(f)(inj)(cr)
+
+  def |[R](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseP(tag, g)(f)(inj)(cr)
+
+  def subcaseP[R <: A](tag: B)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(left(tag), (f.lift, (r: R) => r, cr)))
+
+  def subcaseP[R <: A](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(right(tag -> g), (f.lift, (r: R) => r, cr)))
+
+  def \[R <: A](tag: B)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseP(tag)(f)(cr)
+
+  def \[R <: A](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseP(tag, g)(f)(cr)
+
+  def subcaseO[R <: A](tag: B)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(left(tag), (f, (r: R) => r, cr)))
+
+  def subcaseO[R <: A](tag: B, g: B => Boolean)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(right(tag -> g), (f, (r: R) => r, cr)))
+
+  def /[R <: A](tag: B)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseO(tag)(f)(cr)
+
+  def /[R <: A](tag: B, g: B => Boolean)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseO(tag, g)(f)(cr)
+
+  def typecase[R <: A: Manifest](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] = {
+    val f: A => Option[R] = a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None
+    appendCase(Case(left(tag), (f, (r: R) => r, cr)))
+  }
+
+  def typecase[R <: A: Manifest](tag: B, g: B => Boolean, cr: Codec[R]): DiscriminatorCodec[A, B] = {
+    val f: A => Option[R] = a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None
+    appendCase(Case(right(tag -> g), (f, (r: R) => r, cr)))
+  }
+
+  private def matchesClass[R: Manifest](a: A) = {
+    val clazz = manifest[R] match {
+      case Manifest.Byte => classOf[java.lang.Byte]
+      case Manifest.Char => classOf[java.lang.Character]
+      case Manifest.Short => classOf[java.lang.Short]
+      case Manifest.Int => classOf[java.lang.Integer]
+      case Manifest.Long => classOf[java.lang.Long]
+      case Manifest.Float => classOf[java.lang.Float]
+      case Manifest.Double => classOf[java.lang.Double]
+      case Manifest.Boolean => classOf[java.lang.Boolean]
+      case m => m.runtimeClass
+    }
+    clazz.isAssignableFrom(a.getClass)
+  }
+
+  private def appendCase(c: Case[A, B]): DiscriminatorCodec[A, B] =
+    new DiscriminatorCodec[A, B](by, cases :+ c)
 
   private val matcher: B => (String \/ Case[A,B]) =
     if (cases.forall(_.condition.isLeft)) { // build a little table

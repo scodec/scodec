@@ -1,6 +1,7 @@
 1.0.0-M4
 ========
  - Added `bits` and `bytes` codecs that behave like `bits(size)`/`bytes(size)` but with no size constraint
+ - Replaced discriminator support with new implementation that's much more general (thanks to Paul C)
 
 1.0.0-M3
 ========
