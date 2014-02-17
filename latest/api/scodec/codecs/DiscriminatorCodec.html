@@ -40,10 +40,9 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Codec that supports the binary structure <code>tag ++ value</code> where the <code>tag</code> identifies the encoding/decoding of
-the value.</p><p>To build an instance of this codec, call <span class="extype" name="discrimated">discrimated</span> and specify the tag type via the <code>by</code> method. Then
+the value.</p><p>To build an instance of this codec, call <a href="package.html#discriminated[A]:scodec.codecs.NeedDiscriminatorCodec[A]" class="extmbr" name="scodec.codecs#discriminated">discriminated</a> and specify the tag type via the <code>by</code> method. Then
 call one more more of the case combinators on this class, such as <a href="#caseO[R](tag:B,g:B=&gt;Boolean)(f:A=&gt;Option[R])(inj:R=&gt;A)(cr:scodec.Codec[R]):scodec.codecs.DiscriminatorCodec[A,B]" class="extmbr" name="scodec.codecs.DiscriminatorCodec#caseO">caseO</a> or <a href="#typecase[R&lt;:A](tag:B,g:B=&gt;Boolean,cr:scodec.Codec[R])(implicitevidence$2:Manifest[R]):scodec.codecs.DiscriminatorCodec[A,B]" class="extmbr" name="scodec.codecs.DiscriminatorCodec#typecase">typecase</a>.
-</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="package.html#discriminated[A]:scodec.codecs.package.NeedDiscriminatorCodec[A]" class="extmbr" name="scodec.codecs#discriminated">discriminated</a>
-</p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>See also</dt><dd><span class="cmt"><p><a href="package.html#discriminated[A]:scodec.codecs.NeedDiscriminatorCodec[A]" class="extmbr" name="scodec.codecs#discriminated">discriminated</a></p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>], <a href="../GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>], <a href="../Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>], <a href="../Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -535,14 +534,14 @@ call one more more of the case combinators on this class, such as <a href="#case
       <p class="shortcomment cmt">Converts this <code>GenCodec</code> to a <code>GenCodec[C, B]</code> using the supplied <code>C =&gt; A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Converts this <code>GenCodec</code> to a <code>GenCodec[C, B]</code> using the supplied <code>C =&gt; A</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a> → <a href="../Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd></dl></div>
     </li><li name="scodec.codecs.DiscriminatorCodec#decode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="decode(bits:scodec.bits.BitVector):scalaz.\/[String,(scodec.bits.BitVector,A)]"></a>
-      <a id="decode(bits.BitVector):\/[String,(bits.BitVector,A)]"></a>
+      <a id="decode(BitVector):\/[String,(BitVector,A)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">bits.BitVector</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="scodec.bits.BitVector">bits.BitVector</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>)]</span>
+        <span class="name">decode</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="scodec.bits.BitVector">BitVector</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>)]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Attempts to decode a value of type <code>A</code> from the specified bit vector.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts to decode a value of type <code>A</code> from the specified bit vector.
@@ -550,14 +549,14 @@ call one more more of the case combinators on this class, such as <a href="#case
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a> → <a href="../Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scodec.codecs.DiscriminatorCodec#encode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="encode(a:A):scalaz.\/[String,scodec.bits.BitVector]"></a>
-      <a id="encode(A):\/[String,bits.BitVector]"></a>
+      <a id="encode(A):\/[String,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encode</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector">bits.BitVector</span>]</span>
+        <span class="name">encode</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector">BitVector</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Attempts to encode the specified value in to a bit vector.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts to encode the specified value in to a bit vector.

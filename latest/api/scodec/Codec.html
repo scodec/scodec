@@ -96,7 +96,7 @@ and associated constructor is provided by <code>DecodingContext</code>.
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
               <ol><li name="scodec.Decoder#decode" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="decode(bits:scodec.BitVector):scalaz.\/[String,(scodec.BitVector,A)]"></a>
+      <a id="decode(bits:scodec.bits.BitVector):scalaz.\/[String,(scodec.bits.BitVector,A)]"></a>
       <a id="decode(BitVector):\/[String,(BitVector,A)]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -104,14 +104,14 @@ and associated constructor is provided by <code>DecodingContext</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="params">(<span name="bits">bits: <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>, <span class="extype" name="scodec.Codec.A">A</span>)]</span>
+        <span class="name">decode</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="scodec.bits.BitVector">BitVector</span>, <span class="extype" name="scodec.Codec.A">A</span>)]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Attempts to decode a value of type <code>A</code> from the specified bit vector.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts to decode a value of type <code>A</code> from the specified bit vector.
 </p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>bits to decode</p></dd><dt>returns</dt><dd class="cmt"><p>error if value could not be decoded or the remaining bits and the decoded value
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scodec.Encoder#encode" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="encode(value:A):scalaz.\/[String,scodec.BitVector]"></a>
+      <a id="encode(value:A):scalaz.\/[String,scodec.bits.BitVector]"></a>
       <a id="encode(A):\/[String,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -119,7 +119,7 @@ and associated constructor is provided by <code>DecodingContext</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encode</span><span class="params">(<span name="value">value: <span class="extype" name="scodec.Codec.A">A</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+        <span class="name">encode</span><span class="params">(<span name="value">value: <span class="extype" name="scodec.Codec.A">A</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector">BitVector</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Attempts to encode the specified value in to a bit vector.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts to encode the specified value in to a bit vector.

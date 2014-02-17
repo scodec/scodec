@@ -228,7 +228,7 @@
               
         </dd></dl></div>
     </li><li name="scodec.EncoderFunctions#encode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="encode[A](a:A)(implicitevidence$1:scodec.Encoder[A]):scalaz.\/[String,scodec.BitVector]"></a>
+      <a id="encode[A](a:A)(implicitevidence$1:scodec.Encoder[A]):scalaz.\/[String,scodec.bits.BitVector]"></a>
       <a id="encode[A](A)(Encoder[A]):\/[String,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -236,12 +236,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encode.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+        <span class="name">encode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encode.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector">BitVector</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified value to a bit vector using an implicitly available encoder.</p>
     </li><li name="scodec.EncoderFunctions#encode" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="encode[A](enc:scodec.Encoder[A],a:A):scalaz.\/[String,scodec.BitVector]"></a>
+      <a id="encode[A](enc:scodec.Encoder[A],a:A):scalaz.\/[String,scodec.bits.BitVector]"></a>
       <a id="encode[A](Encoder[A],A):\/[String,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -249,12 +249,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="enc">enc: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encode.A">A</span>]</span>, <span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encode.A">A</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+        <span class="name">encode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="enc">enc: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encode.A">A</span>]</span>, <span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encode.A">A</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector">BitVector</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified value to a bit vector.</p>
     </li><li name="scodec.EncoderFunctions#encodeBoth" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="encodeBoth[A,B](encA:scodec.Encoder[A],encB:scodec.Encoder[B])(a:A,b:B):scalaz.\/[String,scodec.BitVector]"></a>
+      <a id="encodeBoth[A,B](encA:scodec.Encoder[A],encB:scodec.Encoder[B])(a:A,b:B):scalaz.\/[String,scodec.bits.BitVector]"></a>
       <a id="encodeBoth[A,B](Encoder[A],Encoder[B])(A,B):\/[String,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -262,7 +262,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeBoth</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="encA">encA: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span>]</span>, <span name="encB">encB: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span>]</span>)</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span></span>, <span name="b">b: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+        <span class="name">encodeBoth</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="encA">encA: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span>]</span>, <span name="encB">encB: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span>]</span>)</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span></span>, <span name="b">b: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.bits.BitVector">BitVector</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p>

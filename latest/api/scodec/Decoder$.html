@@ -196,7 +196,7 @@
               
         </dd></dl></div>
     </li><li name="scodec.DecoderFunctions#decode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decode[A](bits:scodec.BitVector)(implicitevidence$1:scodec.Decoder[A]):scalaz.\/[String,A]"></a>
+      <a id="decode[A](bits:scodec.bits.BitVector)(implicitevidence$1:scodec.Decoder[A]):scalaz.\/[String,A]"></a>
       <a id="decode[A](BitVector)(Decoder[A]):\/[String,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -204,12 +204,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bits">bits: <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>
+        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available codec and discards the remaining bits.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available codec and discards the remaining bits.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scodec.DecoderFunctions#decode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decode[A](dec:scodec.Decoder[A],bits:scodec.BitVector):scalaz.\/[String,A]"></a>
+      <a id="decode[A](dec:scodec.Decoder[A],bits:scodec.bits.BitVector):scalaz.\/[String,A]"></a>
       <a id="decode[A](Decoder[A],BitVector):\/[String,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -217,12 +217,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dec">dec: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>, <span name="bits">bits: <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>
+        <span class="name">decode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dec">dec: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>, <span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.DecoderFunctions.decode.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes the specified bit vector using the specified codec and discards the remaining bits.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes the specified bit vector using the specified codec and discards the remaining bits.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scodec.DecoderFunctions#decodeAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeAll[A,B](buffer:scodec.BitVector)(f:A=&gt;B)(implicitevidence$2:scodec.Decoder[A],implicitevidence$3:scalaz.Monoid[B]):(Option[String],B)"></a>
+      <a id="decodeAll[A,B](buffer:scodec.bits.BitVector)(f:A=&gt;B)(implicitevidence$2:scodec.Decoder[A],implicitevidence$3:scalaz.Monoid[B]):(Option[String],B)"></a>
       <a id="decodeAll[A,B](BitVector)((A)⇒B)(Decoder[A],Monoid[B]):(Option[String],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -230,7 +230,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeAll</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="buffer">buffer: <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.DecoderFunctions.decodeAll.A">A</span>) ⇒ <span class="extype" name="scodec.DecoderFunctions.decodeAll.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeAll.A">A</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.DecoderFunctions.decodeAll.B">B</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>], <span class="extype" name="scodec.DecoderFunctions.decodeAll.B">B</span>)</span>
+        <span class="name">decodeAll</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="buffer">buffer: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.DecoderFunctions.decodeAll.A">A</span>) ⇒ <span class="extype" name="scodec.DecoderFunctions.decodeAll.B">B</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeAll.A">A</span>]</span>, <span name="arg1">arg1: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.DecoderFunctions.decodeAll.B">B</span>]</span>)</span><span class="result">: (<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Predef.String">String</span>], <span class="extype" name="scodec.DecoderFunctions.decodeAll.B">B</span>)</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Repeatedly decodes values of type <code>A</code> from the specified vector, converts each value to a <code>B</code> and appends it to an accumulator of type <code>B</code> using the <code>Monoid[B]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Repeatedly decodes values of type <code>A</code> from the specified vector, converts each value to a <code>B</code> and appends it to an accumulator of type <code>B</code> using the <code>Monoid[B]</code>.
@@ -238,7 +238,7 @@ Terminates when no more bits are available in the vector. Exits upon the first e
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>tuple consisting of the terminating error if any and the accumulated value
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scodec.DecoderFunctions#decodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="decodeBoth[A,B](decA:scodec.Decoder[A],decB:scodec.Decoder[B])(buffer:scodec.BitVector):scalaz.\/[String,(scodec.BitVector,(A,B))]"></a>
+      <a id="decodeBoth[A,B](decA:scodec.Decoder[A],decB:scodec.Decoder[B])(buffer:scodec.bits.BitVector):scalaz.\/[String,(scodec.bits.BitVector,(A,B))]"></a>
       <a id="decodeBoth[A,B](Decoder[A],Decoder[B])(BitVector):\/[String,(BitVector,(A,B))]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -246,7 +246,7 @@ Terminates when no more bits are available in the vector. Exits upon the first e
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">decodeBoth</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="decA">decA: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeBoth.A">A</span>]</span>, <span name="decB">decB: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeBoth.B">B</span>]</span>)</span><span class="params">(<span name="buffer">buffer: <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>, (<span class="extype" name="scodec.DecoderFunctions.decodeBoth.A">A</span>, <span class="extype" name="scodec.DecoderFunctions.decodeBoth.B">B</span>))]</span>
+        <span class="name">decodeBoth</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="decA">decA: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeBoth.A">A</span>]</span>, <span name="decB">decB: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeBoth.B">B</span>]</span>)</span><span class="params">(<span name="buffer">buffer: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="scodec.bits.BitVector">BitVector</span>, (<span class="extype" name="scodec.DecoderFunctions.decodeBoth.A">A</span>, <span class="extype" name="scodec.DecoderFunctions.decodeBoth.B">B</span>))]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes a tuple <code>(A, B)</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes a tuple <code>(A, B)</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>

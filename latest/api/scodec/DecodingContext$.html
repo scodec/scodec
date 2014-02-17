@@ -151,7 +151,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scodec.DecodingContext#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply[A](f:scodec.BitVector=&gt;scalaz.\/[String,(scodec.BitVector,A)]):scodec.DecodingContext[A]"></a>
+      <a id="apply[A](f:scodec.bits.BitVector=&gt;scalaz.\/[String,(scodec.bits.BitVector,A)]):scodec.DecodingContext[A]"></a>
       <a id="apply[A]((BitVector)⇒\/[String,(BitVector,A)]):DecodingContext[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -159,7 +159,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>, <span class="extype" name="scodec.DecodingContext.apply.A">A</span>)]</span>)</span><span class="result">: <a href="package.html#DecodingContext[+A]=scalaz.StateT[[+a]scalaz.\/[String,a],scodec.package.BitVector,A]" class="extmbr" name="scodec.DecodingContext">DecodingContext</a>[<span class="extype" name="scodec.DecodingContext.apply.A">A</span>]</span>
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.bits.BitVector">BitVector</span>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<span class="extype" name="scodec.bits.BitVector">BitVector</span>, <span class="extype" name="scodec.DecodingContext.apply.A">A</span>)]</span>)</span><span class="result">: <a href="package.html#DecodingContext[+A]=scalaz.StateT[[+a]scalaz.\/[String,a],scodec.bits.BitVector,A]" class="extmbr" name="scodec.DecodingContext">DecodingContext</a>[<span class="extype" name="scodec.DecodingContext.apply.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Lifts a function of the shape <code>BitVector =&gt; String \/ (BitVector, A)</code> to a decoding context.</p>
@@ -288,12 +288,12 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">liftE</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.DecodingContext.liftE.A">A</span>]</span>)</span><span class="result">: <a href="package.html#DecodingContext[+A]=scalaz.StateT[[+a]scalaz.\/[String,a],scodec.package.BitVector,A]" class="extmbr" name="scodec.DecodingContext">DecodingContext</a>[<span class="extype" name="scodec.DecodingContext.liftE.A">A</span>]</span>
+        <span class="name">liftE</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="e">e: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.DecodingContext.liftE.A">A</span>]</span>)</span><span class="result">: <a href="package.html#DecodingContext[+A]=scalaz.StateT[[+a]scalaz.\/[String,a],scodec.bits.BitVector,A]" class="extmbr" name="scodec.DecodingContext">DecodingContext</a>[<span class="extype" name="scodec.DecodingContext.liftE.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Lifts a value of <code>String \/ A</code> in to a decoding context.</p>
     </li><li name="scodec.DecodingContext#monadState" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="monadState:scalaz.MonadState[[s,+a]scalaz.IndexedStateT[[+a]scalaz.\/[String,a],s,s,a],scodec.BitVector]"></a>
+      <a id="monadState:scalaz.MonadState[[s,+a]scalaz.IndexedStateT[[+a]scalaz.\/[String,a],s,s,a],scodec.bits.BitVector]"></a>
       <a id="monadState:MonadState[[s,+a]IndexedStateT[[+a]\/[String,a],s,s,a],BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -301,7 +301,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">monadState</span><span class="result">: <span class="extype" name="scalaz.MonadState">MonadState</span>[[s, +a]<span class="extype" name="scalaz.IndexedStateT">IndexedStateT</span>[[+a]<span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scodec.DecodingContext.&lt;refinement&gt;.λ.a">a</span>], <span class="extype" name="scalaz.StateTInstances1.&lt;refinement&gt;.f.s">s</span>, <span class="extype" name="scalaz.StateTInstances1.&lt;refinement&gt;.f.s">s</span>, <span class="extype" name="scalaz.StateTInstances1.&lt;refinement&gt;.f.a">a</span>], <a href="package.html#BitVector=scodec.bits.BitVector" class="extmbr" name="scodec.BitVector">BitVector</a>]</span>
+        <span class="name">monadState</span><span class="result">: <span class="extype" name="scalaz.MonadState">MonadState</span>[[s, +a]<span class="extype" name="scalaz.IndexedStateT">IndexedStateT</span>[[+a]<span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scodec.DecodingContext.&lt;refinement&gt;.λ.a">a</span>], <span class="extype" name="scalaz.StateTInstances1.&lt;refinement&gt;.f.s">s</span>, <span class="extype" name="scalaz.StateTInstances1.&lt;refinement&gt;.f.s">s</span>, <span class="extype" name="scalaz.StateTInstances1.&lt;refinement&gt;.f.a">a</span>], <span class="extype" name="scodec.bits.BitVector">BitVector</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Provides a <code>MonadState</code> instance for <code>DecodingContext</code>.</p>
