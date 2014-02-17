@@ -25,7 +25,7 @@ scalacOptions ++= Seq(
   "-Ywarn-all")
 
 scalacOptions in (Compile, doc) ++= Seq(
-  //"-diagrams", https://issues.scala-lang.org/browse/SI-7950
+  "-diagrams",
   "-groups",
   "-implicits",
   "-implicits-show-all",
