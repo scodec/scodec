@@ -1,19 +1,32 @@
 package scodec
 
 import java.nio.charset.Charset
-import java.security.cert.Certificate
+import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 
 import scalaz.{\/, -\/, \/-}
 import scodec.bits.{ BitVector, ByteVector }
-import shapeless.Iso
 
 /**
  * Provides codecs for common types and combinators for building larger codecs.
  *
- * === Basic Codecs ===
+ * === Bits and Bytes Codecs ===
  *
- * There are built-in codecs for `Int`, `Long`, `Boolean`, `String`, and `UUID`.
+ * The simplest of the provided codecs are those that encode/decode `BitVector`s and `ByteVectors` directly.
+ * These are provided by [[bits]] and [[bytes]] methods. These codecs encode all of the bits/bytes directly
+ * in to the result and decode *all* of the remaining bits/bytes in to the result value. That is, the result
+ * of `decode` always returns a empty bit vector for the remaining bits.
+ *
+ * Similarly, fixed size alternatives are provided by the `bits(size)` and `bytes(size)` methods, which
+ * encode a fixed number of bits/bytes (or error if not provided the correct size) and decoded a fixed number
+ * of bits/bytes (or error if that many bits/bytes are not available).
+ *
+ * There are more specialized codecs for working with bits, including [[ignore]] and [[constant]].
+ *
+ *
+ * === Numeric Codecs ===
+ *
+ * There are built-in codecs for `Int`, `Long`, `Float`, and `Double`.
  *
  * There are a number of predefined integral codecs named using the form: {{{
  [u]int${size}[L]
@@ -29,7 +42,21 @@ import shapeless.Iso
  *
  * IEEE 754 floating point values are supported by the [[float]], [[floatL]], [[double]], and [[doubleL]] codecs.
  *
+ *
+ * === Miscellaneous Value Codecs ===
+ *
+ * In addition to the numeric codecs, there are built-in codecs for `Boolean`, `String`, and `UUID`.
+ *
  * Boolean values are supported by the [[bool]] codecs.
+ *
+ *
+ * === Combinators ===
+ *
+ * There are a number of methods provided that create codecs out of other codecs. These include simple combinators
+ * such as [[fixedSizeBits]] and [[variableSizeBits]] and advanced combinators such as [[discriminated]], which
+ * provides its own DSL for building a large codec out of many small codecs. For a list of all combinators,
+ * see the Combinators section below.
+ *
  *
  * === Tuple Codecs ===
  *
@@ -54,104 +81,449 @@ import shapeless.Iso
  }}}
  *
  * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
+ *
+ *
+ * === Cryptograhpy Codecs ===
+ *
+ * There are codecs that support working with encrypted data ([[encrypted]]) and digital signatures
+ * ([[fixedSizeSignature]] and [[variableSizeSignature]]). Additionally, support for `java.security.cert.Certificate`s
+ * is provided by [[certificate]] and [[x509Certificate]].
+ *
+ *
+ * @groupname bits Bits and Bytes Codecs
+ * @groupprio bits 0
+ *
+ * @groupname numbers Number Codecs
+ * @groupprio numbers 1
+ *
+ * @groupname values Miscellaneous Value Codecs
+ * @groupprio values 2
+ *
+ * @groupname combinators Combinators
+ * @groupprio combinators 3
+ *
+ * @groupname tuples Tuple Support
+ * @groupprio tuples 3
+ *
+ * @groupname crypto Cryptography
+ * @groupprio crypto 4
  */
 package object codecs {
 
+  /**
+   * Encodes by returning supplied bit vector; decodes by taking all remaining bits in the supplied bit vector.
+   * @group bits
+   */
   def bits: Codec[BitVector] = BitVectorCodec.withToString("bits")
+
+  /**
+   * Encodes by returning the supplied bit vector if its length is `size` bits, otherwise returning error;
+   * decodes by taking `size` bits from the supplied bit vector.
+   *
+   * @param size number of bits to encode/decode
+   * @group bits
+   */
   def bits(size: Int): Codec[BitVector] =
     fixedSizeBits(size, BitVectorCodec).withToString(s"bits($size)")
 
-  def bytes: Codec[ByteVector] = BitVectorCodec.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes")
+  /**
+   * Encodes by returning supplied byte vector as a bit vector; decodes by taking all remaining bits in supplied bit vector and converting to a byte vector.
+   * @group bits
+   */
+  def bytes: Codec[ByteVector] = bits.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes")
+
+  /**
+   * Encodes by returning the supplied byte vector if its length is `size` bytes, otherwise returning error;
+   * decodes by taking `size * 8` bits from the supplied bit vector and converting to a byte vector.
+   *
+   * @param size number of bits to encode/decode
+   * @group bits
+   */
   def bytes(size: Int): Codec[ByteVector] =
     fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes($size)")
 
+  /**
+   * Codec for 8-bit 2s complement big-endian integers.
+   * @group numbers
+   */
   val int8: Codec[Int] = new IntCodec(8)
+
+  /**
+   * Codec for 16-bit 2s complement big-endian integers.
+   * @group numbers
+   */
   val int16: Codec[Int] = new IntCodec(16)
+
+  /**
+   * Codec for 24-bit 2s complement big-endian integers.
+   * @group numbers
+   */
   val int24: Codec[Int] = new IntCodec(24)
+
+  /**
+   * Codec for 32-bit 2s complement big-endian integers.
+   * @group numbers
+   */
   val int32: Codec[Int] = new IntCodec(32)
+
+  /**
+   * Codec for 64-bit 2s complement big-endian integers.
+   * @group numbers
+   */
   val int64: Codec[Long] = new LongCodec(64)
 
+  /**
+   * Codec for 2-bit unsigned big-endian integers.
+   * @group numbers
+   */
   val uint2: Codec[Int] = new IntCodec(2, signed = false)
+
+  /**
+   * Codec for 4-bit unsigned big-endian integers.
+   * @group numbers
+   */
   val uint4: Codec[Int] = new IntCodec(4, signed = false)
+
+  /**
+   * Codec for 8-bit unsigned big-endian integers.
+   * @group numbers
+   */
   val uint8: Codec[Int] = new IntCodec(8, signed = false)
+
+  /**
+   * Codec for 16-bit unsigned big-endian integers.
+   * @group numbers
+   */
   val uint16: Codec[Int] = new IntCodec(16, signed = false)
+
+  /**
+   * Codec for 24-bit unsigned big-endian integers.
+   * @group numbers
+   */
   val uint24: Codec[Int] = new IntCodec(24, signed = false)
+
+  /**
+   * Codec for 32-bit unsigned big-endian integers.
+   * @group numbers
+   */
   val uint32: Codec[Long] = new LongCodec(32, signed = false)
 
+  /**
+   * Codec for 8-bit 2s complement little-endian integers.
+   * @group numbers
+   */
   val int8L: Codec[Int] = new IntCodec(8, bigEndian = false)
+
+  /**
+   * Codec for 16-bit 2s complement little-endian integers.
+   * @group numbers
+   */
   val int16L: Codec[Int] = new IntCodec(16, bigEndian = false)
+
+  /**
+   * Codec for 24-bit 2s complement little-endian integers.
+   * @group numbers
+   */
   val int24L: Codec[Int] = new IntCodec(24, bigEndian = false)
+
+  /**
+   * Codec for 32-bit 2s complement little-endian integers.
+   * @group numbers
+   */
   val int32L: Codec[Int] = new IntCodec(32, bigEndian = false)
+
+  /**
+   * Codec for 64-bit 2s complement little-endian integers.
+   * @group numbers
+   */
   val int64L: Codec[Long] = new LongCodec(64, bigEndian = false)
 
+  /**
+   * Codec for 2-bit unsigned little-endian integers.
+   * @group numbers
+   */
   val uint2L: Codec[Int] = new IntCodec(2, signed = false, bigEndian = false)
+
+  /**
+   * Codec for 4-bit unsigned little-endian integers.
+   * @group numbers
+   */
   val uint4L: Codec[Int] = new IntCodec(4, signed = false, bigEndian = false)
+
+  /**
+   * Codec for 8-bit unsigned little-endian integers.
+   * @group numbers
+   */
   val uint8L: Codec[Int] = new IntCodec(8, signed = false, bigEndian = false)
+
+  /**
+   * Codec for 16-bit unsigned little-endian integers.
+   * @group numbers
+   */
   val uint16L: Codec[Int] = new IntCodec(16, signed = false, bigEndian = false)
+
+  /**
+   * Codec for 24-bit unsigned little-endian integers.
+   * @group numbers
+   */
   val uint24L: Codec[Int] = new IntCodec(24, signed = false, bigEndian = false)
+
+  /**
+   * Codec for 32-bit unsigned little-endian integers.
+   * @group numbers
+   */
   val uint32L: Codec[Long] = new LongCodec(32, signed = false, bigEndian = false)
 
-  def int(bits: Int): Codec[Int] = new IntCodec(bits)
+  /**
+   * Codec for n-bit 2s complement big-endian integers that are represented with `Int`.
+   * @param size number of bits (must be 0 < size <= 32)
+   * @group numbers
+   */
+  def int(size: Int): Codec[Int] = new IntCodec(size)
+
+  /**
+   * Codec for n-bit unsigned big-endian integers that are represented with `Int`.
+   * @param size number of bits (must be 0 < size <= 31)
+   * @group numbers
+   */
   def uint(bits: Int): Codec[Int] = new IntCodec(bits, signed = false)
+
+  /**
+   * Codec for n-bit 2s complement big-endian integers that are represented with `Long`.
+   * @param size number of bits (must be 0 < size <= 64)
+   * @group numbers
+   */
   def long(bits: Int): Codec[Long] = new LongCodec(bits)
+
+  /**
+   * Codec for n-bit unsigned big-endian integers that are represented with `Long`.
+   * @param size number of bits (must be 0 < size <= 63)
+   * @group numbers
+   */
   def ulong(bits: Int): Codec[Long] = new LongCodec(bits, signed = false)
 
+  /**
+   * Codec for n-bit 2s complement little-endian integers that are represented with `Int`.
+   * @param size number of bits (must be 0 < size <= 32)
+   * @group numbers
+   */
   def intL(bits: Int): Codec[Int] = new IntCodec(bits, bigEndian = false)
+
+  /**
+   * Codec for n-bit unsigned little-endian integers that are represented with `Int`.
+   * @param size number of bits (must be 0 < size <= 31)
+   * @group numbers
+   */
   def uintL(bits: Int): Codec[Int] = new IntCodec(bits, signed = false, bigEndian = false)
+
+  /**
+   * Codec for n-bit 2s complement little-endian integers that are represented with `Long`.
+   * @param size number of bits (must be 0 < size <= 64)
+   * @group numbers
+   */
   def longL(bits: Int): Codec[Long] = new LongCodec(bits, bigEndian = false)
+
+  /**
+   * Codec for n-bit unsigned little-endian integers that are represented with `Long`.
+   * @param size number of bits (must be 0 < size <= 63)
+   * @group numbers
+   */
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, signed = false, bigEndian = false)
 
-  /** 32-bit big endian IEEE 754 floating point number. */
+  /**
+   * 32-bit big endian IEEE 754 floating point number.
+   * @group numbers
+   */
   val float: Codec[Float] = new FloatCodec(bigEndian = true)
 
-  /** 32-bit little endian IEEE 754 floating point number. */
+  /**
+   * 32-bit little endian IEEE 754 floating point number.
+   * @group numbers
+   */
   val floatL: Codec[Float] = new FloatCodec(bigEndian = false)
 
-  /** 64-bit big endian IEEE 754 floating point number. */
+  /**
+   * 64-bit big endian IEEE 754 floating point number.
+   * @group numbers
+   */
   val double: Codec[Double] = new DoubleCodec(bigEndian = true)
 
-  /** 64-bit little endian IEEE 754 floating point number. */
+  /**
+   * 64-bit little endian IEEE 754 floating point number.
+   * @group numbers
+   */
   val doubleL: Codec[Double] = new DoubleCodec(bigEndian = false)
 
-  /** 1-bit boolean codec, where false corresponds to bit value 0 and true corresponds to bit value 1. */
+  /**
+   * 1-bit boolean codec, where false corresponds to bit value 0 and true corresponds to bit value 1.
+   * @group values
+   */
   val bool: Codec[Boolean] = BooleanCodec
 
-  /** n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors. */
+  /**
+   * n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors.
+   * @group values
+   */
   def bool(n: Int): Codec[Boolean] = {
     val zeros = BitVector.low(n)
     val ones = BitVector.high(n)
     bits(n).xmap[Boolean](bits => !(bits == zeros), b => if (b) ones else zeros).withToString(s"bool($n)")
   }
 
+  /**
+   * String codec that utilizes the implicit `Charset` to perform encoding/decoding.
+   *
+   * This codec does not encode the size of the string in to the output. Hence, decoding
+   * a vector that has additional data after the encoded string will result in
+   * unexpected output. Instead, it is common to use this codec along with either
+   * [[fixedSizeBits]] or [[variableSizeBits]]. For example, a common encoding
+   * is a size field, say 2 bytes, followed by the encoded string. This can be
+   * accomplished with: {{{variableSizeBits(uint8, string)}}}
+   *
+   * @param charset charset to use to convert strings to/from binary
+   * @group values
+   */
   def string(implicit charset: Charset): Codec[String] = new StringCodec(charset)
+
+  /**
+   * String codec that uses the `US-ASCII` charset. See [[string]] for more information on `String` codecs.
+   * @group values
+   */
   val ascii = string(Charset.forName("US-ASCII"))
+
+  /**
+   * String codec that uses the `US-ASCII` charset. See [[string]] for more information on `String` codecs.
+   * @group values
+   */
   val utf8 = string(Charset.forName("UTF-8"))
 
+  /**
+   * Encodes/decodes `UUID`s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.
+   * @group values
+   */
   val uuid: Codec[UUID] = UuidCodec
 
+  /**
+   * Codec that always returns an empty vector from `encode` and always returns `(empty, value)` from `decode`.
+   * This is often useful when combined with other codecs (e.g., the [[discriminated]]).
+   * @param value value to return from decode
+   * @group combinators
+   */
   def provide[A](value: A): Codec[A] = new ProvideCodec(value)
 
-  def ignore(bits: Int): Codec[Unit] = new IgnoreCodec(bits)
+  /**
+   * Codec that always encodes `size` 0 bits and always decodes `size` bits and then discards them, returning `()` instead.
+   * @param size number of bits to ignore
+   * @group bits
+   */
+  def ignore(size: Int): Codec[Unit] = new IgnoreCodec(size)
 
+  /**
+   * Codec that always encodes the specified bits and always decodes the specified bits, returning `()` if the actual bits match
+   * the specified bits and returning an error otherwise.
+   * @param bits constant bits
+   * @group bits
+   */
   def constant(bits: BitVector): Codec[Unit] = new ConstantCodec(bits)
+
+  /**
+   * Codec that always encodes the specified bits and always decodes the specified bits, returning `()` if the actual bits match
+   * the specified bits and returning an error otherwise.
+   * @param bits constant bits
+   * @group bits
+   */
   def constant[A: Integral](bits: A*): Codec[Unit] = new ConstantCodec(BitVector(bits: _*))
 
+  /**
+   * Codec that limits the number of bits the specified codec works with.
+   *
+   * When encoding, if encoding with the specified codec
+   * results in less than the specified size, the vector is right padded with 0 bits. If the result is larger than the specified
+   * size, an encoding error is returned.
+   *
+   * When decoding, the specified codec is only given `size` bits. If the specified codec does not consume all the bits it was
+   * given, any remaining bits are discarded.
+   *
+   * @param size number of bits
+   * @param codec codec to limit
+   * @group combinators
+   */
   def fixedSizeBits[A](size: Int, codec: Codec[A]): Codec[A] = new FixedSizeCodec(size, codec)
+
+  /**
+   * Byte equivalent of [[fixedSizeBits]].
+   * @param size number of bytes
+   * @param codec codec to limit
+   * @group combinators
+   */
   def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = fixedSizeBits(size * 8, codec).withToString(s"fixedSizeBytes($size, $codec)")
 
+  /**
+   * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
+   *
+   * For example, encoding the string `"hello"` with `variableSizeBits(uint8, ascii)` yields a vector of 6 bytes -- the first byte being
+   * 0x05 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * The `size` field can be any `Int` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
+   * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
+   *
+   * For example, encoding `"hello"` with `variableSizeBits(uint8, ascii, 1)` yields a vector of 6 bytes -- the first byte being
+   * 0x06 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bits to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
   def variableSizeBits[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
     new VariableSizeCodec(size, value, sizePadding)
+
+  /**
+   * Byte equivalent of [[variableSizeBits]].
+   * @param size codec that encodes/decodes the size in bytes
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
   def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
     variableSizeBits(size.xmap[Int](_ * 8, _ / 8).withToString(size.toString), value, sizePadding * 8).withToString(s"variableSizeBytes($size, $value)")
 
+  /**
+   * Codec of `Option[A]` that delegates to a `Codec[A]` when the `included` parameter is true.
+   *
+   * When encoding, if `included` is true and the value to encode is a `Some`, the specified codec is used to encode the inner value.
+   * Otherwise, an empty bit vector is returned.
+   *
+   * When decoding, if `included` is true, the specified codec is used and its result is wrapped in a `Some`. Otherwise, a `None` is returned.
+   *
+   * @param included whether this codec is enabled (meaning it delegates to the specified codec) or disabled, in which case it
+   * encodes no bits and returns `None` from decode
+   * @param codec codec to conditionally include
+   * @group combinators
+   */
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
+  /**
+   * Codec that encodes/decodes an immutable `IndexedSeq[A]` from a `Codec[A]`.
+   *
+   * When encoding, each `A` in the sequence is encoded and all of the resulting vectors are concatenated.
+   *
+   * When decoding, `codec.decode` is called repeatedly until there are no more remaining bits and the value result
+   * of each `decode` is returned in the sequence.
+   *
+   * @param codec codec to encode/decode a single element of the sequence
+   * @group combinators
+   */
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
 
   /**
    * Disjunction codec that supports vectors of form `indicator ++ (left or right)` where a
    * value of `false` for the indicator indicates it is followed by a left value and a value
    * of `true` indicates it is followed by a right value.
+   * @param indicator codec that encodes/decodes false for left and true for right
+   * @param left codec the encodes a left value
+   * @param right codec the encodes a right value
+   * @group combinators
    */
   def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] =
     discriminated[L \/ R].by(indicator)
@@ -160,74 +532,175 @@ package object codecs {
 
   /**
    * Like [[either]], but encodes the standard library `Either` type.
+   * @param indicator codec that encodes/decodes false for left and true for right
+   * @param left codec the encodes a left value
+   * @param right codec the encodes a right value
+   * @group combinators
    */
   def stdEither[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[Either[L,R]] =
     discriminated[Either[L,R]].by(indicator)
     .| (false) { case Left(l)  => l } (Left.apply) (left)
     .| (true)  { case Right(r) => r } (Right.apply) (right)
 
+  /**
+   * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
+   *
+   * Encoding a value of type `A` is delegated to the specified codec and the resulting bit vector is encrypted
+   * with a cipher provided by the implicit [[CipherFactory]].
+   *
+   * Decoding first decrypts all of the remaining bits and then decodes the decrypted bits with the
+   * specified codec. Successful decoding always returns no remaining bits, even if the specified
+   * codec does not consume all decrypted bits.
+   *
+   * @param codec codec that encodes a value to plaintext bits and decodes plaintext bits to a value
+   * @param cipherFactory factory to use for encryption/decryption
+   * @group crypto
+   */
   def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] = new CipherCodec(codec)(cipherFactory)
 
-  def fixedSizeSignature[A](byteSize: Int)(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
-    new SignatureCodec(codec, fixedSizeBytes(byteSize, BitVectorCodec))(signatureFactory)
+  /**
+   * Codec that includes a signature of the encoded bits.
+   *
+   * Encoding a value of type `A` is delegated to the specified codec and then a signature of those bits is
+   * appended using the specified [[SignatureFactory]] to perform signing.
+   *
+   * Decoding first decodes using the specified codec and then all of the remaining bits are treated as
+   * the signature of the decoded bits. The signature is verified and if it fails to verify, an error
+   * is returned.
+   *
+   * Note: because decoding is first delegated to the specified code, care must be taken to ensure
+   * that codec does not consume the signature bits. For example, if the target codec is an unbounded
+   * string (e.g., ascii, utf8), decoding an encoded vector will result in the string codec trying to
+   * decode the signature bits as part of the string.
+   *
+   * @param size size in bytes of signature
+   * @param codec codec to use to encode/decode value field
+   * @param signatureFactory factory to use for signing/verifying
+   * @group crypto
+   */
+  def fixedSizeSignature[A](size: Int)(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
+    new SignatureCodec(codec, fixedSizeBytes(size, BitVectorCodec))(signatureFactory)
 
-  def variableSizeSignature[A](byteSizeCodec: Codec[Int])(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
-    new SignatureCodec(codec, variableSizeBytes(byteSizeCodec, BitVectorCodec))(signatureFactory)
+  /**
+   * Codec that includes a signature of the encoded bits.
+   *
+   * Same functionality as [[fixedSizeSignature]] with one difference -- the size of the signature bytes are
+   * written between the encoded bits and the signature bits.
+   *
+   * @param size codec to use to encode/decode size of signature field
+   * @param codec codec to use to encode/decode value field
+   * @param signatureFactory factory to use for signing/verifying
+   * @group crypto
+   */
+  def variableSizeSignature[A](size: Codec[Int])(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
+    new SignatureCodec(codec, variableSizeBytes(size, BitVectorCodec))(signatureFactory)
 
-  val x509Certificate: Codec[Certificate] = new CertificateCodec("X.509")
+  /**
+   * Codec that encodes/decodes certificates using their default encoding.
+   *
+   * @param certType certificate type to pass to `java.security.cert.CertificateFactory.getInstance`
+   * @group crypto
+   */
+  def certificate(certType: String): Codec[Certificate] = new CertificateCodec(certType)
+
+  /**
+   * Codec that encodes/decodes certificates using their default encoding.
+   *
+   * @param certType certificate type to pass to `java.security.cert.CertificateFactory.getInstance`
+   * @group crypto
+   */
+  val x509Certificate: Codec[X509Certificate] =
+    certificate("X.509").
+      xmap[X509Certificate](_.asInstanceOf[X509Certificate], identity).
+      withToString("x509certificate")
 
   /**
    * Provides the `|` method on `String` that allows creation of a named codec.
    *
    * Usage: {{{val codec = "id" | uint8}}}
+   *
+   * @group combinators
    */
   final implicit class StringEnrichedWithCodecNamingSupport(val name: String) extends AnyVal {
     /** Names the specified codec, resulting in the name being included in error messages. */
     def |[A](codec: Codec[A]): Codec[A] = new NamedCodec(name, codec)
   }
 
-  /** Builds an `Iso[A, B]` from two functions. */
-  final def isoFromFunctions[A, B](to: A => B, from: B => A): Iso[A, B] = {
-    val toFn = to
-    val fromFn = from
-    new Iso[A, B] {
-      def to(a: A) = toFn(a)
-      def from(b: B) = fromFn(b)
-    }
-  }
-
   // Tuple codec syntax
 
-  /** Type alias for Tuple2 in order to allow left nested tuples to be written as A ~ B ~ C ~ .... */
+  /**
+   * Type alias for Tuple2 in order to allow left nested tuples to be written as A ~ B ~ C ~ ....
+   * @group tuples
+   */
   final type ~[+A, +B] = (A, B)
 
-  /** Extractor that allows pattern matching on the tuples created by tupling codecs. */
+  /**
+   * Extractor that allows pattern matching on the tuples created by tupling codecs.
+   * @group tuples
+   */
   object ~ {
     def unapply[A, B](t: (A, B)): Option[(A, B)] = Some(t)
   }
 
-  /** Allows creation of left nested tuples by successive usage of `~` operator. */
+  /**
+   * Allows creation of left nested pairs by successive usage of `~` operator.
+   * @group tuples
+   */
   final implicit class ValueEnrichedWithTuplingSupport[A](val a: A) {
     def ~[B](b: B): (A, B) = (a, b)
   }
 
+  /**
+   * Allows use of a 2-arg function as a single arg function that takes a left-associated stack of pairs with 2 total elements.
+   * @group tuples
+   */
   final implicit def liftF2ToNestedTupleF[A, B, X](fn: (A, B) => X): ((A, B)) => X =
     fn.tupled
+
+  /**
+   * Allows use of a 3-arg function as a single arg function that takes a left-associated stack of pairs with 3 total elements.
+   * @group tuples
+   */
   final implicit def liftF3ToNestedTupleF[A, B, C, X](fn: (A, B, C) => X): (((A, B), C)) => X = {
     case a ~ b ~ c => fn(a, b, c)
   }
+
+  /**
+   * Allows use of a 4-arg function as a single arg function that takes a left-associated stack of pairs with 4 total elements.
+   * @group tuples
+   */
   final implicit def liftF4ToNestedTupleF[A, B, C, D, X](fn: (A, B, C, D) => X): ((((A, B), C), D)) => X = {
     case a ~ b ~ c ~ d => fn(a, b, c, d)
   }
+
+  /**
+   * Allows use of a 5-arg function as a single arg function that takes a left-associated stack of pairs with 5 total elements.
+   * @group tuples
+   */
   final implicit def liftF5ToNestedTupleF[A, B, C, D, E, X](fn: (A, B, C, D, E) => X): (((((A, B), C), D), E)) => X = {
     case a ~ b ~ c ~ d ~ e => fn(a, b, c, d, e)
   }
+
+  /**
+   * Allows use of a 6-arg function as a single arg function that takes a left-associated stack of pairs with 6 total elements.
+   * @group tuples
+   */
   final implicit def liftF6ToNestedTupleF[A, B, C, D, E, F, X](fn: (A, B, C, D, E, F) => X): ((((((A, B), C), D), E), F)) => X = {
     case a ~ b ~ c ~ d ~ e ~ f => fn(a, b, c, d, e, f)
   }
+
+  /**
+   * Allows use of a 7-arg function as a single arg function that takes a left-associated stack of pairs with 7 total elements.
+   * @group tuples
+   */
   final implicit def liftF7ToNestedTupleF[A, B, C, D, E, F, G, X](fn: (A, B, C, D, E, F, G) => X): (((((((A, B), C), D), E), F), G)) => X = {
     case a ~ b ~ c ~ d ~ e ~ f ~ g => fn(a, b, c, d, e, f, g)
   }
+
+  /**
+   * Allows use of an 8-arg function as a single arg function that takes a left-associated stack of pairs with 8 total elements.
+   * @group tuples
+   */
   final implicit def liftF8ToNestedTupleF[A, B, C, D, E, F, G, H, X](fn: (A, B, C, D, E, F, G, H) => X): ((((((((A, B), C), D), E), F), G), H)) => X = {
     case a ~ b ~ c ~ d ~ e ~ f ~ g ~ h => fn(a, b, c, d, e, f, g, h)
   }
@@ -276,15 +749,11 @@ package object codecs {
    }}}
 
    The actual formatted bits are identical with either formulation.
+   * @group combinators
    */
   final def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
     final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
       new DiscriminatorCodec[A, B](discriminatorCodec, Vector())
-  }
-
-  /** Supports creation of a [[DiscriminatorCodec]]. See [[discriminated]] for details. */
-  sealed trait NeedDiscriminatorCodec[A] {
-    def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B]
   }
 }
 

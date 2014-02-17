@@ -11,9 +11,11 @@ import javax.crypto.{Cipher, IllegalBlockSizeException, BadPaddingException}
 import scodec.bits.BitVector
 
 /**
- * Represents the ability to create a [[Cipher]] for encryption or decryption.
+ * Represents the ability to create a `Cipher` for encryption or decryption.
  *
- * Used in conjunction with [[CipherCodec]]. Typically provided implicitly to all cipher codecs in a larger codec.
+ * Used in conjunction with [[encrypted]]. Typically provided implicitly to all encryption codecs in a larger codec.
+ *
+ * @group crypto
  */
 trait CipherFactory {
 
@@ -24,6 +26,10 @@ trait CipherFactory {
   def newDecryptCipher: Cipher
 }
 
+/**
+ * Companion for [[CipherFactory]].
+ * @group crypto
+ */
 object CipherFactory {
 
   /**
@@ -68,16 +74,7 @@ object CipherFactory {
 
 }
 
-/**
- * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
- *
- * Encoding a value of type A is delegated to the specified codec and the resulting bit vector is encrypted
- * with a cipher provided by the implicit cipher factory.
- *
- * Decoding first decrypts all of the remaining bits and then decodes the decrypted bits with the
- * specified codec. Successful decoding always returns no remaining bits, even if the specified
- * codec does not consume all decrypted bits.
- */
+/** @see [[encrypted]] */
 private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) extends Codec[A] {
 
   override def encode(a: A) =

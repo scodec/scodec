@@ -8,7 +8,10 @@ import java.security.cert.Certificate
 
 import scodec.bits.{ BitVector, ByteVector }
 
-/** Represents the ability to create a [[java.security.Signature]] for use with [[SignatureCodec]]. */
+/**
+ * Represents the ability to create a `java.security.Signature` for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
+ * @group crypto
+ */
 trait SignatureFactory {
 
   /** Creates a signature initialized for signing. */
@@ -18,6 +21,10 @@ trait SignatureFactory {
   def newVerifier: Signature
 }
 
+/**
+ * Companion for [[SignatureFactory]].
+ * @group crypto
+ */
 object SignatureFactory {
 
   /** Creates a signature factory for the specified algorithm using the specified private and public keys. */
@@ -90,21 +97,7 @@ object SignatureFactory {
   ) extends SignatureFactory with SignatureFactorySigning with SignatureFactoryVerifying
 }
 
-/**
- * Codec that includes a signature of the encoded bits.
- *
- * Encoding a value of type A is delegated to the specified codec and then a signature of those bits is
- * appended using the specified signature factory to perform signing.
- *
- * Decoding first decodes using the specified codec and then all of the remaining bits are treated as
- * the signature of the decoded bits. The signature is verified and if it fails to verify, an error
- * is returned.
- *
- * Note: because decoding is first delegated to the specified code, care must be taken to ensure
- * that codec does not consume the signature bits. For example, if the target codec is an unbounded
- * string (e.g., ascii, utf8), decoding an encoded vector will result in the string codec trying to
- * decode the signature bits as part of the string.
- */
+/** @see [[fixedSizeSignature]] and [[variableSizeSignature]] */
 private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignatureFactory) extends Codec[A] {
   import Codec._
 

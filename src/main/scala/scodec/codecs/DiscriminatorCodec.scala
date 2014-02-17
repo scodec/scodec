@@ -13,10 +13,11 @@ import DiscriminatorCodec.{ Case, Prism }
  * Codec that supports the binary structure `tag ++ value` where the `tag` identifies the encoding/decoding of
  * the value.
  *
- * To build an instance of this codec, call [[discrimated]] and specify the tag type via the `by` method. Then
+ * To build an instance of this codec, call [[discriminated]] and specify the tag type via the `by` method. Then
  * call one more more of the case combinators on this class, such as [[caseO]] or [[typecase]].
  *
  * @see [[discriminated]]
+ * @group combinators
  */
 final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A,B]]) extends Codec[A] {
 
@@ -113,7 +114,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
 
   def encode(a: A): String \/ BitVector =
     cases.iterator.flatMap { k =>
-      val (cond, extract, codec0) = (k.condition, k.prism.toRep, k.prism.repCodec)
+      val (cond, extract, codec0) = (k.condition, k.prism.preview, k.prism.repCodec)
       // Workaround for scalac existential bug - `codec0` should be a
       // `Codec[R]` for the same `R` returned by `extract`, but scalac doesn't realize this
       val codec = codec0.asInstanceOf[Codec[Any]]
@@ -132,10 +133,10 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     k <- matcher(b)
     remr <- k.prism.repCodec.decode(rem)
     (rem2,r) = remr
-    // Note: Scalac doesn't realize that the `R => A` in `k.prism.toValue`
+    // Note: Scalac doesn't realize that the `R => A` in `k.prism.review`
     // is the same as the `R` returned by the `Codec` in `k.prism.repCodec`
     // even though the type of prism clearly should ensure this!
-  } yield (rem2, k.prism.toValue.asInstanceOf[Any => A](r))
+  } yield (rem2, k.prism.review.asInstanceOf[Any => A](r))
 
   override def toString = s"discriminated($by)"
 }
@@ -145,8 +146,8 @@ private[codecs] object DiscriminatorCodec {
 
   /** Provides an injection between `A` and `R` and a `Codec[R]`. */
   private[codecs] case class Prism[A, R](
-    toRep: A => Option[R],
-    toValue: R => A,
+    preview: A => Option[R],
+    review: R => A,
     repCodec: Codec[R]
   )
 
@@ -161,13 +162,13 @@ private[codecs] object DiscriminatorCodec {
    *
    * == Encoding ==
    * When encoding a value of type `A`, this case applies if the `prism` returns a `Some` from
-   * `prism.toRep(value)`. Upon receiving a `Some`, the `condition` is used to generate a
+   * `prism.preview(value)`. Upon receiving a `Some`, the `condition` is used to generate a
    * discrimination tag. There are two cases to consider -- when the `conditional` is a left
    * and a right. In the case of a left, the left value is used as the discrimination tag.
    * In the case of a right, the first element of the right tuple is used as the discrimination tag.
    *
    * The discrimination tag is encoded followed by the result of encoding the value using `prism.repCodec`
-   * to encode the `Some` value returned from `prism.toRep(value)`.
+   * to encode the `Some` value returned from `prism.preview(value)`.
    *
    * == Decoding ==
    * When decoding, the discriminator tag is decoded from the bit vector and then each case is consulted.
@@ -178,7 +179,7 @@ private[codecs] object DiscriminatorCodec {
    * with the decoded discriminated tag.
    *
    * If this case applies, then the `prism.repCodec` is used used to decode a value of some type `R`, which is
-   * then converted to a value of type `A` via `prism.toValue`.
+   * then converted to a value of type `A` via `prism.review`.
    */
   private[codecs] case class Case[A, B](
     condition: B \/ (B, B => Boolean), // either a literal `B`, or a `B` predicate
