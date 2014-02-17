@@ -50,7 +50,7 @@
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -85,7 +85,7 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="scodec.HListCodecEnrichedWithHListSupport#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(selfHList:scodec.Codec[L]):scodec.package.HListCodecEnrichedWithHListSupport[L]"></a>
+      <a id="&lt;init&gt;(self:scodec.Codec[L]):scodec.package.HListCodecEnrichedWithHListSupport[L]"></a>
       <a id="&lt;init&gt;:HListCodecEnrichedWithHListSupport[L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -93,7 +93,7 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">HListCodecEnrichedWithHListSupport</span><span class="params">(<span name="selfHList">selfHList: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>)</span>
+        <span class="name">HListCodecEnrichedWithHListSupport</span><span class="params">(<span name="self">self: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>)</span>
       </span>
       </h4>
       
@@ -169,58 +169,65 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scodec.HListCodecEnrichedWithHListSupport#:+" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id=":+[A,LA&lt;:shapeless.HList](a:scodec.Codec[A])(implicitprepend:shapeless.PrependAux[L,shapeless.::[A,shapeless.HNil],LA],implicitinit:shapeless.Init[LA]{typeOut=L},implicitlast:shapeless.Last[LA]{typeOut=A}):scodec.Codec[LA]"></a>
-      <a id=":+[A,LA&lt;:HList](Codec[A])(PrependAux[L,::[A,HNil],LA],Init[LA]{typeOut=L},Last[LA]{typeOut=A}):Codec[LA]"></a>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#:+" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id=":+[B,LB&lt;:shapeless.HList](codec:scodec.Codec[B])(implicitprepend:shapeless.PrependAux[L,shapeless.::[B,shapeless.HNil],LB],implicitinit:shapeless.InitAux[LB,L],implicitlast:shapeless.LastAux[LB,B]):scodec.Codec[LB]"></a>
+      <a id=":+[B,LB&lt;:HList](Codec[B])(PrependAux[L,::[B,HNil],LB],InitAux[LB,L],LastAux[LB,B]):Codec[LB]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$plus" class="name">:+</span><span class="tparams">[<span name="A">A</span>, <span name="LA">LA &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="a">a: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="prepend">prepend: <span class="extype" name="shapeless.PrependAux">PrependAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LA">LA</span>]</span>, <span name="init">init: <span class="extype" name="shapeless.Init">Init</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LA">LA</span>] { type Out = L }</span>, <span name="last">last: <span class="extype" name="shapeless.Last">Last</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LA">LA</span>] { type Out = A }</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LA">LA</span>]</span>
+        <span title="gt4s: $colon$plus" class="name">:+</span><span class="tparams">[<span name="B">B</span>, <span name="LB">LB &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="codec">codec: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="prepend">prepend: <span class="extype" name="shapeless.PrependAux">PrependAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.B">B</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LB">LB</span>]</span>, <span name="init">init: <span class="extype" name="shapeless.InitAux">InitAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LB">LB</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>, <span name="last">last: <span class="extype" name="shapeless.LastAux">LastAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LB">LB</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:+.LB">LB</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Returns a new codec that encodes/decodes the <code>HList L</code> followed by an <code>A</code>.</p>
-    </li><li name="scodec.HListCodecEnrichedWithHListSupport#::" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="::[A](a:scodec.Codec[A]):scodec.Codec[shapeless.::[A,L]]"></a>
-      <a id="::[A](Codec[A]):Codec[::[A,L]]"></a>
+      <p class="shortcomment cmt">When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that encodes/decodes
+the <code>HList L</code> followed by a <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that encodes/decodes
+the <code>HList L</code> followed by a <code>B</code>.
+That is, this operator is a codec-level <code>HList</code> append operation.</p></div></div>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#::" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id="::[B](codec:scodec.Codec[B]):scodec.Codec[shapeless.::[B,L]]"></a>
+      <a id="::[B](Codec[B]):Codec[::[B,L]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$colon" class="name">::</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.::.A">A</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.::.A">A</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]]</span>
+        <span title="gt4s: $colon$colon" class="name">::</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codec">codec: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.::.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.::.B">B</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Returns a new codec representing <code>Codec[A :: L]</code>.</p>
-    </li><li name="scodec.HListCodecEnrichedWithHListSupport#:::" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id=":::[K&lt;:shapeless.HList,KL&lt;:shapeless.HList,KLen&lt;:shapeless.Nat](k:scodec.Codec[K])(implicitprepend:shapeless.PrependAux[K,L,KL],implicitlengthK:shapeless.Length[K]{typeOut=KLen},implicitsplit:shapeless.Split[KL,KLen]{typeP=K;typeS=L}):scodec.Codec[KL]"></a>
-      <a id=":::[K&lt;:HList,KL&lt;:HList,KLen&lt;:Nat](Codec[K])(PrependAux[K,L,KL],Length[K]{typeOut=KLen},Split[KL,KLen]{.../*2definitionsintyperefinement*/}):Codec[KL]"></a>
+      <p class="shortcomment cmt">When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec representing <code>Codec[B :: L]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec representing <code>Codec[B :: L]</code>.
+That is, this operator is a codec-level <code>HList</code> prepend operation.</p></div><dl class="paramcmts block"><dt class="param">codec</dt><dd class="cmt"><p>codec to prepend</p></dd></dl></div>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#:::" visbl="pub" data-isabs="false" fullComment="no" group="hlist">
+      <a id=":::[K&lt;:shapeless.HList,KL&lt;:shapeless.HList,KLen&lt;:shapeless.Nat](k:scodec.Codec[K])(implicitprepend:shapeless.PrependAux[K,L,KL],implicitlengthK:shapeless.LengthAux[K,KLen],implicitsplit:shapeless.Split[KL,KLen]{typeP=K;typeS=L}):scodec.Codec[KL]"></a>
+      <a id=":::[K&lt;:HList,KL&lt;:HList,KLen&lt;:Nat](Codec[K])(PrependAux[K,L,KL],LengthAux[K,KLen],Split[KL,KLen]{.../*2definitionsintyperefinement*/}):Codec[KL]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$colon$colon" class="name">:::</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="KL">KL &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="KLen">KLen &lt;: <span class="extype" name="shapeless.Nat">Nat</span></span>]</span><span class="params">(<span name="k">k: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.K">K</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="prepend">prepend: <span class="extype" name="shapeless.PrependAux">PrependAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.K">K</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KL">KL</span>]</span>, <span name="lengthK">lengthK: <span class="extype" name="shapeless.Length">Length</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.K">K</span>] { type Out = KLen }</span>, <span name="split">split: <span class="extype" name="shapeless.Split">Split</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KL">KL</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KLen">KLen</span>] { ... /* 2 definitions in type refinement */ }</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KL">KL</span>]</span>
+        <span title="gt4s: $colon$colon$colon" class="name">:::</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="KL">KL &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="KLen">KLen &lt;: <span class="extype" name="shapeless.Nat">Nat</span></span>]</span><span class="params">(<span name="k">k: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.K">K</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="prepend">prepend: <span class="extype" name="shapeless.PrependAux">PrependAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.K">K</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KL">KL</span>]</span>, <span name="lengthK">lengthK: <span class="extype" name="shapeless.LengthAux">LengthAux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.K">K</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KLen">KLen</span>]</span>, <span name="split">split: <span class="extype" name="shapeless.Split">Split</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KL">KL</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KLen">KLen</span>] { ... /* 2 definitions in type refinement */ }</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:::.KL">KL</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Returns a new codec the encodes/decodes the <code>HList K</code> followed by the <code>HList L</code>.</p>
-    </li><li name="scodec.HListCodecEnrichedWithHListSupport#:~&gt;:" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id=":~&gt;:[A](a:scodec.Codec[A])(implicitevidence$1:scalaz.Monoid[A]):scodec.Codec[L]"></a>
-      <a id=":~&gt;:[A](Codec[A])(Monoid[A]):Codec[L]"></a>
+      <p class="shortcomment cmt">When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec the encodes/decodes
+the <code>HList K</code> followed by the <code>HList L</code>.</p>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#:~&gt;:" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id=":~&gt;:[B](codec:scodec.Codec[B])(implicitevidence$1:scalaz.Monoid[B]):scodec.Codec[L]"></a>
+      <a id=":~&gt;:[B](Codec[B])(Monoid[B]):Codec[L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$tilde$greater$colon" class="name">:~&gt;:</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.A">A</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>
+        <span title="gt4s: $colon$tilde$greater$colon" class="name">:~&gt;:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codec">codec: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Returns a new codec that encodes/decodes <code>A :: L</code> but only returns <code>L</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new codec that encodes/decodes <code>A :: L</code> but only returns <code>L</code>.  HList equivalent of <code>~&gt;</code>.</p></div></div>
+      <p class="shortcomment cmt">When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that encodes/decodes
+<code>B :: L</code> but only returns <code>L</code>.</p><div class="fullcomment"><div class="comment cmt"><p>When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that encodes/decodes
+<code>B :: L</code> but only returns <code>L</code>.  HList equivalent of <code>~&gt;</code>.</p></div></div>
     </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
@@ -361,16 +368,16 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.HListCodecEnrichedWithHListSupport#selfHList" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="selfHList:scodec.Codec[L]"></a>
-      <a id="selfHList:Codec[L]"></a>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#self" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="self:scodec.Codec[L]"></a>
+      <a id="self:Codec[L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">selfHList</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>
+        <span class="name">self</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>
       </span>
       </h4>
       
@@ -425,7 +432,7 @@
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>] to
             <span class="extype" name="scala.runtime.StringAdd">StringAdd</span> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(hListCodecEnrichedWithHListSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(hListCodecEnrichedWithHListSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
@@ -442,7 +449,7 @@
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>] to
             <span class="extype" name="scala.runtime.StringFormat">StringFormat</span> performed by method any2stringfmt in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(hListCodecEnrichedWithHListSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(hListCodecEnrichedWithHListSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
@@ -520,7 +527,10 @@
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="hlist">
+              <h3>hlist</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

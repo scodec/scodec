@@ -151,7 +151,7 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scodec.Codec#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply[A](implicitevidence$2:scodec.Codec[A]):scodec.Codec[A]"></a>
+      <a id="apply[A](implicitevidence$3:scodec.Codec[A]):scodec.Codec[A]"></a>
       <a id="apply[A](Codec[A]):Codec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -276,39 +276,6 @@ Terminates when no more bits are available in the vector. Exits upon the first e
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes a tuple <code>(A, B)</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes a tuple <code>(A, B)</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.Codec#dropLeft" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="dropLeft[A,B](codecA:scodec.Codec[A],codecB:scodec.Codec[B])(implicitevidence$3:scalaz.Monoid[A]):scodec.Codec[B]"></a>
-      <a id="dropLeft[A,B](Codec[A],Codec[B])(Monoid[A]):Codec[B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">dropLeft</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="codecA">codecA: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.A">A</span>]</span>, <span name="codecB">codecB: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.dropLeft.A">A</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.B">B</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[B]</code> that:
-- Encodes the zero element of the <code>Monoid</code> of A<code> followed by a </code>B<code>.
-- Decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.
-</code></p>
-    </li><li name="scodec.Codec#dropRight" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="dropRight[A,B](codecA:scodec.Codec[A],codecB:scodec.Codec[B])(implicitevidence$4:scalaz.Monoid[B]):scodec.Codec[A]"></a>
-      <a id="dropRight[A,B](Codec[A],Codec[B])(Monoid[B]):Codec[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">dropRight</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="codecA">codecA: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropRight.A">A</span>]</span>, <span name="codecB">codecB: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropRight.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.dropRight.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropRight.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[A]</code> that:
-- Encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[A]</code> that:
-- Encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>.
-- Decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.
-</p></div></div>
     </li><li name="scodec.EncoderFunctions#encode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="encode[A](a:A)(implicitevidence$1:scodec.Encoder[A]):scalaz.\/[String,scodec.bits.BitVector]"></a>
       <a id="encode[A](A)(Encoder[A]):\/[String,BitVector]"></a>

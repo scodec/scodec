@@ -50,7 +50,7 @@
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -169,7 +169,7 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#::" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#::" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
       <a id="::[B](codecB:scodec.Codec[B]):scodec.Codec[shapeless.::[B,shapeless.::[A,shapeless.HNil]]]"></a>
       <a id="::[B](Codec[B]):Codec[::[B,::[A,HNil]]]"></a>
       <h4 class="signature">
@@ -181,7 +181,10 @@
         <span title="gt4s: $colon$colon" class="name">::</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.::.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.::.B">B</span>, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a new codec that encodes/decodes an <code>HList</code> of <code>B :: A :: HNil</code>.</p>
+      <p class="shortcomment cmt">When called on a <code>Codec[A]</code> where <code>A</code> is not a subytpe of <code>HList</code>, creates a new codec that encodes/decodes an <code>HList</code> of <code>B :: A :: HNil</code>.</p><div class="fullcomment"><div class="comment cmt"><p>When called on a <code>Codec[A]</code> where <code>A</code> is not a subytpe of <code>HList</code>, creates a new codec that encodes/decodes an <code>HList</code> of <code>B :: A :: HNil</code>.
+For example, </p><pre>uint8 :: utf8</pre><p> has type <code>Codec[Int :: String :: HNil]</code>.
+uint8 :: utf8
+}}}</p></div></div>
     </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
@@ -195,7 +198,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#&gt;&gt;:~" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#&gt;&gt;:~" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
       <a id="&gt;&gt;:~[L&lt;:shapeless.HList](f:A=&gt;scodec.Codec[L]):scodec.Codec[shapeless.::[A,L]]"></a>
       <a id="&gt;&gt;:~[L&lt;:HList]((A)⇒Codec[L]):Codec[::[A,L]]"></a>
       <h4 class="signature">
@@ -207,7 +210,9 @@
         <span title="gt4s: $greater$greater$colon$tilde" class="name">&gt;&gt;:~</span><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>) ⇒ <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.&gt;&gt;:~.L">L</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.&gt;&gt;:~.L">L</span>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Operator alias for <code>flatPrepend</code>.</p>
+      <p class="shortcomment cmt">Creates a new codec that encodes/decodes an <code>HList</code> type of <code>A :: L</code> given a function <code>A =&gt; Codec[L]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a new codec that encodes/decodes an <code>HList</code> type of <code>A :: L</code> given a function <code>A =&gt; Codec[L]</code>.
+This allows later parts of an <code>HList</code> codec to be dependent on earlier values.
+Operator alias for <code>flatPrepend</code>.</p></div></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -289,7 +294,7 @@
             <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#flatPrepend" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#flatPrepend" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
       <a id="flatPrepend[L&lt;:shapeless.HList](f:A=&gt;scodec.Codec[L]):scodec.Codec[shapeless.::[A,L]]"></a>
       <a id="flatPrepend[L&lt;:HList]((A)⇒Codec[L]):Codec[::[A,L]]"></a>
       <h4 class="signature">
@@ -301,8 +306,9 @@
         <span class="name">flatPrepend</span><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>) ⇒ <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.flatPrepend.L">L</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.flatPrepend.L">L</span>]]</span>
       </span>
       </h4>
-      
-    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#flatZipHList" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Creates a new codec that encodes/decodes an <code>HList</code> type of <code>A :: L</code> given a function <code>A =&gt; Codec[L]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a new codec that encodes/decodes an <code>HList</code> type of <code>A :: L</code> given a function <code>A =&gt; Codec[L]</code>.
+This allows later parts of an <code>HList</code> codec to be dependent on earlier values.</p></div></div>
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#flatZipHList" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
       <a id="flatZipHList[B](f:A=&gt;scodec.Codec[B]):scodec.Codec[shapeless.::[A,shapeless.::[B,shapeless.HNil]]]"></a>
       <a id="flatZipHList[B]((A)⇒Codec[B]):Codec[::[A,::[B,HNil]]]"></a>
       <h4 class="signature">
@@ -314,7 +320,9 @@
         <span class="name">flatZipHList</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>) ⇒ <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.flatZipHList.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.flatZipHList.B">B</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Creates a new codec that encodes/decodes an <code>HList</code> type of <code>A :: B :: HNil</code> given a function <code>A =&gt; Codec[B]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a new codec that encodes/decodes an <code>HList</code> type of <code>A :: B :: HNil</code> given a function <code>A =&gt; Codec[B]</code>.
+If <code>B</code> is an <code>HList</code> type, consider using <code>flatPrepend</code> instead, which avoids nested <code>HLists</code>.
+This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></div></div>
     </li><li name="scala.Predef.any2stringfmt#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="formatted(fmtstr:String):String"></a>
       <a id="formatted(String):String"></a>
@@ -520,7 +528,10 @@
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="hlist">
+              <h3>hlist</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

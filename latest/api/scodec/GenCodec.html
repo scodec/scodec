@@ -53,7 +53,7 @@
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -91,7 +91,7 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="scodec.Decoder#decode" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="scodec.Decoder#decode" visbl="pub" data-isabs="true" fullComment="yes" group="primary">
       <a id="decode(bits:scodec.bits.BitVector):scalaz.\/[String,(scodec.bits.BitVector,A)]"></a>
       <a id="decode(BitVector):\/[String,(BitVector,B)]"></a>
       <h4 class="signature">
@@ -104,9 +104,8 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Attempts to decode a value of type <code>A</code> from the specified bit vector.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts to decode a value of type <code>A</code> from the specified bit vector.
-</p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>bits to decode</p></dd><dt>returns</dt><dd class="cmt"><p>error if value could not be decoded or the remaining bits and the decoded value
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
-    </li><li name="scodec.Encoder#encode" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+</p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>bits to decode</p></dd><dt>returns</dt><dd class="cmt"><p>error if value could not be decoded or the remaining bits and the decoded value</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
+    </li><li name="scodec.Encoder#encode" visbl="pub" data-isabs="true" fullComment="yes" group="primary">
       <a id="encode(value:A):scalaz.\/[String,scodec.bits.BitVector]"></a>
       <a id="encode(A):\/[String,BitVector]"></a>
       <h4 class="signature">
@@ -259,7 +258,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scodec.GenCodec#contramap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.GenCodec#contramap" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="contramap[C](f:C=&gt;A):scodec.GenCodec[C,B]"></a>
       <a id="contramap[C]((C)⇒A):GenCodec[C,B]"></a>
       <h4 class="signature">
@@ -385,7 +384,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scodec.Decoder#flatMap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.Decoder#flatMap" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="flatMap[B](f:A=&gt;scodec.Decoder[B]):scodec.Decoder[B]"></a>
       <a id="flatMap[B]((B)⇒Decoder[B]):Decoder[B]"></a>
       <h4 class="signature">
@@ -418,7 +417,7 @@
                 <span class="name">@inline</span><span class="args">()</span>
               
         </dd></dl></div>
-    </li><li name="scodec.GenCodec#fuse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.GenCodec#fuse" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
       <a id="fuse[AA&lt;:A,BB&gt;:B](implicitev:=:=[BB,AA]):scodec.Codec[BB]"></a>
       <a id="fuse[AA&lt;:A,BB&gt;:B](=:=[BB,AA]):Codec[BB]"></a>
       <h4 class="signature">
@@ -470,7 +469,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.GenCodec#map" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.GenCodec#map" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="map[C](f:B=&gt;C):scodec.GenCodec[A,C]"></a>
       <a id="map[C]((B)⇒C):GenCodec[A,C]"></a>
       <h4 class="signature">
@@ -522,7 +521,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scodec.Encoder#pcontramap" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.Encoder#pcontramap" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="pcontramap[B](f:B=&gt;Option[A]):scodec.Encoder[B]"></a>
       <a id="pcontramap[B]((B)⇒Option[A]):Encoder[B]"></a>
       <h4 class="signature">
@@ -537,8 +536,7 @@
       <p class="shortcomment cmt">Converts this encoder to an <code>Encoder[B]</code> using the supplied partial
 function from <code>B</code> to <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Converts this encoder to an <code>Encoder[B]</code> using the supplied partial
 function from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</code> that
-<code>f</code> maps to <code>None</code>.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd></dl></div>
+<code>f</code> maps to <code>None</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -757,7 +755,13 @@ function from <code>B</code> to <code>A</code>. The encoding will fail for any <
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="primary">
+              <h3>Primary Members</h3>
+              
+            </div><div class="group" name="combinators">
+              <h3>Basic Combinators</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>
