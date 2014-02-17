@@ -14,70 +14,288 @@ import DiscriminatorCodec.{ Case, Prism }
  * the value.
  *
  * To build an instance of this codec, call [[discriminated]] and specify the tag type via the `by` method. Then
- * call one more more of the case combinators on this class, such as [[caseO]] or [[typecase]].
+ * call one more more of the case combinators on this class.
+ *
+ * Each of the case combinators provides two forms, one that defines a case with a single tag value and another,
+ * overloaded form that defines a case with a tag value to use in encoding and a predicate on tag value to use
+ * in decoding.
+ *
+ * The most general case combinators are `caseO` and `caseP` (and their operator equivalents, `?` and `|`).
+ * In addition to a tag or tag/predicate pair, the `caseO` combinators are defined by providing a mapping from
+ * `A` to `Option[R]`, a mapping from `R` to `A`, and a `Codec[R]`. The case is used for encoding if the
+ * mapping from `A` to `Option[R]` returns a `Some` and it is used for decoding upon matching the tag value.
+ * The `caseP` combinators work the same but take a `PartialFunction[A, R]` instead of an `A => Option[R]`.
+ *
+ * If `R` is a subtype of `A`, then the mapping from `R` to `A` can be omitted. Hence, the
+ * `subcaseO` and `subcaseP` (and the operator equivalents, `/` and `\`) constrain `R` to being a subtype
+ * of `A` and do not take a `R => A` function.
+ *
+ * Finally, the least generic case combinators are the `typecase` combinators which add further constraints
+ * to the `subcase*` combinators. Specifically, the typecase operators omit the `A => Option[R]` or
+ * `PartialFunction[A, R]` in favor of doing subtype checks. For example, the following codec is a `Codec[AnyVal]`
+ * that encodes a 0 if passed a `Boolean` and a 1 if passed an `Int`: {{{
+   discriminated[AnyVal].by(uint8).typecase(0, bool).typecase(1, int32)
+ }}}
  *
  * @see [[discriminated]]
  * @group combinators
+ *
+ * @groupname discriminator Discriminator Support
+ * @groupprio discriminator 1
+ *
+ * @param by codec that encodec/decodes the tag value
+ * @param cases cases, ordered from highest priority to lowest priority, that handle subsets of `A`
+ *
+ * @define methodCaseCombinator Returns a new discriminator codec with a new case added for the specified tag.
+ * @define typeR representative type that this case handles
+ * @define paramTag tag value for this case
+ * @define paramEncodeTag tag value to use during encoding for this case
+ * @define paramDecodeTag function that determines if this case should be used for decoding given a decoded tag
+ * @define paramToRep function used during encoding that converts an `A` to an `Option[R]`
+ * @define paramToRepPartial partial function from `A` to `R` used during encoding
+ * @define paramFromRep function used during decoding that converts an `R` to an `A`
+ * @define paramCr codec that encodes/decodes `R`s
  */
-final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A,B]]) extends Codec[A] {
+final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B]]) extends Codec[A] {
 
-  def caseO[R](tag: B)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(left(tag), Prism(f, inj, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRep
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def caseO[R](tag: B)(toRep: A => Option[R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(left(tag), Prism(toRep, fromRep, cr)))
 
-  def caseO[R](tag: B, g: B => Boolean)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(right(tag -> g), Prism(f, inj, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRep
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def caseO[R](encodeTag: B, decodeTag: B => Boolean)(toRep: A => Option[R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(right(encodeTag -> decodeTag), Prism(toRep, fromRep, cr)))
 
-  def ?[R](tag: B)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    caseO(tag)(f)(inj)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `caseO`.
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRep
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def ?[R](tag: B)(toRep: A => Option[R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseO(tag)(toRep)(fromRep)(cr)
 
-  def ?[R](tag: B, g: B => Boolean)(f: A => Option[R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    caseO(tag, g)(f)(inj)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `caseO`.
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRep
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def ?[R](encodeTag: B, decodeTag: B => Boolean)(toRep: A => Option[R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseO(encodeTag, decodeTag)(toRep)(fromRep)(cr)
 
-  def caseP[R](tag: B)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(left(tag), Prism(f.lift, inj, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRepPartial
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def caseP[R](tag: B)(toRep: PartialFunction[A,R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(left(tag), Prism(toRep.lift, fromRep, cr)))
 
-  def caseP[R](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(right(tag -> g), Prism(f.lift, inj, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRepPartial
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def caseP[R](encodeTag: B, decodeTag: B => Boolean)(toRep: PartialFunction[A,R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    appendCase(Case(right(encodeTag -> decodeTag), Prism(toRep.lift, fromRep, cr)))
 
-  def |[R](tag: B)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    caseP(tag)(f)(inj)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `caseP`.
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRepPartial
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def |[R](tag: B)(toRep: PartialFunction[A,R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseP(tag)(toRep)(fromRep)(cr)
 
-  def |[R](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(inj: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    caseP(tag, g)(f)(inj)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `caseP`.
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRepPartial
+   * @param fromRep $paramFromRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def |[R](encodeTag: B, decodeTag: B => Boolean)(toRep: PartialFunction[A,R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseP(encodeTag, decodeTag)(toRep)(fromRep)(cr)
 
-  def subcaseP[R <: A](tag: B)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(left(tag), Prism(f.lift, (r: R) => r, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def subcaseO[R <: A](tag: B)(toRep: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseO(tag)(toRep)((r: R) => r)(cr)
 
-  def subcaseP[R <: A](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(right(tag -> g), Prism(f.lift, (r: R) => r, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def subcaseO[R <: A](encodeTag: B, decodeTag: B => Boolean)(toRep: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseO(encodeTag, decodeTag)(toRep)((r: R) => r)(cr)
 
-  def \[R <: A](tag: B)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    subcaseP(tag)(f)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `subcaseO`.
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def /[R <: A](tag: B)(toRep: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseO(tag)(toRep)(cr)
 
-  def \[R <: A](tag: B, g: B => Boolean)(f: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    subcaseP(tag, g)(f)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `subcaseO`.
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRep
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def /[R <: A](encodeTag: B, decodeTag: B => Boolean)(toRep: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseO(encodeTag, decodeTag)(toRep)(cr)
 
-  def subcaseO[R <: A](tag: B)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(left(tag), Prism(f, (r: R) => r, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRepPartial
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def subcaseP[R <: A](tag: B)(toRep: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseP(tag)(toRep)((r: R) => r)(cr)
 
-  def subcaseO[R <: A](tag: B, g: B => Boolean)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(right(tag -> g), Prism(f, (r: R) => r, cr)))
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRepPartial
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def subcaseP[R <: A](encodeTag: B, decodeTag: B => Boolean)(toRep: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    caseP(encodeTag, decodeTag)(toRep)((r: R) => r)(cr)
 
-  def /[R <: A](tag: B)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    subcaseO(tag)(f)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `subcaseP`.
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param toRep $paramToRepPartial
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def \[R <: A](tag: B)(toRep: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseP(tag)(toRep)(cr)
 
-  def /[R <: A](tag: B, g: B => Boolean)(f: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    subcaseO(tag, g)(f)(cr)
+  /**
+   * $methodCaseCombinator
+   * Operator alias for `subcaseP`.
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param toRep $paramToRepPartial
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def \[R <: A](encodeTag: B, decodeTag: B => Boolean)(toRep: PartialFunction[A,R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseP(encodeTag, decodeTag)(toRep)(cr)
 
-  def typecase[R <: A: Manifest](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] = {
-    val f: A => Option[R] = a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None
-    appendCase(Case(left(tag), Prism(f, (r: R) => r, cr)))
-  }
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param tag $paramTag
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def typecase[R <: A: Manifest](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseO(tag)(a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None)(cr)
 
-  def typecase[R <: A: Manifest](tag: B, g: B => Boolean, cr: Codec[R]): DiscriminatorCodec[A, B] = {
-    val f: A => Option[R] = a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None
-    appendCase(Case(right(tag -> g), Prism(f, (r: R) => r, cr)))
-  }
+  /**
+   * $methodCaseCombinator
+   *
+   * @tparam R $typeR
+   * @param encodeTag $paramEncodeTag
+   * @param decodeTag $paramDecodeTag
+   * @param cr $paramCr
+   * @group discriminator
+   */
+  def typecase[R <: A: Manifest](encodeTag: B, decodeTag: B => Boolean, cr: Codec[R]): DiscriminatorCodec[A, B] =
+    subcaseO(encodeTag, decodeTag)(a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None)(cr)
 
   private def matchesClass[R: Manifest](a: A) = {
     val clazz = manifest[R] match {

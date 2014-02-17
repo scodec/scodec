@@ -18,10 +18,10 @@ import scodec.bits.BitVector
  *
  *
  * @groupname tuple Tuple Support
- * @groupprio tuple 2
+ * @groupprio tuple 11
 
  * @groupname hlist HList Support
- * @groupprio hlist 3
+ * @groupprio hlist 12
  */
 trait Codec[A] extends GenCodec[A, A] { self =>
 
@@ -66,7 +66,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   /**
    * Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`.
    *
-   * Operator alias for [[~]].
+   * Operator alias for [[pairedWith]].
    * @group tuple
    */
   final def ~[B](codecB: Codec[B]): Codec[(A, B)] = pairedWith(codecB)
@@ -118,6 +118,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   }
 
   /**
+   * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
    * Operator alias for [[flatZip]].
    * @group tuple
    */
