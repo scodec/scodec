@@ -84,7 +84,7 @@ New codecs can be created by either implementing the `Codec` trait or by passing
 
 See ScalaDoc for more information. Especially:
  - [`Codec`](http://scodec.github.io/scodec/latest/api/scodec/Codec.html)
- - [`codecs` package](http://scodec.github.io/scodec/latest/api/scodec/codecs/package.html)
+ - [`codecs` package](http://scodec.github.io/scodec/latest/api/index.html#scodec.codecs.package)
 
 Examples
 --------
