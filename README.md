@@ -77,9 +77,6 @@ Codecs can also be implicitly resolved, resulting in usage like:
     // \/-(Point(-5,10,1))
 ```
 
-Combinators
------------
-
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
 See ScalaDoc for more information. Especially:
