@@ -4,7 +4,15 @@ import scalaz.{ \/, Monad, Monoid }
 
 import scodec.bits.BitVector
 
-/** Supports decoding a value of type `A` from a `BitVector`. */
+/**
+ * Supports decoding a value of type `A` from a `BitVector`.
+ *
+ * @groupname primary Primary Members
+ * @groupprio primary 0
+ *
+ * @groupname combinators Basic Combinators
+ * @groupprio combinators 1
+ */
 trait Decoder[+A] { self =>
 
   /**
@@ -12,15 +20,22 @@ trait Decoder[+A] { self =>
    *
    * @param bits bits to decode
    * @return error if value could not be decoded or the remaining bits and the decoded value
+   * @group primary
    */
   def decode(bits: BitVector): String \/ (BitVector, A)
 
-  /** Converts this decoder to a `Decoder[B]` using the supplied `A => B`. */
+  /**
+   * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
+   * @group combinators
+   */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits) map { case (rem, a) => (rem, f(a)) }
   }
 
-  /** Converts this decoder to a `Decoder[B]` using the supplied `A => Decoder[B]`. */
+  /**
+   * Converts this decoder to a `Decoder[B]` using the supplied `A => Decoder[B]`.
+   * @group combinators
+   */
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits) flatMap { case (rem, a) => f(a).decode(rem) }
   }

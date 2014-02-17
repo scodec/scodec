@@ -14,11 +14,21 @@ import scodec.bits.BitVector
  * remaining bits in the bit vector that it did not use in decoding.
  *
  * Note: the decode function can be lifted to a state action via `StateT[String \/ ?, BitVector, A]`. This type alias
- * and associated constructor is provided by `DecodingContext`.
+ * and associated constructor is provided by `[[DecodingContext]]`.
+ *
+ *
+ * @groupname tuple Tuple Support
+ * @groupprio tuple 2
+
+ * @groupname hlist HList Support
+ * @groupprio hlist 3
  */
 trait Codec[A] extends GenCodec[A, A] { self =>
 
-  /** Maps to a codec of type `B`. */
+  /**
+   * Maps to a codec of type `B` using two total functions, `A => B` and `B => A`.
+   * @group combinators
+   */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B): String \/ BitVector = self.encode(g(b))
     def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
@@ -28,16 +38,77 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * Maps to a `codec` of type `B`, where there is a partial function
    * from `B` to `A`. The encoding will fail for any `B` that
    * `f` maps to `None`.
+   * @group combinators
    */
   final def pxmap[B](f: A => B, g: B => Option[A]): Codec[B] = new Codec[B] {
     def encode(b: B): String \/ BitVector = g(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
     def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
 
-  /** Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`. */
+  /**
+   * Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`.
+   * @group hlist
+   */
   final def as[B](implicit iso: Iso[B, A]): Codec[B] = xmap(iso.from, iso.to)
 
-  /** Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`. */
+  /**
+   * Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument.
+   * @group hlist
+   */
+  final def hlist: Codec[A :: HNil] = xmap(_ :: HNil, _.head)
+
+  /**
+   * Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`.
+   * @group tuple
+   */
+  final def pairedWith[B](codecB: Codec[B]): Codec[(A, B)] = new codecs.TupleCodec(this, codecB)
+
+  /**
+   * Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`.
+   *
+   * Operator alias for [[~]].
+   * @group tuple
+   */
+  final def ~[B](codecB: Codec[B]): Codec[(A, B)] = pairedWith(codecB)
+
+  /**
+   * Creates a `Codec[B]` that: encodes the zero element of the `Monoid` of A` followed by a `B`;
+   * decodes an `A` followed by a `B` and discards the decoded `A`.
+   * @group tuple
+   */
+  final def dropLeft[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] =
+    pairedWith(codecB).xmap[B]({ case (a, b) => b }, b => (Monoid[A].zero, b))
+
+  /**
+   * Creates a `Codec[B]` that: encodes the zero element of the `Monoid` of A` followed by a `B`;
+   * decodes an `A` followed by a `B` and discards the decoded `A`.
+   *
+   * Operator alias of [[dropLeft]].
+   * @group tuple
+   */
+  final def ~>[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] = dropLeft(codecB)
+
+  /**
+   * Creates a `Codec[A]` that: encodes an `A` followed by the zero element of the `Monoid` of `B`;
+   * decodes an `A` followed by a `B` and discards the decoded `B`.
+   * @group tuple
+   */
+  final def dropRight[B: Monoid](codecB: Codec[B]): Codec[A] =
+    pairedWith(codecB).xmap[A]({ case (a, b) => a }, a => (a, Monoid[B].zero))
+
+  /**
+   * Creates a `Codec[A]` that: encodes an `A` followed by the zero element of the `Monoid` of `B`;
+   * decodes an `A` followed by a `B` and discards the decoded `B`.
+   *
+   * Operator alias of [[dropRight]].
+   * @group tuple
+   */
+  final def <~[B: Monoid](codecB: Codec[B]): Codec[A] = dropRight(codecB)
+
+  /**
+   * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
+   * @group tuple
+   */
   final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)] {
     override def encode(t: (A, B)) = Codec.encodeBoth(self, f(t._1))(t._1, t._2)
     override def decode(buffer: BitVector) = (for {
@@ -46,34 +117,16 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     } yield (a, b)).run(buffer)
   }
 
-  /** Operator alias for `flatZip`. */
+  /**
+   * Operator alias for [[flatZip]].
+   * @group tuple
+   */
   final def >>~[B](f: A => Codec[B]): Codec[(A, B)] = flatZip(f)
 
-  /** Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument. */
-  final def hlist: Codec[A :: HNil] = xmap(_ :: HNil, _.head)
-
-  /** Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`. */
-  final def ~[B](codecB: Codec[B]): Codec[(A, B)] = new codecs.TupleCodec(this, codecB)
-
   /**
-   * Creates a `Codec[A]` that:
-   * - Encodes an `A` followed by the zero element of the `Monoid` of `B`.
-   * - Decodes an `A` followed by a `B` and discards the decoded `B`.
-   *
-   * Operator alias for `Codec.dropRight`.
+   * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
+   * @group combinators
    */
-  final def <~[B: Monoid](codecB: Codec[B]): Codec[A] = Codec.dropRight(this, codecB)
-
-  /**
-   * Creates a `Codec[B]` that:
-   * - Encodes the zero element of the `Monoid` of A` followed by a `B`.
-   * - Decodes an `A` followed by a `B` and discards the decoded `A`.
-   *
-   * Operator alias for `Codec.dropLeft`.
-   */
-  final def ~>[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] = Codec.dropLeft(this, codecB)
-
-  /** Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`. */
   final def withToString(str: String): Codec[A] = new Codec[A] {
     override def encode(a: A) = self.encode(a)
     override def decode(buffer: BitVector) = self.decode(buffer)
@@ -98,22 +151,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
 
   /** Gets the implicitly available codec for type `A`. */
   def apply[A: Codec]: Codec[A] = implicitly[Codec[A]]
-
-  /**
-   * Creates a `Codec[B]` that:
-   * - Encodes the zero element of the `Monoid` of A` followed by a `B`.
-   * - Decodes an `A` followed by a `B` and discards the decoded `A`.
-   */
-  def dropLeft[A: Monoid, B](codecA: Codec[A], codecB: Codec[B]): Codec[B] =
-    new codecs.TupleCodec(codecA, codecB).xmap[B]({ case (a, b) => b }, b => (Monoid[A].zero, b))
-
-  /**
-   * Creates a `Codec[A]` that:
-   * - Encodes an `A` followed by the zero element of the `Monoid` of `B`.
-   * - Decodes an `A` followed by a `B` and discards the decoded `B`.
-   */
-  def dropRight[A, B: Monoid](codecA: Codec[A], codecB: Codec[B]): Codec[A] =
-    new codecs.TupleCodec(codecA, codecB).xmap[A]({ case (a, b) => a }, a => (a, Monoid[B].zero))
 
   // TODO Upon upgrade to Scalaz 7.1
   /*

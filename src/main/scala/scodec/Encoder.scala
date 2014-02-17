@@ -5,7 +5,15 @@ import \/.left
 
 import scodec.bits.BitVector
 
-/** Supports encoding a value of type `A` to a `BitVector`. */
+/**
+ * Supports encoding a value of type `A` to a `BitVector`.
+ *
+ * @groupname primary Primary Members
+ * @groupprio primary 0
+ *
+ * @groupname combinators Basic Combinators
+ * @groupprio combinators 1
+ */
 trait Encoder[-A] { self =>
 
   /**
@@ -13,10 +21,14 @@ trait Encoder[-A] { self =>
    *
    * @param value value to encode
    * @param return error or binary encoding of the value
+   * @group primary
    */
   def encode(value: A): String \/ BitVector
 
-  /** Converts this encoder to an `Encoder[B]` using the supplied `B => A`. */
+  /**
+   * Converts this encoder to an `Encoder[B]` using the supplied `B => A`.
+   * @group combinators
+   */
   def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
     def encode(b: B) = self.encode(f(b))
   }
@@ -25,6 +37,7 @@ trait Encoder[-A] { self =>
    * Converts this encoder to an `Encoder[B]` using the supplied partial
    * function from `B` to `A`. The encoding will fail for any `B` that
    * `f` maps to `None`.
+   * @group combinators
    */
   def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B] {
     def encode(b: B): String \/ BitVector =

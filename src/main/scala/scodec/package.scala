@@ -39,44 +39,81 @@ package object scodec {
   implicit val byteVectorMonoidInstance: Monoid[ByteVector] = Monoid.instance(_ ++ _, ByteVector.empty)
 
   /** Provides common operations on a `Codec[HList]`. */
-  final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val selfHList: Codec[L]) extends AnyVal {
-    import codecs.HListCodec._
+  final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val self: Codec[L]) extends AnyVal {
+    import codecs.HListCodec
 
-    /** Returns a new codec representing `Codec[A :: L]`. */
-    def ::[A](a: Codec[A]): Codec[A :: L] = prepend(a, selfHList)
+    /**
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec representing `Codec[B :: L]`.
+     * That is, this operator is a codec-level `HList` prepend operation.
+     * @param codec codec to prepend
+     * @group hlist
+     */
+    def ::[B](codec: Codec[B]): Codec[B :: L] = HListCodec.prepend(codec, self)
 
-    /** Returns a new codec that encodes/decodes `A :: L` but only returns `L`.  HList equivalent of `~>`. */
-    def :~>:[A: scalaz.Monoid](a: Codec[A]): Codec[L] = Codec.dropLeft(a, selfHList)
+    /**
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+     * `B :: L` but only returns `L`.  HList equivalent of `~>`.
+     * @group hlist
+     */
+    def :~>:[B: Monoid](codec: Codec[B]): Codec[L] = codec.dropLeft(self)
 
-    /** Returns a new codec that encodes/decodes the `HList L` followed by an `A`. */
-    def :+[A, LA <: HList](a: Codec[A])(implicit
-      prepend: PrependAux[L, A :: HNil, LA],
-      init: Init[LA] { type Out = L },
-      last: Last[LA] { type Out = A }
-    ): Codec[LA] =
-      append(selfHList, a)
+    /**
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+     * the `HList L` followed by a `B`.
+     * That is, this operator is a codec-level `HList` append operation.
+     * @group hlist
+     */
+    def :+[B, LB <: HList](codec: Codec[B])(implicit
+      prepend: PrependAux[L, B :: HNil, LB],
+      init: InitAux[LB, L],
+      last: LastAux[LB, B]
+    ): Codec[LB] = HListCodec.append(self, codec)
 
-    /** Returns a new codec the encodes/decodes the `HList K` followed by the `HList L`. */
+    /**
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec the encodes/decodes
+     * the `HList K` followed by the `HList L`.
+     * @group hlist
+     */
     def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
       prepend: PrependAux[K, L, KL],
-      lengthK: Length[K] { type Out = KLen },
+      lengthK: LengthAux[K, KLen],
       split: Split[KL, KLen] { type P = K; type S = L }
-    ): Codec[KL] = concat(k, selfHList)
+    ): Codec[KL] = HListCodec.concat(k, self)
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
   final implicit class ValueCodecEnrichedWithHListSupport[A](val self: Codec[A]) extends AnyVal {
-    import codecs.HListCodec._
+    import codecs.HListCodec
 
-    /** Creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`. */
+    /**
+     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`.
+     * For example, {{{uint8 :: utf8}}} has type `Codec[Int :: String :: HNil]`.
+     * @group hlist
+     */
     def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
-      codecs.HListCodec.prepend(codecB, prepend(self, hnilCodec))
+      codecB :: self :: HListCodec.hnilCodec
 
-    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = codecs.HListCodec.flatPrepend(self, f)
+    /**
+     * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
+     * This allows later parts of an `HList` codec to be dependent on earlier values.
+     * @group hlist
+     */
+    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = HListCodec.flatPrepend(self, f)
 
-    def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
-
-    /** Operator alias for `flatPrepend`. */
+    /**
+     * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
+     * This allows later parts of an `HList` codec to be dependent on earlier values.
+     * Operator alias for `flatPrepend`.
+     * @group hlist
+     */
     def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
+
+    /**
+     * Creates a new codec that encodes/decodes an `HList` type of `A :: B :: HNil` given a function `A => Codec[B]`.
+     * If `B` is an `HList` type, consider using `flatPrepend` instead, which avoids nested `HLists`.
+     * This is the direct `HList` equivalent of `flatZip`.
+     * @group hlist
+     */
+    def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
   }
 }

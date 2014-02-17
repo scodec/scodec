@@ -19,7 +19,10 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
     def decode(bits: BitVector) = self.decode(bits)
   }
 
-  /** Converts this generalized codec in to a non-generalized codec assuming `A` and `B` are the same type. */
+  /**
+   * Converts this generalized codec in to a non-generalized codec assuming `A` and `B` are the same type.
+   * @group combinators
+   */
   final def fuse[AA <: A, BB >: B](implicit ev: BB =:= AA): Codec[BB] = new Codec[BB] {
     def encode(c: BB) = self.encode(ev(c))
     def decode(bits: BitVector) = self.decode(bits)

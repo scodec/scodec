@@ -82,29 +82,9 @@ Combinators
 
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
-There are a number of built in combinators:
- - `"name" | a` - creates a `Codec[A]` that prefixes any error messages with the specified name.
- - Tuple Support
-   - `a ~ b` - creates a `Codec[(A, B)]` that first decodes `a` and then `b`.
-   - `a ~> b` - creates a `Codec[B]` that decodes first with `a` and then with `b` and throws away the decoded `a`. For encoding, the zero value of type `A`s monoid is encoded.
-   - `a <~ b` - creates a `Codec[A]` that decodes first with `a` and then with `b` and throws away the decoded `b`. For encoding, the zero value of type `B`s monoid is encoded.
-   - `a >>~ f` - creates a `Codec[(A, B)]` that decodes first with `a` and then with the codec returned from `f(decodedA)`. The non-operator version of this is `flatZip(f: A => Codec[B]): Codec[(A, B)]`.
- - HList Support
-   - `a :: b` - creates a `Codec[A :: B :: HNil]` or if `B` is an HList, a `Codec[A :: B]`.
-   - `a :~>: b` - creates a `Codec[B]` (if B is an HList) that decodes and throws away the decoded `a` and encodes `a`s zero value.
-   - `a >>:~ f` - creates a `Codec[A :: B]` that decodes first with `a` and then with the HList codec returned from `f(decodedA)`. The non-operator version of this is `flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L]`.
-   - `l :+ a` - creates a codec that decodes first with the HList codec `l` and then with the codec `a`. This is the codec equivalent of HList append.
-   - `k ::: l` - creates a codec that decodes first with the HList codec `k` and then with the HList codec `l`. This is the codec equivalent of HList concat.
-   - `a.hlist` - creates a `Codec[A :: HNil]`.
- - Sizing
-   - `fixedSizeBits(size, a)` and `fixedSizeBytes(size, a)` - creates a `Codec[A]` that always encodes/decodes `size` bits/bytes.
-   - `variableSizeBits(sizeCodec, a)` and `variableSizeBytes(size, a)` - creates a `Codec[A]` that encodes the size of the encoded `A` followed by the encoded `A`.
- - `conditional(boolean, a)` - creates a `Codec[Option[A]]` that skips encoding/decoding if the specified boolean is false
- - `repeated(a)` - creates a `Codec[IndexedSeq[A]]`
- - Type Conversions
-   - `a.xmap(f, g)` - creates a `Codec[B]` given bidirectional functions `f: A => B` and `g: B => A`.
-   - `a.as[B]` - creates a `Codec[B]` if a `shapeless.Iso[B, A]` is in implicit scope
-
+See ScalaDoc for more information. Especially:
+ - [`Codec`](http://scodec.github.io/scodec/latest/api/scodec/Codec.html)
+ - [`codecs` package](http://scodec.github.io/scodec/latest/api/scodec/codecs/package.html)
 
 Examples
 --------
@@ -114,7 +94,6 @@ There are various examples in the test directory, including codecs for:
  - [UDP Datagrams](src/test/scala/scodec/examples/UdpDatagramExample.scala)
  - [MPEG Packets](src/test/scala/scodec/examples/MpegPacketExample.scala)
  - [libpcap Files](src/test/scala/scodec/examples/PcapExample.scala)
-
 
 Getting Binaries
 ----------------
