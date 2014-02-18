@@ -64,10 +64,11 @@ class DiscriminatorCodecTest extends CodecSuite {
     case class Node(l: Tree, r: Tree) extends Tree
     case class Leaf(n: Int) extends Tree
 
-    def treeCodec: Codec[Tree] =
+    def treeCodec: Codec[Tree] = lazily {
       discriminated[Tree].by(bool)
       .| (false) { case l @ Leaf(n) => n } (Leaf.apply) (int32)
-      .| (true)  { case n @ Node(l, r) => (l, r) } { case (l, r) => Node(l, r) } (lazily(treeCodec) ~ lazily(treeCodec))
+      .| (true)  { case n @ Node(l, r) => (l, r) } { case (l, r) => Node(l, r) } (treeCodec ~ treeCodec)
+    }
 
     roundtrip(treeCodec, Leaf(42))
     roundtrip(treeCodec, Node(Leaf(42), Node(Leaf(1), Leaf(2))))
