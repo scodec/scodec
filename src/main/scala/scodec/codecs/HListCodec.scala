@@ -31,8 +31,8 @@ private[scodec] object HListCodec {
 
   def append[L <: HList, A, LA <: HList](l: Codec[L], a: Codec[A])(implicit
     prepend: PrependAux[L, A :: HNil, LA],
-    init: Init[LA] { type Out = L },
-    last: Last[LA] { type Out = A }
+    init: InitAux[LA, L],
+    last: LastAux[LA, A]
   ): Codec[LA] = new Codec[LA] {
     override def encode(xs: LA) = Codec.encodeBoth(l, a)(xs.init, xs.last)
     override def decode(buffer: BitVector) = (for {
@@ -44,7 +44,7 @@ private[scodec] object HListCodec {
 
   def concat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](ck: Codec[K], cl: Codec[L])(implicit
     prepend: PrependAux[K, L, KL],
-    lengthK: Length[K] { type Out = KLen },
+    lengthK: LengthAux[K, KLen],
     split: Split[KL, KLen] { type P = K; type S = L }
   ): Codec[KL] = new Codec[KL] {
     override def encode(xs: KL) = {
