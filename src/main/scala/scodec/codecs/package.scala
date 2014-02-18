@@ -542,6 +542,18 @@ package object codecs {
     .| (false) { case Left(l)  => l } (Left.apply) (left)
     .| (true)  { case Right(r) => r } (Right.apply) (right)
 
+
+  /**
+   * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
+   * @group combinators
+   */
+  def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
+    private lazy val c = codec
+    def encode(a: A) = c.encode(a)
+    def decode(b: BitVector) = c.decode(b)
+    override def toString = s"lazily($c)"
+  }
+
   /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
    *
