@@ -13,7 +13,6 @@ crossScalaVersions := Seq(scalaVersion.value)
 
 scalacOptions ++= Seq(
   "-feature",
-  "-language:_",
   "-deprecation",
   "-unchecked",
   "-optimise",
@@ -22,6 +21,7 @@ scalacOptions ++= Seq(
   "-Xverify",
   "-Yclosure-elim",
   "-Yinline",
+  "-Yno-adapted-args",
   "-Ywarn-all")
 
 scalacOptions in (Compile, doc) ++= {

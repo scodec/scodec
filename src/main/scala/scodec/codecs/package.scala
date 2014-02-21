@@ -1,5 +1,7 @@
 package scodec
 
+import scala.language.implicitConversions
+
 import java.nio.charset.Charset
 import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID

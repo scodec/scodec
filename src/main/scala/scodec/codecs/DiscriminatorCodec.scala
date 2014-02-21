@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scala.language.existentials
+
 import scalaz.\/
 import \/.{ left, right }
 import scalaz.syntax.id._
