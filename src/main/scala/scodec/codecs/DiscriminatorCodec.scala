@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scala.language.existentials
-
 import scalaz.\/
 import \/.{ left, right }
 import scalaz.syntax.id._
@@ -58,7 +56,7 @@ import DiscriminatorCodec.{ Case, Prism }
  * @define paramFromRep function used during decoding that converts an `R` to an `A`
  * @define paramCr codec that encodes/decodes `R`s
  */
-final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B]]) extends Codec[A] {
+final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B, Any]]) extends Codec[A] {
 
   /**
    * $methodCaseCombinator
@@ -314,10 +312,10 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     clazz.isAssignableFrom(a.getClass)
   }
 
-  private def appendCase(c: Case[A, B]): DiscriminatorCodec[A, B] =
-    new DiscriminatorCodec[A, B](by, cases :+ c)
+  private def appendCase[R](c: Case[A, B, R]): DiscriminatorCodec[A, B] =
+    new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]])
 
-  private val matcher: B => (String \/ Case[A,B]) =
+  private val matcher: B => (String \/ Case[A, B, Any]) =
     if (cases.forall(_.condition.isLeft)) { // build a little table
       // we reverse the cases so earlier cases 'win' in event of overlap
       val tbl = cases.reverse.map(kase => kase.condition.swap.toOption.get -> kase).toMap
@@ -334,13 +332,9 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
 
   def encode(a: A): String \/ BitVector =
     cases.iterator.flatMap { k =>
-      val (cond, extract, codec0) = (k.condition, k.prism.preview, k.prism.repCodec)
-      // Workaround for scalac existential bug - `codec0` should be a
-      // `Codec[R]` for the same `R` returned by `extract`, but scalac doesn't realize this
-      val codec = codec0.asInstanceOf[Codec[Any]]
-      extract(a).map { r =>
+      k.prism.preview(a).map { r =>
         by.encode(k.representative)
-          .flatMap { bits => codec.encode(r).map(bits ++ _) }
+          .flatMap { bits => k.prism.repCodec.encode(r).map(bits ++ _) }
       }.map(List(_)).getOrElse(List())
     }.toStream.headOption match {
       case None => left(s"could not find matching case for $a")
@@ -353,10 +347,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     k <- matcher(b)
     remr <- k.prism.repCodec.decode(rem)
     (rem2,r) = remr
-    // Note: Scalac doesn't realize that the `R => A` in `k.prism.review`
-    // is the same as the `R` returned by the `Codec` in `k.prism.repCodec`
-    // even though the type of prism clearly should ensure this!
-  } yield (rem2, k.prism.review.asInstanceOf[Any => A](r))
+  } yield (rem2, k.prism.review(r))
 
   override def toString = s"discriminated($by)"
 }
@@ -401,9 +392,9 @@ private[codecs] object DiscriminatorCodec {
    * If this case applies, then the `prism.repCodec` is used used to decode a value of some type `R`, which is
    * then converted to a value of type `A` via `prism.review`.
    */
-  private[codecs] case class Case[A, B](
+  private[codecs] case class Case[A, B, R](
     condition: B \/ (B, B => Boolean), // either a literal `B`, or a `B` predicate
-    prism: Prism[A, _]
+    prism: Prism[A, R]
   ) {
     // make sure that if condition is (x: X, f: X => Boolean), that
     // `f(x)` is true, otherwise this case will fail to match itself
