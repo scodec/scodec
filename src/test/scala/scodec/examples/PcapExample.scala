@@ -89,7 +89,7 @@ class PcapExample extends CodecSuite {
     Codec.decode[PcapFile](bits)
 
     // Option 2: read file header and then decode each record, combining results via a monoid
-    val fileHeader = Codec.decode[PcapHeader](bits.take(28 * 8)) valueOr sys.error
+    val fileHeader = Codec.decodeValidValue[PcapHeader](bits.take(28 * 8))
     implicit val ordering = fileHeader.ordering
 
     // Monoid that counts records

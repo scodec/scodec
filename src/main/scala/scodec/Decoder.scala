@@ -25,6 +25,29 @@ trait Decoder[+A] { self =>
   def decode(bits: BitVector): String \/ (BitVector, A)
 
   /**
+   * Attempts to decode a value of type `A` from the specified bit vector and discards any
+   * remaining bits.
+   *
+   * @param bits bits to decode
+   * @return error if value could not be decoded or the decoded value
+   * @group primary
+   */
+  final def decodeValue(bits: BitVector): String \/ A =
+    decode(bits) map { case (rem, value) => value }
+
+    /**
+   * Decodes a value of type `A` from the specified bit vector and discards any
+   * remaining bits, throwing an `IllegalArgumentException` if an error occurs.
+   *
+   * @param bits bits to decode
+   * @return the decoded value
+   * @throws IllegalArgumentException if a decoding error occurs
+   * @group primary
+   */
+  final def decodeValidValue(bits: BitVector): A =
+    decodeValue(bits) valueOr { err => throw new IllegalArgumentException(err) }
+
+  /**
    * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
    * @group combinators
    */
@@ -44,11 +67,21 @@ trait Decoder[+A] { self =>
 /** Provides functions for working with decoders. */
 trait DecoderFunctions {
 
-  /** Decodes the specified bit vector using the specified codec and discards the remaining bits. */
-  final def decode[A](dec: Decoder[A], bits: BitVector): String \/ A = dec.decode(bits) map { case (_, value) => value }
+  /** Decodes the specified bit vector in to a value of type `A` using an implicitly available codec. */
+  final def decode[A: Decoder](bits: BitVector): String \/ (BitVector, A) = Decoder[A].decode(bits)
 
-  /** Decodes the specified bit vector in to a value of type `A` using an implicitly available codec and discards the remaining bits. */
-  final def decode[A: Decoder](bits: BitVector): String \/ A = decode(Decoder[A], bits)
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
+   * codec and discards the remaining bits.
+   */
+  final def decodeValue[A: Decoder](bits: BitVector): String \/ A = Decoder[A].decodeValue(bits)
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
+   * codec and discards the remaining bits or throws an `IllegalArgumentException` if decoding
+   * fails.
+   */
+  final def decodeValidValue[A: Decoder](bits: BitVector): A = Decoder[A].decodeValidValue(bits)
 
   /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`. */
   final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): String \/ (BitVector, (A, B)) = (for {

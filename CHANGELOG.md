@@ -1,7 +1,9 @@
 1.0.0-M4
 ========
  - Added `bits` and `bytes` codecs that behave like `bits(size)`/`bytes(size)` but with no size constraint
- - Replaced discriminator support with new implementation that's much more general (thanks to Paul C)
+ - Replaced discriminator support with new implementation that is much more general (thanks to Paul C)
+ - Removed `Codec.{ encode, decode }` overloads that aliased `Codec#{ encode, decode }`
+ - Introduced `encodeValid`, `decodeValue`, and `decodeValidValue` methods on both the `Codec` class and object
 
 1.0.0-M3
 ========

@@ -10,9 +10,9 @@ class DoubleCodecTest extends CodecSuite {
   test("doubleL") { forAll { (n: Double) => roundtrip(doubleL, n) } }
 
   test("endianness") {
-    forAll { (n: Float) =>
-      Codec.decode(floatL, float.encode(n).toOption.get.reverseByteOrder).toOption.get shouldBe n
-      Codec.decode(float, floatL.encode(n).toOption.get.reverseByteOrder).toOption.get shouldBe n
+    forAll { (n: Double) =>
+      doubleL.decodeValidValue(double.encodeValid(n).reverseByteOrder) shouldBe n
+      double.decodeValidValue(doubleL.encodeValid(n).reverseByteOrder) shouldBe n
     }
   }
 
