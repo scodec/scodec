@@ -11,8 +11,11 @@ private[codecs] final class FloatCodec(bigEndian: Boolean) extends Codec[Float] 
 
   private val byteOrder = if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
 
-  override def encode(value: Float) =
-    BitVector(ByteVector.view(ByteBuffer.allocate(4).order(byteOrder).putFloat(value).array)).right
+  override def encode(value: Float) = {
+    val buffer = ByteBuffer.allocate(4).order(byteOrder).putFloat(value)
+    buffer.flip()
+    BitVector(ByteVector.view(buffer)).right
+  }
 
   override def decode(buffer: BitVector) =
     buffer.consume(32) { b =>

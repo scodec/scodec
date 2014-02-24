@@ -26,7 +26,7 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean = true, bigEndia
     } else {
       val buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN).putInt(i)
       buffer.flip()
-      val relevantBits = (BitVector(buffer) << (32 - bits)).take(bits)
+      val relevantBits = (BitVector.view(buffer) << (32 - bits)).take(bits)
       (if (bigEndian) relevantBits else relevantBits.reverseByteOrder).right
     }
   }

@@ -11,8 +11,11 @@ private[codecs] final class DoubleCodec(bigEndian: Boolean) extends Codec[Double
 
   private val byteOrder = if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
 
-  override def encode(value: Double) =
-    BitVector(ByteVector.view(ByteBuffer.allocate(8).order(byteOrder).putDouble(value).array)).right
+  override def encode(value: Double) = {
+    val buffer = ByteBuffer.allocate(8).order(byteOrder).putDouble(value)
+    buffer.flip()
+    BitVector(ByteVector.view(buffer)).right
+  }
 
   override def decode(buffer: BitVector) =
     buffer.consume(64) { b =>

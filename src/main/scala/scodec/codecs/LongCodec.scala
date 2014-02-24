@@ -26,7 +26,7 @@ private[codecs] final class LongCodec(bits: Int, signed: Boolean = true, bigEndi
     } else {
       val buffer = ByteBuffer.allocate(8).order(ByteOrder.BIG_ENDIAN).putLong(i)
       buffer.flip()
-      val relevantBits = (BitVector(buffer) << (64 - bits)).take(bits)
+      val relevantBits = (BitVector.view(buffer) << (64 - bits)).take(bits)
       (if (bigEndian) relevantBits else relevantBits.reverseByteOrder).right
     }
   }
