@@ -27,6 +27,12 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
     def encode(c: BB) = self.encode(ev(c))
     def decode(bits: BitVector) = self.decode(bits)
   }
+
+  /**
+   * Converts this codec to a new codec that fails decoding if there are remaining bits.
+   * @group combinators
+   */
+  override def complete: GenCodec[A, B] = GenCodec(this, super.complete)
 }
 
 /** Companion for [[GenCodec]]. */

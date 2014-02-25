@@ -124,6 +124,8 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   final def >>~[B](f: A => Codec[B]): Codec[(A, B)] = flatZip(f)
 
+  final override def complete: Codec[A] = Codec(this, super.complete)
+
   /**
    * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
    * @group combinators

@@ -62,6 +62,24 @@ trait Decoder[+A] { self =>
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits) flatMap { case (rem, a) => f(a).decode(rem) }
   }
+
+  /**
+   * Converts this decoder to a new decoder that fails decoding if there are remaining bits.
+   * @group combinators
+   */
+  def complete: Decoder[A] = new Decoder[A] {
+    def decode(bits: BitVector) = self.decode(bits) flatMap { case r @ (rem, a) =>
+      if (rem.isEmpty) \/.right(r) else {
+        \/.left {
+          val max = 512
+          if (rem.sizeLessThan(max + 1)) {
+            val preview = rem.take(max)
+            s"${preview.size} bits remaining: 0x${preview.toHex}"
+          } else s"more than $max bits remaining"
+        }
+      }
+    }
+  }
 }
 
 /** Provides functions for working with decoders. */
