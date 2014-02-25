@@ -55,6 +55,14 @@ trait Encoder[-A] { self =>
     def encode(b: B): String \/ BitVector =
       f(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
   }
+
+  /**
+   * Converts this encoder to a new encoder that compacts the generated bit vector before returning it
+   * @group combinators
+   */
+  def compact: Encoder[A] = new Encoder[A] {
+    def encode(a: A) = self.encode(a).map { _.compact }
+  }
 }
 
 /** Provides functions for working with encoders. */

@@ -126,6 +126,8 @@ trait Codec[A] extends GenCodec[A, A] { self =>
 
   final override def complete: Codec[A] = Codec(this, super.complete)
 
+  final override def compact: Codec[A] = Codec(super.compact, this)
+
   /**
    * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
    * @group combinators

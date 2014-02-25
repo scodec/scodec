@@ -33,6 +33,12 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
    * @group combinators
    */
   override def complete: GenCodec[A, B] = GenCodec(this, super.complete)
+
+  /**
+   * Converts this codec to a new codec that compacts the encoded bit vector before returning it.
+   * @group combinators
+   */
+  override def compact: GenCodec[A, B] = GenCodec(super.compact, this)
 }
 
 /** Companion for [[GenCodec]]. */
