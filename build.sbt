@@ -54,8 +54,8 @@ libraryDependencies ++= Seq(
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.0" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.1" % "test",
-  "org.bouncycastle" % "bcpkix-jdk15on" % "1.49" % "test",
-  "com.google.guava" % "guava" % "14.0.1" % "test"
+  "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test",
+  "com.google.guava" % "guava" % "16.0.1" % "test"
 )
 
 osgiSettings
