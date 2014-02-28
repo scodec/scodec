@@ -48,7 +48,7 @@ Given a <code>GenCodec[A, B]</code>, the encoding functionality can be ignored b
 type can be changed via <code>contramap</code>. If after further transformations, the two types to <code>GenCodec</code> are equal, we can
 reconstitue a <code>Codec</code> from the <code>GenCodec</code> by calling <code>fuse</code>.</p><p>See the <a href="codecs/package.html" class="extype" name="scodec.codecs">codecs</a> package object for pre-defined codecs for many common data types and combinators for building larger
 codecs out of smaller ones.</p><p>For the categorically minded, note the following:</p><ul><li><code>Decoder</code> is a monad</li><li><code>Encoder</code> is a contravariant functor</li><li><code>GenCodec</code> is a profunctor</li><li><code>Codec</code> is an invariant functor</li></ul><p>Each type has the corresponding Scalaz typeclass defined in its companion object.
-</p></div><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block diagram-container" id="content-diagram-container">

@@ -57,7 +57,7 @@ be pulled back apart by pattern matching with <code>~</code>. For example: </p><
 Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map add3</pre><p>Similarly, a left nested tuple can be created with the <code>~</code> operator. This is useful when creating the tuple structure
 to pass to encode. For example: </p><pre>(uint8 ~ uint8 ~ uint8).encode(<span class="num">1</span> ~ <span class="num">2</span> ~ <span class="num">3</span>)</pre><p>Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.</p><h5> Cryptograhpy Codecs </h5><p>There are codecs that support working with encrypted data (<a href="#encrypted[A](codec:scodec.Codec[A])(implicitcipherFactory:scodec.codecs.CipherFactory):scodec.Codec[A]" class="extmbr" name="scodec.codecs#encrypted">encrypted</a>) and digital signatures
 (<a href="#fixedSizeSignature[A](size:Int)(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]" class="extmbr" name="scodec.codecs#fixedSizeSignature">fixedSizeSignature</a> and <a href="#variableSizeSignature[A](size:scodec.Codec[Int])(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]" class="extmbr" name="scodec.codecs#variableSizeSignature">variableSizeSignature</a>). Additionally, support for <code>java.security.cert.Certificate</code>s
-is provided by <a href="#certificate(certType:String):scodec.Codec[java.security.cert.Certificate]" class="extmbr" name="scodec.codecs#certificate">certificate</a> and <a href="#x509Certificate:scodec.Codec[java.security.cert.X509Certificate]" class="extmbr" name="scodec.codecs#x509Certificate">x509Certificate</a>.</p></div><div class="toggleContainer block">
+is provided by <a href="#certificate(certType:String):scodec.Codec[java.security.cert.Certificate]" class="extmbr" name="scodec.codecs#certificate">certificate</a> and <a href="#x509Certificate:scodec.Codec[java.security.cert.X509Certificate]" class="extmbr" name="scodec.codecs#x509Certificate">x509Certificate</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -723,6 +723,19 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit 2s complement little-endian integers that are represented with <code>Int</code>.</p>
+    </li><li name="scodec.codecs.package#lazily" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
+      <a id="lazily[A](codec:=&gt;scodec.Codec[A]):scodec.Codec[A]"></a>
+      <a id="lazily[A](⇒Codec[A]):Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">lazily</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: ⇒ <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.lazily.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.lazily.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Provides a <code>Codec[A]</code> that delegates to a lazily evaluated <code>Codec[A]</code>.</p>
     </li><li name="scodec.codecs.package#liftF2ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF2ToNestedTupleF[A,B,X](fn:(A,B)=&gt;X):((A,B))=&gt;X"></a>
       <a id="liftF2ToNestedTupleF[A,B,X]((A,B)⇒X):((A,B))⇒X"></a>

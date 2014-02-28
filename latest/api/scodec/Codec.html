@@ -42,7 +42,7 @@
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Supports encoding a value of type <code>A</code> to a <code>BitVector</code> and decoding a <code>BitVector</code> to a value of <code>A</code>.</p><p>Not every value of <code>A</code> can be encoded to a bit vector and similarly, not every bit vector can be decoded to a value
 of type <code>A</code>. Hence, both encode and decode return either an error or the result. Furthermore, decode returns the
 remaining bits in the bit vector that it did not use in decoding.</p><p>Note: the decode function can be lifted to a state action via <code>StateT[String \/ ?, BitVector, A]</code>. This type alias
-and associated constructor is provided by <code><a href="package.html#DecodingContext[+A]=scalaz.StateT[[+a]scalaz.\/[String,a],scodec.bits.BitVector,A]" class="extmbr" name="scodec.DecodingContext">DecodingContext</a></code>.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</dd></dl><div class="toggleContainer block">
+and associated constructor is provided by <code><a href="package.html#DecodingContext[+A]=scalaz.StateT[[+a]scalaz.\/[String,a],scodec.bits.BitVector,A]" class="extmbr" name="scodec.DecodingContext">DecodingContext</a></code>.</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</dd><dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Codec.scala" target="_blank">Codec.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a>[<span class="extype" name="scodec.Codec.A">A</span>, <span class="extype" name="scodec.Codec.A">A</span>], <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.Codec.A">A</span>], <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Codec.A">A</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
@@ -422,6 +422,32 @@ Operator alias for <a href="#flatZip[B](f:A=&gt;scodec.Codec[B]):scodec.Codec[(A
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scodec.Codec#compact" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+      <a id="compact:scodec.Codec[A]"></a>
+      <a id="compact:Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compact</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts this codec to a new codec that compacts the encoded bit vector before returning it.</p><div class="fullcomment"><div class="comment cmt"><p>Converts this codec to a new codec that compacts the encoded bit vector before returning it.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scodec.Codec">Codec</a> → <a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a> → <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd></dl></div>
+    </li><li name="scodec.Codec#complete" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+      <a id="complete:scodec.Codec[A]"></a>
+      <a id="complete:Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">complete</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts this codec to a new codec that fails decoding if there are remaining bits.</p><div class="fullcomment"><div class="comment cmt"><p>Converts this codec to a new codec that fails decoding if there are remaining bits.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="scodec.Codec">Codec</a> → <a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a> → <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scodec.GenCodec#contramap" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="contramap[C](f:C=&gt;A):scodec.GenCodec[C,B]"></a>
       <a id="contramap[C]((C)⇒A):GenCodec[C,A]"></a>
@@ -435,6 +461,38 @@ Operator alias for <a href="#flatZip[B](f:A=&gt;scodec.Codec[B]):scodec.Codec[(A
       </span>
       </h4>
       <p class="shortcomment cmt">Converts this <code>GenCodec</code> to a <code>GenCodec[C, B]</code> using the supplied <code>C =&gt; A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Converts this <code>GenCodec</code> to a <code>GenCodec[C, B]</code> using the supplied <code>C =&gt; A</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a> → <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd></dl></div>
+    </li><li name="scodec.Decoder#decodeValidValue" visbl="pub" data-isabs="false" fullComment="yes" group="primary">
+      <a id="decodeValidValue(bits:scodec.bits.BitVector):A"></a>
+      <a id="decodeValidValue(BitVector):A"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeValidValue</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="result">: <span class="extype" name="scodec.Codec.A">A</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Decodes a value of type <code>A</code> from the specified bit vector and discards any
+remaining bits, throwing an <code>IllegalArgumentException</code> if an error occurs.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes a value of type <code>A</code> from the specified bit vector and discards any
+remaining bits, throwing an <code>IllegalArgumentException</code> if an error occurs.
+</p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>bits to decode</p></dd><dt>returns</dt><dd class="cmt"><p>the decoded value</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>if a decoding error occurs</p></span></dd></dl></div>
+    </li><li name="scodec.Decoder#decodeValue" visbl="pub" data-isabs="false" fullComment="yes" group="primary">
+      <a id="decodeValue(bits:scodec.bits.BitVector):scalaz.\/[String,A]"></a>
+      <a id="decodeValue(BitVector):\/[String,A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeValue</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scodec.Codec.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Attempts to decode a value of type <code>A</code> from the specified bit vector and discards any
+remaining bits.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts to decode a value of type <code>A</code> from the specified bit vector and discards any
+remaining bits.
+</p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>bits to decode</p></dd><dt>returns</dt><dd class="cmt"><p>error if value could not be decoded or the decoded value</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scodec.Codec#dropLeft" visbl="pub" data-isabs="false" fullComment="no" group="tuple">
       <a id="dropLeft[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]"></a>
       <a id="dropLeft[B](Codec[B])(Monoid[A]):Codec[B]"></a>
@@ -463,6 +521,22 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
       </h4>
       <p class="shortcomment cmt">Creates a <code>Codec[A]</code> that: encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>;
 decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p>
+    </li><li name="scodec.Encoder#encodeValid" visbl="pub" data-isabs="false" fullComment="yes" group="primary">
+      <a id="encodeValid(value:A):scodec.bits.BitVector"></a>
+      <a id="encodeValid(A):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">encodeValid</span><span class="params">(<span name="value">value: <span class="extype" name="scodec.Codec.A">A</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Encodes the specified value in to a bit vector, throwing an
+<code>IllegalArgumentException</code> if encoding fails.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value in to a bit vector, throwing an
+<code>IllegalArgumentException</code> if encoding fails.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>value to encode</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>upon encoding failure</p></span></dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((Codec[A])⇒Boolean,⇒Any):Codec[A]"></a>

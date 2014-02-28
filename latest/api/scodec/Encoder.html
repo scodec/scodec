@@ -40,7 +40,7 @@
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Supports encoding a value of type <code>A</code> to a <code>BitVector</code>.
-</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.A">A</span>]</dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Self Type</dt><dd><a href="" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.A">A</span>]</dd><dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Encoder.scala" target="_blank">Encoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
@@ -249,6 +249,19 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scodec.Encoder#compact" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
+      <a id="compact:scodec.Encoder[A]"></a>
+      <a id="compact:Encoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">compact</span><span class="result">: <a href="" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts this encoder to a new encoder that compacts the generated bit vector before returning it</p>
     </li><li name="scodec.Encoder#contramap" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
       <a id="contramap[B](f:B=&gt;A):scodec.Encoder[B]"></a>
       <a id="contramap[B]((B)⇒A):Encoder[B]"></a>
@@ -262,6 +275,22 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Converts this encoder to an <code>Encoder[B]</code> using the supplied <code>B =&gt; A</code>.</p>
+    </li><li name="scodec.Encoder#encodeValid" visbl="pub" data-isabs="false" fullComment="yes" group="primary">
+      <a id="encodeValid(value:A):scodec.bits.BitVector"></a>
+      <a id="encodeValid(A):BitVector"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">encodeValid</span><span class="params">(<span name="value">value: <span class="extype" name="scodec.Encoder.A">A</span></span>)</span><span class="result">: <span class="extype" name="scodec.bits.BitVector">BitVector</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Encodes the specified value in to a bit vector, throwing an
+<code>IllegalArgumentException</code> if encoding fails.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value in to a bit vector, throwing an
+<code>IllegalArgumentException</code> if encoding fails.
+</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>value to encode</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>upon encoding failure</p></span></dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((Encoder[A])⇒Boolean,⇒Any):Encoder[A]"></a>
