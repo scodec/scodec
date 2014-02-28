@@ -79,7 +79,7 @@ Codecs can also be implicitly resolved, resulting in usage like:
 
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
-See ScalaDoc for more information. Especially:
+See [ScalaDoc](http://scodec.github.io/scodec/latest/api/) for more information. Especially:
  - [`Codec`](http://scodec.github.io/scodec/latest/api/scodec/Codec.html)
  - [`codecs` package](http://scodec.github.io/scodec/latest/api/index.html#scodec.codecs.package)
 
