@@ -15,8 +15,8 @@ class CodecTest extends CodecSuite {
 
   test("complete") {
     val codec = codecs.bits(8)
-    codec.decode(hex"00112233") shouldBe \/.right((hex"112233".toBitVector, hex"00".toBitVector))
-    codec.complete.decode(hex"00112233") shouldBe \/.left("24 bits remaining: 0x112233")
+    codec.decode(hex"00112233".toBitVector) shouldBe \/.right((hex"112233".toBitVector, hex"00".toBitVector))
+    codec.complete.decode(hex"00112233".toBitVector) shouldBe \/.left("24 bits remaining: 0x112233")
     codec.complete.decode(BitVector.fill(2000)(false)) shouldBe \/.left("more than 512 bits remaining")
   }
 
