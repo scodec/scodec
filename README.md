@@ -101,11 +101,11 @@ ScalaDoc for the latest version is available here: http://scodec.github.io/scode
 
 ### Releases
 
-The latest released version is 1.0.0-M2. This release is mostly API stable.
+The latest released version is 1.0.0-RC1. This release is mostly API stable.
 
 For SBT users:
 
-    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0-M2"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0-RC1"
 
 
 For Maven users:
@@ -114,7 +114,7 @@ For Maven users:
       <dependency>
         <groupId>org.typelevel</groupId>
         <artifactId>scodec-core_2.10</artifactId>
-        <version>1.0.0-M2</version>
+        <version>1.0.0-RC1</version>
       </dependency>
     </dependencies>
 
