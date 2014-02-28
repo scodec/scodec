@@ -49,7 +49,7 @@ parallelExecution in Test := false
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "scodec-bits" % "1.0.0-SNAPSHOT",
+  "org.typelevel" %% "scodec-bits" % "1.0.0-RC1",
   "org.scalaz" %% "scalaz-core" % "7.0.5",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.0" % "test",
