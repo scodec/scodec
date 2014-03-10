@@ -1,3 +1,7 @@
+1.0.0-RC2
+=========
+ - Upgrade to scodec-bits 1.0.0-RC2
+
 1.0.0-RC1
 ========
  - Added `bits` and `bytes` codecs that behave like `bits(size)`/`bytes(size)` but with no size constraint
