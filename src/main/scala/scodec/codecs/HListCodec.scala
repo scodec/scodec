@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.\/-
+import scalaz.{ \/-, -\/ }
 
 import shapeless._
 import UnaryTCConstraint._
@@ -18,10 +18,7 @@ private[scodec] object HListCodec {
 
   def prepend[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
     override def encode(xs: A :: L) = Codec.encodeBoth(a, l)(xs.head, xs.tail)
-    override def decode(buffer: BitVector) = (for {
-      decA <- DecodingContext(a.decode)
-      decL <- DecodingContext(l.decode)
-    } yield decA :: decL).run(buffer)
+    override def decode(buffer: BitVector) = Codec.decodeBothCombine(a, l)(buffer) { _ :: _ }
     override def toString = s"$a :: $l"
   }
 
@@ -35,10 +32,7 @@ private[scodec] object HListCodec {
     last: LastAux[LA, A]
   ): Codec[LA] = new Codec[LA] {
     override def encode(xs: LA) = Codec.encodeBoth(l, a)(xs.init, xs.last)
-    override def decode(buffer: BitVector) = (for {
-      decL <- DecodingContext(l.decode)
-      decA <- DecodingContext(a.decode)
-    } yield decL :+ decA).run(buffer)
+    override def decode(buffer: BitVector) = Codec.decodeBothCombine(l, a)(buffer) { _ :+ _ }
     override def toString = s"append($l, $a)"
   }
 
@@ -51,10 +45,7 @@ private[scodec] object HListCodec {
       val (k, l) = xs.split[KLen]
       Codec.encodeBoth(ck, cl)(k, l)
     }
-    override def decode(buffer: BitVector) = (for {
-      decK <- DecodingContext(ck.decode)
-      decL <- DecodingContext(cl.decode)
-    } yield decK ::: decL).run(buffer)
+    override def decode(buffer: BitVector) = Codec.decodeBothCombine(ck, cl)(buffer) { _ ::: _ }
     override def toString = s"concat($ck, $cl)"
   }
 

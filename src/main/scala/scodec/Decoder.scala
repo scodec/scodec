@@ -1,6 +1,6 @@
 package scodec
 
-import scalaz.{ \/, Monad, Monoid }
+import scalaz.{ \/, \/-, -\/, Monad, Monoid }
 
 import scodec.bits.BitVector
 
@@ -102,10 +102,21 @@ trait DecoderFunctions {
   final def decodeValidValue[A: Decoder](bits: BitVector): A = Decoder[A].decodeValidValue(bits)
 
   /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`. */
-  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): String \/ (BitVector, (A, B)) = (for {
-    a <- DecodingContext(decA.decode)
-    b <- DecodingContext(decB.decode)
-  } yield (a, b)).run(buffer)
+  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): String \/ (BitVector, (A, B)) =
+    decodeBothCombine(decA, decB)(buffer) { (a, b) => (a, b) }
+
+  /** Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`. */
+  final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): String \/ (BitVector, C) = {
+    // Note: this could be written using DecodingContext but this function is called *a lot* and needs to be very fast
+    decA.decode(buffer) match {
+      case e @ -\/(_) => e
+      case \/-((postA, a)) =>
+        decB.decode(postA) match {
+          case e @ -\/(_) => e
+          case \/-((rest, b)) => \/-((rest, f(a, b)))
+        }
+      }
+  }
 
   /**
    * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type `B` using the `Monoid[B]`.
