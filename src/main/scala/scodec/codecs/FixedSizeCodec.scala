@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.\/
+import scalaz.{ \/, \/-, -\/ }
 import scalaz.syntax.std.either._
 
 import scodec.bits.BitVector
@@ -22,7 +22,10 @@ private[codecs] final class FixedSizeCodec[A](size: Int, codec: Codec[A]) extend
     buffer.acquire(size) match {
       case Left(e) => \/.left(e)
       case Right(b) =>
-        codec.decode(b).map { case (rest, res) => (buffer.drop(size), res) }
+        codec.decode(b) match {
+          case e @ -\/(_) => e
+          case \/-((rest, res)) => \/-((buffer.drop(size), res))
+        }
     }
 
   override def toString = s"fixedSizeBits($size, $codec)"

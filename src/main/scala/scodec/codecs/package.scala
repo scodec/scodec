@@ -125,14 +125,18 @@ package object codecs {
    * @param size number of bits to encode/decode
    * @group bits
    */
-  def bits(size: Int): Codec[BitVector] =
-    fixedSizeBits(size, BitVectorCodec).withToString(s"bits($size)")
+  def bits(size: Int): Codec[BitVector] = new Codec[BitVector] {
+    private val codec = fixedSizeBits(size, BitVectorCodec)
+    def encode(b: BitVector) = codec.encode(b)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"bits($size)"
+  }
 
   /**
    * Encodes by returning supplied byte vector as a bit vector; decodes by taking all remaining bits in supplied bit vector and converting to a byte vector.
    * @group bits
    */
-  def bytes: Codec[ByteVector] = bits.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes")
+  def bytes: Codec[ByteVector] = bits.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString("bytes")
 
   /**
    * Encodes by returning the supplied byte vector if its length is `size` bytes, otherwise returning error;
@@ -141,8 +145,12 @@ package object codecs {
    * @param size number of bits to encode/decode
    * @group bits
    */
-  def bytes(size: Int): Codec[ByteVector] =
-    fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector).withToString(s"bytes($size)")
+  def bytes(size: Int): Codec[ByteVector] = new Codec[ByteVector] {
+    private val codec = fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector)
+    def encode(b: ByteVector) = codec.encode(b)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"bytes($size)"
+  }
 
   /**
    * Codec for 8-bit 2s complement big-endian integers.
@@ -366,10 +374,13 @@ package object codecs {
    * n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors.
    * @group values
    */
-  def bool(n: Int): Codec[Boolean] = {
-    val zeros = BitVector.low(n)
-    val ones = BitVector.high(n)
-    bits(n).xmap[Boolean](bits => !(bits == zeros), b => if (b) ones else zeros).withToString(s"bool($n)")
+  def bool(n: Int): Codec[Boolean] = new Codec[Boolean] {
+    private val zeros = BitVector.low(n)
+    private val ones = BitVector.high(n)
+    private val codec = bits(n).xmap[Boolean](bits => !(bits == zeros), b => if (b) ones else zeros)
+    def encode(b: Boolean) = codec.encode(b)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = "bool($n)"
   }
 
   /**
@@ -458,7 +469,12 @@ package object codecs {
    * @param codec codec to limit
    * @group combinators
    */
-  def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = fixedSizeBits(size * 8, codec).withToString(s"fixedSizeBytes($size, $codec)")
+  def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = new Codec[A] {
+    private val fcodec = fixedSizeBits(size * 8, codec)
+    def encode(a: A) = fcodec.encode(a)
+    def decode(b: BitVector) = fcodec.decode(b)
+    override def toString = s"fixedSizeBytes($size, $codec)"
+  }
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
@@ -487,8 +503,12 @@ package object codecs {
    * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
    * @group combinators
    */
-  def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
-    variableSizeBits(size.xmap[Int](_ * 8, _ / 8).withToString(size.toString), value, sizePadding * 8).withToString(s"variableSizeBytes($size, $value)")
+  def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] = new Codec[A] {
+    private val codec = variableSizeBits(size.xmap[Int](_ * 8, _ / 8), value, sizePadding * 8)
+    def encode(a: A) = codec.encode(a)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"variableSizeBytes($size, $value)"
+  }
 
   /**
    * Codec of `Option[A]` that delegates to a `Codec[A]` when the `included` parameter is true.
