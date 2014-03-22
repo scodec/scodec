@@ -12,12 +12,13 @@ private[codecs] final class ConstantCodec(constant: BitVector, validate: Boolean
     \/.right(constant)
 
   override def decode(buffer: BitVector) =
-    if (validate)
-      buffer.consume(constant.size) { b =>
-        if (b == constant) Right(()) else Left(s"expected constant $constant but got $b")
-      }.disjunction
-    else
-      \/.right((buffer drop constant.size, ()))
+    if (validate) {
+      buffer.acquire(constant.size) match {
+        case Left(e) => \/.left(e)
+        case Right(b) =>
+          if (b == constant) \/.right((buffer.drop(constant.size), ())) else \/.left(s"expected constant $constant but got $b")
+      }
+    } else \/.right((buffer drop constant.size, ()))
 
   override def toString = s"constant($constant)"
 }

@@ -53,7 +53,7 @@ object MpegCodecs {
   )
   implicit def mpegPacketIso = Iso.hlist(MpegPacket.apply _, MpegPacket.unapply _)
 
-  implicit val transportStreamHeader: Codec[TransportStreamHeader] = {
+  implicit val transportStreamHeader: Codec[TransportStreamHeader] = fixedSizeBytes(4, {
     ("syncByte"                  | constant(0x47)          ) :~>:
     ("transportStringIndicator"   | bool                    ) ::
     ("payloadUnitStartIndicator" | bool                    ) ::
@@ -62,9 +62,9 @@ object MpegCodecs {
     ("scramblingControl"         | uint2                   ) ::
     ("adaptationFieldControl"    | uint2                   ) ::
     ("continuityCounter"         | uint4                   )
-  }.as[TransportStreamHeader]
+  }).as[TransportStreamHeader]
 
-  implicit val adaptationFieldFlags: Codec[AdaptationFieldFlags] = {
+  implicit val adaptationFieldFlags: Codec[AdaptationFieldFlags] = fixedSizeBytes(1, {
     ("discontinuity"             | bool                    ) ::
     ("randomAccess"              | bool                    ) ::
     ("priority"                  | bool                    ) ::
@@ -73,7 +73,7 @@ object MpegCodecs {
     ("splicingPointFlag"         | bool                    ) ::
     ("transportPrivateDataFlag"  | bool                    ) ::
     ("adaptationFieldExtension"  | bool                    )
-  }.as[AdaptationFieldFlags]
+  }).as[AdaptationFieldFlags]
 
   implicit val adaptationField: Codec[AdaptationField] = {
     ("adaptation_flags"          | adaptationFieldFlags                       ) >>:~ { flags =>

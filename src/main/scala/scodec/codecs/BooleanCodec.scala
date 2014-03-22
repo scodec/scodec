@@ -12,7 +12,10 @@ private[codecs] object BooleanCodec extends Codec[Boolean] {
     \/.right(if (b) BitVector.high(1) else BitVector.low(1))
 
   override def decode(buffer: BitVector) =
-    buffer.consume(1) { b => Right(b.head) }.disjunction
+    buffer.acquire(1) match {
+      case Left(e) => \/.left(e)
+      case Right(b) => \/.right((buffer.tail, b.head))
+    }
 
   override def toString = "bool"
 }

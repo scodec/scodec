@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.syntax.id._
+import scalaz.\/
 
 import scodec.bits.BitVector
 
@@ -11,7 +11,7 @@ import scodec.bits.BitVector
  * Useful as a combinator with [[DiscriminatorCodec]].
  */
 private[codecs] final class ProvideCodec[A](value: A) extends Codec[A] {
-  override def encode(a: A) = BitVector.empty.right
-  override def decode(bv: BitVector) = (bv, value).right
+  override def encode(a: A) = \/.right(BitVector.empty)
+  override def decode(bv: BitVector) = \/.right((bv, value))
   override def toString = s"provide($value)"
 }

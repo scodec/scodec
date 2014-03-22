@@ -1,13 +1,13 @@
 package scodec
 package codecs
 
-import scalaz.syntax.id._
+import scalaz.\/
 import scalaz.syntax.std.either._
 import scalaz.syntax.std.option._
 
 import java.nio.{ ByteBuffer, ByteOrder }
 
-import scodec.bits.BitVector
+import scodec.bits.{ BitVector, ByteVector }
 
 private[codecs] final class IntCodec(bits: Int, signed: Boolean = true, bigEndian: Boolean = true) extends Codec[Int] {
 
@@ -20,40 +20,48 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean = true, bigEndia
 
   override def encode(i: Int) = {
     if (i > MaxValue) {
-      s"$i is greater than maximum value $MaxValue for $description".left
+      \/.left(s"$i is greater than maximum value $MaxValue for $description")
     } else if (i < MinValue) {
-      s"$i is less than minimum value $MinValue for $description".left
+      \/.left(s"$i is less than minimum value $MinValue for $description")
     } else {
       val buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN).putInt(i)
       buffer.flip()
       val relevantBits = (BitVector.view(buffer) << (32 - bits)).take(bits)
-      (if (bigEndian) relevantBits else relevantBits.reverseByteOrder).right
+      \/.right(if (bigEndian) relevantBits else relevantBits.reverseByteOrder)
     }
   }
 
   override def decode(buffer: BitVector) =
-    buffer.consume(bits) { b =>
-      val mod = bits % 8
-      var result = 0
-      if (bigEndian) {
-        b.toByteVector.foreach { b =>
-          result = (result << 8) | (0x0ff & b)
+    buffer.acquire(bits) match {
+      case Left(e) => \/.left(e)
+      case Right(b) =>
+        val mod = bits % 8
+        var result = 0
+        if (bigEndian) {
+          @annotation.tailrec
+          def go(bv: ByteVector): Unit =
+            if (bv.nonEmpty) {
+              result = (result << 8) | (0x0ff & bv.head)
+              go(bv.tail)
+            }
+          go(b.toByteVector)
+        } else {
+          @annotation.tailrec
+          def go(bv: ByteVector, i: Int): Unit =
+            if (bv.nonEmpty) {
+              result = result | ((0x0ff & bv.head) << (8 * i))
+              go(bv.tail, i + 1)
+            }
+          go(b.toByteVector, 0)
         }
-      } else {
-        var i = 0
-        b.toByteVector.foreach { b =>
-          result = result | ((0x0ff & b) << (8 * i))
-          i += 1
+        if (mod != 0) result = result >>> (8 - mod)
+        // Sign extend if necessary
+        if (signed && bits != 32 && ((1 << (bits - 1)) & result) != 0) {
+          val toShift = 32 - bits
+          result = (result << toShift) >> toShift
         }
-      }
-      if (mod != 0) result = result >>> (8 - mod)
-      // Sign extend if necessary
-      if (signed && bits != 32 && ((1 << (bits - 1)) & result) != 0) {
-        val toShift = 32 - bits
-        result = (result << toShift) >> toShift
-      }
-      Right(result)
-    }.disjunction
+        \/.right((buffer.drop(bits), result))
+    }
 
   override def toString = description
 }

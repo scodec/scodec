@@ -3,7 +3,6 @@ package codecs
 
 import scalaz.\/
 import \/.{ left, right }
-import scalaz.syntax.id._
 import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector

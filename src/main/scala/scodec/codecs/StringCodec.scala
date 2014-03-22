@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.syntax.id._
+import scalaz.\/
 
 import java.nio.CharBuffer
 import java.nio.charset.Charset
@@ -14,20 +14,20 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
   override def encode(str: String) = {
     val encoder = charset.newEncoder
     val buffer = CharBuffer.wrap(str)
-    try BitVector(encoder.encode(buffer)).right
+    try \/.right(BitVector(encoder.encode(buffer)))
     catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'".left
+        \/.left(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'")
     }
   }
 
   override def decode(buffer: BitVector) = {
     val decoder = charset.newDecoder
     try {
-      (BitVector.empty, decoder.decode(buffer.toByteBuffer).toString).right
+      \/.right((BitVector.empty, decoder.decode(buffer.toByteBuffer).toString))
     } catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'".left
+        \/.left(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'")
     }
   }
 

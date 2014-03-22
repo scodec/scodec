@@ -3,7 +3,7 @@ package codecs
 
 import java.nio.{ ByteBuffer, ByteOrder }
 
-import scalaz.syntax.id._
+import scalaz.\/
 import scalaz.syntax.std.either._
 import scodec.bits.BitVector
 
@@ -14,11 +14,12 @@ private[codecs] final class FloatCodec(bigEndian: Boolean) extends Codec[Float] 
   override def encode(value: Float) = {
     val buffer = ByteBuffer.allocate(4).order(byteOrder).putFloat(value)
     buffer.flip()
-    BitVector.view(buffer).right
+    \/.right(BitVector.view(buffer))
   }
 
   override def decode(buffer: BitVector) =
-    buffer.consume(32) { b =>
-      Right(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getFloat)
-    }.disjunction
+    buffer.acquire(32) match {
+      case Left(e) => \/.left(e)
+      case Right(b) => \/.right((buffer.drop(32), ByteBuffer.wrap(b.toByteArray).order(byteOrder).getFloat))
+    }
 }

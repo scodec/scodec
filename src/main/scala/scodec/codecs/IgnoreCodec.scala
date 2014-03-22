@@ -12,7 +12,10 @@ private[codecs] final class IgnoreCodec(bits: Int) extends Codec[Unit] {
     \/.right(BitVector.low(bits))
 
   override def decode(buffer: BitVector) =
-    buffer.consume(bits) { _ => Right(()) }.disjunction
+    buffer.acquire(bits) match {
+      case Left(e) => \/.left(e)
+      case Right(_) => \/.right((buffer.drop(bits), ()))
+    }
 
   override def toString = s"ignore($bits bits)"
 }
