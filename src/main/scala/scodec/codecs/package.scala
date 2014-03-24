@@ -539,6 +539,18 @@ package object codecs {
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] = new IndexedSeqCodec(codec)
 
   /**
+   * Combinator that chooses amongst two codecs based on an implicitly available byte ordering.
+   * @param big codec to use when big endian
+   * @param little codec to use when little endian
+   * @group combinators
+   */
+  def endiannessDependent[A](big: Codec[A], little: Codec[A])(implicit ordering: ByteOrdering): Codec[A] =
+    ordering match {
+      case ByteOrdering.BigEndian => big
+      case ByteOrdering.LittleEndian => little
+    }
+
+  /**
    * Disjunction codec that supports vectors of form `indicator ++ (left or right)` where a
    * value of `false` for the indicator indicates it is followed by a left value and a value
    * of `true` indicates it is followed by a right value.

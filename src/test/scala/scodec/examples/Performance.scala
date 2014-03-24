@@ -33,12 +33,16 @@ object Performance extends App {
   println(s"Decoded ${pcapFile.records.size} records")
 
   for (i <- 1 to 20) {
+    var pids = Set.empty[Int]
     val stats = time("pcap with mpeg decode") {
       val pcapFile = Codec.decodeValidValue[PcapCodec.PcapFile](bits)
       pcapFile.records.foreach { record =>
         val mpeg = record.data.drop(22 * 8).drop(20 * 8)
-        Codec.decodeValue[MpegCodecs.MpegPacket](mpeg)
+        Codec.decodeValue[MpegCodecs.MpegPacket](mpeg).map { packet =>
+          pids += packet.header.pid
+        }
       }
     }
+    println("PIDs = " + pids.toList.sorted.mkString(", "))
   }
 }
