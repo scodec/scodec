@@ -1,18 +1,18 @@
 package scodec
 package codecs
 
-import java.nio.{ ByteBuffer, ByteOrder }
+import java.nio.ByteBuffer
 
 import scalaz.\/
 import scalaz.syntax.std.either._
-import scodec.bits.BitVector
+import scodec.bits.{ BitVector, ByteOrdering }
 
-private[codecs] final class FloatCodec(bigEndian: Boolean) extends Codec[Float] {
+private[codecs] final class FloatCodec(ordering: ByteOrdering) extends Codec[Float] {
 
-  private val byteOrder = if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
+  private val byteOrder = ordering.toJava
 
   override def encode(value: Float) = {
-    val buffer = ByteBuffer.allocate(4).order(byteOrder).putFloat(value)
+    val buffer = ByteBuffer.allocate(4).order(ordering.toJava).putFloat(value)
     buffer.flip()
     \/.right(BitVector.view(buffer))
   }

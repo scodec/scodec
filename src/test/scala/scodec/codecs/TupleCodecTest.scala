@@ -14,8 +14,7 @@ class TupleCodecTest extends CodecSuite {
     roundtripAll(uint16 ~ uint16, Seq((0, 0), (0, 1), (65535, 42)))
     roundtripAll(uint16 ~ uint16 ~ uint32, Seq(((0, 0), 1L << 32 - 1), ((0, 1), 20L), ((65535, 42), 5L)))
 
-    val uint2 = new IntCodec(2, signed = false)
-    roundtripAll(uint2 ~ uint4 ~ uint2, Seq(((0, 15), 0)))
+    roundtripAll(uint(2) ~ uint4 ~ uint(2), Seq(((0, 15), 0)))
   }
 
 

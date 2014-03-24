@@ -1,15 +1,15 @@
 package scodec
 package codecs
 
-import java.nio.{ ByteBuffer, ByteOrder }
+import java.nio.ByteBuffer
 
 import scalaz.\/
 import scalaz.syntax.std.either._
-import scodec.bits.BitVector
+import scodec.bits.{ BitVector, ByteOrdering }
 
-private[codecs] final class DoubleCodec(bigEndian: Boolean) extends Codec[Double] {
+private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Double] {
 
-  private val byteOrder = if (bigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
+  private val byteOrder = ordering.toJava
 
   override def encode(value: Double) = {
     val buffer = ByteBuffer.allocate(8).order(byteOrder).putDouble(value)

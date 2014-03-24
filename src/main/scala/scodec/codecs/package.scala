@@ -7,7 +7,7 @@ import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 
 import scalaz.{\/, -\/, \/-}
-import scodec.bits.{ BitVector, ByteVector }
+import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
 
 /**
  * Provides codecs for common types and combinators for building larger codecs.
@@ -156,213 +156,213 @@ package object codecs {
    * Codec for 8-bit 2s complement big-endian integers.
    * @group numbers
    */
-  val int8: Codec[Int] = new IntCodec(8)
+  val int8: Codec[Int] = new IntCodec(8, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for 16-bit 2s complement big-endian integers.
    * @group numbers
    */
-  val int16: Codec[Int] = new IntCodec(16)
+  val int16: Codec[Int] = new IntCodec(16, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for 24-bit 2s complement big-endian integers.
    * @group numbers
    */
-  val int24: Codec[Int] = new IntCodec(24)
+  val int24: Codec[Int] = new IntCodec(24, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for 32-bit 2s complement big-endian integers.
    * @group numbers
    */
-  val int32: Codec[Int] = new IntCodec(32)
+  val int32: Codec[Int] = new IntCodec(32, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for 64-bit 2s complement big-endian integers.
    * @group numbers
    */
-  val int64: Codec[Long] = new LongCodec(64)
+  val int64: Codec[Long] = new LongCodec(64, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for 2-bit unsigned big-endian integers.
    * @group numbers
    */
-  val uint2: Codec[Int] = new IntCodec(2, signed = false)
+  val uint2: Codec[Int] = new IntCodec(2, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 4-bit unsigned big-endian integers.
    * @group numbers
    */
-  val uint4: Codec[Int] = new IntCodec(4, signed = false)
+  val uint4: Codec[Int] = new IntCodec(4, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 8-bit unsigned big-endian integers.
    * @group numbers
    */
-  val uint8: Codec[Int] = new IntCodec(8, signed = false)
+  val uint8: Codec[Int] = new IntCodec(8, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 16-bit unsigned big-endian integers.
    * @group numbers
    */
-  val uint16: Codec[Int] = new IntCodec(16, signed = false)
+  val uint16: Codec[Int] = new IntCodec(16, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 24-bit unsigned big-endian integers.
    * @group numbers
    */
-  val uint24: Codec[Int] = new IntCodec(24, signed = false)
+  val uint24: Codec[Int] = new IntCodec(24, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 32-bit unsigned big-endian integers.
    * @group numbers
    */
-  val uint32: Codec[Long] = new LongCodec(32, signed = false)
+  val uint32: Codec[Long] = new LongCodec(32, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 8-bit 2s complement little-endian integers.
    * @group numbers
    */
-  val int8L: Codec[Int] = new IntCodec(8, bigEndian = false)
+  val int8L: Codec[Int] = new IntCodec(8, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 16-bit 2s complement little-endian integers.
    * @group numbers
    */
-  val int16L: Codec[Int] = new IntCodec(16, bigEndian = false)
+  val int16L: Codec[Int] = new IntCodec(16, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 24-bit 2s complement little-endian integers.
    * @group numbers
    */
-  val int24L: Codec[Int] = new IntCodec(24, bigEndian = false)
+  val int24L: Codec[Int] = new IntCodec(24, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 32-bit 2s complement little-endian integers.
    * @group numbers
    */
-  val int32L: Codec[Int] = new IntCodec(32, bigEndian = false)
+  val int32L: Codec[Int] = new IntCodec(32, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 64-bit 2s complement little-endian integers.
    * @group numbers
    */
-  val int64L: Codec[Long] = new LongCodec(64, bigEndian = false)
+  val int64L: Codec[Long] = new LongCodec(64, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 2-bit unsigned little-endian integers.
    * @group numbers
    */
-  val uint2L: Codec[Int] = new IntCodec(2, signed = false, bigEndian = false)
+  val uint2L: Codec[Int] = new IntCodec(2, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 4-bit unsigned little-endian integers.
    * @group numbers
    */
-  val uint4L: Codec[Int] = new IntCodec(4, signed = false, bigEndian = false)
+  val uint4L: Codec[Int] = new IntCodec(4, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 8-bit unsigned little-endian integers.
    * @group numbers
    */
-  val uint8L: Codec[Int] = new IntCodec(8, signed = false, bigEndian = false)
+  val uint8L: Codec[Int] = new IntCodec(8, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 16-bit unsigned little-endian integers.
    * @group numbers
    */
-  val uint16L: Codec[Int] = new IntCodec(16, signed = false, bigEndian = false)
+  val uint16L: Codec[Int] = new IntCodec(16, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 24-bit unsigned little-endian integers.
    * @group numbers
    */
-  val uint24L: Codec[Int] = new IntCodec(24, signed = false, bigEndian = false)
+  val uint24L: Codec[Int] = new IntCodec(24, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 32-bit unsigned little-endian integers.
    * @group numbers
    */
-  val uint32L: Codec[Long] = new LongCodec(32, signed = false, bigEndian = false)
+  val uint32L: Codec[Long] = new LongCodec(32, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit 2s complement big-endian integers that are represented with `Int`.
    * @param size number of bits (must be 0 < size <= 32)
    * @group numbers
    */
-  def int(size: Int): Codec[Int] = new IntCodec(size)
+  def int(size: Int): Codec[Int] = new IntCodec(size, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit unsigned big-endian integers that are represented with `Int`.
    * @param size number of bits (must be 0 < size <= 31)
    * @group numbers
    */
-  def uint(bits: Int): Codec[Int] = new IntCodec(bits, signed = false)
+  def uint(bits: Int): Codec[Int] = new IntCodec(bits, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit 2s complement big-endian integers that are represented with `Long`.
    * @param size number of bits (must be 0 < size <= 64)
    * @group numbers
    */
-  def long(bits: Int): Codec[Long] = new LongCodec(bits)
+  def long(bits: Int): Codec[Long] = new LongCodec(bits, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit unsigned big-endian integers that are represented with `Long`.
    * @param size number of bits (must be 0 < size <= 63)
    * @group numbers
    */
-  def ulong(bits: Int): Codec[Long] = new LongCodec(bits, signed = false)
+  def ulong(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit 2s complement little-endian integers that are represented with `Int`.
    * @param size number of bits (must be 0 < size <= 32)
    * @group numbers
    */
-  def intL(bits: Int): Codec[Int] = new IntCodec(bits, bigEndian = false)
+  def intL(bits: Int): Codec[Int] = new IntCodec(bits, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit unsigned little-endian integers that are represented with `Int`.
    * @param size number of bits (must be 0 < size <= 31)
    * @group numbers
    */
-  def uintL(bits: Int): Codec[Int] = new IntCodec(bits, signed = false, bigEndian = false)
+  def uintL(bits: Int): Codec[Int] = new IntCodec(bits, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit 2s complement little-endian integers that are represented with `Long`.
    * @param size number of bits (must be 0 < size <= 64)
    * @group numbers
    */
-  def longL(bits: Int): Codec[Long] = new LongCodec(bits, bigEndian = false)
+  def longL(bits: Int): Codec[Long] = new LongCodec(bits, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit unsigned little-endian integers that are represented with `Long`.
    * @param size number of bits (must be 0 < size <= 63)
    * @group numbers
    */
-  def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, signed = false, bigEndian = false)
+  def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.LittleEndian)
 
   /**
    * 32-bit big endian IEEE 754 floating point number.
    * @group numbers
    */
-  val float: Codec[Float] = new FloatCodec(bigEndian = true)
+  val float: Codec[Float] = new FloatCodec(ByteOrdering.BigEndian)
 
   /**
    * 32-bit little endian IEEE 754 floating point number.
    * @group numbers
    */
-  val floatL: Codec[Float] = new FloatCodec(bigEndian = false)
+  val floatL: Codec[Float] = new FloatCodec(ByteOrdering.LittleEndian)
 
   /**
    * 64-bit big endian IEEE 754 floating point number.
    * @group numbers
    */
-  val double: Codec[Double] = new DoubleCodec(bigEndian = true)
+  val double: Codec[Double] = new DoubleCodec(ByteOrdering.BigEndian)
 
   /**
    * 64-bit little endian IEEE 754 floating point number.
    * @group numbers
    */
-  val doubleL: Codec[Double] = new DoubleCodec(bigEndian = false)
+  val doubleL: Codec[Double] = new DoubleCodec(ByteOrdering.LittleEndian)
 
   /**
    * 1-bit boolean codec, where false corresponds to bit value 0 and true corresponds to bit value 1.
