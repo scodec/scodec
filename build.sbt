@@ -7,7 +7,7 @@ organization := "org.typelevel"
 
 name := "scodec-core"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.4"
 
 crossScalaVersions := Seq(scalaVersion.value)
 
@@ -50,7 +50,7 @@ resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/publi
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "scodec-bits" % "1.0.0-SNAPSHOT",
-  "org.scalaz" %% "scalaz-core" % "7.0.5",
+  "org.scalaz" %% "scalaz-core" % "7.0.6",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.0" % "test",
   "org.scalacheck" %% "scalacheck" % "1.10.1" % "test",
