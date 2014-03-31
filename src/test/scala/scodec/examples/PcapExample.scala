@@ -85,7 +85,7 @@ class PcapExample extends CodecSuite {
     pending
 
     // Option 1: Read the entire file and decode it all
-    val bits = BitVector(com.google.common.io.Files.toByteArray(new java.io.File("/path/to/pcap")))
+    val bits = BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel)
     Codec.decode[PcapFile](bits)
 
     // Option 2: read file header and then decode each record, combining results via a monoid
@@ -99,6 +99,6 @@ class PcapExample extends CodecSuite {
     val (_, records) = Codec.decodeAll[PcapRecord, IndexedSeq[PcapRecord]](bits.drop(28 * 8)) { r => IndexedSeq(r) }
 
     // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
-    // TODO
+    // See scodec-stream library at https://github.com/scodec/scodec-stream
   }
 }

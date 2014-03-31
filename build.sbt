@@ -47,13 +47,12 @@ triggeredMessage := (_ => Watched.clearScreen)
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "scodec-bits" % "1.0.0-SNAPSHOT",
+  "org.typelevel" %% "scodec-bits" % "1.0.0",
   "org.scalaz" %% "scalaz-core" % "7.0.6",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.1.2" % "test",
   "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",
-  "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test",
-  "com.google.guava" % "guava" % "16.0.1" % "test"
+  "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
 )
 
 osgiSettings

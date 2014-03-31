@@ -1,3 +1,9 @@
+1.0.0
+=====
+ - Added `endiannessDependent` combinator
+ - Used `scodec.bits.ByteOrdering` instead of a boolean for indicating big endian vs little endian
+ - Significant performance improvements
+
 1.0.0-RC2
 =========
  - Upgrade to scodec-bits 1.0.0-RC2
