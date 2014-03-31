@@ -1,8 +1,6 @@
 package scodec
 package examples
 
-import shapeless._
-
 import scodec.bits.{ BitVector, ByteVector }
 
 class UdpDatagramExample extends CodecSuite {
@@ -12,7 +10,6 @@ class UdpDatagramExample extends CodecSuite {
     destinationPort: Int,
     checksum: Int,
     data: ByteVector)
-  implicit val datagramIso = Iso.hlist(Datagram.apply _, Datagram.unapply _)
 
   object UdpCodec {
     import scodec.codecs._

@@ -49,7 +49,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * Returns a new codec that encodes/decodes a value of type `B` by using an iso between `A` and `B`.
    * @group hlist
    */
-  final def as[B](implicit iso: Iso[B, A]): Codec[B] = xmap(iso.from, iso.to)
+  final def as[B](implicit as: CodecAsAux[B, A]) = as(this)
 
   /**
    * Lifts this codec in to a codec of a singleton hlist, which allows easy binding to case classes of one argument.
@@ -136,6 +136,27 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     override def encode(a: A) = self.encode(a)
     override def decode(buffer: BitVector) = self.decode(buffer)
     override def toString = str
+  }
+}
+
+/**
+ * Typeclass that witnesses that a `Codec[A]` can be xmapped in to a `Codec[B]`.
+ * Automatic case class conversion is provided by Shapeless.
+ *
+ * Credit: Miles Sabin
+ */
+abstract class CodecAsAux[B, A] {
+  def apply(ca: Codec[A]): Codec[B]
+}
+
+/** Companion for [[CodecAsAux]]. */
+object CodecAsAux {
+  implicit def mkAs[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): CodecAsAux[B, A]  = new CodecAsAux[B, A] {
+    def apply(ca: Codec[A]): Codec[B] = {
+      val from: A => B = a => gen.from(aToR(a))
+      val to: B => A = b => rToA(gen.to(b))
+      ca.xmap(from, to)
+    }
   }
 }
 

@@ -1,5 +1,6 @@
 import scalaz.{ \/, Monoid, StateT }
 import shapeless._
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split}
 import scodec.bits._
 
 /**
@@ -64,9 +65,9 @@ package object scodec {
      * @group hlist
      */
     def :+[B, LB <: HList](codec: Codec[B])(implicit
-      prepend: PrependAux[L, B :: HNil, LB],
-      init: InitAux[LB, L],
-      last: LastAux[LB, B]
+      prepend: Prepend.Aux[L, B :: HNil, LB],
+      init: Init.Aux[LB, L],
+      last: Last.Aux[LB, B]
     ): Codec[LB] = HListCodec.append(self, codec)
 
     /**
@@ -75,9 +76,9 @@ package object scodec {
      * @group hlist
      */
     def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
-      prepend: PrependAux[K, L, KL],
-      lengthK: LengthAux[K, KLen],
-      split: Split[KL, KLen] { type P = K; type S = L }
+      prepend: Prepend.Aux[K, L, KL],
+      lengthK: Length.Aux[K, KLen],
+      split: Split.Aux[KL, KLen, (K, L)]
     ): Codec[KL] = HListCodec.concat(k, self)
   }
 
