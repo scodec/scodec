@@ -95,17 +95,20 @@ There are various examples in the test directory, including codecs for:
 Getting Binaries
 ----------------
 
-This library works with Scala 2.10.*.
+This library works with Scala 2.10 (and soon 2.11).
 
 ScalaDoc for the latest version is available here: http://scodec.github.io/scodec/latest/api.
 
 ### Releases
 
-The latest released version is 1.0.0-RC2. This release is mostly API stable.
+The latest released version is 1.0.0.
+
+ - Compatible with Scalaz 7.0.* and Shapeless 1.2.4
+ - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.0.0)
 
 For SBT users:
 
-    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0-RC2"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0"
 
 
 For Maven users:
@@ -114,7 +117,7 @@ For Maven users:
       <dependency>
         <groupId>org.typelevel</groupId>
         <artifactId>scodec-core_2.10</artifactId>
-        <version>1.0.0-RC2</version>
+        <version>1.0.0</version>
       </dependency>
     </dependencies>
 
@@ -123,11 +126,13 @@ For Maven users:
 
 Snapshot builds of the master branch are available on Sonatype's OSS hosting at https://oss.sonatype.org/content/repositories/snapshots/.
 
+ - Compatible with Scalaz 7.1.* and Shapeless 2.0
+
 For SBT users:
 
     resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.0.0-SNAPSHOT"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.1.0-SNAPSHOT"
 
 
 For Maven users:
@@ -144,7 +149,7 @@ For Maven users:
       <dependency>
         <groupId>org.typelevel</groupId>
         <artifactId>scodec-core_2.10</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
 

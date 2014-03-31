@@ -48,7 +48,7 @@ resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/publi
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "scodec-bits" % "1.0.0",
-  "org.scalaz" %% "scalaz-core" % "7.0.6",
+  "org.scalaz" %% "scalaz-core" % "7.1.0-M6",
   "com.chuusai" %% "shapeless" % "1.2.4",
   "org.scalatest" %% "scalatest" % "2.1.2" % "test",
   "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",

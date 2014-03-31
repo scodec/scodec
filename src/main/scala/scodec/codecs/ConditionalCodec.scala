@@ -3,7 +3,7 @@ package codecs
 
 import scalaz.{\/-, -\/}
 import scalaz.std.option.{none, some}
-import scalaz.syntax.id._
+import scalaz.syntax.either._
 
 import scodec.bits.BitVector
 

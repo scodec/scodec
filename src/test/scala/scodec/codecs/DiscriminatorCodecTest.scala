@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.syntax.id._
+import scalaz.syntax.either._
 
 class DiscriminatorCodecTest extends CodecSuite {
 
