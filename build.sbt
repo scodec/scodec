@@ -47,7 +47,7 @@ triggeredMessage := (_ => Watched.clearScreen)
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "scodec-bits" % "1.0.0",
+  "org.typelevel" %% "scodec-bits" % "1.1.0-SNAPSHOT",
   "org.scalaz" %% "scalaz-core" % "7.1.0-M6",
   "com.chuusai" % "shapeless_2.10.3" % "2.0.0-M1",
   "org.scalatest" %% "scalatest" % "2.1.2" % "test",
