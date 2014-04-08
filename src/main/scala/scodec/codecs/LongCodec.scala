@@ -24,44 +24,14 @@ private[codecs] final class LongCodec(bits: Int, signed: Boolean, ordering: Byte
     } else if (i < MinValue) {
       \/.left(s"$i is less than minimum value $MinValue for $description")
     } else {
-      val buffer = ByteBuffer.allocate(8).order(ByteOrder.BIG_ENDIAN).putLong(i)
-      buffer.flip()
-      val relevantBits = (BitVector.view(buffer) << (64 - bits)).take(bits)
-      \/.right(if (ordering == ByteOrdering.BigEndian) relevantBits else relevantBits.reverseByteOrder)
+      \/.right(BitVector.fromLong(i, bits, ordering))
     }
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
       case Left(e) => \/.left(e)
-      case Right(b) =>
-        val mod = bits % 8
-        var result = 0L
-        ordering match {
-          case ByteOrdering.BigEndian =>
-            @annotation.tailrec
-            def go(bv: ByteVector): Unit =
-              if (bv.nonEmpty) {
-                result = (result << 8) | (0x0ffL & bv.head)
-                go(bv.tail)
-              }
-            go(b.toByteVector)
-          case ByteOrdering.LittleEndian =>
-            @annotation.tailrec
-            def go(bv: ByteVector, i: Int): Unit =
-              if (bv.nonEmpty) {
-                result = result | ((0x0ffL & bv.head) << (8 * i))
-                go(bv.tail, i + 1)
-              }
-            go(b.toByteVector, 0)
-        }
-        if (mod != 0) result = result >>> (8 - mod)
-        // Sign extend if necessary
-        if (signed && bits != 64 && ((1 << (bits - 1)) & result) != 0) {
-          val toShift = 64 - bits
-          result = (result << toShift) >> toShift
-        }
-        \/.right((buffer.drop(bits), result))
+      case Right(b) => \/.right((buffer.drop(bits), b.toLong(signed, ordering)))
     }
 
   override def toString = description
