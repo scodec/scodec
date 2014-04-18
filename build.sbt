@@ -9,7 +9,7 @@ name := "scodec-core"
 
 scalaVersion := "2.10.4"
 
-crossScalaVersions := Seq(scalaVersion.value)
+crossScalaVersions := Seq(scalaVersion.value, "2.11.0")
 
 scalacOptions ++= Seq(
   "-feature",
@@ -21,8 +21,7 @@ scalacOptions ++= Seq(
   "-Xverify",
   "-Yclosure-elim",
   "-Yinline",
-  "-Yno-adapted-args",
-  "-Ywarn-all")
+  "-Yno-adapted-args")
 
 scalacOptions in (Compile, doc) ++= {
   val tagOrBranch = if (version.value endsWith "SNAPSHOT") "master" else ("v" + version.value)
@@ -50,7 +49,7 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "scodec-bits" % "1.0.0",
   "org.scalaz" %% "scalaz-core" % "7.0.6",
   "com.chuusai" %% "shapeless" % "1.2.4",
-  "org.scalatest" %% "scalatest" % "2.1.2" % "test",
+  "org.scalatest" %% "scalatest" % "2.1.3" % "test",
   "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
 )
