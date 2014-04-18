@@ -9,7 +9,7 @@ name := "scodec-core"
 
 scalaVersion := "2.10.4"
 
-crossScalaVersions := Seq(scalaVersion.value)
+crossScalaVersions := Seq(scalaVersion.value, "2.11.0")
 
 scalacOptions ++= Seq(
   "-feature",
@@ -21,8 +21,7 @@ scalacOptions ++= Seq(
   "-Xverify",
   "-Yclosure-elim",
   "-Yinline",
-  "-Yno-adapted-args",
-  "-Ywarn-all")
+  "-Yno-adapted-args")
 
 scalacOptions in (Compile, doc) ++= {
   val tagOrBranch = if (version.value endsWith "SNAPSHOT") "master" else ("v" + version.value)
@@ -49,8 +48,11 @@ resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/publi
 libraryDependencies ++= Seq(
   "org.typelevel" %% "scodec-bits" % "1.0.1-SNAPSHOT",
   "org.scalaz" %% "scalaz-core" % "7.1.0-M6",
-  "com.chuusai" % "shapeless_2.10.3" % "2.0.0-M1",
-  "org.scalatest" %% "scalatest" % "2.1.2" % "test",
+  "com.chuusai" % "shapeless" % "2.0.0" cross CrossVersion.fullMapped {
+    case "2.10.4" => "2.10.4"
+    case "2.11.0" => "2.11"
+  },
+  "org.scalatest" %% "scalatest" % "2.1.3" % "test",
   "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
 )
