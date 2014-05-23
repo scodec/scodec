@@ -144,7 +144,7 @@ trait DecoderFunctions {
 /** Companion for [[Decoder]]. */
 object Decoder extends DecoderFunctions {
 
-  /** Provides syntaax for summoning a `Decoder[A]` from implicit scope. */
+  /** Provides syntax for summoning a `Decoder[A]` from implicit scope. */
   def apply[A](implicit dec: Decoder[A]): Decoder[A] = dec
 
   /** Creates a decoder that always decodes the specified value and returns the input bit vector unmodified. */
