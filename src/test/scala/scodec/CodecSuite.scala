@@ -2,7 +2,7 @@ package scodec
 
 import scala.collection.GenTraversable
 
-import scalaz.syntax.either._
+import scalaz.syntax.id._
 
 import org.scalatest.{FunSuite, Matchers}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks

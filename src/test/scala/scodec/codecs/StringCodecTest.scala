@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scalaz.syntax.either._
+import scalaz.syntax.id._
 import scodec.bits.{ BitVector, ByteVector }
 
 class StringCodecTest extends CodecSuite {
