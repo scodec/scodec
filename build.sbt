@@ -49,13 +49,13 @@ triggeredMessage := (_ => Watched.clearScreen)
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "scodec-bits" % "1.1.0-SNAPSHOT",
-  "org.scalaz" %% "scalaz-core" % "7.1.0-M7",
+  "org.typelevel" %% "scodec-bits" % "1.0.2-SNAPSHOT",
+  "org.scalaz" %% "scalaz-core" % "7.1.0-RC2",
   "com.chuusai" % "shapeless" % "2.0.0" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"
     case "2.11.0" => "2.11"
   },
-  "org.scalatest" %% "scalatest" % "2.1.3" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.0" % "test",
   "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
 )
