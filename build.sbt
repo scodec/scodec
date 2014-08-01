@@ -36,6 +36,9 @@ scalacOptions in (Compile, doc) ++= {
   )
 }
 
+autoAPIMappings := true
+
+apiURL := Some(url(s"http://docs.typelevel.org/api/scodec/core/stable/${version.value}/"))
 
 licenses += ("Three-clause BSD-style", url("http://github.com/scodec/scodec/blob/master/LICENSE"))
 
@@ -46,7 +49,7 @@ triggeredMessage := (_ => Watched.clearScreen)
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "scodec-bits" % "1.0.1",
+  "org.typelevel" %% "scodec-bits" % "1.1.0-SNAPSHOT",
   "org.scalaz" %% "scalaz-core" % "7.1.0-M7",
   "com.chuusai" % "shapeless" % "2.0.0" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"

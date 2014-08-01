@@ -1,3 +1,7 @@
+1.2.0
+=====
+ - Published ScalaDoc links in POM so that other projects can link to ScalaDoc
+
 1.1.0
 =====
  - Upgraded to Shapeless 2
