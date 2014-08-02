@@ -100,19 +100,24 @@ ScalaDoc for the latest version is available here: http://scodec.github.io/scode
 
 ### Releases
 
-The latest released version is 1.1.0.
+#### Version 1.2.0
+
+ - Compatible with Scalaz 7.1.* and Shapeless 2.0.0
+ - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.2.0)
+
+#### Version 1.1.0
 
  - Compatible with Scalaz 7.0.* and Shapeless 2.0.0
  - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.1.0)
 
-The previous released version is 1.0.0.
+#### Version 1.0.0
 
  - Compatible with Scalaz 7.0.* and Shapeless 1.2.4
  - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.0.0)
 
 For SBT users:
 
-    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.1.0"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.2.0"
 
 
 For Maven users:
@@ -120,8 +125,8 @@ For Maven users:
     <dependencies>
       <dependency>
         <groupId>org.typelevel</groupId>
-        <artifactId>scodec-core_2.10</artifactId>
-        <version>1.1.0</version>
+        <artifactId>scodec-core_2.11</artifactId>
+        <version>1.2.0</version>
       </dependency>
     </dependencies>
 
@@ -136,7 +141,7 @@ For SBT users:
 
     resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.2.0-SNAPSHOT"
+    libraryDependencies += "org.typelevel" %% "scodec-core" % "1.3.0-SNAPSHOT"
 
 
 For Maven users:
@@ -152,8 +157,8 @@ For Maven users:
     <dependencies>
       <dependency>
         <groupId>org.typelevel</groupId>
-        <artifactId>scodec-core_2.10</artifactId>
-        <version>1.2.0-SNAPSHOT</version>
+        <artifactId>scodec-core_2.11</artifactId>
+        <version>1.3.0-SNAPSHOT</version>
       </dependency>
     </dependencies>
 
