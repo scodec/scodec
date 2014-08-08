@@ -6,7 +6,7 @@ import java.nio.charset.Charset
 import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 
-import scalaz.{\/, -\/, \/-}
+import scalaz.{ \/, -\/, \/- }
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
 
 /**
@@ -587,6 +587,12 @@ package object codecs {
     def decode(b: BitVector) = c.decode(b)
     override def toString = s"lazily($c)"
   }
+
+  /** Codec that always fails encoding and decoding with the specified message. */
+  def fail[A](message: String): Codec[A] = fail(message, message)
+
+  /** Codec that always fails encoding and decoding with the specified messages. */
+  def fail[A](encMessage: String, decMessage: String): Codec[A] = new FailCodec[A](encMessage, decMessage)
 
   /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
