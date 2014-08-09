@@ -807,5 +807,30 @@ package object codecs {
     final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
       new DiscriminatorCodec[A, B](discriminatorCodec, Vector())
   }
+
+  /**
+   * Provides a codec for an enumerated set of values, where each enumerated value is
+   * mapped to a tag.
+   *
+   * @param discriminatorCodec codec used to encode/decode tag value
+   * @param mappings mapping from tag values to/from enum values
+   * @group combinators
+   */
+  final def mappedEnum[A, B](discriminatorCodec: Codec[B], mappings: (A, B)*): Codec[A] =
+    mappedEnum(discriminatorCodec, mappings.toMap)
+
+  /**
+   * Provides a codec for an enumerated set of values, where each enumerated value is
+   * mapped to a tag.
+   *
+   * @param discriminatorCodec codec used to encode/decode tag value
+   * @param mappings mapping from tag values to/from enum values
+   * @group combinators
+   */
+  final def mappedEnum[A, B](discriminatorCodec: Codec[B], map: Map[A, B]): Codec[A] = {
+    map.foldLeft(discriminated[A].by(discriminatorCodec)) { case (acc, (value, tag)) =>
+      acc.subcaseO(tag)(a => if (a == value) Some(a) else None)(provide(value))
+    }
+  }
 }
 

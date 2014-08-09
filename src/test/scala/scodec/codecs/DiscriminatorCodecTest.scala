@@ -44,6 +44,22 @@ class DiscriminatorCodecTest extends CodecSuite {
   test("enumeration example") {
 
     sealed trait Direction
+    case object North extends Direction
+    case object South extends Direction
+    case object East extends Direction
+    case object West extends Direction
+
+    val codec = mappedEnum(uint8, North -> 1, South -> 2, East -> 3, West -> 4)
+
+    roundtrip(codec, North)
+    roundtrip(codec, South)
+    roundtrip(codec, East)
+    roundtrip(codec, West)
+  }
+
+  test("ADT example") {
+
+    sealed trait Direction
     case object Stay extends Direction
     case class Go(units: Int) extends Direction
 
@@ -51,9 +67,9 @@ class DiscriminatorCodecTest extends CodecSuite {
     val goCodec = int32.pxmap[Go](Go.apply, Go.unapply)
 
     val codec =
-      discriminated[Direction].by(uint8)
-      .\ (0) { case s@Stay => s } (stayCodec)
-      .\ (1) { case g@Go(_) => g } (goCodec)
+      discriminated[Direction].by(uint8).
+        typecase(0, stayCodec).
+        typecase(1, goCodec)
 
     roundtrip(codec, Stay)
     roundtrip(codec, Go(42))
