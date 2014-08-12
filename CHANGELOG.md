@@ -1,3 +1,7 @@
+1.3.0
+=====
+ - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
+
 1.2.1
 =====
  - Added `fail` combinator

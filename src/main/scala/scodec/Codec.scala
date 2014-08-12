@@ -106,6 +106,22 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final def <~[B: Monoid](codecB: Codec[B]): Codec[A] = dropRight(codecB)
 
   /**
+   * Converts this to a `Codec[Unit]` that encodes using the specified zero value and
+   * decodes a unit value when this codec decodes an `A` successfully.
+   *
+   * @group combinators
+   */
+  final def unit(zero: A): Codec[Unit] = xmap[Unit](_ => (), _ => zero)
+
+  /**
+   * Converts this to a `Codec[Unit]` that encodes using the zero value of the implicitly
+   * available `Monoid[A]` and decodes a unit value when this codec decodes an `A` successfully.
+   *
+   * @group combinators
+   */
+  final def unitM(implicit ma: Monoid[A]): Codec[Unit] = unit(ma.zero)
+
+  /**
    * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
    * @group tuple
    */
