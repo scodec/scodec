@@ -51,8 +51,6 @@ The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a nu
 Automatic case class binding is supported via Shapeless HLists:
 
 ```scala
-    import shapeless._
-
     case class Point(x: Int, y: Int, z: Int)
 
     val pointCodec = (int8 :: int8 :: int8).as[Point]
@@ -90,6 +88,9 @@ There are various examples in the test directory, including codecs for:
  - [UDP Datagrams](src/test/scala/scodec/examples/UdpDatagramExample.scala)
  - [MPEG Packets](src/test/scala/scodec/examples/MpegPacketExample.scala)
  - [libpcap Files](src/test/scala/scodec/examples/PcapExample.scala)
+
+The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
+quality codecs for the above examples.
 
 Getting Binaries
 ----------------
