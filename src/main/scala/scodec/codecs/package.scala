@@ -616,10 +616,18 @@ package object codecs {
     override def toString = s"lazily($c)"
   }
 
-  /** Codec that always fails encoding and decoding with the specified message. */
+  /**
+   * Codec that always fails encoding and decoding with the specified message.
+   *
+   * @group combinators
+   */
   def fail[A](message: String): Codec[A] = fail(message, message)
 
-  /** Codec that always fails encoding and decoding with the specified messages. */
+  /**
+   * Codec that always fails encoding and decoding with the specified messages.
+   *
+   * @group combinators
+   */
   def fail[A](encMessage: String, decMessage: String): Codec[A] = new FailCodec[A](encMessage, decMessage)
 
   /**
