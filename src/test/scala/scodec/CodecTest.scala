@@ -23,4 +23,13 @@ class CodecTest extends CodecSuite {
   test("as on single codec") {
     roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
   }
+
+  test("unit combinator") {
+    import scalaz.std.AllInstances._
+    val codec = uint8.unitM
+    codec.encode(()) shouldBe \/.right(BitVector(0))
+    codec.decode(BitVector(1)) shouldBe \/.right((BitVector.empty, ()))
+    codec.decode(BitVector.empty) shouldBe 'left
+    uint8.unit(255).encode(()) shouldBe \/.right(BitVector(0xff))
+  }
 }
