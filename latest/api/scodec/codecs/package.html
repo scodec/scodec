@@ -495,7 +495,7 @@ codec does not consume all decrypted bits.
       </span>
       </h4>
       <p class="shortcomment cmt">Combinator that chooses amongst two codecs based on an implicitly available byte ordering.</p><div class="fullcomment"><div class="comment cmt"><p>Combinator that chooses amongst two codecs based on an implicitly available byte ordering.</p></div><dl class="paramcmts block"><dt class="param">big</dt><dd class="cmt"><p>codec to use when big endian</p></dd><dt class="param">little</dt><dd class="cmt"><p>codec to use when little endian</p></dd></dl></div>
-    </li><li name="scodec.codecs#fail" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs#fail" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
       <a id="fail[A](encMessage:String,decMessage:String):scodec.Codec[A]"></a>
       <a id="fail[A](String,String):Codec[A]"></a>
       <h4 class="signature">
@@ -508,7 +508,7 @@ codec does not consume all decrypted bits.
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that always fails encoding and decoding with the specified messages.</p>
-    </li><li name="scodec.codecs#fail" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs#fail" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
       <a id="fail[A](message:String):scodec.Codec[A]"></a>
       <a id="fail[A](String):Codec[A]"></a>
       <h4 class="signature">
@@ -1364,9 +1364,6 @@ of each <code>decode</code> is returned in the sequence.
               
             </div><div class="group" name="crypto">
               <h3>Cryptography</h3>
-              
-            </div><div class="group" name="Ungrouped">
-              <h3>Ungrouped</h3>
               
             </div>
         </div>
