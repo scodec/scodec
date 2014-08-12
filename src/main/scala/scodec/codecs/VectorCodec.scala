@@ -1,22 +1,20 @@
 package scodec
 package codecs
 
-import scala.collection.immutable.IndexedSeq
-
 import scalaz.{\/, \/-, -\/, Semigroup}
-import scalaz.std.indexedSeq._
+import scalaz.std.vector._
 import scalaz.syntax.traverse._
 import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector
 
-private[codecs] final class IndexedSeqCodec[A](codec: Codec[A]) extends Codec[IndexedSeq[A]] {
+private[codecs] final class VectorCodec[A](codec: Codec[A]) extends Codec[Vector[A]] {
 
-  def encode(ixSeq: IndexedSeq[A]) = {
-    ixSeq.traverseU { v => codec.encode(v) }.map { _.concatenate }
+  def encode(vector: Vector[A]) = {
+    vector.traverseU { v => codec.encode(v) }.map { _.concatenate }
   }
 
-  def decode(buffer: BitVector): String \/ (BitVector, IndexedSeq[A]) = {
+  def decode(buffer: BitVector): String \/ (BitVector, Vector[A]) = {
     val bldr = Vector.newBuilder[A]
     var remaining = buffer
     var error: Option[String] = None
@@ -33,6 +31,6 @@ private[codecs] final class IndexedSeqCodec[A](codec: Codec[A]) extends Codec[In
     error.toLeftDisjunction((BitVector.empty, bldr.result))
   }
 
-  override def toString = s"ixseq($codec)"
+  override def toString = s"vector($codec)"
 
 }

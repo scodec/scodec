@@ -1,7 +1,6 @@
 package scodec
 package examples
 
-import scala.collection.immutable.IndexedSeq
 import scala.concurrent.duration._
 import scalaz.std.AllInstances._
 import scalaz.std.indexedSeq._
@@ -65,10 +64,10 @@ object PcapCodec {
     ("record_data"      | bits(hdr.includedLength.toInt * 8) ).hlist
   }}.as[PcapRecord]
 
-  case class PcapFile(header: PcapHeader, records: IndexedSeq[PcapRecord])
+  case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
 
   implicit val pcapFile = {
-    pcapHeader >>:~ { hdr => repeated(pcapRecord(hdr.ordering)).hlist
+    pcapHeader >>:~ { hdr => vector(pcapRecord(hdr.ordering)).hlist
   }}.as[PcapFile]
 }
 
@@ -92,7 +91,7 @@ class PcapExample extends CodecSuite {
     val (_, recordCount) = Codec.decodeAll[PcapRecord, Int](bits.drop(28 * 8)) { _ => 1 }
 
     // Monoid that accumulates records
-    val (_, records) = Codec.decodeAll[PcapRecord, IndexedSeq[PcapRecord]](bits.drop(28 * 8)) { r => IndexedSeq(r) }
+    val (_, records) = Codec.decodeAll[PcapRecord, Vector[PcapRecord]](bits.drop(28 * 8)) { r => Vector(r) }
 
     // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
     // See scodec-stream library at https://github.com/scodec/scodec-stream

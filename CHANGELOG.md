@@ -1,3 +1,9 @@
+1.2.1
+=====
+ - Added `fail` combinator
+ - Added `mappedEnum` combinator
+ - Added `vector` and `list` combinators and deprecated `repeated`
+
 1.2.0
 =====
  - Upgraded to Scalaz 7.1.0
