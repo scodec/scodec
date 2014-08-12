@@ -536,7 +536,7 @@ package object codecs {
    * @param codec codec to encode/decode a single element of the sequence
    * @group combinators
    */
-  @deprecated("Use vector codec or list codec instead.", "1.3.0")
+  @deprecated("Use vector codec or list codec instead.", "1.2.1")
   def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] =
     new VectorCodec(codec).xmap[collection.immutable.IndexedSeq[A]](identity, _.toVector)
 
