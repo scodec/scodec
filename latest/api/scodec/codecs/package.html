@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>codecs - scodec.codecs</title>
@@ -9,6 +8,11 @@
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      <script type="text/javascript" src="../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
@@ -180,7 +184,7 @@ the value.</p>
       <p class="comment cmt">Allows creation of left nested pairs by successive usage of <code>~</code> operator.</p>
     </li><li name="scodec.codecs.~" visbl="pub" data-isabs="false" fullComment="yes" group="tuples">
       <a id="~[+A,+B]=(A,B)"></a>
-      <a id="~[+A,+B]:(A,B)"></a>
+      <a id="~[+A,+B]:~[A,B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
@@ -224,7 +228,7 @@ the value.</p>
       </span>
       </h4>
       <p class="comment cmt">Companion for <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>.</p>
-    </li><li name="scodec.codecs.package#ascii" visbl="pub" data-isabs="false" fullComment="yes" group="values">
+    </li><li name="scodec.codecs#ascii" visbl="pub" data-isabs="false" fullComment="yes" group="values">
       <a id="ascii:scodec.Codec[String]"></a>
       <a id="ascii:Codec[String]"></a>
       <h4 class="signature">
@@ -237,7 +241,7 @@ the value.</p>
       </span>
       </h4>
       <p class="shortcomment cmt">String codec that uses the <code>US-ASCII</code> charset.</p><div class="fullcomment"><div class="comment cmt"><p>String codec that uses the <code>US-ASCII</code> charset. See <a href="#string(implicitcharset:java.nio.charset.Charset):scodec.Codec[String]" class="extmbr" name="scodec.codecs#string">string</a> for more information on <code>String</code> codecs.</p></div></div>
-    </li><li name="scodec.codecs.package#bits" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
+    </li><li name="scodec.codecs#bits" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
       <a id="bits(size:Int):scodec.Codec[scodec.bits.BitVector]"></a>
       <a id="bits(Int):Codec[BitVector]"></a>
       <h4 class="signature">
@@ -246,14 +250,14 @@ the value.</p>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bits</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
+        <span class="name">bits</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes by returning the supplied bit vector if its length is <code>size</code> bits, otherwise returning error;
 decodes by taking <code>size</code> bits from the supplied bit vector.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes by returning the supplied bit vector if its length is <code>size</code> bits, otherwise returning error;
 decodes by taking <code>size</code> bits from the supplied bit vector.
 </p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>number of bits to encode/decode</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#bits" visbl="pub" data-isabs="false" fullComment="no" group="bits">
+    </li><li name="scodec.codecs#bits" visbl="pub" data-isabs="false" fullComment="no" group="bits">
       <a id="bits:scodec.Codec[scodec.bits.BitVector]"></a>
       <a id="bits:Codec[BitVector]"></a>
       <h4 class="signature">
@@ -266,7 +270,7 @@ decodes by taking <code>size</code> bits from the supplied bit vector.
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes by returning supplied bit vector; decodes by taking all remaining bits in the supplied bit vector.</p>
-    </li><li name="scodec.codecs.package#bool" visbl="pub" data-isabs="false" fullComment="no" group="values">
+    </li><li name="scodec.codecs#bool" visbl="pub" data-isabs="false" fullComment="no" group="values">
       <a id="bool(n:Int):scodec.Codec[Boolean]"></a>
       <a id="bool(Int):Codec[Boolean]"></a>
       <h4 class="signature">
@@ -275,11 +279,11 @@ decodes by taking <code>size</code> bits from the supplied bit vector.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bool</span><span class="params">(<span name="n">n: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
+        <span class="name">bool</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors.</p>
-    </li><li name="scodec.codecs.package#bool" visbl="pub" data-isabs="false" fullComment="no" group="values">
+    </li><li name="scodec.codecs#bool" visbl="pub" data-isabs="false" fullComment="no" group="values">
       <a id="bool:scodec.Codec[Boolean]"></a>
       <a id="bool:Codec[Boolean]"></a>
       <h4 class="signature">
@@ -288,11 +292,11 @@ decodes by taking <code>size</code> bits from the supplied bit vector.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">bool</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>
+        <span class="name">bool</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">1-bit boolean codec, where false corresponds to bit value 0 and true corresponds to bit value 1.</p>
-    </li><li name="scodec.codecs.package#bytes" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
+    </li><li name="scodec.codecs#bytes" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
       <a id="bytes(size:Int):scodec.Codec[scodec.bits.ByteVector]"></a>
       <a id="bytes(Int):Codec[ByteVector]"></a>
       <h4 class="signature">
@@ -301,14 +305,14 @@ decodes by taking <code>size</code> bits from the supplied bit vector.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">bytes</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.ByteVector" class="extype" target="_top">ByteVector</a>]</span>
+        <span class="name">bytes</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.ByteVector" class="extype" target="_top">ByteVector</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes by returning the supplied byte vector if its length is <code>size</code> bytes, otherwise returning error;
 decodes by taking <code>size * 8</code> bits from the supplied bit vector and converting to a byte vector.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes by returning the supplied byte vector if its length is <code>size</code> bytes, otherwise returning error;
 decodes by taking <code>size * 8</code> bits from the supplied bit vector and converting to a byte vector.
 </p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>number of bits to encode/decode</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#bytes" visbl="pub" data-isabs="false" fullComment="no" group="bits">
+    </li><li name="scodec.codecs#bytes" visbl="pub" data-isabs="false" fullComment="no" group="bits">
       <a id="bytes:scodec.Codec[scodec.bits.ByteVector]"></a>
       <a id="bytes:Codec[ByteVector]"></a>
       <h4 class="signature">
@@ -321,7 +325,7 @@ decodes by taking <code>size * 8</code> bits from the supplied bit vector and co
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes by returning supplied byte vector as a bit vector; decodes by taking all remaining bits in supplied bit vector and converting to a byte vector.</p>
-    </li><li name="scodec.codecs.package#certificate" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
+    </li><li name="scodec.codecs#certificate" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
       <a id="certificate(certType:String):scodec.Codec[java.security.cert.Certificate]"></a>
       <a id="certificate(String):Codec[Certificate]"></a>
       <h4 class="signature">
@@ -335,7 +339,7 @@ decodes by taking <code>size * 8</code> bits from the supplied bit vector and co
       </h4>
       <p class="shortcomment cmt">Codec that encodes/decodes certificates using their default encoding.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that encodes/decodes certificates using their default encoding.
 </p></div><dl class="paramcmts block"><dt class="param">certType</dt><dd class="cmt"><p>certificate type to pass to <code>java.security.cert.CertificateFactory.getInstance</code></p></dd></dl></div>
-    </li><li name="scodec.codecs.package#conditional" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#conditional" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="conditional[A](included:Boolean,codec:scodec.Codec[A]):scodec.Codec[Option[A]]"></a>
       <a id="conditional[A](Boolean,Codec[A]):Codec[Option[A]]"></a>
       <h4 class="signature">
@@ -344,14 +348,14 @@ decodes by taking <code>size * 8</code> bits from the supplied bit vector and co
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">conditional</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="included">included: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.conditional.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.conditional.A">A</span>]]</span>
+        <span class="name">conditional</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="included">included: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.conditional.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.conditional.A">A</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec of <code>Option[A]</code> that delegates to a <code>Codec[A]</code> when the <code>included</code> parameter is true.</p><div class="fullcomment"><div class="comment cmt"><p>Codec of <code>Option[A]</code> that delegates to a <code>Codec[A]</code> when the <code>included</code> parameter is true.</p><p>When encoding, if <code>included</code> is true and the value to encode is a <code>Some</code>, the specified codec is used to encode the inner value.
 Otherwise, an empty bit vector is returned.</p><p>When decoding, if <code>included</code> is true, the specified codec is used and its result is wrapped in a <code>Some</code>. Otherwise, a <code>None</code> is returned.
 </p></div><dl class="paramcmts block"><dt class="param">included</dt><dd class="cmt"><p>whether this codec is enabled (meaning it delegates to the specified codec) or disabled, in which case it
 encodes no bits and returns <code>None</code> from decode</p></dd><dt class="param">codec</dt><dd class="cmt"><p>codec to conditionally include</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#constant" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
+    </li><li name="scodec.codecs#constant" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
       <a id="constant[A](bits:A*)(implicitevidence$1:Integral[A]):scodec.Codec[Unit]"></a>
       <a id="constant[A](A*)(Integral[A]):Codec[Unit]"></a>
       <h4 class="signature">
@@ -360,13 +364,13 @@ encodes no bits and returns <code>None</code> from decode</p></dd><dt class="par
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">constant</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.codecs.constant.A">A</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Integral">Integral</span>[<span class="extype" name="scodec.codecs.constant.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+        <span class="name">constant</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="bits">bits: <span class="extype" name="scodec.codecs.constant.A">A</span>*</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Integral">Integral</span>[<span class="extype" name="scodec.codecs.constant.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that always encodes the specified bits and always decodes the specified bits, returning <code>()</code> if the actual bits match
 the specified bits and returning an error otherwise.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that always encodes the specified bits and always decodes the specified bits, returning <code>()</code> if the actual bits match
 the specified bits and returning an error otherwise.</p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>constant bits</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#constant" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
+    </li><li name="scodec.codecs#constant" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
       <a id="constant(bits:scodec.bits.BitVector):scodec.Codec[Unit]"></a>
       <a id="constant(BitVector):Codec[Unit]"></a>
       <h4 class="signature">
@@ -375,13 +379,13 @@ the specified bits and returning an error otherwise.</p></div><dl class="paramcm
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">constant</span><span class="params">(<span name="bits">bits: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+        <span class="name">constant</span><span class="params">(<span name="bits">bits: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that always encodes the specified bits and always decodes the specified bits, returning <code>()</code> if the actual bits match
 the specified bits and returning an error otherwise.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that always encodes the specified bits and always decodes the specified bits, returning <code>()</code> if the actual bits match
 the specified bits and returning an error otherwise.</p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>constant bits</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#discriminated" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#discriminated" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="discriminated[A]:scodec.codecs.NeedDiscriminatorCodec[A]"></a>
       <a id="discriminated[A]:NeedDiscriminatorCodec[A]"></a>
       <h4 class="signature">
@@ -418,7 +422,7 @@ the specified bits and returning an error otherwise.</p></div><dl class="paramcm
   discriminated[Either[A,B]].by(uint8)
   .\ (<span class="num">0</span>) { <span class="kw">case</span> l@Left(_) <span class="kw">=&gt;</span> l } (leftCodec) <span class="cmt">// backslash instead of '|'</span>
   .\ (<span class="num">1</span>) { <span class="kw">case</span> r@Right(_) <span class="kw">=&gt;</span> r } (rightCodec)</pre><p>   The actual formatted bits are identical with either formulation.</p></div></div>
-    </li><li name="scodec.codecs.package#double" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#double" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="double:scodec.Codec[Double]"></a>
       <a id="double:Codec[Double]"></a>
       <h4 class="signature">
@@ -427,11 +431,11 @@ the specified bits and returning an error otherwise.</p></div><dl class="paramcm
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">double</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Double" class="extype" target="_top">Double</a>]</span>
+        <span class="name">double</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Double">Double</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">64-bit big endian IEEE 754 floating point number.</p>
-    </li><li name="scodec.codecs.package#doubleL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#doubleL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="doubleL:scodec.Codec[Double]"></a>
       <a id="doubleL:Codec[Double]"></a>
       <h4 class="signature">
@@ -440,11 +444,11 @@ the specified bits and returning an error otherwise.</p></div><dl class="paramcm
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">doubleL</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Double" class="extype" target="_top">Double</a>]</span>
+        <span class="name">doubleL</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Double">Double</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">64-bit little endian IEEE 754 floating point number.</p>
-    </li><li name="scodec.codecs.package#either" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#either" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="either[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[scalaz.\/[L,R]]"></a>
       <a id="either[L,R](Codec[Boolean],Codec[L],Codec[R]):Codec[\/[L,R]]"></a>
       <h4 class="signature">
@@ -453,7 +457,7 @@ the specified bits and returning an error otherwise.</p></div><dl class="paramcm
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">either</span><span class="tparams">[<span name="L">L</span>, <span name="R">R</span>]</span><span class="params">(<span name="indicator">indicator: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>, <span name="left">left: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.either.L">L</span>]</span>, <span name="right">right: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.either.R">R</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scodec.codecs.either.L">L</span>, <span class="extype" name="scodec.codecs.either.R">R</span>]]</span>
+        <span class="name">either</span><span class="tparams">[<span name="L">L</span>, <span name="R">R</span>]</span><span class="params">(<span name="indicator">indicator: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="left">left: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.either.L">L</span>]</span>, <span name="right">right: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.either.R">R</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scodec.codecs.either.L">L</span>, <span class="extype" name="scodec.codecs.either.R">R</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Disjunction codec that supports vectors of form <code>indicator ++ (left or right)</code> where a
@@ -461,7 +465,7 @@ value of <code>false</code> for the indicator indicates it is followed by a left
 of <code>true</code> indicates it is followed by a right value.</p><div class="fullcomment"><div class="comment cmt"><p>Disjunction codec that supports vectors of form <code>indicator ++ (left or right)</code> where a
 value of <code>false</code> for the indicator indicates it is followed by a left value and a value
 of <code>true</code> indicates it is followed by a right value.</p></div><dl class="paramcmts block"><dt class="param">indicator</dt><dd class="cmt"><p>codec that encodes/decodes false for left and true for right</p></dd><dt class="param">left</dt><dd class="cmt"><p>codec the encodes a left value</p></dd><dt class="param">right</dt><dd class="cmt"><p>codec the encodes a right value</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#encrypted" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
+    </li><li name="scodec.codecs#encrypted" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
       <a id="encrypted[A](codec:scodec.Codec[A])(implicitcipherFactory:scodec.codecs.CipherFactory):scodec.Codec[A]"></a>
       <a id="encrypted[A](Codec[A])(CipherFactory):Codec[A]"></a>
       <h4 class="signature">
@@ -478,7 +482,7 @@ with a cipher provided by the implicit <a href="CipherFactory.html" class="extyp
 specified codec. Successful decoding always returns no remaining bits, even if the specified
 codec does not consume all decrypted bits.
 </p></div><dl class="paramcmts block"><dt class="param">codec</dt><dd class="cmt"><p>codec that encodes a value to plaintext bits and decodes plaintext bits to a value</p></dd><dt class="param">cipherFactory</dt><dd class="cmt"><p>factory to use for encryption/decryption</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#endiannessDependent" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#endiannessDependent" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="endiannessDependent[A](big:scodec.Codec[A],little:scodec.Codec[A])(implicitordering:scodec.bits.ByteOrdering):scodec.Codec[A]"></a>
       <a id="endiannessDependent[A](Codec[A],Codec[A])(ByteOrdering):Codec[A]"></a>
       <h4 class="signature">
@@ -491,7 +495,7 @@ codec does not consume all decrypted bits.
       </span>
       </h4>
       <p class="shortcomment cmt">Combinator that chooses amongst two codecs based on an implicitly available byte ordering.</p><div class="fullcomment"><div class="comment cmt"><p>Combinator that chooses amongst two codecs based on an implicitly available byte ordering.</p></div><dl class="paramcmts block"><dt class="param">big</dt><dd class="cmt"><p>codec to use when big endian</p></dd><dt class="param">little</dt><dd class="cmt"><p>codec to use when little endian</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#fail" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs#fail" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="fail[A](encMessage:String,decMessage:String):scodec.Codec[A]"></a>
       <a id="fail[A](String,String):Codec[A]"></a>
       <h4 class="signature">
@@ -504,7 +508,7 @@ codec does not consume all decrypted bits.
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that always fails encoding and decoding with the specified messages.</p>
-    </li><li name="scodec.codecs.package#fail" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs#fail" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="fail[A](message:String):scodec.Codec[A]"></a>
       <a id="fail[A](String):Codec[A]"></a>
       <h4 class="signature">
@@ -517,7 +521,7 @@ codec does not consume all decrypted bits.
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that always fails encoding and decoding with the specified message.</p>
-    </li><li name="scodec.codecs.package#fixedSizeBits" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#fixedSizeBits" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="fixedSizeBits[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]"></a>
       <a id="fixedSizeBits[A](Int,Codec[A]):Codec[A]"></a>
       <h4 class="signature">
@@ -526,7 +530,7 @@ codec does not consume all decrypted bits.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fixedSizeBits</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBits.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBits.A">A</span>]</span>
+        <span class="name">fixedSizeBits</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBits.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBits.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that limits the number of bits the specified codec works with.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that limits the number of bits the specified codec works with.</p><p>When encoding, if encoding with the specified codec
@@ -534,7 +538,7 @@ results in less than the specified size, the vector is right padded with 0 bits.
 size, an encoding error is returned.</p><p>When decoding, the specified codec is only given <code>size</code> bits. If the specified codec does not consume all the bits it was
 given, any remaining bits are discarded.
 </p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>number of bits</p></dd><dt class="param">codec</dt><dd class="cmt"><p>codec to limit</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#fixedSizeBytes" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#fixedSizeBytes" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="fixedSizeBytes[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]"></a>
       <a id="fixedSizeBytes[A](Int,Codec[A]):Codec[A]"></a>
       <h4 class="signature">
@@ -543,11 +547,11 @@ given, any remaining bits are discarded.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fixedSizeBytes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBytes.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBytes.A">A</span>]</span>
+        <span class="name">fixedSizeBytes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>, <span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBytes.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeBytes.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Byte equivalent of <a href="#fixedSizeBits[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]" class="extmbr" name="scodec.codecs#fixedSizeBits">fixedSizeBits</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Byte equivalent of <a href="#fixedSizeBits[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]" class="extmbr" name="scodec.codecs#fixedSizeBits">fixedSizeBits</a>.</p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>number of bytes</p></dd><dt class="param">codec</dt><dd class="cmt"><p>codec to limit</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#fixedSizeSignature" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
+    </li><li name="scodec.codecs#fixedSizeSignature" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
       <a id="fixedSizeSignature[A](size:Int)(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]"></a>
       <a id="fixedSizeSignature[A](Int)(Codec[A])(SignatureFactory):Codec[A]"></a>
       <h4 class="signature">
@@ -556,7 +560,7 @@ given, any remaining bits are discarded.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">fixedSizeSignature</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeSignature.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="signatureFactory">signatureFactory: <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeSignature.A">A</span>]</span>
+        <span class="name">fixedSizeSignature</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeSignature.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="signatureFactory">signatureFactory: <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.fixedSizeSignature.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that includes a signature of the encoded bits.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that includes a signature of the encoded bits.</p><p>Encoding a value of type <code>A</code> is delegated to the specified codec and then a signature of those bits is
@@ -567,7 +571,7 @@ that codec does not consume the signature bits. For example, if the target codec
 string (e.g., ascii, utf8), decoding an encoded vector will result in the string codec trying to
 decode the signature bits as part of the string.
 </p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>size in bytes of signature</p></dd><dt class="param">codec</dt><dd class="cmt"><p>codec to use to encode/decode value field</p></dd><dt class="param">signatureFactory</dt><dd class="cmt"><p>factory to use for signing/verifying</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#float" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#float" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="float:scodec.Codec[Float]"></a>
       <a id="float:Codec[Float]"></a>
       <h4 class="signature">
@@ -576,11 +580,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">float</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Float" class="extype" target="_top">Float</a>]</span>
+        <span class="name">float</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Float">Float</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">32-bit big endian IEEE 754 floating point number.</p>
-    </li><li name="scodec.codecs.package#floatL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#floatL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="floatL:scodec.Codec[Float]"></a>
       <a id="floatL:Codec[Float]"></a>
       <h4 class="signature">
@@ -589,11 +593,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">floatL</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Float" class="extype" target="_top">Float</a>]</span>
+        <span class="name">floatL</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Float">Float</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">32-bit little endian IEEE 754 floating point number.</p>
-    </li><li name="scodec.codecs.package#ignore" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
+    </li><li name="scodec.codecs#ignore" visbl="pub" data-isabs="false" fullComment="yes" group="bits">
       <a id="ignore(size:Int):scodec.Codec[Unit]"></a>
       <a id="ignore(Int):Codec[Unit]"></a>
       <h4 class="signature">
@@ -602,11 +606,11 @@ decode the signature bits as part of the string.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ignore</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+        <span class="name">ignore</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Unit">Unit</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that always encodes <code>size</code> 0 bits and always decodes <code>size</code> bits and then discards them, returning <code>()</code> instead.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that always encodes <code>size</code> 0 bits and always decodes <code>size</code> bits and then discards them, returning <code>()</code> instead.</p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>number of bits to ignore</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#int" visbl="pub" data-isabs="false" fullComment="yes" group="numbers">
+    </li><li name="scodec.codecs#int" visbl="pub" data-isabs="false" fullComment="yes" group="numbers">
       <a id="int(size:Int):scodec.Codec[Int]"></a>
       <a id="int(Int):Codec[Int]"></a>
       <h4 class="signature">
@@ -615,11 +619,11 @@ decode the signature bits as part of the string.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">int</span><span class="params">(<span name="size">size: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int</span><span class="params">(<span name="size">size: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit 2s complement big-endian integers that are represented with <code>Int</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Codec for n-bit 2s complement big-endian integers that are represented with <code>Int</code>.</p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>number of bits (must be 0 &lt; size &lt;= 32)</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#int16" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int16" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int16:scodec.Codec[Int]"></a>
       <a id="int16:Codec[Int]"></a>
       <h4 class="signature">
@@ -628,11 +632,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int16</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int16</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 16-bit 2s complement big-endian integers.</p>
-    </li><li name="scodec.codecs.package#int16L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int16L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int16L:scodec.Codec[Int]"></a>
       <a id="int16L:Codec[Int]"></a>
       <h4 class="signature">
@@ -641,11 +645,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int16L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int16L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 16-bit 2s complement little-endian integers.</p>
-    </li><li name="scodec.codecs.package#int24" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int24" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int24:scodec.Codec[Int]"></a>
       <a id="int24:Codec[Int]"></a>
       <h4 class="signature">
@@ -654,11 +658,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int24</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int24</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 24-bit 2s complement big-endian integers.</p>
-    </li><li name="scodec.codecs.package#int24L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int24L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int24L:scodec.Codec[Int]"></a>
       <a id="int24L:Codec[Int]"></a>
       <h4 class="signature">
@@ -667,11 +671,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int24L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int24L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 24-bit 2s complement little-endian integers.</p>
-    </li><li name="scodec.codecs.package#int32" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int32" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int32:scodec.Codec[Int]"></a>
       <a id="int32:Codec[Int]"></a>
       <h4 class="signature">
@@ -680,11 +684,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int32</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int32</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 32-bit 2s complement big-endian integers.</p>
-    </li><li name="scodec.codecs.package#int32L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int32L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int32L:scodec.Codec[Int]"></a>
       <a id="int32L:Codec[Int]"></a>
       <h4 class="signature">
@@ -693,11 +697,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int32L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int32L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 32-bit 2s complement little-endian integers.</p>
-    </li><li name="scodec.codecs.package#int64" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int64" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int64:scodec.Codec[Long]"></a>
       <a id="int64:Codec[Long]"></a>
       <h4 class="signature">
@@ -706,11 +710,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int64</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">int64</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 64-bit 2s complement big-endian integers.</p>
-    </li><li name="scodec.codecs.package#int64L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int64L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int64L:scodec.Codec[Long]"></a>
       <a id="int64L:Codec[Long]"></a>
       <h4 class="signature">
@@ -719,11 +723,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int64L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">int64L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 64-bit 2s complement little-endian integers.</p>
-    </li><li name="scodec.codecs.package#int8" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int8" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int8:scodec.Codec[Int]"></a>
       <a id="int8:Codec[Int]"></a>
       <h4 class="signature">
@@ -732,11 +736,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 8-bit 2s complement big-endian integers.</p>
-    </li><li name="scodec.codecs.package#int8L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#int8L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="int8L:scodec.Codec[Int]"></a>
       <a id="int8L:Codec[Int]"></a>
       <h4 class="signature">
@@ -745,11 +749,11 @@ decode the signature bits as part of the string.
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">int8L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">int8L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 8-bit 2s complement little-endian integers.</p>
-    </li><li name="scodec.codecs.package#intL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#intL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="intL(bits:Int):scodec.Codec[Int]"></a>
       <a id="intL(Int):Codec[Int]"></a>
       <h4 class="signature">
@@ -758,11 +762,11 @@ decode the signature bits as part of the string.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">intL</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">intL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit 2s complement little-endian integers that are represented with <code>Int</code>.</p>
-    </li><li name="scodec.codecs.package#lazily" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
+    </li><li name="scodec.codecs#lazily" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
       <a id="lazily[A](codec:=&gt;scodec.Codec[A]):scodec.Codec[A]"></a>
       <a id="lazily[A](⇒Codec[A]):Codec[A]"></a>
       <h4 class="signature">
@@ -775,7 +779,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Provides a <code>Codec[A]</code> that delegates to a lazily evaluated <code>Codec[A]</code>.</p>
-    </li><li name="scodec.codecs.package#liftF2ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF2ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF2ToNestedTupleF[A,B,X](fn:(A,B)=&gt;X):((A,B))=&gt;X"></a>
       <a id="liftF2ToNestedTupleF[A,B,X]((A,B)⇒X):((A,B))⇒X"></a>
       <h4 class="signature">
@@ -788,7 +792,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of a 2-arg function as a single arg function that takes a left-associated stack of pairs with 2 total elements.</p>
-    </li><li name="scodec.codecs.package#liftF3ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF3ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF3ToNestedTupleF[A,B,C,X](fn:(A,B,C)=&gt;X):(((A,B),C))=&gt;X"></a>
       <a id="liftF3ToNestedTupleF[A,B,C,X]((A,B,C)⇒X):(((A,B),C))⇒X"></a>
       <h4 class="signature">
@@ -801,7 +805,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of a 3-arg function as a single arg function that takes a left-associated stack of pairs with 3 total elements.</p>
-    </li><li name="scodec.codecs.package#liftF4ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF4ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF4ToNestedTupleF[A,B,C,D,X](fn:(A,B,C,D)=&gt;X):((((A,B),C),D))=&gt;X"></a>
       <a id="liftF4ToNestedTupleF[A,B,C,D,X]((A,B,C,D)⇒X):((((A,B),C),D))⇒X"></a>
       <h4 class="signature">
@@ -814,7 +818,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of a 4-arg function as a single arg function that takes a left-associated stack of pairs with 4 total elements.</p>
-    </li><li name="scodec.codecs.package#liftF5ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF5ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF5ToNestedTupleF[A,B,C,D,E,X](fn:(A,B,C,D,E)=&gt;X):(((((A,B),C),D),E))=&gt;X"></a>
       <a id="liftF5ToNestedTupleF[A,B,C,D,E,X]((A,B,C,D,E)⇒X):(((((A,B),C),D),E))⇒X"></a>
       <h4 class="signature">
@@ -827,7 +831,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of a 5-arg function as a single arg function that takes a left-associated stack of pairs with 5 total elements.</p>
-    </li><li name="scodec.codecs.package#liftF6ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF6ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF6ToNestedTupleF[A,B,C,D,E,F,X](fn:(A,B,C,D,E,F)=&gt;X):((((((A,B),C),D),E),F))=&gt;X"></a>
       <a id="liftF6ToNestedTupleF[A,B,C,D,E,F,X]((A,B,C,D,E,F)⇒X):((((((A,B),C),D),E),F))⇒X"></a>
       <h4 class="signature">
@@ -840,7 +844,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of a 6-arg function as a single arg function that takes a left-associated stack of pairs with 6 total elements.</p>
-    </li><li name="scodec.codecs.package#liftF7ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF7ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF7ToNestedTupleF[A,B,C,D,E,F,G,X](fn:(A,B,C,D,E,F,G)=&gt;X):(((((((A,B),C),D),E),F),G))=&gt;X"></a>
       <a id="liftF7ToNestedTupleF[A,B,C,D,E,F,G,X]((A,B,C,D,E,F,G)⇒X):(((((((A,B),C),D),E),F),G))⇒X"></a>
       <h4 class="signature">
@@ -853,7 +857,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of a 7-arg function as a single arg function that takes a left-associated stack of pairs with 7 total elements.</p>
-    </li><li name="scodec.codecs.package#liftF8ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
+    </li><li name="scodec.codecs#liftF8ToNestedTupleF" visbl="pub" data-isabs="false" fullComment="no" group="tuples">
       <a id="liftF8ToNestedTupleF[A,B,C,D,E,F,G,H,X](fn:(A,B,C,D,E,F,G,H)=&gt;X):((((((((A,B),C),D),E),F),G),H))=&gt;X"></a>
       <a id="liftF8ToNestedTupleF[A,B,C,D,E,F,G,H,X]((A,B,C,D,E,F,G,H)⇒X):((((((((A,B),C),D),E),F),G),H))⇒X"></a>
       <h4 class="signature">
@@ -866,7 +870,7 @@ decode the signature bits as part of the string.
       </span>
       </h4>
       <p class="shortcomment cmt">Allows use of an 8-arg function as a single arg function that takes a left-associated stack of pairs with 8 total elements.</p>
-    </li><li name="scodec.codecs.package#list" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#list" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="list[A](codec:scodec.Codec[A]):scodec.Codec[List[A]]"></a>
       <a id="list[A](Codec[A]):Codec[List[A]]"></a>
       <h4 class="signature">
@@ -881,7 +885,7 @@ decode the signature bits as part of the string.
       <p class="shortcomment cmt">Codec that encodes/decodes a <code>List[A]</code> from a <code>Codec[A]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that encodes/decodes a <code>List[A]</code> from a <code>Codec[A]</code>.</p><p>When encoding, each <code>A</code> in the list is encoded and all of the resulting vectors are concatenated.</p><p>When decoding, <code>codec.decode</code> is called repeatedly until there are no more remaining bits and the value result
 of each <code>decode</code> is returned in the list.
 </p></div><dl class="paramcmts block"><dt class="param">codec</dt><dd class="cmt"><p>codec to encode/decode a single element of the sequence</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#long" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#long" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="long(bits:Int):scodec.Codec[Long]"></a>
       <a id="long(Int):Codec[Long]"></a>
       <h4 class="signature">
@@ -890,11 +894,11 @@ of each <code>decode</code> is returned in the list.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">long</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">long</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit 2s complement big-endian integers that are represented with <code>Long</code>.</p>
-    </li><li name="scodec.codecs.package#longL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#longL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="longL(bits:Int):scodec.Codec[Long]"></a>
       <a id="longL(Int):Codec[Long]"></a>
       <h4 class="signature">
@@ -903,11 +907,11 @@ of each <code>decode</code> is returned in the list.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">longL</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">longL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit 2s complement little-endian integers that are represented with <code>Long</code>.</p>
-    </li><li name="scodec.codecs.package#mappedEnum" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#mappedEnum" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="mappedEnum[A,B](discriminatorCodec:scodec.Codec[B],map:Map[A,B]):scodec.Codec[A]"></a>
       <a id="mappedEnum[A,B](Codec[B],Map[A,B]):Codec[A]"></a>
       <h4 class="signature">
@@ -923,7 +927,7 @@ of each <code>decode</code> is returned in the list.
 mapped to a tag.</p><div class="fullcomment"><div class="comment cmt"><p>Provides a codec for an enumerated set of values, where each enumerated value is
 mapped to a tag.
 </p></div><dl class="paramcmts block"><dt class="param">discriminatorCodec</dt><dd class="cmt"><p>codec used to encode/decode tag value</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#mappedEnum" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#mappedEnum" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="mappedEnum[A,B](discriminatorCodec:scodec.Codec[B],mappings:(A,B)*):scodec.Codec[A]"></a>
       <a id="mappedEnum[A,B](Codec[B],(A,B)*):Codec[A]"></a>
       <h4 class="signature">
@@ -939,7 +943,7 @@ mapped to a tag.
 mapped to a tag.</p><div class="fullcomment"><div class="comment cmt"><p>Provides a codec for an enumerated set of values, where each enumerated value is
 mapped to a tag.
 </p></div><dl class="paramcmts block"><dt class="param">discriminatorCodec</dt><dd class="cmt"><p>codec used to encode/decode tag value</p></dd><dt class="param">mappings</dt><dd class="cmt"><p>mapping from tag values to/from enum values</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#provide" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#provide" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="provide[A](value:A):scodec.Codec[A]"></a>
       <a id="provide[A](A):Codec[A]"></a>
       <h4 class="signature">
@@ -953,7 +957,7 @@ mapped to a tag.
       </h4>
       <p class="shortcomment cmt">Codec that always returns an empty vector from <code>encode</code> and always returns <code>(empty, value)</code> from <code>decode</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that always returns an empty vector from <code>encode</code> and always returns <code>(empty, value)</code> from <code>decode</code>.
 This is often useful when combined with other codecs (e.g., the <a href="#discriminated[A]:scodec.codecs.NeedDiscriminatorCodec[A]" class="extmbr" name="scodec.codecs#discriminated">discriminated</a>).</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>value to return from decode</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#stdEither" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#stdEither" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="stdEither[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[Either[L,R]]"></a>
       <a id="stdEither[L,R](Codec[Boolean],Codec[L],Codec[R]):Codec[Either[L,R]]"></a>
       <h4 class="signature">
@@ -962,11 +966,11 @@ This is often useful when combined with other codecs (e.g., the <a href="#discri
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">stdEither</span><span class="tparams">[<span name="L">L</span>, <span name="R">R</span>]</span><span class="params">(<span name="indicator">indicator: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a>]</span>, <span name="left">left: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.stdEither.L">L</span>]</span>, <span name="right">right: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.stdEither.R">R</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scodec.codecs.stdEither.L">L</span>, <span class="extype" name="scodec.codecs.stdEither.R">R</span>]]</span>
+        <span class="name">stdEither</span><span class="tparams">[<span name="L">L</span>, <span name="R">R</span>]</span><span class="params">(<span name="indicator">indicator: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>, <span name="left">left: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.stdEither.L">L</span>]</span>, <span name="right">right: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.stdEither.R">R</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Either">Either</span>[<span class="extype" name="scodec.codecs.stdEither.L">L</span>, <span class="extype" name="scodec.codecs.stdEither.R">R</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Like <a href="#either[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[scalaz.\/[L,R]]" class="extmbr" name="scodec.codecs#either">either</a>, but encodes the standard library <code>Either</code> type.</p><div class="fullcomment"><div class="comment cmt"><p>Like <a href="#either[L,R](indicator:scodec.Codec[Boolean],left:scodec.Codec[L],right:scodec.Codec[R]):scodec.Codec[scalaz.\/[L,R]]" class="extmbr" name="scodec.codecs#either">either</a>, but encodes the standard library <code>Either</code> type.</p></div><dl class="paramcmts block"><dt class="param">indicator</dt><dd class="cmt"><p>codec that encodes/decodes false for left and true for right</p></dd><dt class="param">left</dt><dd class="cmt"><p>codec the encodes a left value</p></dd><dt class="param">right</dt><dd class="cmt"><p>codec the encodes a right value</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#string" visbl="pub" data-isabs="false" fullComment="yes" group="values">
+    </li><li name="scodec.codecs#string" visbl="pub" data-isabs="false" fullComment="yes" group="values">
       <a id="string(implicitcharset:java.nio.charset.Charset):scodec.Codec[String]"></a>
       <a id="string(Charset):Codec[String]"></a>
       <h4 class="signature">
@@ -984,7 +988,7 @@ unexpected output. Instead, it is common to use this codec along with either
 <a href="#fixedSizeBits[A](size:Int,codec:scodec.Codec[A]):scodec.Codec[A]" class="extmbr" name="scodec.codecs#fixedSizeBits">fixedSizeBits</a> or <a href="#variableSizeBits[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]" class="extmbr" name="scodec.codecs#variableSizeBits">variableSizeBits</a>. For example, a common encoding
 is a size field, say 2 bytes, followed by the encoded string. This can be
 accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class="paramcmts block"><dt class="param">charset</dt><dd class="cmt"><p>charset to use to convert strings to/from binary</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#uint" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint(bits:Int):scodec.Codec[Int]"></a>
       <a id="uint(Int):Codec[Int]"></a>
       <h4 class="signature">
@@ -993,11 +997,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uint</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit unsigned big-endian integers that are represented with <code>Int</code>.</p>
-    </li><li name="scodec.codecs.package#uint16" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint16" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint16:scodec.Codec[Int]"></a>
       <a id="uint16:Codec[Int]"></a>
       <h4 class="signature">
@@ -1006,11 +1010,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint16</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint16</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 16-bit unsigned big-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint16L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint16L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint16L:scodec.Codec[Int]"></a>
       <a id="uint16L:Codec[Int]"></a>
       <h4 class="signature">
@@ -1019,11 +1023,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint16L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint16L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 16-bit unsigned little-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint2" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint2" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint2:scodec.Codec[Int]"></a>
       <a id="uint2:Codec[Int]"></a>
       <h4 class="signature">
@@ -1032,11 +1036,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint2</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint2</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 2-bit unsigned big-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint24" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint24" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint24:scodec.Codec[Int]"></a>
       <a id="uint24:Codec[Int]"></a>
       <h4 class="signature">
@@ -1045,11 +1049,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint24</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint24</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 24-bit unsigned big-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint24L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint24L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint24L:scodec.Codec[Int]"></a>
       <a id="uint24L:Codec[Int]"></a>
       <h4 class="signature">
@@ -1058,11 +1062,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint24L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint24L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 24-bit unsigned little-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint2L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint2L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint2L:scodec.Codec[Int]"></a>
       <a id="uint2L:Codec[Int]"></a>
       <h4 class="signature">
@@ -1071,11 +1075,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint2L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint2L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 2-bit unsigned little-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint32" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint32" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint32:scodec.Codec[Long]"></a>
       <a id="uint32:Codec[Long]"></a>
       <h4 class="signature">
@@ -1084,11 +1088,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint32</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">uint32</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 32-bit unsigned big-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint32L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint32L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint32L:scodec.Codec[Long]"></a>
       <a id="uint32L:Codec[Long]"></a>
       <h4 class="signature">
@@ -1097,11 +1101,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint32L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">uint32L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 32-bit unsigned little-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint4" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint4" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint4:scodec.Codec[Int]"></a>
       <a id="uint4:Codec[Int]"></a>
       <h4 class="signature">
@@ -1110,11 +1114,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint4</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint4</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 4-bit unsigned big-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint4L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint4L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint4L:scodec.Codec[Int]"></a>
       <a id="uint4L:Codec[Int]"></a>
       <h4 class="signature">
@@ -1123,11 +1127,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint4L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint4L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 4-bit unsigned little-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint8" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint8" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint8:scodec.Codec[Int]"></a>
       <a id="uint8:Codec[Int]"></a>
       <h4 class="signature">
@@ -1136,11 +1140,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint8</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 8-bit unsigned big-endian integers.</p>
-    </li><li name="scodec.codecs.package#uint8L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uint8L" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uint8L:scodec.Codec[Int]"></a>
       <a id="uint8L:Codec[Int]"></a>
       <h4 class="signature">
@@ -1149,11 +1153,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">uint8L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uint8L</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for 8-bit unsigned little-endian integers.</p>
-    </li><li name="scodec.codecs.package#uintL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#uintL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="uintL(bits:Int):scodec.Codec[Int]"></a>
       <a id="uintL(Int):Codec[Int]"></a>
       <h4 class="signature">
@@ -1162,11 +1166,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">uintL</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>
+        <span class="name">uintL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit unsigned little-endian integers that are represented with <code>Int</code>.</p>
-    </li><li name="scodec.codecs.package#ulong" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#ulong" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="ulong(bits:Int):scodec.Codec[Long]"></a>
       <a id="ulong(Int):Codec[Long]"></a>
       <h4 class="signature">
@@ -1175,11 +1179,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ulong</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">ulong</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit unsigned big-endian integers that are represented with <code>Long</code>.</p>
-    </li><li name="scodec.codecs.package#ulongL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
+    </li><li name="scodec.codecs#ulongL" visbl="pub" data-isabs="false" fullComment="no" group="numbers">
       <a id="ulongL(bits:Int):scodec.Codec[Long]"></a>
       <a id="ulongL(Int):Codec[Long]"></a>
       <h4 class="signature">
@@ -1188,11 +1192,11 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ulongL</span><span class="params">(<span name="bits">bits: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a>]</span>
+        <span class="name">ulongL</span><span class="params">(<span name="bits">bits: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Long">Long</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec for n-bit unsigned little-endian integers that are represented with <code>Long</code>.</p>
-    </li><li name="scodec.codecs.package#utf8" visbl="pub" data-isabs="false" fullComment="yes" group="values">
+    </li><li name="scodec.codecs#utf8" visbl="pub" data-isabs="false" fullComment="yes" group="values">
       <a id="utf8:scodec.Codec[String]"></a>
       <a id="utf8:Codec[String]"></a>
       <h4 class="signature">
@@ -1205,7 +1209,7 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
       </span>
       </h4>
       <p class="shortcomment cmt">String codec that uses the <code>US-ASCII</code> charset.</p><div class="fullcomment"><div class="comment cmt"><p>String codec that uses the <code>US-ASCII</code> charset. See <a href="#string(implicitcharset:java.nio.charset.Charset):scodec.Codec[String]" class="extmbr" name="scodec.codecs#string">string</a> for more information on <code>String</code> codecs.</p></div></div>
-    </li><li name="scodec.codecs.package#uuid" visbl="pub" data-isabs="false" fullComment="no" group="values">
+    </li><li name="scodec.codecs#uuid" visbl="pub" data-isabs="false" fullComment="no" group="values">
       <a id="uuid:scodec.Codec[java.util.UUID]"></a>
       <a id="uuid:Codec[UUID]"></a>
       <h4 class="signature">
@@ -1218,7 +1222,7 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes/decodes <code>UUID</code>s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.</p>
-    </li><li name="scodec.codecs.package#variableSizeBits" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#variableSizeBits" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="variableSizeBits[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]"></a>
       <a id="variableSizeBits[A](Codec[Int],Codec[A],Int):Codec[A]"></a>
       <h4 class="signature">
@@ -1227,7 +1231,7 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">variableSizeBits</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>, <span name="value">value: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBits.A">A</span>]</span>, <span name="sizePadding">sizePadding: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a> = <span class="symbol">0</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBits.A">A</span>]</span>
+        <span class="name">variableSizeBits</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="value">value: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBits.A">A</span>]</span>, <span name="sizePadding">sizePadding: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBits.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that supports vectors of the form <code>size ++ value</code> where the <code>size</code> field decodes to the bit length of the <code>value</code> field.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that supports vectors of the form <code>size ++ value</code> where the <code>size</code> field decodes to the bit length of the <code>value</code> field.</p><p>For example, encoding the string <code>&quot;hello&quot;</code> with <code>variableSizeBits(uint8, ascii)</code> yields a vector of 6 bytes -- the first byte being
@@ -1235,7 +1239,7 @@ accomplished with: </p><pre>variableSizeBits(uint8, string)</pre></div><dl class
 the calculated size before encoding, and subtracted from the decoded size before decoding the value.</p><p>For example, encoding <code>&quot;hello&quot;</code> with <code>variableSizeBits(uint8, ascii, 1)</code> yields a vector of 6 bytes -- the first byte being
 0x06 and the next 5 bytes being the US-ASCII encoding of <code>&quot;hello&quot;</code>.
 </p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>codec that encodes/decodes the size in bits</p></dd><dt class="param">value</dt><dd class="cmt"><p>codec the encodes/decodes the value</p></dd><dt class="param">sizePadding</dt><dd class="cmt"><p>number of bits to add to the size before encoding (and subtract from the size before decoding)</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#variableSizeBytes" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#variableSizeBytes" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="variableSizeBytes[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]"></a>
       <a id="variableSizeBytes[A](Codec[Int],Codec[A],Int):Codec[A]"></a>
       <h4 class="signature">
@@ -1244,11 +1248,11 @@ the calculated size before encoding, and subtracted from the decoded size before
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">variableSizeBytes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>, <span name="value">value: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBytes.A">A</span>]</span>, <span name="sizePadding">sizePadding: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a> = <span class="symbol">0</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBytes.A">A</span>]</span>
+        <span class="name">variableSizeBytes</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="value">value: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBytes.A">A</span>]</span>, <span name="sizePadding">sizePadding: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeBytes.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Byte equivalent of <a href="#variableSizeBits[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]" class="extmbr" name="scodec.codecs#variableSizeBits">variableSizeBits</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Byte equivalent of <a href="#variableSizeBits[A](size:scodec.Codec[Int],value:scodec.Codec[A],sizePadding:Int):scodec.Codec[A]" class="extmbr" name="scodec.codecs#variableSizeBits">variableSizeBits</a>.</p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>codec that encodes/decodes the size in bytes</p></dd><dt class="param">value</dt><dd class="cmt"><p>codec the encodes/decodes the value</p></dd><dt class="param">sizePadding</dt><dd class="cmt"><p>number of bytes to add to the size before encoding (and subtract from the size before decoding)</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#variableSizeSignature" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
+    </li><li name="scodec.codecs#variableSizeSignature" visbl="pub" data-isabs="false" fullComment="yes" group="crypto">
       <a id="variableSizeSignature[A](size:scodec.Codec[Int])(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]"></a>
       <a id="variableSizeSignature[A](Codec[Int])(Codec[A])(SignatureFactory):Codec[A]"></a>
       <h4 class="signature">
@@ -1257,13 +1261,13 @@ the calculated size before encoding, and subtracted from the decoded size before
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">variableSizeSignature</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>)</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeSignature.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="signatureFactory">signatureFactory: <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeSignature.A">A</span>]</span>
+        <span class="name">variableSizeSignature</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="size">size: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeSignature.A">A</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="signatureFactory">signatureFactory: <a href="SignatureFactory.html" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.variableSizeSignature.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that includes a signature of the encoded bits.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that includes a signature of the encoded bits.</p><p>Same functionality as <a href="#fixedSizeSignature[A](size:Int)(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]" class="extmbr" name="scodec.codecs#fixedSizeSignature">fixedSizeSignature</a> with one difference -- the size of the signature bytes are
 written between the encoded bits and the signature bits.
 </p></div><dl class="paramcmts block"><dt class="param">size</dt><dd class="cmt"><p>codec to use to encode/decode size of signature field</p></dd><dt class="param">codec</dt><dd class="cmt"><p>codec to use to encode/decode value field</p></dd><dt class="param">signatureFactory</dt><dd class="cmt"><p>factory to use for signing/verifying</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#vector" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+    </li><li name="scodec.codecs#vector" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="vector[A](codec:scodec.Codec[A]):scodec.Codec[Vector[A]]"></a>
       <a id="vector[A](Codec[A]):Codec[Vector[A]]"></a>
       <h4 class="signature">
@@ -1278,7 +1282,7 @@ written between the encoded bits and the signature bits.
       <p class="shortcomment cmt">Codec that encodes/decodes a <code>Vector[A]</code> from a <code>Codec[A]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that encodes/decodes a <code>Vector[A]</code> from a <code>Codec[A]</code>.</p><p>When encoding, each <code>A</code> in the vector is encoded and all of the resulting vectors are concatenated.</p><p>When decoding, <code>codec.decode</code> is called repeatedly until there are no more remaining bits and the value result
 of each <code>decode</code> is returned in the vector.
 </p></div><dl class="paramcmts block"><dt class="param">codec</dt><dd class="cmt"><p>codec to encode/decode a single element of the sequence</p></dd></dl></div>
-    </li><li name="scodec.codecs.package#x509Certificate" visbl="pub" data-isabs="false" fullComment="no" group="crypto">
+    </li><li name="scodec.codecs#x509Certificate" visbl="pub" data-isabs="false" fullComment="no" group="crypto">
       <a id="x509Certificate:scodec.Codec[java.security.cert.X509Certificate]"></a>
       <a id="x509Certificate:Codec[X509Certificate]"></a>
       <h4 class="signature">
@@ -1300,7 +1304,7 @@ of each <code>decode</code> is returned in the vector.
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="package$$$tilde$.html"><span title="gt4s: $tilde" class="name">~</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
+        <a href="package$$$tilde$.html"><span title="gt4s: $tilde" class="name">~</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       <p class="comment cmt">Extractor that allows pattern matching on the tuples created by tupling codecs.</p>
@@ -1311,7 +1315,7 @@ of each <code>decode</code> is returned in the vector.
 
         <div id="values" class="values members">
               <h3>Deprecated Value Members</h3>
-              <ol><li name="scodec.codecs.package#repeated" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
+              <ol><li name="scodec.codecs#repeated" visbl="pub" data-isabs="false" fullComment="yes" group="combinators">
       <a id="repeated[A](codec:scodec.Codec[A]):scodec.Codec[scala.collection.immutable.IndexedSeq[A]]"></a>
       <a id="repeated[A](Codec[A]):Codec[IndexedSeq[A]]"></a>
       <h4 class="signature">
@@ -1320,7 +1324,7 @@ of each <code>decode</code> is returned in the vector.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name deprecated" title="Deprecated: (Since version 1.2.1) Use vector codec or list codec instead.">repeated</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.repeated.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.collection.immutable.IndexedSeq" class="extype" target="_top">IndexedSeq</a>[<span class="extype" name="scodec.codecs.repeated.A">A</span>]]</span>
+        <span class="name deprecated" title="Deprecated: (Since version 1.2.1) Use vector codec or list codec instead.">repeated</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.repeated.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scala.collection.immutable.IndexedSeq">IndexedSeq</span>[<span class="extype" name="scodec.codecs.repeated.A">A</span>]]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Codec that encodes/decodes an immutable <code>IndexedSeq[A]</code> from a <code>Codec[A]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Codec that encodes/decodes an immutable <code>IndexedSeq[A]</code> from a <code>Codec[A]</code>.</p><p>When encoding, each <code>A</code> in the sequence is encoded and all of the resulting vectors are concatenated.</p><p>When decoding, <code>codec.decode</code> is called repeatedly until there are no more remaining bits and the value result
@@ -1372,6 +1376,7 @@ of each <code>decode</code> is returned in the sequence.
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../../lib/diagrams.js"></script>
+
+
     </body>
       </html>

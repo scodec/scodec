@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>DiscriminatorCodec - scodec.codecs.DiscriminatorCodec</title>
@@ -9,6 +8,11 @@
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      <script type="text/javascript" src="../../lib/modernizr.custom.js"></script><script type="text/javascript" src="../../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
@@ -81,7 +85,7 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
                 </span>
-                <ol id="implicits"> <li class="in" name="scodec.ValueCodecEnrichedWithHListSupport" data-hidden="false"><span>by ValueCodecEnrichedWithHListSupport</span></li><li class="in" name="scodec.HListCodecEnrichedWithHListSupport" data-hidden="false"><span>by HListCodecEnrichedWithHListSupport</span></li><li class="in" name="scodec.codecs.ValueEnrichedWithTuplingSupport" data-hidden="false"><span>by ValueEnrichedWithTuplingSupport</span></li><li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.any2stringfmt" data-hidden="true"><span>by any2stringfmt</span></li><li class="in" name="scala.Predef.any2ArrowAssoc" data-hidden="true"><span>by any2ArrowAssoc</span></li><li class="in" name="scala.Predef.any2Ensuring" data-hidden="true"><span>by any2Ensuring</span></li>
+                <ol id="implicits"> <li class="in" name="scodec.ValueCodecEnrichedWithHListSupport" data-hidden="false"><span>by ValueCodecEnrichedWithHListSupport</span></li><li class="in" name="scodec.HListCodecEnrichedWithHListSupport" data-hidden="false"><span>by HListCodecEnrichedWithHListSupport</span></li><li class="in" name="scodec.codecs.ValueEnrichedWithTuplingSupport" data-hidden="false"><span>by ValueEnrichedWithTuplingSupport</span></li><li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -108,19 +112,6 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -129,10 +120,10 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -142,7 +133,7 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -155,15 +146,15 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
+            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2stringadd in scala.Predef.
             
-          </dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
-    </li><li name="scala.Predef.any2ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+          </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
       <a id="-&gt;[B](B):(DiscriminatorCodec[A,B],B)"></a>
       <h4 class="signature">
@@ -177,7 +168,7 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -192,7 +183,7 @@ that encodes a 0 if passed a <code>Boolean</code> and a 1 if passed an <code>Int
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $div" class="name">/</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $div" class="name">/</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -207,7 +198,7 @@ Operator alias for <code>subcaseO</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $div" class="name">/</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $div" class="name">/</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec./.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -323,21 +314,8 @@ the <code>HList K</code> followed by the <code>HList L</code>.</p></div><dl clas
       </h4>
       <p class="shortcomment cmt">Creates a <code>Codec[A]</code> that: encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>;
 decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[A]</code> that: encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>;
-decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p><p>Operator alias of <a href="#dropRight[B](codecB:scodec.Codec[B])(implicitevidence$1:scalaz.Monoid[B]):scodec.Codec[A]" class="extmbr" name="scodec.codecs.DiscriminatorCodec#dropRight">dropRight</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
+decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p><p>Operator alias of <a href="../Codec.html#dropRight[B](codecB:scodec.Codec[B])(implicitevidence$1:scalaz.Monoid[B]):scodec.Codec[A]" class="extmbr" name="scodec.Codec#dropRight">dropRight</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -346,10 +324,10 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scodec.ValueCodecEnrichedWithHListSupport#&gt;&gt;:~" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
       <a id="&gt;&gt;:~[L&lt;:shapeless.HList](f:A=&gt;scodec.Codec[L]):scodec.Codec[shapeless.::[A,L]]"></a>
       <a id="&gt;&gt;:~[L&lt;:HList]((A)⇒Codec[L]):Codec[::[A,L]]"></a>
@@ -382,7 +360,7 @@ Operator alias for <code>flatPrepend</code>.</p></div><dl class="attributes bloc
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new codec that encodes/decodes a value of type <code>(A, B)</code> where the codec of <code>B</code> is dependent on <code>A</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new codec that encodes/decodes a value of type <code>(A, B)</code> where the codec of <code>B</code> is dependent on <code>A</code>.
-Operator alias for <a href="#flatZip[B](f:A=&gt;scodec.Codec[B]):scodec.Codec[(A,B)]" class="extmbr" name="scodec.codecs.DiscriminatorCodec#flatZip">flatZip</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
+Operator alias for <a href="../Codec.html#flatZip[B](f:A=&gt;scodec.Codec[B]):scodec.Codec[(A,B)]" class="extmbr" name="scodec.Codec#flatZip">flatZip</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
     </li><li name="scodec.codecs.DiscriminatorCodec#?" visbl="pub" data-isabs="false" fullComment="yes" group="discriminator">
       <a id="?[R](encodeTag:B,decodeTag:B=&gt;Boolean)(toRep:A=&gt;Option[R])(fromRep:R=&gt;A)(cr:scodec.Codec[R]):scodec.codecs.DiscriminatorCodec[A,B]"></a>
       <a id="?[R](B,(B)⇒Boolean)((A)⇒Option[R])((R)⇒A)(Codec[R]):DiscriminatorCodec[A,B]"></a>
@@ -392,7 +370,7 @@ Operator alias for <a href="#flatZip[B](f:A=&gt;scodec.Codec[B]):scodec.Codec[(A
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $qmark" class="name">?</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $qmark" class="name">?</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -407,7 +385,7 @@ Operator alias for <code>caseO</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $qmark" class="name">?</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $qmark" class="name">?</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.?.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -422,7 +400,7 @@ Operator alias for <code>caseO</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bslash" class="name">\</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $bslash" class="name">\</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -437,7 +415,7 @@ Operator alias for <code>subcaseP</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bslash" class="name">\</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $bslash" class="name">\</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.\.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -495,7 +473,7 @@ Operator alias for <code>subcaseP</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">caseO</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">caseO</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -509,7 +487,7 @@ Operator alias for <code>subcaseP</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">caseO</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">caseO</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -523,7 +501,7 @@ Operator alias for <code>subcaseP</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">caseP</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">caseP</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -537,7 +515,7 @@ Operator alias for <code>subcaseP</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">caseP</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">caseP</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.caseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -706,7 +684,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
 <code>IllegalArgumentException</code> if encoding fails.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value in to a bit vector, throwing an
 <code>IllegalArgumentException</code> if encoding fails.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>value to encode</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>upon encoding failure</p></span></dd></dl></div>
-    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((DiscriminatorCodec[A,B])⇒Boolean,⇒Any):DiscriminatorCodec[A,B]"></a>
       <h4 class="signature">
@@ -715,15 +693,15 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
       <a id="ensuring((DiscriminatorCodec[A,B])⇒Boolean):DiscriminatorCodec[A,B]"></a>
       <h4 class="signature">
@@ -732,15 +710,15 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring(Boolean,⇒Any):DiscriminatorCodec[A,B]"></a>
       <h4 class="signature">
@@ -749,15 +727,15 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
       <a id="ensuring(Boolean):DiscriminatorCodec[A,B]"></a>
       <h4 class="signature">
@@ -766,12 +744,12 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -783,7 +761,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -796,7 +774,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -809,7 +787,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -882,7 +860,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
             <a href="../package$$ValueCodecEnrichedWithHListSupport.html" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>] performed by method ValueCodecEnrichedWithHListSupport in <a href="../package.html" class="extype" name="scodec">scodec</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="../package$$ValueCodecEnrichedWithHListSupport.html" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a></dd></dl></div>
-    </li><li name="scala.Predef.any2stringfmt#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="formatted(fmtstr:String):String"></a>
       <a id="formatted(String):String"></a>
       <h4 class="signature">
@@ -896,7 +874,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
+            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method StringFormat in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -937,7 +915,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -963,7 +941,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -989,7 +967,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1002,7 +980,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1015,7 +993,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -1041,7 +1019,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pcontramap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>]</span>)</span><span class="result">: <a href="../Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>]</span>
+        <span class="name">pcontramap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>]</span>)</span><span class="result">: <a href="../Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Converts this encoder to an <code>Encoder[B]</code> using the supplied partial
@@ -1057,7 +1035,7 @@ function from <code>B</code> to <code>A</code>. The encoding will fail for any <
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pxmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scodec.Codec.pxmap.B">B</span></span>, <span name="g">g: (<span class="extype" name="scodec.Codec.pxmap.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.pxmap.B">B</span>]</span>
+        <span class="name">pxmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scodec.Codec.pxmap.B">B</span></span>, <span name="g">g: (<span class="extype" name="scodec.Codec.pxmap.B">B</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.pxmap.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Maps to a <code>codec</code> of type <code>B</code>, where there is a partial function
@@ -1073,7 +1051,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">subcaseO</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">subcaseO</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1087,7 +1065,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">subcaseO</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">subcaseO</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseO.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1101,7 +1079,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">subcaseP</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">subcaseP</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1115,7 +1093,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">subcaseP</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">subcaseP</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.subcaseP.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1155,7 +1133,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">typecase</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.typecase.R">R</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.typecase.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span class="name">typecase</span><span class="tparams">[<span name="R">R &lt;: <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.typecase.R">R</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scala.Predef.Manifest">Manifest</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.typecase.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1183,7 +1161,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1202,7 +1180,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1221,7 +1199,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -1266,7 +1244,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="encodeTag">encodeTag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>, <span name="decodeTag">decodeTag: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1281,7 +1259,7 @@ Operator alias for <code>caseP</code>.
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.PartialFunction" class="extype" target="_top">PartialFunction</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
+        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="R">R</span>]</span><span class="params">(<span name="tag">tag: <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span></span>)</span><span class="params">(<span name="toRep">toRep: <span class="extype" name="scala.PartialFunction">PartialFunction</span>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="params">(<span name="fromRep">fromRep: (<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>) ⇒ <span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span></span>)</span><span class="params">(<span name="cr">cr: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.|.R">R</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Returns a new discriminator codec with a new case added for the specified tag.</p><div class="fullcomment"><div class="comment cmt"><p>Returns a new discriminator codec with a new case added for the specified tag.
@@ -1299,7 +1277,7 @@ Operator alias for <code>caseP</code>.
         <span title="gt4s: $tilde" class="name">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.~.B">B</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[(<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.Codec.~.B">B</span>)]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[(A, B)]</code> that first encodes/decodes an <code>A</code> followed by a <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[(A, B)]</code> that first encodes/decodes an <code>A</code> followed by a <code>B</code>.</p><p>Operator alias for <a href="#pairedWith[B](codecB:scodec.Codec[B]):scodec.Codec[(A,B)]" class="extmbr" name="scodec.codecs.DiscriminatorCodec#pairedWith">pairedWith</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
+      <p class="shortcomment cmt">Creates a <code>Codec[(A, B)]</code> that first encodes/decodes an <code>A</code> followed by a <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[(A, B)]</code> that first encodes/decodes an <code>A</code> followed by a <code>B</code>.</p><p>Operator alias for <a href="../Codec.html#pairedWith[B](codecB:scodec.Codec[B]):scodec.Codec[(A,B)]" class="extmbr" name="scodec.Codec#pairedWith">pairedWith</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
     </li><li name="scodec.Codec#~&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="tuple">
       <a id="~&gt;[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]"></a>
       <a id="~&gt;[B](Codec[B])(Monoid[A]):Codec[B]"></a>
@@ -1314,8 +1292,8 @@ Operator alias for <code>caseP</code>.
       </h4>
       <p class="shortcomment cmt">Creates a <code>Codec[B]</code> that: encodes the zero element of the <code>Monoid</code> of A<code> followed by a </code>B<code>;
 decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.</code></p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[B]</code> that: encodes the zero element of the <code>Monoid</code> of A<code> followed by a </code>B<code>;
-decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.</code></p><p>Operator alias of <a href="#dropLeft[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]" class="extmbr" name="scodec.codecs.DiscriminatorCodec#dropLeft">dropLeft</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
-    </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.</code></p><p>Operator alias of <a href="../Codec.html#dropLeft[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]" class="extmbr" name="scodec.Codec#dropLeft">dropLeft</a>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a></dd></dl></div>
+    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
       <a id="→[B](B):(DiscriminatorCodec[A,B],B)"></a>
       <h4 class="signature">
@@ -1329,7 +1307,7 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -1371,40 +1349,6 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
             <a href="../package$$HListCodecEnrichedWithHListSupport.html" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>] performed by method HListCodecEnrichedWithHListSupport in <a href="../package.html" class="extype" name="scodec">scodec</a>.
             This conversion will take place only if A is a subclass of HList (A &lt;: <span class="extype" name="shapeless.HList">HList</span>).
           </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminatorCodec: HListCodecEnrichedWithHListSupport[A]).self</pre></div></dd><dt>Definition Classes</dt><dd><a href="../package$$HListCodecEnrichedWithHListSupport.html" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a></dd></dl></div>
-    </li><li name="scala.Predef.any2stringadd#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="self:Any"></a>
-      <a id="self:Any"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="implicit shadowed">self</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminatorCodec: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
-    </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="self:Any"></a>
-      <a id="self:Any"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="implicit shadowed">self</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminatorCodec: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="~[B](b:B):(A,B)"></a>
       <a id="~[B](B):(DiscriminatorCodec[A,B],B)"></a>
@@ -1425,50 +1369,7 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
     </li></ol>
             </div>
 
-        <div id="values" class="values members">
-              <h3>Deprecated Value Members</h3>
-              <ol><li name="scala.Predef.any2ArrowAssoc#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="x:A"></a>
-      <a id="x:DiscriminatorCodec[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2ArrowAssoc in scala.Predef.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminatorCodec: ArrowAssoc[DiscriminatorCodec[A, B]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>leftOfArrow<code> instead</code></u></code></p></dd></dl></div>
-    </li><li name="scala.Predef.any2Ensuring#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="x:A"></a>
-      <a id="x:DiscriminatorCodec[A,B]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]] performed by method any2Ensuring in scala.Predef.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminatorCodec: Ensuring[DiscriminatorCodec[A, B]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
-                <span class="name">@deprecated</span>
-              
-        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>resultOfEnsuring<code> instead</code></u></code></p></dd></dl></div>
-    </li></ol>
-            </div>
+        
         </div>
 
         <div id="inheritedMembers">
@@ -1499,19 +1400,19 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
+                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]]
               </h3>
-            </div><div class="conversion" name="scala.Predef.any2stringfmt">
-              <h3>Inherited by implicit conversion any2stringfmt from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
+            </div><div class="conversion" name="scala.Predef.StringFormat">
+              <h3>Inherited by implicit conversion StringFormat from
+                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]]
               </h3>
-            </div><div class="conversion" name="scala.Predef.any2ArrowAssoc">
-              <h3>Inherited by implicit conversion any2ArrowAssoc from
-                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]]
-              </h3>
-            </div><div class="conversion" name="scala.Predef.any2Ensuring">
-              <h3>Inherited by implicit conversion any2Ensuring from
+            </div><div class="conversion" name="scala.Predef.Ensuring">
+              <h3>Inherited by implicit conversion Ensuring from
                 <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.ArrowAssoc">
+              <h3>Inherited by implicit conversion ArrowAssoc from
+                <a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a>[<span class="extype" name="scodec.codecs.DiscriminatorCodec.A">A</span>, <span class="extype" name="scodec.codecs.DiscriminatorCodec.B">B</span>]]
               </h3>
             </div>
         </div>
@@ -1543,6 +1444,7 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../../lib/diagrams.js"></script>
+
+
     </body>
       </html>
