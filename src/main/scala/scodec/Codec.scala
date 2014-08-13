@@ -1,5 +1,7 @@
 package scodec
 
+import scala.language.implicitConversions
+
 import scalaz.{ \/, Monoid, StateT }
 import \/.left
 import shapeless._
@@ -72,38 +74,56 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final def ~[B](codecB: Codec[B]): Codec[(A, B)] = pairedWith(codecB)
 
   /**
-   * Creates a `Codec[B]` that: encodes the zero element of the `Monoid` of A` followed by a `B`;
-   * decodes an `A` followed by a `B` and discards the decoded `A`.
+   * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
+   * decodes a unit followed by a `B` and discards the decoded unit.
+   *
    * @group tuple
    */
-  final def dropLeft[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] =
-    pairedWith(codecB).xmap[B]({ case (a, b) => b }, b => (Monoid[A].zero, b))
+  final def dropLeft[B](codecB: Codec[B])(implicit ev: Unit =:= A): Codec[B] =
+    pairedWith(codecB).xmap[B]({ case (a, b) => b }, b => (ev(()), b))
 
   /**
-   * Creates a `Codec[B]` that: encodes the zero element of the `Monoid` of A` followed by a `B`;
-   * decodes an `A` followed by a `B` and discards the decoded `A`.
+   * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
+   * decodes a unit followed by a `B` and discards the decoded unit.
    *
    * Operator alias of [[dropLeft]].
    * @group tuple
    */
-  final def ~>[B](codecB: Codec[B])(implicit ma: Monoid[A]): Codec[B] = dropLeft(codecB)
+  final def ~>[B](codecB: Codec[B])(implicit ev: Unit =:= A): Codec[B] = dropLeft(codecB)
 
   /**
-   * Creates a `Codec[A]` that: encodes an `A` followed by the zero element of the `Monoid` of `B`;
-   * decodes an `A` followed by a `B` and discards the decoded `B`.
+   * Assuming `B` is `Unit`, creates a `Codec[A]` that: encodes the `A` followed by a unit;
+   * decodes an `A` followed by a unit and discards the decoded unit.
+   *
    * @group tuple
    */
-  final def dropRight[B: Monoid](codecB: Codec[B]): Codec[A] =
-    pairedWith(codecB).xmap[A]({ case (a, b) => a }, a => (a, Monoid[B].zero))
+  final def dropRight[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] =
+    pairedWith(codecB).xmap[A]({ case (a, b) => a }, a => (a, ev(())))
 
   /**
-   * Creates a `Codec[A]` that: encodes an `A` followed by the zero element of the `Monoid` of `B`;
-   * decodes an `A` followed by a `B` and discards the decoded `B`.
+   * Assuming `B` is `Unit`, creates a `Codec[A]` that: encodes the `A` followed by a unit;
+   * decodes an `A` followed by a unit and discards the decoded unit.
    *
    * Operator alias of [[dropRight]].
    * @group tuple
    */
-  final def <~[B: Monoid](codecB: Codec[B]): Codec[A] = dropRight(codecB)
+  final def <~[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] = dropRight(codecB)
+
+  /**
+   * Converts this to a `Codec[Unit]` that encodes using the specified zero value and
+   * decodes a unit value when this codec decodes an `A` successfully.
+   *
+   * @group combinators
+   */
+  final def unit(zero: A): Codec[Unit] = xmap[Unit](_ => (), _ => zero)
+
+  /**
+   * Converts this to a `Codec[Unit]` that encodes using the zero value of the implicitly
+   * available `Monoid[A]` and decodes a unit value when this codec decodes an `A` successfully.
+   *
+   * @group combinators
+   */
+  final def unitM(implicit ma: Monoid[A]): Codec[Unit] = unit(ma.zero)
 
   /**
    * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.

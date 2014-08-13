@@ -1,3 +1,11 @@
+1.3.0
+=====
+ - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
+ - Added `scodec.codecs.literals._` for implicitly converting literal values to constant codecs.
+ - Changed `dropLeft`/`~>` and `dropRight`/`<~` to require a `Codec[Unit]` on the dropped side.
+   Previously, the requirement was a `Codec[X]` and an implicitly available `Monoid[X]`.
+   To convert a `Codec[X]` to a `Codec[Unit]`, use the `unit` combinator.
+
 1.2.1
 =====
  - Added `fail` combinator
