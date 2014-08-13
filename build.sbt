@@ -149,3 +149,7 @@ mimaDefaultSettings
 previousArtifact := previousVersion(version.value) map { pv =>
   organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
 }
+
+binaryIssueFilters ++= Seq(
+  ProblemFilters.exclude[MissingClassProblem]("scodec.codecs.IndexedSeqCodec")
+)
