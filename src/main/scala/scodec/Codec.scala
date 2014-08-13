@@ -1,6 +1,8 @@
 package scodec
 
-import scalaz.{ \/, Monoid, StateT }
+import scala.language.implicitConversions
+
+import scalaz.{ \/, InvariantFunctor, Monoid, StateT }
 import \/.left
 import shapeless._
 
@@ -194,10 +196,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   /** Gets the implicitly available codec for type `A`. */
   def apply[A: Codec]: Codec[A] = implicitly[Codec[A]]
 
-  // TODO Upon upgrade to Scalaz 7.1
-  /*
-  val invariantFunctorInstance: InvariantFunctor[A] = new InvariantFunctor[Codec] {
-    ...
+  val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
+    def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
   }
-  */
 }
