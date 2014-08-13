@@ -2,6 +2,9 @@ import sbtrelease._
 import ReleaseStateTransformations._
 import ReleasePlugin._
 import ReleaseKeys._
+import com.typesafe.tools.mima.core._
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.plugin.MimaKeys._
 
 organization := "org.typelevel"
 
@@ -141,3 +144,8 @@ ghpages.settings
 
 git.remoteRepo := "git@github.com:scodec/scodec.git"
 
+mimaDefaultSettings
+
+previousArtifact := previousVersion(version.value) map { pv =>
+  organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
+}
