@@ -37,4 +37,12 @@ class CodecTest extends CodecSuite {
     val codec = uint8 <~ uint8.unit(0)
     codec.encode(0xff) shouldBe \/.right(hex"ff00".bits)
   }
+
+  test("literals used as unit codecs") {
+    import scodec.codecs.literals._
+    (1 ~> uint8).encode(2) shouldBe \/.right(hex"0102".bits)
+    (1.toByte ~> uint8).encode(2) shouldBe \/.right(hex"0102".bits)
+    (hex"11223344" ~> uint8).encode(2) shouldBe \/.right(hex"1122334402".bits)
+    (hex"11223344".bits ~> uint8).encode(2) shouldBe \/.right(hex"1122334402".bits)
+  }
 }

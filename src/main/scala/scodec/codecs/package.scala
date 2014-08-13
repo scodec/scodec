@@ -440,12 +440,36 @@ package object codecs {
   def constant(bits: BitVector): Codec[Unit] = new ConstantCodec(bits)
 
   /**
+   * Codec that always encodes the specified bytes and always decodes the specified bytes, returning `()` if the actual bytes match
+   * the specified bytes and returning an error otherwise.
+   * @param bytes constant bytes
+   * @group bits
+   */
+  def constant(bytes: ByteVector): Codec[Unit] = constant(bytes.bits)
+
+  /**
    * Codec that always encodes the specified bits and always decodes the specified bits, returning `()` if the actual bits match
    * the specified bits and returning an error otherwise.
    * @param bits constant bits
    * @group bits
    */
   def constant[A: Integral](bits: A*): Codec[Unit] = new ConstantCodec(BitVector(bits: _*))
+
+  /**
+   * Provides implicit conversions from literal types to constant codecs.
+   *
+   * For example, with `literals._` imported, `constant(0x47) ~> uint8`
+   * can be written as `0x47 ~> uint8`.
+   *
+   * Supports literal bytes, ints, `BitVector`s, and `ByteVector`s.
+   *
+   * @group bits
+   */
+  object literals {
+    implicit def constantIntCodec(a: Int): Codec[Unit] = constant(a)
+    implicit def constantByteVectorCodec(a: ByteVector): Codec[Unit] = constant(a)
+    implicit def constantBitVectorCodec(a: BitVector): Codec[Unit] = constant(a)
+  }
 
   /**
    * Codec that limits the number of bits the specified codec works with.
