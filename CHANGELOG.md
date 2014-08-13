@@ -1,12 +1,10 @@
-1.3.0
-=====
- - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
-
 1.2.1
 =====
  - Added `fail` combinator
  - Added `mappedEnum` combinator
  - Added `vector` and `list` combinators and deprecated `repeated`
+ - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
+ - Added `scodec.codecs.literals._` for implicitly converting literal values to constant codecs.
 
 1.2.0
 =====

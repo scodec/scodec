@@ -32,4 +32,13 @@ class CodecTest extends CodecSuite {
     codec.decode(BitVector.empty) shouldBe 'left
     uint8.unit(255).encode(()) shouldBe \/.right(BitVector(0xff))
   }
+
+  test("literals used as unit codecs") {
+    import scalaz.std.AllInstances._
+    import scodec.codecs.literals._
+    (1 ~> uint8).encode(2) shouldBe \/.right(hex"0102".bits)
+    (1.toByte ~> uint8).encode(2) shouldBe \/.right(hex"0102".bits)
+    (hex"11223344" ~> uint8).encode(2) shouldBe \/.right(hex"1122334402".bits)
+    (hex"11223344".bits ~> uint8).encode(2) shouldBe \/.right(hex"1122334402".bits)
+  }
 }
