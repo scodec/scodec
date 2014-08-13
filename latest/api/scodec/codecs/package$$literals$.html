@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>CodecAsAux - scodec.CodecAsAux</title>
-          <meta name="description" content="CodecAsAux - scodec.CodecAsAux" />
-          <meta name="keywords" content="CodecAsAux scodec.CodecAsAux" />
+          <title>literals - scodec.codecs.literals</title>
+          <meta name="description" content="literals - scodec.codecs.literals" />
+          <meta name="keywords" content="literals scodec.codecs.literals" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../index.html';
-            var hash = 'scodec.CodecAsAux$';
+            var url = '../../index.html';
+            var hash = 'scodec.codecs.package$$literals$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <a href="CodecAsAux.html" title="Go to companion"><img src="../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="package.html" class="extype" name="scodec">scodec</a></p>
-        <h1><a href="CodecAsAux.html" title="Go to companion">CodecAsAux</a></h1>
+        <img src="../../lib/object_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
+        <h1>literals</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,13 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">CodecAsAux</span>
+        <span class="name">literals</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Codec.scala" target="_blank">Codec.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides implicit conversions from literal types to constant codecs.</p><p>For example, with <code>literals._</code> imported, <code>constant(0x47) ~&gt; uint8</code>
+can be written as <code>0x47 ~&gt; uint8</code>.</p><p>Supports literal bytes, ints, <code>BitVector</code>s, and <code>ByteVector</code>s.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +61,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.CodecAsAux"><span>CodecAsAux</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.codecs.literals"><span>literals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -175,13 +177,52 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scodec.codecs.literals#constantBitVectorCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="constantBitVectorCodec(a:scodec.bits.BitVector):scodec.Codec[Unit]"></a>
+      <a id="constantBitVectorCodec(BitVector):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constantBitVectorCodec</span><span class="params">(<span name="a">a: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.literals#constantByteVectorCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="constantByteVectorCodec(a:scodec.bits.ByteVector):scodec.Codec[Unit]"></a>
+      <a id="constantByteVectorCodec(ByteVector):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constantByteVectorCodec</span><span class="params">(<span name="a">a: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.ByteVector" class="extype" target="_top">ByteVector</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.codecs.literals#constantIntCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="constantIntCodec(a:Int):scodec.Codec[Unit]"></a>
+      <a id="constantIntCodec(Int):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">constantIntCodec</span><span class="params">(<span name="a">a: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -220,7 +261,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -266,19 +307,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.CodecAsAux#mkAs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkAs[B,Repr,A](implicitgen:shapeless.Generic.Aux[B,Repr],implicitaToR:=:=[A,Repr],implicitrToA:=:=[Repr,A]):scodec.CodecAsAux[B,A]"></a>
-      <a id="mkAs[B,Repr,A](Aux[B,Repr],=:=[A,Repr],=:=[Repr,A]):CodecAsAux[B,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkAs</span><span class="tparams">[<span name="B">B</span>, <span name="Repr">Repr</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.Generic.Aux">Aux</span>[<span class="extype" name="scodec.CodecAsAux.mkAs.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.Repr">Repr</span>]</span>, <span name="aToR">aToR: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAs.A">A</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.Repr">Repr</span>]</span>, <span name="rToA">rToA: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAs.Repr">Repr</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.A">A</span>]</span>)</span><span class="result">: <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>[<span class="extype" name="scodec.CodecAsAux.mkAs.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.A">A</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -430,6 +458,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../lib/diagrams.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../../lib/diagrams.js"></script>
     </body>
       </html>

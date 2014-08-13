@@ -1,4 +1,5 @@
-<!DOCTYPE html >
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
           <title>Codec - scodec.Codec</title>
@@ -8,11 +9,6 @@
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
-      <script type="text/javascript" src="../lib/jquery.js" id="jquery-js"></script>
-      <script type="text/javascript" src="../lib/jquery-ui.js"></script>
-      <script type="text/javascript" src="../lib/template.js"></script>
-      <script type="text/javascript" src="../lib/tools.tooltip.js"></script>
-      <script type="text/javascript" src="../lib/modernizr.custom.js"></script><script type="text/javascript" src="../lib/diagrams.js" id="diagrams-js"></script>
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
@@ -50,9 +46,9 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="GenCodec.html" class="extype" name="scodec.GenCodec">GenCodec</a>[<span class="extype" name="scodec.Codec.A">A</span>, <span class="extype" name="scodec.Codec.A">A</span>], <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.Codec.A">A</span>], <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Codec.A">A</span>], <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
-            <span class="toggle">Known Subclasses</span>
-            <div class="subClasses hiddenContent"><a href="codecs/DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a></div>
-          </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+          <span class="toggle">Known Subclasses</span>
+          <div class="subClasses hiddenContent"><a href="codecs/DiscriminatorCodec.html" class="extype" name="scodec.codecs.DiscriminatorCodec">DiscriminatorCodec</a></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
                 <span class="toggle diagram-link">Type Hierarchy</span>
                 <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#diagrams" target="_blank" class="diagram-help">Learn more about scaladoc diagrams</a>
                 <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph16" viewBox="0.00 0.00 692.50 169.00" height="169pt" width="693pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 165)" class="graph" id="graph0"><polygon points="-4,4 -4,-165 688.5,-165 688.5,4 -4,4" stroke="none" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><g class="cluster" id="clust3"></g><!-- node4 --><g class="node implicit-outgoing class" id="graph16_4"><g id="a_implicit-outgoing class|graph16_4"><a xlink:title="scodec.Codec can be implicitly converted to HListCodecEnrichedWithHListSupport[A] by the implicit method HListCodecEnrichedWithHListSupport in package scodec" xlink:href="package$$HListCodecEnrichedWithHListSupport.html#inheritance-diagram"><polygon points="660.5,-93 436.5,-93 436.5,-68 660.5,-68 660.5,-93" stroke="#ababab" fill="#e1e1e1"></polygon><image xlink:href="../lib/class_diagram.png" y="-87.5" x="446.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#7d7d7d" font-size="10.00" font-family="Arial" y="-77.7495" x="467.015" text-anchor="start">HListCodecEnrichedWithHListSupport[A]</text></a></g></g><!-- node3 --><g class="node implicit-outgoing class" id="graph16_3"><g id="a_implicit-outgoing class|graph16_3"><a xlink:title="scodec.Codec can be implicitly converted to ValueCodecEnrichedWithHListSupport[A] by the implicit method ValueCodecEnrichedWithHListSupport in package scodec" xlink:href="package$$ValueCodecEnrichedWithHListSupport.html#inheritance-diagram"><polygon points="418,-93 191,-93 191,-68 418,-68 418,-93" stroke="#ababab" fill="#e1e1e1"></polygon><image xlink:href="../lib/class_diagram.png" y="-87.5" x="201.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#7d7d7d" font-size="10.00" font-family="Arial" y="-77.7495" x="222.49" text-anchor="start">ValueCodecEnrichedWithHListSupport[A]</text></a></g></g><!-- node3&#45;&gt;node4 --><!-- node0 --><g class="node this trait" id="graph16_0"><g id="a_this trait|graph16_0"><a xlink:title="scodec.Codec (this trait)" xlink:href="#inheritance-diagram"><polygon points="119.5,-93 35.5,-93 35.5,-68 119.5,-68 119.5,-93" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-87.5" x="45.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-77.7495" x="66.0444" text-anchor="start">Codec[A]</text></a></g></g><!-- node0&#45;&gt;node3 --><g class="edge implicit-outgoing" id="0_3"><g id="a_implicit-outgoing|0_3"><a xlink:title="Codec[A] can be implicitly converted to ValueCodecEnrichedWithHListSupport[A], HListCodecEnrichedWithHListSupport[A]"><path d="M127.38,-80.5C142.543,-80.5 159.943,-80.5 177.784,-80.5" stroke="#d4d4d4" fill="none"></path><polygon points="177.833,-82.2501 182.833,-80.5 177.833,-78.7501 177.833,-82.2501" stroke="#d4d4d4" fill="#d4d4d4"></polygon></a></g><text fill="#aaaaaa" font-size="10.00" font-family="Arial" y="-86.999" x="155.25" text-anchor="middle">implicitly</text></g><!-- node1 --><g class="node class" id="graph16_1"><g id="a_class|graph16_1"><a xlink:title="scodec.codecs.DiscriminatorCodec" xlink:href="codecs/DiscriminatorCodec.html#inheritance-diagram"><polygon points="155,-25 0,-25 0,-0 155,-0 155,-25" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../lib/class_diagram.png" y="-19.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.74951" x="31.2612" text-anchor="start">DiscriminatorCodec[A, B]</text></a></g></g><!-- node0&#45;&gt;node1 --><g class="edge inheritance" id="graph16_0_1"><g id="a_inheritance|graph16_0_1"><a xlink:title="DiscriminatorCodec[A, B] is a subtype of Codec[A]"><path d="M77.5,-62.6005C77.5,-50.8849 77.5,-35.583 77.5,-25.1973" stroke="#d4d4d4" fill="none"></path><polygon points="75.7501,-62.7005 77.5,-67.7005 79.2501,-62.7006 75.7501,-62.7005" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node trait" id="graph16_2"><g id="a_trait|graph16_2"><a xlink:title="scodec.GenCodec" xlink:href="GenCodec.html#inheritance-diagram"><polygon points="135,-161 20,-161 20,-136 135,-136 135,-161" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-155.5" x="30.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-145.75" x="51.2563" text-anchor="start">GenCodec[A, A]</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge inheritance" id="graph16_2_0"><g id="a_inheritance|graph16_2_0"><a xlink:title="Codec[A] is a subtype of GenCodec[A, A]"><path d="M77.5,-130.601C77.5,-118.885 77.5,-103.583 77.5,-93.1973" stroke="#d4d4d4" fill="none"></path><polygon points="75.7501,-130.7 77.5,-135.701 79.2501,-130.701 75.7501,-130.7" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
@@ -78,7 +74,7 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
                 </span>
-                <ol id="implicits"> <li class="in" name="scodec.ValueCodecEnrichedWithHListSupport" data-hidden="false"><span>by ValueCodecEnrichedWithHListSupport</span></li><li class="in" name="scodec.HListCodecEnrichedWithHListSupport" data-hidden="false"><span>by HListCodecEnrichedWithHListSupport</span></li><li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.StringFormat" data-hidden="true"><span>by StringFormat</span></li><li class="in" name="scala.Predef.Ensuring" data-hidden="true"><span>by Ensuring</span></li><li class="in" name="scala.Predef.ArrowAssoc" data-hidden="true"><span>by ArrowAssoc</span></li>
+                <ol id="implicits"> <li class="in" name="scodec.ValueCodecEnrichedWithHListSupport" data-hidden="false"><span>by ValueCodecEnrichedWithHListSupport</span></li><li class="in" name="scodec.HListCodecEnrichedWithHListSupport" data-hidden="false"><span>by HListCodecEnrichedWithHListSupport</span></li><li class="in" name="scala.Predef.any2stringadd" data-hidden="true"><span>by any2stringadd</span></li><li class="in" name="scala.Predef.any2stringfmt" data-hidden="true"><span>by any2stringfmt</span></li><li class="in" name="scala.Predef.any2ArrowAssoc" data-hidden="true"><span>by any2ArrowAssoc</span></li><li class="in" name="scala.Predef.any2Ensuring" data-hidden="true"><span>by any2Ensuring</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -136,6 +132,19 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
         <div id="values" class="values members">
               <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="!=(x$1:AnyRef):Boolean"></a>
+      <a id="!=(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -144,10 +153,10 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -157,7 +166,7 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -170,15 +179,15 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+        <span title="gt4s: $plus" class="implicit">+</span><span class="params">(<span name="other">other: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2stringadd in scala.Predef.
+            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt>Definition Classes</dt><dd>any2stringadd</dd></dl></div>
-    </li><li name="scala.Predef.ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+          </dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+    </li><li name="scala.Predef.any2ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
       <a id="-&gt;[B](B):(Codec[A],B)"></a>
       <h4 class="signature">
@@ -192,7 +201,7 @@ and associated constructor is provided by <code><a href="package.html#DecodingCo
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method ArrowAssoc in scala.Predef.
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -276,15 +285,15 @@ the <code>HList K</code> followed by the <code>HList L</code>.</p></div><dl clas
             This conversion will take place only if A is a subclass of HList (A &lt;: <span class="extype" name="shapeless.HList">HList</span>).
           </dd><dt>Definition Classes</dt><dd><a href="package$$HListCodecEnrichedWithHListSupport.html" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a></dd></dl></div>
     </li><li name="scodec.HListCodecEnrichedWithHListSupport#:~&gt;:" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
-      <a id=":~&gt;:[B](codec:scodec.Codec[B])(implicitevidence$1:scalaz.Monoid[B]):scodec.Codec[L]"></a>
-      <a id=":~&gt;:[B](Codec[B])(Monoid[B]):Codec[A]"></a>
+      <a id=":~&gt;:[B](codec:scodec.Codec[B])(implicitev:=:=[Unit,B]):scodec.Codec[L]"></a>
+      <a id=":~&gt;:[B](Codec[B])(=:=[Unit,B]):Codec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $colon$tilde$greater$colon" class="implicit">:~&gt;:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codec">codec: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span title="gt4s: $colon$tilde$greater$colon" class="implicit">:~&gt;:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codec">codec: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that encodes/decodes
@@ -295,21 +304,34 @@ the <code>HList K</code> followed by the <code>HList L</code>.</p></div><dl clas
             This conversion will take place only if A is a subclass of HList (A &lt;: <span class="extype" name="shapeless.HList">HList</span>).
           </dd><dt>Definition Classes</dt><dd><a href="package$$HListCodecEnrichedWithHListSupport.html" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a></dd></dl></div>
     </li><li name="scodec.Codec#&lt;~" visbl="pub" data-isabs="false" fullComment="yes" group="tuple">
-      <a id="&lt;~[B](codecB:scodec.Codec[B])(implicitevidence$2:scalaz.Monoid[B]):scodec.Codec[A]"></a>
-      <a id="&lt;~[B](Codec[B])(Monoid[B]):Codec[A]"></a>
+      <a id="&lt;~[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,B]):scodec.Codec[A]"></a>
+      <a id="&lt;~[B](Codec[B])(=:=[Unit,B]):Codec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $less$tilde" class="name">&lt;~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.&lt;~.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.&lt;~.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span title="gt4s: $less$tilde" class="name">&lt;~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.&lt;~.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.Codec.&lt;~.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[A]</code> that: encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>;
-decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[A]</code> that: encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>;
-decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p><p>Operator alias of <a href="#dropRight[B](codecB:scodec.Codec[B])(implicitevidence$1:scalaz.Monoid[B]):scodec.Codec[A]" class="extmbr" name="scodec.Codec#dropRight">dropRight</a>.</p></div></div>
+      <p class="shortcomment cmt">Assuming <code>B</code> is <code>Unit</code>, creates a <code>Codec[A]</code> that: encodes the <code>A</code> followed by a unit;
+decodes an <code>A</code> followed by a unit and discards the decoded unit.</p><div class="fullcomment"><div class="comment cmt"><p>Assuming <code>B</code> is <code>Unit</code>, creates a <code>Codec[A]</code> that: encodes the <code>A</code> followed by a unit;
+decodes an <code>A</code> followed by a unit and discards the decoded unit.</p><p>Operator alias of <a href="#dropRight[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,B]):scodec.Codec[A]" class="extmbr" name="scodec.Codec#dropRight">dropRight</a>.</p></div></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="==(x$1:AnyRef):Boolean"></a>
+      <a id="==(AnyRef):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -318,10 +340,10 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scodec.ValueCodecEnrichedWithHListSupport#&gt;&gt;:~" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
       <a id="&gt;&gt;:~[L&lt;:shapeless.HList](f:A=&gt;scodec.Codec[L]):scodec.Codec[shapeless.::[A,L]]"></a>
       <a id="&gt;&gt;:~[L&lt;:HList]((A)⇒Codec[L]):Codec[::[A,L]]"></a>
@@ -472,33 +494,33 @@ remaining bits.</p><div class="fullcomment"><div class="comment cmt"><p>Attempts
 remaining bits.
 </p></div><dl class="paramcmts block"><dt class="param">bits</dt><dd class="cmt"><p>bits to decode</p></dd><dt>returns</dt><dd class="cmt"><p>error if value could not be decoded or the decoded value</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a></dd></dl></div>
     </li><li name="scodec.Codec#dropLeft" visbl="pub" data-isabs="false" fullComment="no" group="tuple">
-      <a id="dropLeft[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]"></a>
-      <a id="dropLeft[B](Codec[B])(Monoid[A]):Codec[B]"></a>
+      <a id="dropLeft[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,A]):scodec.Codec[B]"></a>
+      <a id="dropLeft[B](Codec[B])(=:=[Unit,A]):Codec[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dropLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ma">ma: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.B">B</span>]</span>
+        <span class="name">dropLeft</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropLeft.B">B</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[B]</code> that: encodes the zero element of the <code>Monoid</code> of A<code> followed by a </code>B<code>;
-decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.</code></p>
+      <p class="shortcomment cmt">Assuming <code>A</code> is <code>Unit</code>, creates a <code>Codec[B]</code> that: encodes the unit followed by a <code>B</code>;
+decodes a unit followed by a <code>B</code> and discards the decoded unit.</p>
     </li><li name="scodec.Codec#dropRight" visbl="pub" data-isabs="false" fullComment="no" group="tuple">
-      <a id="dropRight[B](codecB:scodec.Codec[B])(implicitevidence$1:scalaz.Monoid[B]):scodec.Codec[A]"></a>
-      <a id="dropRight[B](Codec[B])(Monoid[B]):Codec[A]"></a>
+      <a id="dropRight[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,B]):scodec.Codec[A]"></a>
+      <a id="dropRight[B](Codec[B])(=:=[Unit,B]):Codec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">dropRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropRight.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.dropRight.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span class="name">dropRight</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.dropRight.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.Codec.dropRight.B">B</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[A]</code> that: encodes an <code>A</code> followed by the zero element of the <code>Monoid</code> of <code>B</code>;
-decodes an <code>A</code> followed by a <code>B</code> and discards the decoded <code>B</code>.</p>
+      <p class="shortcomment cmt">Assuming <code>B</code> is <code>Unit</code>, creates a <code>Codec[A]</code> that: encodes the <code>A</code> followed by a unit;
+decodes an <code>A</code> followed by a unit and discards the decoded unit.</p>
     </li><li name="scodec.Encoder#encodeValid" visbl="pub" data-isabs="false" fullComment="yes" group="primary">
       <a id="encodeValid(value:A):scodec.bits.BitVector"></a>
       <a id="encodeValid(A):BitVector"></a>
@@ -515,7 +537,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
 <code>IllegalArgumentException</code> if encoding fails.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value in to a bit vector, throwing an
 <code>IllegalArgumentException</code> if encoding fails.
 </p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>value to encode</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a></dd><dt>Exceptions thrown</dt><dd><span class="cmt">IllegalArgumentException<p>upon encoding failure</p></span></dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((Codec[A])⇒Boolean,⇒Any):Codec[A]"></a>
       <h4 class="signature">
@@ -524,15 +546,15 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
       <a id="ensuring((Codec[A])⇒Boolean):Codec[A]"></a>
       <h4 class="signature">
@@ -541,15 +563,15 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring(Boolean,⇒Any):Codec[A]"></a>
       <h4 class="signature">
@@ -558,15 +580,15 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
-    </li><li name="scala.Predef.Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
       <a id="ensuring(Boolean):Codec[A]"></a>
       <h4 class="signature">
@@ -575,12 +597,12 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method Ensuring in scala.Predef.
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -592,7 +614,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -605,7 +627,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -618,7 +640,7 @@ decodes an <code>A</code> followed by a <code>B</code> and discards the decoded 
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -691,7 +713,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
             <a href="package$$ValueCodecEnrichedWithHListSupport.html" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.Codec.A">A</span>] performed by method ValueCodecEnrichedWithHListSupport in <a href="package.html" class="extype" name="scodec">scodec</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueCodecEnrichedWithHListSupport.html" class="extype" name="scodec.ValueCodecEnrichedWithHListSupport">ValueCodecEnrichedWithHListSupport</a></dd></dl></div>
-    </li><li name="scala.Predef.StringFormat#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scala.Predef.any2stringfmt#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="formatted(fmtstr:String):String"></a>
       <a id="formatted(String):String"></a>
       <h4 class="signature">
@@ -705,7 +727,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method StringFormat in scala.Predef.
+            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -746,7 +768,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -772,7 +794,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -798,7 +820,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -811,7 +833,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notify</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -824,7 +846,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -850,7 +872,7 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pcontramap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>]</span>
+        <span class="name">pcontramap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.pcontramap.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Converts this encoder to an <code>Encoder[B]</code> using the supplied partial
@@ -866,7 +888,7 @@ function from <code>B</code> to <code>A</code>. The encoding will fail for any <
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">pxmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Codec.A">A</span>) ⇒ <span class="extype" name="scodec.Codec.pxmap.B">B</span></span>, <span name="g">g: (<span class="extype" name="scodec.Codec.pxmap.B">B</span>) ⇒ <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.pxmap.B">B</span>]</span>
+        <span class="name">pxmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Codec.A">A</span>) ⇒ <span class="extype" name="scodec.Codec.pxmap.B">B</span></span>, <span name="g">g: (<span class="extype" name="scodec.Codec.pxmap.B">B</span>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.pxmap.B">B</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Maps to a <code>codec</code> of type <code>B</code>, where there is a partial function
@@ -899,6 +921,34 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.Codec#unit" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
+      <a id="unit(zero:A):scodec.Codec[Unit]"></a>
+      <a id="unit(A):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unit</span><span class="params">(<span name="zero">zero: <span class="extype" name="scodec.Codec.A">A</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts this to a <code>Codec[Unit]</code> that encodes using the specified zero value and
+decodes a unit value when this codec decodes an <code>A</code> successfully.</p>
+    </li><li name="scodec.Codec#unitM" visbl="pub" data-isabs="false" fullComment="no" group="combinators">
+      <a id="unitM(implicitma:scalaz.Monoid[A]):scodec.Codec[Unit]"></a>
+      <a id="unitM(Monoid[A]):Codec[Unit]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unitM</span><span class="params">(<span class="implicit">implicit </span><span name="ma">ma: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Converts this to a <code>Codec[Unit]</code> that encodes using the zero value of the implicitly
+available <code>Monoid[A]</code> and decodes a unit value when this codec decodes an <code>A</code> successfully.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -908,7 +958,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -927,7 +977,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a></span>, <span name="arg1">arg1: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -946,7 +996,7 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Long" class="extype" target="_top">Long</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -996,21 +1046,21 @@ from <code>B</code> to <code>A</code>. The encoding will fail for any <code>B</c
       </h4>
       <p class="shortcomment cmt">Creates a <code>Codec[(A, B)]</code> that first encodes/decodes an <code>A</code> followed by a <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[(A, B)]</code> that first encodes/decodes an <code>A</code> followed by a <code>B</code>.</p><p>Operator alias for <a href="#pairedWith[B](codecB:scodec.Codec[B]):scodec.Codec[(A,B)]" class="extmbr" name="scodec.Codec#pairedWith">pairedWith</a>.</p></div></div>
     </li><li name="scodec.Codec#~&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="tuple">
-      <a id="~&gt;[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]"></a>
-      <a id="~&gt;[B](Codec[B])(Monoid[A]):Codec[B]"></a>
+      <a id="~&gt;[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,A]):scodec.Codec[B]"></a>
+      <a id="~&gt;[B](Codec[B])(=:=[Unit,A]):Codec[B]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde$greater" class="name">~&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.~&gt;.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ma">ma: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.~&gt;.B">B</span>]</span>
+        <span title="gt4s: $tilde$greater" class="name">~&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.~&gt;.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.Codec.A">A</span>]</span>)</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.~&gt;.B">B</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a <code>Codec[B]</code> that: encodes the zero element of the <code>Monoid</code> of A<code> followed by a </code>B<code>;
-decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.</code></p><div class="fullcomment"><div class="comment cmt"><p>Creates a <code>Codec[B]</code> that: encodes the zero element of the <code>Monoid</code> of A<code> followed by a </code>B<code>;
-decodes an </code>A<code> followed by a </code>B<code> and discards the decoded </code>A<code>.</code></p><p>Operator alias of <a href="#dropLeft[B](codecB:scodec.Codec[B])(implicitma:scalaz.Monoid[A]):scodec.Codec[B]" class="extmbr" name="scodec.Codec#dropLeft">dropLeft</a>.</p></div></div>
-    </li><li name="scala.Predef.ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Assuming <code>A</code> is <code>Unit</code>, creates a <code>Codec[B]</code> that: encodes the unit followed by a <code>B</code>;
+decodes a unit followed by a <code>B</code> and discards the decoded unit.</p><div class="fullcomment"><div class="comment cmt"><p>Assuming <code>A</code> is <code>Unit</code>, creates a <code>Codec[B]</code> that: encodes the unit followed by a <code>B</code>;
+decodes a unit followed by a <code>B</code> and discards the decoded unit.</p><p>Operator alias of <a href="#dropLeft[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,A]):scodec.Codec[B]" class="extmbr" name="scodec.Codec#dropLeft">dropLeft</a>.</p></div></div>
+    </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
       <a id="→[B](B):(Codec[A],B)"></a>
       <h4 class="signature">
@@ -1024,7 +1074,7 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
             This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method ArrowAssoc in scala.Predef.
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -1066,10 +1116,87 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
             <a href="package$$HListCodecEnrichedWithHListSupport.html" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a>[<span class="extype" name="scodec.Codec.A">A</span>] performed by method HListCodecEnrichedWithHListSupport in <a href="package.html" class="extype" name="scodec">scodec</a>.
             This conversion will take place only if A is a subclass of HList (A &lt;: <span class="extype" name="shapeless.HList">HList</span>).
           </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(codec: HListCodecEnrichedWithHListSupport[A]).self</pre></div></dd><dt>Definition Classes</dt><dd><a href="package$$HListCodecEnrichedWithHListSupport.html" class="extype" name="scodec.HListCodecEnrichedWithHListSupport">HListCodecEnrichedWithHListSupport</a></dd></dl></div>
+    </li><li name="scala.Predef.any2stringadd#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="self:Any"></a>
+      <a id="self:Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit shadowed">self</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
+            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
+            
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(codec: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+    </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="self:Any"></a>
+      <a id="self:Any"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit shadowed">self</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
+            <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
+            
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(codec: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="scala.Predef.any2ArrowAssoc#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="x:A"></a>
+      <a id="x:Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(codec: ArrowAssoc[Codec[A]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>leftOfArrow<code> instead</code></u></code></p></dd></dl></div>
+    </li><li name="scala.Predef.any2Ensuring#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="x:A"></a>
+      <a id="x:Codec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]] performed by method any2Ensuring in scala.Predef.
+            
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(codec: Ensuring[Codec[A]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>resultOfEnsuring<code> instead</code></u></code></p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
@@ -1094,19 +1221,19 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <span class="extype" name="scala.Predef.any2stringadd">any2stringadd</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]]
+                <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
               </h3>
-            </div><div class="conversion" name="scala.Predef.StringFormat">
-              <h3>Inherited by implicit conversion StringFormat from
-                <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <span class="extype" name="scala.Predef.StringFormat">StringFormat</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]]
+            </div><div class="conversion" name="scala.Predef.any2stringfmt">
+              <h3>Inherited by implicit conversion any2stringfmt from
+                <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
               </h3>
-            </div><div class="conversion" name="scala.Predef.Ensuring">
-              <h3>Inherited by implicit conversion Ensuring from
-                <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]]
-              </h3>
-            </div><div class="conversion" name="scala.Predef.ArrowAssoc">
-              <h3>Inherited by implicit conversion ArrowAssoc from
+            </div><div class="conversion" name="scala.Predef.any2ArrowAssoc">
+              <h3>Inherited by implicit conversion any2ArrowAssoc from
                 <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]]
+              </h3>
+            </div><div class="conversion" name="scala.Predef.any2Ensuring">
+              <h3>Inherited by implicit conversion any2Ensuring from
+                <a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.Codec.A">A</span>]]
               </h3>
             </div>
         </div>
@@ -1135,7 +1262,6 @@ decodes an </code>A<code> followed by a </code>B<code> and discards the decoded 
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-
-
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../lib/diagrams.js"></script>
     </body>
       </html>
