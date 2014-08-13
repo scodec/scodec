@@ -125,7 +125,7 @@ package object codecs {
    * @param size number of bits to encode/decode
    * @group bits
    */
-  def bits(size: Int): Codec[BitVector] = new Codec[BitVector] {
+  def bits(size: Long): Codec[BitVector] = new Codec[BitVector] {
     private val codec = fixedSizeBits(size, BitVectorCodec)
     def encode(b: BitVector) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
@@ -293,49 +293,49 @@ package object codecs {
 
   /**
    * Codec for n-bit unsigned big-endian integers that are represented with `Int`.
-   * @param size number of bits (must be 0 < size <= 31)
+   * @param bits number of bits (must be 0 < size <= 31)
    * @group numbers
    */
   def uint(bits: Int): Codec[Int] = new IntCodec(bits, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit 2s complement big-endian integers that are represented with `Long`.
-   * @param size number of bits (must be 0 < size <= 64)
+   * @param bits number of bits (must be 0 < size <= 64)
    * @group numbers
    */
   def long(bits: Int): Codec[Long] = new LongCodec(bits, true, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit unsigned big-endian integers that are represented with `Long`.
-   * @param size number of bits (must be 0 < size <= 63)
+   * @param bits number of bits (must be 0 < size <= 63)
    * @group numbers
    */
   def ulong(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for n-bit 2s complement little-endian integers that are represented with `Int`.
-   * @param size number of bits (must be 0 < size <= 32)
+   * @param bits number of bits (must be 0 < size <= 32)
    * @group numbers
    */
   def intL(bits: Int): Codec[Int] = new IntCodec(bits, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit unsigned little-endian integers that are represented with `Int`.
-   * @param size number of bits (must be 0 < size <= 31)
+   * @param bits number of bits (must be 0 < size <= 31)
    * @group numbers
    */
   def uintL(bits: Int): Codec[Int] = new IntCodec(bits, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit 2s complement little-endian integers that are represented with `Long`.
-   * @param size number of bits (must be 0 < size <= 64)
+   * @param bits number of bits (must be 0 < size <= 64)
    * @group numbers
    */
   def longL(bits: Int): Codec[Long] = new LongCodec(bits, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit unsigned little-endian integers that are represented with `Long`.
-   * @param size number of bits (must be 0 < size <= 63)
+   * @param bits number of bits (must be 0 < size <= 63)
    * @group numbers
    */
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.LittleEndian)
@@ -374,7 +374,7 @@ package object codecs {
    * n-bit boolean codec, where false corresponds to bit vector of all 0s and true corresponds to all other vectors.
    * @group values
    */
-  def bool(n: Int): Codec[Boolean] = new Codec[Boolean] {
+  def bool(n: Long): Codec[Boolean] = new Codec[Boolean] {
     private val zeros = BitVector.low(n)
     private val ones = BitVector.high(n)
     private val codec = bits(n).xmap[Boolean](bits => !(bits == zeros), b => if (b) ones else zeros)
@@ -429,7 +429,7 @@ package object codecs {
    * @param size number of bits to ignore
    * @group bits
    */
-  def ignore(size: Int): Codec[Unit] = new IgnoreCodec(size)
+  def ignore(size: Long): Codec[Unit] = new IgnoreCodec(size)
 
   /**
    * Codec that always encodes the specified bits and always decodes the specified bits, returning `()` if the actual bits match
@@ -461,7 +461,7 @@ package object codecs {
    * @param codec codec to limit
    * @group combinators
    */
-  def fixedSizeBits[A](size: Int, codec: Codec[A]): Codec[A] = new FixedSizeCodec(size, codec)
+  def fixedSizeBits[A](size: Long, codec: Codec[A]): Codec[A] = new FixedSizeCodec(size, codec)
 
   /**
    * Byte equivalent of [[fixedSizeBits]].
@@ -469,7 +469,7 @@ package object codecs {
    * @param codec codec to limit
    * @group combinators
    */
-  def fixedSizeBytes[A](size: Int, codec: Codec[A]): Codec[A] = new Codec[A] {
+  def fixedSizeBytes[A](size: Long, codec: Codec[A]): Codec[A] = new Codec[A] {
     private val fcodec = fixedSizeBits(size * 8, codec)
     def encode(a: A) = fcodec.encode(a)
     def decode(b: BitVector) = fcodec.decode(b)
@@ -658,7 +658,6 @@ package object codecs {
   /**
    * Codec that encodes/decodes certificates using their default encoding.
    *
-   * @param certType certificate type to pass to `java.security.cert.CertificateFactory.getInstance`
    * @group crypto
    */
   val x509Certificate: Codec[X509Certificate] =
@@ -824,7 +823,7 @@ package object codecs {
    * mapped to a tag.
    *
    * @param discriminatorCodec codec used to encode/decode tag value
-   * @param mappings mapping from tag values to/from enum values
+   * @param map mapping from tag values to/from enum values
    * @group combinators
    */
   final def mappedEnum[A, B](discriminatorCodec: Codec[B], map: Map[A, B]): Codec[A] = {
