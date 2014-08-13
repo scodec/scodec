@@ -32,4 +32,9 @@ class CodecTest extends CodecSuite {
     codec.decode(BitVector.empty) shouldBe 'left
     uint8.unit(255).encode(()) shouldBe \/.right(BitVector(0xff))
   }
+
+  test("<~") {
+    val codec = uint8 <~ uint8.unit(0)
+    codec.encode(0xff) shouldBe \/.right(hex"ff00".bits)
+  }
 }

@@ -56,7 +56,7 @@ package object scodec {
      * `B :: L` but only returns `L`.  HList equivalent of `~>`.
      * @group hlist
      */
-    def :~>:[B: Monoid](codec: Codec[B]): Codec[L] = codec.dropLeft(self)
+    def :~>:[B](codec: Codec[B])(implicit ev: Unit =:= B): Codec[L] = codec.dropLeft(self)
 
     /**
      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
