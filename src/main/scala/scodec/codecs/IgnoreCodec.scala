@@ -6,7 +6,7 @@ import scalaz.syntax.std.either._
 
 import scodec.bits.BitVector
 
-private[codecs] final class IgnoreCodec(bits: Int) extends Codec[Unit] {
+private[codecs] final class IgnoreCodec(bits: Long) extends Codec[Unit] {
 
   override def encode(unit: Unit) =
     \/.right(BitVector.low(bits))
