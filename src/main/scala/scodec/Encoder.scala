@@ -82,7 +82,6 @@ trait EncoderFunctions {
 
   /** Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error. */
   final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): String \/ BitVector = {
-    var acc = BitVector.empty
     val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
     seq foreach { a =>
       enc.encode(a) match {
