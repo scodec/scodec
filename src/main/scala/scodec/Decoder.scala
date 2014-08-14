@@ -1,6 +1,9 @@
 package scodec
 
+import scala.language.higherKinds
+
 import scalaz.{ \/, \/-, -\/, Monad, Monoid }
+import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector
 
@@ -138,6 +141,27 @@ trait DecoderFunctions {
       )
     }
     (None, acc)
+  }
+
+  /**
+   * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
+   * Terminates when no more bits are available in the vector. Exits upon the first error from decoding.
+   */
+  final def decodeCollect[F[_], A](dec: Decoder[A])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): String \/ F[A] = {
+    val bldr = cbf()
+    var remaining = buffer
+    var error: Option[String] = None
+    while (remaining.nonEmpty) {
+      dec.decode(remaining) match {
+        case \/-((rest, value)) =>
+          bldr += value
+          remaining = rest
+        case -\/(err) =>
+          error = Some(err)
+          remaining = BitVector.empty
+      }
+    }
+    error.toLeftDisjunction(bldr.result)
   }
 }
 
