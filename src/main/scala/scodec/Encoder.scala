@@ -1,6 +1,6 @@
 package scodec
 
-import scalaz.{ \/, Contravariant, Corepresentable }
+import scalaz.{ \/, \/-, -\/, Contravariant, Corepresentable }
 import \/.left
 
 import scodec.bits.BitVector
@@ -79,6 +79,26 @@ trait EncoderFunctions {
     encodedA <- encA.encode(a)
     encodedB <- encB.encode(b)
   } yield encodedA ++ encodedB
+
+  /** Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error. */
+  final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): String \/ BitVector = {
+    var acc = BitVector.empty
+    val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
+    seq foreach { a =>
+      enc.encode(a) match {
+        case \/-(aa) => buf += aa
+        case e @ -\/(_) => return e
+      }
+    }
+    def merge(offset: Int, size: Int): BitVector = size match {
+      case 0 => BitVector.empty
+      case 1 => buf(offset)
+      case n =>
+        val half = size / 2
+        merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
+    }
+    \/.right(merge(0, buf.size))
+  }
 }
 
 /** Companion for [[Encoder]]. */
