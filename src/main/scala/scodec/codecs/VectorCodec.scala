@@ -1,17 +1,30 @@
 package scodec
 package codecs
 
-import scalaz.{\/, \/-, -\/, Semigroup}
-import scalaz.std.vector._
-import scalaz.syntax.traverse._
+import scalaz.{\/, \/-, -\/}
 import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector
 
 private[codecs] final class VectorCodec[A](codec: Codec[A]) extends Codec[Vector[A]] {
 
-  def encode(vector: Vector[A]) = {
-    vector.traverseU { v => codec.encode(v) }.map { _.concatenate }
+  def encode(vector: Vector[A]): String \/ BitVector = {
+    var acc = BitVector.empty
+    val buf = new collection.mutable.ArrayBuffer[BitVector](vector.size)
+    vector foreach { a =>
+      codec.encode(a) match {
+        case \/-(aa) => buf += aa
+        case e @ -\/(_) => return e
+      }
+    }
+    def merge(offset: Int, size: Int): BitVector = size match {
+      case 0 => BitVector.empty
+      case 1 => buf(offset)
+      case n =>
+        val half = size / 2
+        merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
+    }
+    \/.right(merge(0, buf.size))
   }
 
   def decode(buffer: BitVector): String \/ (BitVector, Vector[A]) = {
