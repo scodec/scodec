@@ -58,8 +58,8 @@ Automatic case class binding is supported via Shapeless HLists:
     val encoded: String \/ BitVector = pointCodec.encode(Point(-5, 10, 1))
     // \/-(BitVector(24 bits, 0xfb0a01))
 
-    val decoded: String \/ Point = Codec.decode(pointCodec, BitVector(0xfb, 0x0a, 0x01))
-    // \/-(Point(-5,10,1))
+    val decoded: String \/ (BitVector, Point) = Codec.decode(BitVector(0xfb, 0x0a, 0x01))(pointCodec)
+    // \/-((BitVector(empty),Point(-5,10,1)))
 ```
 
 Codecs can also be implicitly resolved, resulting in usage like:
@@ -71,7 +71,7 @@ Codecs can also be implicitly resolved, resulting in usage like:
     // \/-(BitVector(24 bits, 0xfb0a01))
 
     val decoded = Codec.decode[Point](BitVector(0xfb, 0x0a, 0x01))
-    // \/-(Point(-5,10,1))
+    // \/-((BitVector(empty),Point(-5,10,1)))
 ```
 
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
