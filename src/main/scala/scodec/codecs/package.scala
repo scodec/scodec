@@ -453,7 +453,31 @@ package object codecs {
    * @param bits constant bits
    * @group bits
    */
-  def constant[A: Integral](bits: A*): Codec[Unit] = new ConstantCodec(BitVector(bits: _*))
+  def constant[A: Integral](bits: A*): Codec[Unit] = constant(BitVector(bits: _*))
+
+  /**
+   * Codec that always encodes the specified bits and always decodes n bits, returning `()`, where n is the length of the
+   * specified bits.
+   * @param bits constant bits
+   * @group bits
+   */
+  def constantLenient(bits: BitVector): Codec[Unit] = new ConstantCodec(bits, true)
+
+  /**
+   * Codec that always encodes the specified bytes and always decodes n bytes, returning `()`, where n is the length of the
+   * specified bytes.
+   * @param bytes constant bytes
+   * @group bits
+   */
+  def constantLenient(bytes: ByteVector): Codec[Unit] = constant(bytes.bits)
+
+  /**
+   * Codec that always encodes the specified bits and always decodes n bits, returning `()`, where n is the length of the
+   * specified bits.
+   * @param bits constant bits
+   * @group bits
+   */
+  def constantLenient[A: Integral](bits: A*): Codec[Unit] = constant(BitVector(bits: _*))
 
   /**
    * Provides implicit conversions from literal types to constant codecs.

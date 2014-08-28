@@ -5,6 +5,7 @@
  - Added `vector` and `list` combinators and deprecated `repeated`
  - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
  - Added `scodec.codecs.literals._` for implicitly converting literal values to constant codecs.
+ - Added `constantLenient` codec that's equivalent to `constant` but does not validate that the decoded bits equal the constant value
 
 1.2.0
 =====
