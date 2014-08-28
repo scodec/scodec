@@ -469,7 +469,7 @@ package object codecs {
    * @param bytes constant bytes
    * @group bits
    */
-  def constantLenient(bytes: ByteVector): Codec[Unit] = constant(bytes.bits)
+  def constantLenient(bytes: ByteVector): Codec[Unit] = constantLenient(bytes.bits)
 
   /**
    * Codec that always encodes the specified bits and always decodes n bits, returning `()`, where n is the length of the
@@ -477,7 +477,7 @@ package object codecs {
    * @param bits constant bits
    * @group bits
    */
-  def constantLenient[A: Integral](bits: A*): Codec[Unit] = constant(BitVector(bits: _*))
+  def constantLenient[A: Integral](bits: A*): Codec[Unit] = constantLenient(BitVector(bits: _*))
 
   /**
    * Provides implicit conversions from literal types to constant codecs.
