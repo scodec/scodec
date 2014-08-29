@@ -16,6 +16,7 @@
    - Better compiler error message when an implicit `CodecAsAux` is not found
    - Support for reverse bindings (e.g., `Codec[Point3D].as[Int :: Int :: Int :: HNil]`)
    - Support for singleton bindings without having to first lift `Codec[A]` to `Codec[A :: HNil]` (e.g., `case class Foo(x: Int); uint8.as[Foo]`)
+ - Added `optional` combinator
 
 1.2.0
 =====
