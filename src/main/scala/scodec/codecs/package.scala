@@ -574,6 +574,16 @@ package object codecs {
    */
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
+  /**
+   * Codec of `Option[A]` that delegates to a `Codec[A]` when the `guard` codec decodes a true.
+   *
+   * When encoding, a `Some` results in `guard` encoding a `true` and `target` encoding the value.
+   * A `None` results in `guard` encoding a false and the `target` not encoding anything.
+   *
+   * @param guard codec that determines whether the target codec is included
+   * @param target codec to conditionally include
+   * @group combinators
+   */
   def optional[A](guard: Codec[Boolean], target: Codec[A]): Codec[Option[A]] =
     either(guard, provide(()), target).xmap[Option[A]](_.toOption, _.toRightDisjunction(()))
 
