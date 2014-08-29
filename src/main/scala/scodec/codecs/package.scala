@@ -7,6 +7,7 @@ import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 
 import scalaz.{ \/, -\/, \/- }
+import scalaz.syntax.std.option._
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
 
 /**
@@ -572,6 +573,9 @@ package object codecs {
    * @group combinators
    */
   def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
+
+  def optional[A](guard: Codec[Boolean], target: Codec[A]): Codec[Option[A]] =
+    either(guard, provide(()), target).xmap[Option[A]](_.toOption, _.toRightDisjunction(()))
 
   /**
    * Codec that encodes/decodes an immutable `IndexedSeq[A]` from a `Codec[A]`.
