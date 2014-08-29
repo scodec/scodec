@@ -20,8 +20,23 @@ class CodecTest extends CodecSuite {
   }
 
   case class Bar(x: Int)
-  test("as on single codec") {
+
+  test("as on an hlist codec of 1 element") {
     roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
+  }
+
+  test("as on a non-hlist codec") {
+    roundtripAll(uint8.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
+  }
+
+  test("as in reverse direction") {
+    import shapeless._
+    uint8.hlist.as[Bar].as[Int :: HNil]
+  }
+
+  test("as on a non-hlist codec in reverse direction") {
+    import shapeless._
+    uint8.hlist.as[Bar].as[Int]
   }
 
   test("unit combinator") {
