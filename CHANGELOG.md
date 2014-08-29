@@ -6,6 +6,10 @@
  - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
  - Added `scodec.codecs.literals._` for implicitly converting literal values to constant codecs.
  - Added `constantLenient` codec that's equivalent to `constant` but does not validate that the decoded bits equal the constant value
+ - Improved support for `as` method:
+   - Better compiler error message when an implicit `CodecAsAux` is not found
+   - Support for reverse bindings (e.g., `Codec[Point3D].as[Int :: Int :: Int :: HNil]`)
+   - Support for singleton bindings without having to first lift `Codec[A]` to `Codec[A :: HNil]` (e.g., `case class Foo(x: Int); uint8.as[Foo]`)
 
 1.2.0
 =====
