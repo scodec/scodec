@@ -21,6 +21,10 @@
  - Added `recover` and `lookahead` combinators
  - Added `dropUnits` combinator for `HList` codecs, greatly simplifying creation of codecs that have unit values due to use of `constant` or `ignore`.
    For example, `(uint8 :: ignore(4) :: uint4 :: ignore(3) :: uint5).dropUnits` results in a `Codec[Int :: Int :: Int :: HNil]`
+ - Added support for xmapping polymorphic functions via `polyxmap` and `polyxmap` combinators
+  - `polyxmap` takes 2 polymorphic functions, forward and reverse 
+  - `polyxmap1` takes 1 polymorphic function that's used in both directions
+  - both combinators work on `HList` codecs and value codecs
 
 1.2.0
 =====

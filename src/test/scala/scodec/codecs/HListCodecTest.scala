@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scodec.bits._
+
 import shapeless._
 import nat._
 
@@ -54,6 +56,83 @@ class HListCodecTest extends CodecSuite {
       def ign(size: Int) = scodec.codecs.ignore(size)
       val codec = (uint8 :: ign(8) :: uint8 :: ign(8) :: ascii).dropUnits.as[Foo]
       roundtrip(codec, Foo(1, 2, "test"))
+    }
+
+    "support mapping a pair of polymorphic functions over an HList codec" in {
+      object double extends Poly1 {
+        implicit val i = at[Int] { _ * 2 }
+        implicit val l = at[Long] { _ * 2 }
+        implicit val b = at[Boolean] { b => b }
+      }
+      object half extends Poly1 {
+        implicit val i = at[Int] { _ / 2 }
+        implicit val l = at[Long] { _ / 2 }
+        implicit val b = at[Boolean] { b => b }
+      }
+      val codec = (uint8 :: uint32 :: bool(8) :: uint8).polyxmap(half, double)
+
+      val value = 1 :: 2L :: true :: 3 :: HNil
+
+      val bits = codec.encodeValid(value)
+      bits shouldBe hex"0200000004ff06".bits
+
+      val decoded = codec.compact.decodeValidValue(bits)
+      decoded shouldBe value
+    }
+
+    "support mapping a pair of polymorphic functions over a non-HList codec" in {
+      object double extends Poly1 {
+        implicit val i = at[Int] { _ * 2 }
+        implicit val l = at[Long] { _ * 2 }
+        implicit val b = at[Boolean] { b => b }
+      }
+      object half extends Poly1 {
+        implicit val i = at[Int] { _ / 2 }
+        implicit val l = at[Long] { _ / 2 }
+        implicit val b = at[Boolean] { b => b }
+      }
+      val codec = uint8.polyxmap(half, double)
+
+      val value = 1
+
+      val bits = codec.encodeValid(value)
+      bits shouldBe hex"02".bits
+
+      val decoded = codec.compact.decodeValidValue(bits)
+      decoded shouldBe value
+    }
+
+    "support mapping a single polymorphic function over an HList codec" in {
+      object negate extends Poly1 {
+        implicit val i = at[Int] { i => -i }
+        implicit val l = at[Long] { i => -i }
+        implicit val b = at[Boolean] { b => b }
+      }
+      val codec = (uint8 :: uint32 :: bool(8) :: uint8).polyxmap1(negate)
+
+      val value = -1 :: -2L :: true :: -3 :: HNil
+
+      val bits = codec.encodeValid(value)
+      bits shouldBe hex"0100000002ff03".bits
+
+      val decoded = codec.compact.decodeValidValue(bits)
+      decoded shouldBe value
+    }
+
+    "support mapping a single polymorphic function over a non-HList codec" in {
+      object i2d extends Poly1 {
+        implicit val i = at[Int] { _.toDouble }
+        implicit val d = at[Double] { _.toInt }
+      }
+      val codec: Codec[Double] = uint8 polyxmap1 i2d
+
+      val value = 1.0d
+
+      val bits = codec.encodeValid(value)
+      bits shouldBe hex"01".bits
+
+      val decoded = codec.compact.decodeValidValue(bits)
+      decoded shouldBe value
     }
   }
 }
