@@ -30,5 +30,9 @@ class CertificateCodecTest extends CodecSuite {
     CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(holder.getEncoded)).asInstanceOf[X509Certificate]
   }
 
-  test("roundtrip") { roundtrip(x509Certificate, aCert) }
+  "the x509Certificate codec" should {
+    "roundtrip" in {
+      roundtrip(x509Certificate, aCert)
+    }
+  }
 }

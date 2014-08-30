@@ -16,12 +16,13 @@ class CipherCodecTest extends CodecSuite {
 
   private val iv = new IvParameterSpec(ByteVector.low(16).toArray)
 
-  test("AES/ECB/PKCS5Padding") {
-    testWithCipherFactory(CipherFactory("AES/ECB/PKCS5Padding", secretKey))
-  }
-
-  test("AES/CBC/PKCS5Padding") {
-    testWithCipherFactory(CipherFactory("AES/CBC/PKCS5Padding", secretKey, iv))
+  "the encrypted combinator" should {
+    "roundtrip with AES/ECB/PKCS5Padding" in {
+      testWithCipherFactory(CipherFactory("AES/ECB/PKCS5Padding", secretKey))
+    }
+    "roundtrip with AES/CBC/PKCS5Padding" in {
+      testWithCipherFactory(CipherFactory("AES/CBC/PKCS5Padding", secretKey, iv))
+    }
   }
 
   protected def testWithCipherFactory(implicit cf: CipherFactory) {
