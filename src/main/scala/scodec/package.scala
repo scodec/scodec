@@ -1,6 +1,6 @@
 import scalaz.{ \/, Monoid, StateT }
 import shapeless._
-import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split}
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot}
 import scodec.bits._
 
 /**
@@ -62,7 +62,7 @@ package object scodec {
      * Creates a new codec with all unit values filtered out.
      * @group hlist
      */
-    def dropUnits[M <: HList](implicit fltr: HListOps.ReUnit[L, M]): Codec[M] =
+    def dropUnits[M <: HList](implicit fltr: FilterNot.Aux[L, Unit, M], ru: HListOps.ReUnit[L, M]): Codec[M] =
       HListCodec.dropUnits[L, M](self)
 
     /**

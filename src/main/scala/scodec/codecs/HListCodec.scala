@@ -4,7 +4,7 @@ package codecs
 import scalaz.{ \/-, -\/ }
 
 import shapeless._
-import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split}
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot}
 import UnaryTCConstraint._
 
 import scodec.bits.BitVector
@@ -64,10 +64,9 @@ private[scodec] object HListCodec {
     l.foldRight(hnilCodec)(PrependCodec)
   }
 
-  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit ru: ReUnit[K, L]) = new Codec[L] {
+  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit fltr: FilterNot.Aux[K, Unit, L], ru: ReUnit[K, L]) = new Codec[L] {
     override def encode(l: L) = codec.encode(HListOps.reUnit[K, L](l))
     override def decode(buffer: BitVector) = {
-      import ru.fltr
       codec.decode(buffer).map { case (rest, l) => (rest, l.filterNot[Unit]) }
     }
   }
