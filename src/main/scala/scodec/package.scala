@@ -106,7 +106,7 @@ package object scodec {
      * HList equivalent of `~>`.
      * @group hlist
      */
-    def :~>:[B: Monoid](codecB: Codec[B]): Codec[A :: HNil] =
+    def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
       codecB :~>: self.hlist
 
     /**

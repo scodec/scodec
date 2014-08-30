@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.std.AllInstances._
-
 import shapeless._
 import nat._
 
@@ -38,13 +36,13 @@ class HListCodecTest extends CodecSuite {
   }
 
   test("dropLeft") {
-    val codec = (uint8 :~>: uint8.hlist).as[Bar]
+    val codec = (uint8.unit(0) :~>: uint8.hlist).as[Bar]
     roundtrip(codec, Bar(1))
     codec.encodeValid(Bar(1)) should have size(16)
   }
 
   test("dropLeft on non-hlist codec") {
-    uint8 :~>: uint8
+    uint8.unit(0) :~>: uint8
   }
 
   test("dropUnits") {
