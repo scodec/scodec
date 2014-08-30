@@ -33,34 +33,22 @@ object HListOps {
       def apply(l: HNil): HNil = HNil
     }
 
-    implicit def `non-empty K and empty L`[KH, KT <: HList](implicit
-      reUnit: ReUnit[KT, HNil],
-      fltrK: FilterNot.Aux[KH :: KT, Unit, HNil],
-      headEv: Unit =:= KH
-    ): ReUnit[KH :: KT, HNil] = new ReUnit[KH :: KT, HNil] {
-      implicit def fltr = fltrK
-      def apply(l: HNil): KH :: KT =
-        () :: reUnit(l)
-    }
-
-    implicit def `non-empty K and L where head of K and L are same type`[KH, KT <: HList, LH, LT <: HList](implicit
+    implicit def `non-empty K and L where head of K and L are same type`[H, KT <: HList, LT <: HList](implicit
       reUnit: ReUnit[KT, LT],
-      fltrAll: FilterNot.Aux[KH :: KT, Unit, LH :: LT],
-      headEv: LH =:= KH
-    ): ReUnit[KH :: KT, LH :: LT] = new ReUnit[KH :: KT, LH :: LT] {
-      implicit def fltr: FilterNot.Aux[KH :: KT, Unit, LH :: LT] = fltrAll
-      def apply(l: LH :: LT): KH :: KT =
-         headEv(l.head) :: reUnit(l.tail)
+      fltrAll: FilterNot.Aux[H :: KT, Unit, H :: LT]
+    ): ReUnit[H :: KT, H :: LT] = new ReUnit[H :: KT, H :: LT] {
+      implicit def fltr: FilterNot.Aux[H :: KT, Unit, H :: LT] = fltrAll
+      def apply(l: H :: LT): H :: KT =
+         l.head :: reUnit(l.tail)
     }
 
-    implicit def `non-empty K and L where head of K is Unit`[KH, KT <: HList, LH, LT <: HList](implicit
-      reUnit: ReUnit[KT, LH :: LT],
-      fltrAll: FilterNot.Aux[KH :: KT, Unit, LH :: LT],
-      headEv: Unit =:= KH
-    ): ReUnit[KH :: KT, LH :: LT] = new ReUnit[KH :: KT, LH :: LT] {
-      implicit def fltr: FilterNot.Aux[KH :: KT, Unit, LH :: LT] = fltrAll
-      def apply(l: LH :: LT): KH :: KT =
-         headEv(()) :: reUnit(l)
+    implicit def `non-empty K and any L where head of K is Unit`[KT <: HList, L <: HList](implicit
+      reUnit: ReUnit[KT, L],
+      fltrAll: FilterNot.Aux[Unit :: KT, Unit, L]
+    ): ReUnit[Unit :: KT, L] = new ReUnit[Unit :: KT, L] {
+      implicit def fltr: FilterNot.Aux[Unit :: KT, Unit, L] = fltrAll
+      def apply(l: L): Unit :: KT =
+         () :: reUnit(l)
     }
   }
 }
