@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scalaz.std.AllInstances._
+
 import shapeless._
 import nat._
 
@@ -15,7 +17,7 @@ class HListCodecTest extends CodecSuite {
   }
 
   test("xmap non-hlist codec to case class") {
-    roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
+    roundtripAll(uint8.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
   }
 
   test("flatPrepend") {
@@ -33,5 +35,15 @@ class HListCodecTest extends CodecSuite {
   case class Baz(a: Int, b: Int, c: Int, d: Int)
   test("concat via :::") {
     roundtrip(((uint8 :: uint8) ::: (uint8 :: uint8)).as[Baz], Baz(1, 2, 3, 4))
+  }
+
+  test("dropLeft") {
+    val codec = (uint8 :~>: uint8.hlist).as[Bar]
+    roundtrip(codec, Bar(1))
+    codec.encodeValid(Bar(1)) should have size(16)
+  }
+
+  test("dropLeft on non-hlist codec") {
+    uint8 :~>: uint8
   }
 }

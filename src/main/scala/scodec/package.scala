@@ -95,6 +95,14 @@ package object scodec {
       codecB :: self :: HListCodec.hnilCodec
 
     /**
+     * When called on a `Codec[A]`, returns a new codec that encodes/decodes `B :: A :: HNil`.
+     * HList equivalent of `~>`.
+     * @group hlist
+     */
+    def :~>:[B: Monoid](codecB: Codec[B]): Codec[A :: HNil] =
+      codecB :~>: self.hlist
+
+    /**
      * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
      * This allows later parts of an `HList` codec to be dependent on earlier values.
      * @group hlist
