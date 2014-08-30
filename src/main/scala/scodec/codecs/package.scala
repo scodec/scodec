@@ -585,7 +585,9 @@ package object codecs {
    * @group combinators
    */
   def optional[A](guard: Codec[Boolean], target: Codec[A]): Codec[Option[A]] =
-    either(guard, provide(()), target).xmap[Option[A]](_.toOption, _.toRightDisjunction(()))
+    either(guard, provide(()), target).
+      xmap[Option[A]](_.toOption, _.toRightDisjunction(())).
+      withToString(s"optional($guard, $target)")
 
   /**
    * Creates a `Codec[A]` from a `Codec[Option[A]]` and a fallback `Codec[A]`.
@@ -603,7 +605,7 @@ package object codecs {
       case Some(a) => provide(a)
       case None => default
     }
-    paired.xmap[A](_._2, a => (Some(a), a))
+    paired.xmap[A](_._2, a => (Some(a), a)).withToString(s"withDefault($opt, $default)")
   }
 
   /**
@@ -619,6 +621,29 @@ package object codecs {
    */
   def withDefaultValue[A](opt: Codec[Option[A]], default: A): Codec[A] =
     withDefault(opt, provide(default))
+
+  /**
+   * Creates a codec that decodes true when the target codec decodes successfully and decodes false
+   * when the target codec decodes unsuccessfully. Upon a successful decode of the target codec, the
+   * remaining bits are returned, whereas upon an unsuccessful decode, the original input buffer is
+   * returned.
+   *
+   * When encoding, a true results in the target codec encoding a unit whereas a false results
+   * in encoding of an empty vector.
+   *
+   * @param target codec to recover errors from
+   * @group combinators
+   */
+  def recover(target: Codec[Unit]): Codec[Boolean] = new RecoverCodec(target, false)
+
+  /**
+   * Lookahead version of [[recover]] -- i.e., upon successful decoding with the target codec,
+   * the original buffer is returned instead of the remaining buffer.
+   *
+   * @param target codec to recover errors from
+   * @group combinators
+   */
+  def lookahead(target: Codec[Unit]): Codec[Boolean] = new RecoverCodec(target, true)
 
   /**
    * Codec that encodes/decodes an immutable `IndexedSeq[A]` from a `Codec[A]`.
