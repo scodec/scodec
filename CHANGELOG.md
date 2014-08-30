@@ -12,6 +12,8 @@
    - Support for singleton bindings without having to first lift `Codec[A]` to `Codec[A :: HNil]` (e.g., `case class Foo(x: Int); uint8.as[Foo]`)
  - Added `optional` combinator
  - Added `withDefault` and `withDefaultValue` combinators
+ - Added `dropUnits` combinator for `HList` codecs, greatly simplifying creation of codecs that have unit values due to use of `constant` or `ignore`.
+   For example, `(uint8 :: ignore(4) :: uint4 :: ignore(3) :: uint5).dropUnits` results in a `Codec[Int :: Int :: Int :: HNil]`
 
 1.2.0
 =====
