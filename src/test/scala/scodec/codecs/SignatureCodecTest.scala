@@ -11,12 +11,16 @@ class SignatureCodecTest extends CodecSuite {
     keyGen.generateKeyPair
   }
 
-  test("SHA256withRSA fixed size") {
-    testFixedSizeSignature(SignatureFactory("SHA256withRSA", keyPair))
+  "fixedSizeSignature codec" should {
+    "roundtrip using SHA256withRSA" in {
+      testFixedSizeSignature(SignatureFactory("SHA256withRSA", keyPair))
+    }
   }
 
-  test("SHA256withRSA variable size") {
-    testVariableSizeSignature(SignatureFactory("SHA256withRSA", keyPair))
+  "variableSizeSignature codec" should {
+    "roundtrip using SHA256withRSA" in {
+      testVariableSizeSignature(SignatureFactory("SHA256withRSA", keyPair))
+    }
   }
 
   protected def testFixedSizeSignature(implicit sf: SignatureFactory) {

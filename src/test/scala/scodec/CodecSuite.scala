@@ -5,12 +5,12 @@ import scala.collection.GenTraversable
 import scalaz.\/-
 import scalaz.syntax.either._
 
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 import scodec.bits.BitVector
 
-abstract class CodecSuite extends FunSuite with Matchers with GeneratorDrivenPropertyChecks {
+abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   protected def roundtrip[A: Codec](a: A) {
     roundtrip(Codec[A], a)
@@ -19,7 +19,7 @@ abstract class CodecSuite extends FunSuite with Matchers with GeneratorDrivenPro
   protected def roundtrip[A](codec: Codec[A], a: A) {
     val encoded = codec.encode(a)
     encoded should be ('right)
-    val (remainder, decoded) = codec.decode(encoded.toOption.get).toEither.right.get
+    val \/-((remainder, decoded)) = codec.decode(encoded.toOption.get)
     remainder shouldEqual BitVector.empty
     decoded shouldEqual a
   }

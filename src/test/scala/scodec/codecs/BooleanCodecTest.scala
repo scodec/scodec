@@ -1,37 +1,40 @@
 package scodec
 package codecs
 
-import scalaz.syntax.either._
+import scalaz.\/
 import scodec.bits._
 
 class BooleanCodecTest extends CodecSuite {
 
-  test("1-bit encode") {
-    bool.encode(true) shouldBe BitVector.high(1).right
-    bool.encode(false) shouldBe BitVector.low(1).right
+  "the bool codec" should {
+    "roundtrip" in { roundtripAll(bool, List(true, false)) }
+    "encode correctly" in {
+      bool.encode(true) shouldBe \/.right(BitVector.high(1))
+      bool.encode(false) shouldBe \/.right(BitVector.low(1))
+    }
+    "decode correctly" in {
+      bool.decode(BitVector.low(1)) shouldBe \/.right((BitVector.empty, false))
+      bool.decode(BitVector.high(1)) shouldBe \/.right((BitVector.empty, true))
+      bool.decode(BitVector.low(2)) shouldBe \/.right((BitVector.low(1), false))
+    }
   }
 
-  test("1-bit decode") {
-    bool.decode(BitVector.low(1)) shouldBe (BitVector.empty, false).right
-    bool.decode(BitVector.high(1)) shouldBe (BitVector.empty, true).right
-    bool.decode(BitVector.low(2)) shouldBe (BitVector.low(1), false).right
-  }
-
-  test("n-bit encode") {
-    bool(8).encode(true) shouldBe BitVector.high(8).right
-    bool(8).encode(false) shouldBe BitVector.low(8).right
-  }
-
-  test("n-bit decode") {
-    bool(8).decode(BitVector.low(8)) shouldBe (BitVector.empty, false).right
-    bool(8).decode(BitVector.high(8)) shouldBe (BitVector.empty, true).right
-    bool(8).decode(BitVector.low(9)) shouldBe (BitVector.low(1), false).right
-    bool(8).decode(bin"10000000") shouldBe (BitVector.empty, true).right
-    bool(8).decode(bin"00000001") shouldBe (BitVector.empty, true).right
-  }
-
-  test("n-bit decode - decoding with too few bits") {
-    bool(8).decode(BitVector.low(4)) shouldBe ("cannot acquire 8 bits from a vector that contains 4 bits".left)
+  "the bool(n) codec" should {
+    "roundtrip" in { roundtripAll(bool(8), List(true, false)) }
+    "encode correctly" in {
+      bool(8).encode(true) shouldBe \/.right(BitVector.high(8))
+      bool(8).encode(false) shouldBe \/.right(BitVector.low(8))
+    }
+    "decode correctly" in {
+      bool(8).decode(BitVector.low(8)) shouldBe \/.right((BitVector.empty, false))
+      bool(8).decode(BitVector.high(8)) shouldBe \/.right((BitVector.empty, true))
+      bool(8).decode(BitVector.low(9)) shouldBe \/.right((BitVector.low(1), false))
+      bool(8).decode(bin"10000000") shouldBe \/.right((BitVector.empty, true))
+      bool(8).decode(bin"00000001") shouldBe \/.right((BitVector.empty, true))
+    }
+    "return an error when decoding with too few bits" in {
+      bool(8).decode(BitVector.low(4)) shouldBe \/.left("cannot acquire 8 bits from a vector that contains 4 bits")
+    }
   }
 }
 

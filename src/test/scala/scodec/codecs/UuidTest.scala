@@ -8,7 +8,9 @@ class UuidTest extends CodecSuite {
 
   implicit val arbitraryUuid: Arbitrary[UUID] = Arbitrary(UUID.randomUUID)
 
-  test("roundtrip") {
-    forAll { (u: UUID) => roundtrip(uuid, u) }
+  "uuid codec" should {
+    "roundtrip" in {
+      forAll { (u: UUID) => roundtrip(uuid, u) }
+    }
   }
 }

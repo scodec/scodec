@@ -90,10 +90,12 @@ class MpegPacketExample extends CodecSuite {
 
   import MpegCodecs._
 
-  test("manually roundtripping a packet") {
-    val pkt = MpegPacket(TransportStreamHeader(false, true, false, 0, 0, 1, 15), None, Some(BitVector.low(184 * 8).toByteVector))
-    val encoded = Codec.encodeValid(pkt)
-    val decoded = Codec.decodeValidValue[MpegPacket](encoded)
-    decoded shouldBe pkt
+  "MpegPacket codec" should {
+    "roundtrip" in {
+      val pkt = MpegPacket(TransportStreamHeader(false, true, false, 0, 0, 1, 15), None, Some(BitVector.low(184 * 8).toByteVector))
+      val encoded = Codec.encodeValid(pkt)
+      val decoded = Codec.decodeValidValue[MpegPacket](encoded)
+      decoded shouldBe pkt
+    }
   }
 }
