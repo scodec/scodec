@@ -10,10 +10,7 @@ class OptionalCodecTest extends CodecSuite {
   test("produce the target value on true") {
     forAll { (n: Int) =>
       val codec = optional(provide(true), int32)
-      val \/-((rest, b)) = codec.decode(BitVector fromInt n)
-
-      rest shouldBe 'empty
-      b shouldBe Some(n)
+      shouldDecodeFullyTo(codec, BitVector fromInt n, Some(n))
     }
   }
 

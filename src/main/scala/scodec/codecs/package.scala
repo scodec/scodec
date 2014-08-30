@@ -588,6 +588,39 @@ package object codecs {
     either(guard, provide(()), target).xmap[Option[A]](_.toOption, _.toRightDisjunction(()))
 
   /**
+   * Creates a `Codec[A]` from a `Codec[Option[A]]` and a fallback `Codec[A]`.
+   *
+   * When encoding, the `A` is encoded with `opt` (by wrapping it in a `Some`).
+   * When decoding, `opt` is first used to decode the buffer. If it decodes a `Some(a)`, that
+   * value is returned. If it decodes a `None`, `default` is used to decode the buffer.
+   *
+   * @param opt optional codec
+   * @param default fallback codec used during decoding when `opt` decodes a `None`
+   * @group combinators
+   */
+  def withDefault[A](opt: Codec[Option[A]], default: Codec[A]): Codec[A] = {
+    val paired = opt flatZip {
+      case Some(a) => provide(a)
+      case None => default
+    }
+    paired.xmap[A](_._2, a => (Some(a), a))
+  }
+
+  /**
+   * Creates a `Codec[A]` from a `Codec[Option[A]]` and a fallback value `A`.
+   *
+   * When encoding, the `A` is encoded with `opt` (by wrapping it in a `Some`).
+   * When decoding, `opt` is first used to decode the buffer. If it decodes a `Some(a)`, that
+   * value is returned. If it decodes a `None`, the `default` value is return.
+   *
+   * @param opt optional codec
+   * @param default fallback value returned from `decode` when `opt` decodes a `None`
+   * @group combinators
+   */
+  def withDefaultValue[A](opt: Codec[Option[A]], default: A): Codec[A] =
+    withDefault(opt, provide(default))
+
+  /**
    * Codec that encodes/decodes an immutable `IndexedSeq[A]` from a `Codec[A]`.
    *
    * When encoding, each `A` in the sequence is encoded and all of the resulting vectors are concatenated.

@@ -2,6 +2,7 @@ package scodec
 
 import scala.collection.GenTraversable
 
+import scalaz.\/-
 import scalaz.syntax.either._
 
 import org.scalatest.{FunSuite, Matchers}
@@ -20,11 +21,16 @@ abstract class CodecSuite extends FunSuite with Matchers with GeneratorDrivenPro
     encoded should be ('right)
     val (remainder, decoded) = codec.decode(encoded.toOption.get).toEither.right.get
     remainder shouldEqual BitVector.empty
-    decoded shouldEqual  a
+    decoded shouldEqual a
   }
 
   protected def roundtripAll[A](codec: Codec[A], as: GenTraversable[A]) {
     as foreach { a => roundtrip(codec, a) }
   }
 
+  protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A): Unit = {
+    val \/-((rest, actual)) = codec decode buf
+    rest shouldBe BitVector.empty
+    actual shouldBe expected
+  }
 }
