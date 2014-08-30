@@ -59,6 +59,13 @@ package object scodec {
     def :~>:[B](codec: Codec[B])(implicit ev: Unit =:= B): Codec[L] = codec.dropLeft(self)
 
     /**
+     * Creates a new codec with all unit values filtered out.
+     * @group hlist
+     */
+    def dropUnits[M <: HList](implicit fltr: HListOps.ReUnit[L, M]): Codec[M] =
+      HListCodec.dropUnits[L, M](self)
+
+    /**
      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
      * the `HList L` followed by a `B`.
      * That is, this operator is a codec-level `HList` append operation.

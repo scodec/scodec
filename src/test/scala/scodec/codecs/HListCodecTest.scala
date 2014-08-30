@@ -46,4 +46,10 @@ class HListCodecTest extends CodecSuite {
   test("dropLeft on non-hlist codec") {
     uint8 :~>: uint8
   }
+
+  test("dropUnits") {
+    def ign(size: Int) = scodec.codecs.ignore(size)
+    val codec = (uint8 :: ign(8) :: uint8 :: ign(8) :: ascii).dropUnits.as[Foo]
+    roundtrip(codec, Foo(1, 2, "test"))
+  }
 }

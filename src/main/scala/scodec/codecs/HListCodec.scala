@@ -8,6 +8,7 @@ import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split}
 import UnaryTCConstraint._
 
 import scodec.bits.BitVector
+import scodec.HListOps._
 
 private[scodec] object HListCodec {
 
@@ -62,5 +63,12 @@ private[scodec] object HListCodec {
   def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolder.Aux[L, Codec[HNil], PrependCodec.type, Codec[M]]): Codec[M] = {
     l.foldRight(hnilCodec)(PrependCodec)
   }
-}
 
+  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit ru: ReUnit[K, L]) = new Codec[L] {
+    override def encode(l: L) = codec.encode(HListOps.reUnit[K, L](l))
+    override def decode(buffer: BitVector) = {
+      import ru.fltr
+      codec.decode(buffer).map { case (rest, l) => (rest, l.filterNot[Unit]) }
+    }
+  }
+}
