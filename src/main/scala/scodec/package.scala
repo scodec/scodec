@@ -1,6 +1,7 @@
 import scalaz.{ \/, Monoid, StateT }
 import shapeless._
-import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot}
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot, Mapper}
+import poly._
 import scodec.bits._
 
 /**
@@ -87,6 +88,32 @@ package object scodec {
       lengthK: Length.Aux[K, KLen],
       split: Split.Aux[KL, KLen, (K, L)]
     ): Codec[KL] = HListCodec.concat(k, self)
+
+    /**
+     * Polymorphic function version of `xmap`.
+     *
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
+     * xmapping with `p` and `q`, using `p` to convert from `L` to `M` and using `q` to convert from
+     * `M` to `L`.
+     *
+     * @param p polymorphic function that converts from `L` to `M`
+     * @param q polymorphic function that converts from `M` to `L`
+     * @group hlist
+     */
+    def polyxmap[M <: HList](p: Poly, q: Poly)(implicit lToM: Mapper.Aux[p.type, L, M], mToL: Mapper.Aux[q.type, M, L]): Codec[M] =
+      self.xmap(_ map p, _ map q)
+
+    /**
+     * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
+     *
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
+     * xmapping with `p` for both forward and reverse directions.
+     *
+     * @param p polymorphic function that converts from `L` to `M` and from `M` to `L`
+     * @group hlist
+     */
+    def polyxmap1[M <: HList](p: Poly)(implicit m: Mapper.Aux[p.type, L, M], m2: Mapper.Aux[p.type, M, L]): Codec[M] =
+      polyxmap(p, p)
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
@@ -131,5 +158,31 @@ package object scodec {
      * @group hlist
      */
     def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
+
+    /**
+     * Polymorphic function version of `xmap`.
+     *
+     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
+     * xmapping with `p` and `q`, using `p` to convert from `A` to `B` and using `q` to convert from
+     * `B` to `A`.
+     *
+     * @param p polymorphic function that converts from `A` to `B`
+     * @param q polymorphic function that converts from `B` to `A`
+     * @group hlist
+     */
+    def polyxmap[B](p: Poly, q: Poly)(implicit aToB: Case.Aux[p.type, A :: HNil, B], bToA: Case.Aux[q.type, B :: HNil, A]): Codec[B] =
+      self.xmap(aToB, bToA)
+
+    /**
+     * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
+     *
+     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
+     * xmapping with `p` for both forward and reverse directions.
+     *
+     * @param p polymorphic function that converts from `A` to `B` and from `B` to `A`
+     * @group hlist
+     */
+    def polyxmap1[B](p: Poly)(implicit aToB: Case.Aux[p.type, A :: HNil, B], bToA: Case.Aux[p.type, B :: HNil, A]): Codec[B] =
+      polyxmap(p, p)
   }
 }
