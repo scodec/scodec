@@ -39,7 +39,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   /**
    * Maps to a `codec` of type `B`, where there is a partial function
    * from `B` to `A`. The encoding will fail for any `B` that
-   * `f` maps to `None`.
+   * `g` maps to `None`.
    * @group combinators
    */
   final def pxmap[B](f: A => B, g: B => Option[A]): Codec[B] = new Codec[B] {
