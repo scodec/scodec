@@ -3,7 +3,7 @@
  - Added `fail` combinator
  - Added `mappedEnum` combinator
  - Added `vector` and `list` combinators and deprecated `repeated`
- - Added `vectorN` and `listN` combinators for count encoded values
+ - Added `vectorOfN` and `listOfN` combinators for count encoded values
  - Added `unit` and `unitM` combinators to convert a `Codec[A]` to a `Codec[Unit]`
  - Added `scodec.codecs.literals._` for implicitly converting literal values to constant codecs.
  - Added `constantLenient` codec that's equivalent to `constant` but does not validate that the decoded bits equal the constant value
