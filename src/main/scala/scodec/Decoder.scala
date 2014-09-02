@@ -123,7 +123,7 @@ trait DecoderFunctions {
 
   /**
    * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type `B` using the `Monoid[B]`.
-   * Terminates when no more bits are available in the vector. Exits upon the first error from decoding.
+   * Terminates when no more bits are available in the vector. Exits upon first decoding error.
    *
    * @return tuple consisting of the terminating error if any and the accumulated value
    */
@@ -146,7 +146,7 @@ trait DecoderFunctions {
   /**
    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
    * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
-   * decoded. Exits upon the first error from decoding.
+   * decoded. Exits upon first decoding error.
    */
   final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): String \/ (BitVector, F[A]) = {
     val bldr = cbf()

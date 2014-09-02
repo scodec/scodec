@@ -31,21 +31,21 @@ class VectorCodecTest extends CodecSuite {
     }
   }
 
-  "the vectorN codec" should {
+  "the vectorOfN codec" should {
 
     "limit decoding to the specified number of records" in {
-      val codec = vectorN(provide(10), uint8)
+      val codec = vectorOfN(provide(10), uint8)
       val buffer = BitVector.low(8 * 100)
       codec.decode(buffer) shouldBe \/.right((BitVector.low(8 * 90), Vector.fill(10)(0)))
     }
 
     "support encoding size before vector contents" in {
-      val codec = vectorN(int32, uint8)
+      val codec = vectorOfN(int32, uint8)
       codec.encode((1 to 10).toVector) shouldBe \/.right(hex"0000000a0102030405060708090a".bits)
     }
 
     "support not encoding size before vector contents" in {
-      val codec = vectorN(provide(10), uint8)
+      val codec = vectorOfN(provide(10), uint8)
       codec.encode((1 to 10).toVector) shouldBe \/.right(hex"102030405060708090a".bits)
     }
   }

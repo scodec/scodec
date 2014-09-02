@@ -682,16 +682,16 @@ package object codecs {
    * When decoding, the number of elements is decoded using `countCodec` and then that number of elements
    * are decoded using `valueCodec`. Any remaining bits are returned.
    *
-   * Note: when the count is known statically, use `vectorN(provide(count), ...)`.
+   * Note: when the count is known statically, use `vectorOfN(provide(count), ...)`.
    *
    * @param codec codec to encode/decode a single element of the sequence
    * @group combinators
    */
-  def vectorN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[Vector[A]] =
+  def vectorOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[Vector[A]] =
     countCodec.
       flatZip { count => new VectorCodec(valueCodec, Some(count)) }.
       xmap[Vector[A]]({ case (cnt, vec) => vec }, vec => (vec.size, vec)).
-      withToString(s"vectorN($countCodec, $valueCodec)")
+      withToString(s"vectorOfN($countCodec, $valueCodec)")
 
   /**
    * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
@@ -715,16 +715,16 @@ package object codecs {
    * When decoding, the number of elements is decoded using `countCodec` and then that number of elements
    * are decoded using `valueCodec`. Any remaining bits are returned.
    *
-   * Note: when the count is known statically, use `listN(provide(count), ...)`.
+   * Note: when the count is known statically, use `listOfN(provide(count), ...)`.
    *
    * @param codec codec to encode/decode a single element of the sequence
    * @group combinators
    */
-  def listN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[List[A]] =
+  def listOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[List[A]] =
     countCodec.
       flatZip { count => new ListCodec(valueCodec, Some(count)) }.
       xmap[List[A]]({ case (cnt, xs) => xs }, xs => (xs.size, xs)).
-      withToString(s"listN($countCodec, $valueCodec)")
+      withToString(s"listOfN($countCodec, $valueCodec)")
 
   /**
    * Combinator that chooses amongst two codecs based on an implicitly available byte ordering.
