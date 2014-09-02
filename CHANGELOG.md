@@ -3,6 +3,7 @@
  - Changed `dropLeft`/`~>` and `dropRight`/`<~` to require a `Codec[Unit]` on the dropped side.
    Previously, the requirement was a `Codec[X]` and an implicitly available `Monoid[X]`.
    To convert a `Codec[X]` to a `Codec[Unit]`, use the `unit` combinator.
+ - Changed size based codecs to use `Long` instead of `Int` sizes.
 
 1.2.1
 =====
