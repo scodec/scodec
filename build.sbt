@@ -52,7 +52,7 @@ triggeredMessage := (_ => Watched.clearScreen)
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "scodec-bits" % "1.0.2",
+  "org.typelevel" %% "scodec-bits" % "1.0.3",
   "org.scalaz" %% "scalaz-core" % "7.1.0",
   "com.chuusai" % "shapeless" % "2.0.0" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"
