@@ -1,10 +1,12 @@
 package scodec
 
 import scala.collection.GenTraversable
+import scala.concurrent.duration._
 
 import scalaz.\/-
 import scalaz.syntax.either._
 
+import org.scalacheck.Gen
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
@@ -33,4 +35,17 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
     rest shouldBe BitVector.empty
     actual shouldBe expected
   }
+
+  protected def time[A](f: => A): (A, FiniteDuration) = {
+    val start = System.nanoTime
+    val result = f
+    val elapsed = (System.nanoTime - start).nanos
+    (result, elapsed)
+  }
+
+  protected def samples[A](gen: Gen[A]): Stream[Option[A]] =
+    Stream.continually(gen.sample)
+
+  protected def definedSamples[A](gen: Gen[A]): Stream[A] =
+    samples(gen).flatMap { x => x }
 }
