@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>CodecAsAux - scodec.CodecAsAux</title>
-          <meta name="description" content="CodecAsAux - scodec.CodecAsAux" />
-          <meta name="keywords" content="CodecAsAux scodec.CodecAsAux" />
+          <title>HListOps - scodec.HListOps</title>
+          <meta name="description" content="HListOps - scodec.HListOps" />
+          <meta name="keywords" content="HListOps scodec.HListOps" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../index.html';
-            var hash = 'scodec.CodecAsAux$';
+            var hash = 'scodec.HListOps$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <a href="CodecAsAux.html" title="Go to companion"><img src="../lib/object_to_class_big.png" /></a>
+        <img src="../lib/object_big.png" />
         <p id="owner"><a href="package.html" class="extype" name="scodec">scodec</a></p>
-        <h1><a href="CodecAsAux.html" title="Go to companion">CodecAsAux</a></h1>
+        <h1>HListOps</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,11 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">CodecAsAux</span>
+        <span class="name">HListOps</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Codec.scala" target="_blank">Codec.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Operations on <code>HList</code>s that are not provided by Shapeless.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/HListOps.scala" target="_blank">HListOps.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.CodecAsAux"><span>CodecAsAux</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.HListOps"><span>HListOps</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -79,7 +79,36 @@
         <div id="allMembers">
         
 
-        
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="scodec.HListOps.ReUnit" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ReUnit[K&lt;:shapeless.HList,L&lt;:shapeless.HList]extendsAnyRef"></a>
+      <a id="ReUnit[K&lt;:HList,L&lt;:HList]:ReUnit[K,L]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HListOps$$ReUnit.html"><span class="name">ReUnit</span></a><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Typeclass that allows computation of the inverse of calling <code>filterNot[Unit]</code> on a <code>K</code>.</p>
+    </li><li name="scodec.HListOps.ReUnitSyntax" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReUnitSyntax[L&lt;:shapeless.HList]extendsAnyVal"></a>
+      <a id="ReUnitSyntax[L&lt;:HList]:ReUnitSyntax[L]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="HListOps$$ReUnitSyntax.html"><span class="name">ReUnitSyntax</span></a><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Provides the <code>reUnit</code> method on an <code>HList</code>.</p>
+    </li></ol>
+            </div>
 
         
 
@@ -150,6 +179,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.HListOps.ReUnit" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ReUnit"></a>
+      <a id="ReUnit:ReUnit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HListOps$$ReUnit$.html"><span class="name">ReUnit</span></a>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -266,58 +308,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.CodecAsAux#mkAs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkAs[B,Repr,A](implicitgen:shapeless.Generic.Aux[B,Repr],implicitaToR:=:=[A,Repr],implicitrToA:=:=[Repr,A]):scodec.CodecAsAux[B,A]"></a>
-      <a id="mkAs[B,Repr,A](Aux[B,Repr],=:=[A,Repr],=:=[Repr,A]):CodecAsAux[B,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkAs</span><span class="tparams">[<span name="B">B</span>, <span name="Repr">Repr</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.Generic.Aux">Aux</span>[<span class="extype" name="scodec.CodecAsAux.mkAs.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.Repr">Repr</span>]</span>, <span name="aToR">aToR: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAs.A">A</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.Repr">Repr</span>]</span>, <span name="rToA">rToA: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAs.Repr">Repr</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.A">A</span>]</span>)</span><span class="result">: <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>[<span class="extype" name="scodec.CodecAsAux.mkAs.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAs.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Provides a <code>CodecAsAux[B, A]</code> for case class <code>B</code> and HList <code>A</code>.</p>
-    </li><li name="scodec.CodecAsAux#mkAsReverse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkAsReverse[B,Repr,A](implicitgen:shapeless.Generic.Aux[A,Repr],implicitbToR:=:=[B,Repr],implicitrToB:=:=[Repr,B]):scodec.CodecAsAux[B,A]"></a>
-      <a id="mkAsReverse[B,Repr,A](Aux[A,Repr],=:=[B,Repr],=:=[Repr,B]):CodecAsAux[B,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkAsReverse</span><span class="tparams">[<span name="B">B</span>, <span name="Repr">Repr</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.Generic.Aux">Aux</span>[<span class="extype" name="scodec.CodecAsAux.mkAsReverse.A">A</span>, <span class="extype" name="scodec.CodecAsAux.mkAsReverse.Repr">Repr</span>]</span>, <span name="bToR">bToR: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAsReverse.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAsReverse.Repr">Repr</span>]</span>, <span name="rToB">rToB: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAsReverse.Repr">Repr</span>, <span class="extype" name="scodec.CodecAsAux.mkAsReverse.B">B</span>]</span>)</span><span class="result">: <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>[<span class="extype" name="scodec.CodecAsAux.mkAsReverse.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAsReverse.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Provides a <code>CodecAsAux[B, A]</code> for HList <code>B</code> and case class <code>A</code>.</p>
-    </li><li name="scodec.CodecAsAux#mkAsSingleton" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkAsSingleton[B,Repr,A](implicitgen:shapeless.Generic.Aux[B,Repr],implicitaToR:=:=[shapeless.::[A,shapeless.HNil],Repr],implicitrToA:=:=[Repr,shapeless.::[A,shapeless.HNil]]):scodec.CodecAsAux[B,A]"></a>
-      <a id="mkAsSingleton[B,Repr,A](Aux[B,Repr],=:=[::[A,HNil],Repr],=:=[Repr,::[A,HNil]]):CodecAsAux[B,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkAsSingleton</span><span class="tparams">[<span name="B">B</span>, <span name="Repr">Repr</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.Generic.Aux">Aux</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingleton.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAsSingleton.Repr">Repr</span>]</span>, <span name="aToR">aToR: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingleton.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.CodecAsAux.mkAsSingleton.Repr">Repr</span>]</span>, <span name="rToA">rToA: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingleton.Repr">Repr</span>, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingleton.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]</span>)</span><span class="result">: <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>[<span class="extype" name="scodec.CodecAsAux.mkAsSingleton.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAsSingleton.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Provides a <code>CodecAsAux[B, A]</code> for singleton case class <code>B</code> and value <code>A</code>.</p>
-    </li><li name="scodec.CodecAsAux#mkAsSingletonReverse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="mkAsSingletonReverse[B,Repr,A](implicitgen:shapeless.Generic.Aux[A,Repr],implicitbToR:=:=[shapeless.::[B,shapeless.HNil],Repr],implicitrToB:=:=[Repr,shapeless.::[B,shapeless.HNil]]):scodec.CodecAsAux[B,A]"></a>
-      <a id="mkAsSingletonReverse[B,Repr,A](Aux[A,Repr],=:=[::[B,HNil],Repr],=:=[Repr,::[B,HNil]]):CodecAsAux[B,A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">mkAsSingletonReverse</span><span class="tparams">[<span name="B">B</span>, <span name="Repr">Repr</span>, <span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="gen">gen: <span class="extype" name="shapeless.Generic.Aux">Aux</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.A">A</span>, <span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.Repr">Repr</span>]</span>, <span name="bToR">bToR: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.B">B</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.Repr">Repr</span>]</span>, <span name="rToB">rToB: <span class="extype" name="scala.Predef.=:=">=:=</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.Repr">Repr</span>, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.B">B</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]</span>)</span><span class="result">: <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>[<span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.B">B</span>, <span class="extype" name="scodec.CodecAsAux.mkAsSingletonReverse.A">A</span>]</span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Provides a <code>CodecAsAux[B, A]</code> for value <code>B</code> and singleton case class <code>A</code>.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -357,6 +347,21 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.HListOps#reUnit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="reUnit[K&lt;:shapeless.HList,L&lt;:shapeless.HList](l:L)(implicitru:scodec.HListOps.ReUnit[K,L]):K"></a>
+      <a id="reUnit[K&lt;:HList,L&lt;:HList](L)(ReUnit[K,L]):K"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">reUnit</span><span class="tparams">[<span name="K">K &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="l">l: <span class="extype" name="scodec.HListOps.reUnit.L">L</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ru">ru: <a href="HListOps$$ReUnit.html" class="extype" name="scodec.HListOps.ReUnit">ReUnit</a>[<span class="extype" name="scodec.HListOps.reUnit.K">K</span>, <span class="extype" name="scodec.HListOps.reUnit.L">L</span>]</span>)</span><span class="result">: <span class="extype" name="scodec.HListOps.reUnit.K">K</span></span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Computes the inverse of <code>(k: K).filterNot[L]</code> -- i.</p><div class="fullcomment"><div class="comment cmt"><p>Computes the inverse of <code>(k: K).filterNot[L]</code> -- i.e., inserts unit values wherever the unit type
+appears in <code>K</code>.</p></div><dl class="paramcmts block"><dt class="tparam">K</dt><dd class="cmt"><p>type that may have <code>Unit</code> params</p></dd><dt class="tparam">L</dt><dd class="cmt"><p>equivalent to <code>K</code> with <code>Unit</code> params filtered out</p></dd><dt class="param">l</dt><dd class="cmt"><p>list to insert unit values in to</p></dd><dt>returns</dt><dd class="cmt"><p>new list with unit values inserted
+</p></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

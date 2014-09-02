@@ -189,6 +189,20 @@
 For example, </p><pre>uint8 :: utf8</pre><p> has type <code>Codec[Int :: String :: HNil]</code>.
 uint8 :: utf8
 }}}</p></div></div>
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#:~&gt;:" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id=":~&gt;:[B](codecB:scodec.Codec[B])(implicitev:=:=[Unit,B]):scodec.Codec[shapeless.::[A,shapeless.HNil]]"></a>
+      <a id=":~&gt;:[B](Codec[B])(=:=[Unit,B]):Codec[::[A,HNil]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $colon$tilde$greater$colon" class="name">:~&gt;:</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="codecB">codecB: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="params">(<span class="implicit">implicit </span><span name="ev">ev: <span class="extype" name="scala.Predef.=:=">=:=</span>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.:~&gt;:.B">B</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>]]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">When called on a <code>Codec[A]</code>, returns a new codec that encodes/decodes <code>B :: A :: HNil</code>.</p><div class="fullcomment"><div class="comment cmt"><p>When called on a <code>Codec[A]</code>, returns a new codec that encodes/decodes <code>B :: A :: HNil</code>.
+HList equivalent of <code>~&gt;</code>.</p></div></div>
     </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
@@ -373,6 +387,37 @@ This is the direct <code>HList</code> equivalent of <code>flatZip</code>.</p></d
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#polyxmap" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id="polyxmap[B](p:shapeless.Poly,q:shapeless.Poly)(implicitaToB:shapeless.poly.Case.Aux[p.type,shapeless.::[A,shapeless.HNil],B],implicitbToA:shapeless.poly.Case.Aux[q.type,shapeless.::[B,shapeless.HNil],A]):scodec.Codec[B]"></a>
+      <a id="polyxmap[B](Poly,Poly)(Aux[p.type,::[A,HNil],B],Aux[q.type,::[B,HNil],A]):Codec[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">polyxmap</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="p">p: <span class="extype" name="shapeless.Poly">Poly</span></span>, <span name="q">q: <span class="extype" name="shapeless.Poly">Poly</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="aToB">aToB: <span class="extype" name="shapeless.PolyDefns.Case.Aux">Aux</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap.p">p</span>.type, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap.B">B</span>]</span>, <span name="bToA">bToA: <span class="extype" name="shapeless.PolyDefns.Case.Aux">Aux</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap.q">q</span>.type, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap.B">B</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Polymorphic function version of <code>xmap</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Polymorphic function version of <code>xmap</code>.</p><p>When called on a <code>Codec[A]</code> where <code>A</code> is not a subytpe of <code>HList</code>, returns a new codec that's the result of
+xmapping with <code>p</code> and <code>q</code>, using <code>p</code> to convert from <code>A</code> to <code>B</code> and using <code>q</code> to convert from
+<code>B</code> to <code>A</code>.
+</p></div><dl class="paramcmts block"><dt class="param">p</dt><dd class="cmt"><p>polymorphic function that converts from <code>A</code> to <code>B</code></p></dd><dt class="param">q</dt><dd class="cmt"><p>polymorphic function that converts from <code>B</code> to <code>A</code></p></dd></dl></div>
+    </li><li name="scodec.ValueCodecEnrichedWithHListSupport#polyxmap1" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id="polyxmap1[B](p:shapeless.Poly)(implicitaToB:shapeless.poly.Case.Aux[p.type,shapeless.::[A,shapeless.HNil],B],implicitbToA:shapeless.poly.Case.Aux[p.type,shapeless.::[B,shapeless.HNil],A]):scodec.Codec[B]"></a>
+      <a id="polyxmap1[B](Poly)(Aux[p.type,::[A,HNil],B],Aux[p.type,::[B,HNil],A]):Codec[B]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">polyxmap1</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="p">p: <span class="extype" name="shapeless.Poly">Poly</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="aToB">aToB: <span class="extype" name="shapeless.PolyDefns.Case.Aux">Aux</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap1.p">p</span>.type, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap1.B">B</span>]</span>, <span name="bToA">bToA: <span class="extype" name="shapeless.PolyDefns.Case.Aux">Aux</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap1.p">p</span>.type, <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap1.B">B</span>, <span class="extype" name="shapeless.HNil">HNil</span>], <span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.A">A</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.ValueCodecEnrichedWithHListSupport.polyxmap1.B">B</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Polymorphic function version of <code>xmap</code> that uses a single polymorphic function in both directions.</p><div class="fullcomment"><div class="comment cmt"><p>Polymorphic function version of <code>xmap</code> that uses a single polymorphic function in both directions.</p><p>When called on a <code>Codec[A]</code> where <code>A</code> is not a subytpe of <code>HList</code>, returns a new codec that's the result of
+xmapping with <code>p</code> for both forward and reverse directions.
+</p></div><dl class="paramcmts block"><dt class="param">p</dt><dd class="cmt"><p>polymorphic function that converts from <code>A</code> to <code>B</code> and from <code>B</code> to <code>A</code></p></dd></dl></div>
     </li><li name="scodec.ValueCodecEnrichedWithHListSupport#self" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="self:scodec.Codec[A]"></a>
       <a id="self:Codec[A]"></a>

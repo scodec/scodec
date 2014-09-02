@@ -247,6 +247,19 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
+    </li><li name="scodec.EncoderFunctions#encodeSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="encodeSeq[A](enc:scodec.Encoder[A])(seq:scala.collection.immutable.Seq[A]):scalaz.\/[String,scodec.bits.BitVector]"></a>
+      <a id="encodeSeq[A](Encoder[A])(Seq[A]):\/[String,BitVector]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">encodeSeq</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="enc">enc: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeSeq.A">A</span>]</span>)</span><span class="params">(<span name="seq">seq: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.collection.immutable.Seq" class="extype" target="_top">Seq</a>[<span class="extype" name="scodec.EncoderFunctions.encodeSeq.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
     </li><li name="scodec.EncoderFunctions#encodeValid" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="encodeValid[A](a:A)(implicitevidence$2:scodec.Encoder[A]):scodec.bits.BitVector"></a>
       <a id="encodeValid[A](A)(Encoder[A]):BitVector"></a>

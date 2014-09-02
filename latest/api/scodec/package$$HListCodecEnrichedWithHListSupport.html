@@ -258,6 +258,19 @@ the <code>HList K</code> followed by the <code>HList L</code>.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#dropUnits" visbl="pub" data-isabs="false" fullComment="no" group="hlist">
+      <a id="dropUnits[M&lt;:shapeless.HList](implicitfltr:shapeless.ops.hlist.FilterNot.Aux[L,Unit,M],implicitru:scodec.HListOps.ReUnit[L,M]):scodec.Codec[M]"></a>
+      <a id="dropUnits[M&lt;:HList](Aux[L,Unit,M],ReUnit[L,M]):Codec[M]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">dropUnits</span><span class="tparams">[<span name="M">M &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="fltr">fltr: <span class="extype" name="shapeless.ops.hlist.FilterNot.Aux">Aux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.dropUnits.M">M</span>]</span>, <span name="ru">ru: <a href="HListOps$$ReUnit.html" class="extype" name="scodec.HListOps.ReUnit">ReUnit</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.dropUnits.M">M</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.dropUnits.M">M</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates a new codec with all unit values filtered out.</p>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
       <a id="ensuring((HListCodecEnrichedWithHListSupport[L])⇒Boolean,⇒Any):HListCodecEnrichedWithHListSupport[L]"></a>
@@ -372,6 +385,37 @@ the <code>HList K</code> followed by the <code>HList L</code>.</p>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#polyxmap" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id="polyxmap[M&lt;:shapeless.HList](p:shapeless.Poly,q:shapeless.Poly)(implicitlToM:shapeless.ops.hlist.Mapper.Aux[p.type,L,M],implicitmToL:shapeless.ops.hlist.Mapper.Aux[q.type,M,L]):scodec.Codec[M]"></a>
+      <a id="polyxmap[M&lt;:HList](Poly,Poly)(Aux[p.type,L,M],Aux[q.type,M,L]):Codec[M]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">polyxmap</span><span class="tparams">[<span name="M">M &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="p">p: <span class="extype" name="shapeless.Poly">Poly</span></span>, <span name="q">q: <span class="extype" name="shapeless.Poly">Poly</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="lToM">lToM: <span class="extype" name="shapeless.ops.hlist.Mapper.Aux">Aux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap.p">p</span>.type, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap.M">M</span>]</span>, <span name="mToL">mToL: <span class="extype" name="shapeless.ops.hlist.Mapper.Aux">Aux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap.q">q</span>.type, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap.M">M</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap.M">M</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Polymorphic function version of <code>xmap</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Polymorphic function version of <code>xmap</code>.</p><p>When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that's the result of
+xmapping with <code>p</code> and <code>q</code>, using <code>p</code> to convert from <code>L</code> to <code>M</code> and using <code>q</code> to convert from
+<code>M</code> to <code>L</code>.
+</p></div><dl class="paramcmts block"><dt class="param">p</dt><dd class="cmt"><p>polymorphic function that converts from <code>L</code> to <code>M</code></p></dd><dt class="param">q</dt><dd class="cmt"><p>polymorphic function that converts from <code>M</code> to <code>L</code></p></dd></dl></div>
+    </li><li name="scodec.HListCodecEnrichedWithHListSupport#polyxmap1" visbl="pub" data-isabs="false" fullComment="yes" group="hlist">
+      <a id="polyxmap1[M&lt;:shapeless.HList](p:shapeless.Poly)(implicitm:shapeless.ops.hlist.Mapper.Aux[p.type,L,M],implicitm2:shapeless.ops.hlist.Mapper.Aux[p.type,M,L]):scodec.Codec[M]"></a>
+      <a id="polyxmap1[M&lt;:HList](Poly)(Aux[p.type,L,M],Aux[p.type,M,L]):Codec[M]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">polyxmap1</span><span class="tparams">[<span name="M">M &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span name="p">p: <span class="extype" name="shapeless.Poly">Poly</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="m">m: <span class="extype" name="shapeless.ops.hlist.Mapper.Aux">Aux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap1.p">p</span>.type, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap1.M">M</span>]</span>, <span name="m2">m2: <span class="extype" name="shapeless.ops.hlist.Mapper.Aux">Aux</span>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap1.p">p</span>.type, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap1.M">M</span>, <span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.L">L</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.HListCodecEnrichedWithHListSupport.polyxmap1.M">M</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Polymorphic function version of <code>xmap</code> that uses a single polymorphic function in both directions.</p><div class="fullcomment"><div class="comment cmt"><p>Polymorphic function version of <code>xmap</code> that uses a single polymorphic function in both directions.</p><p>When called on a <code>Codec[L]</code> for some <code>L &lt;: HList</code>, returns a new codec that's the result of
+xmapping with <code>p</code> for both forward and reverse directions.
+</p></div><dl class="paramcmts block"><dt class="param">p</dt><dd class="cmt"><p>polymorphic function that converts from <code>L</code> to <code>M</code> and from <code>M</code> to <code>L</code></p></dd></dl></div>
     </li><li name="scodec.HListCodecEnrichedWithHListSupport#self" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="self:scodec.Codec[L]"></a>
       <a id="self:Codec[L]"></a>

@@ -221,7 +221,7 @@
       </span>
       </h4>
       <p class="shortcomment cmt">Repeatedly decodes values of type <code>A</code> from the specified vector, converts each value to a <code>B</code> and appends it to an accumulator of type <code>B</code> using the <code>Monoid[B]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Repeatedly decodes values of type <code>A</code> from the specified vector, converts each value to a <code>B</code> and appends it to an accumulator of type <code>B</code> using the <code>Monoid[B]</code>.
-Terminates when no more bits are available in the vector. Exits upon the first error from decoding.
+Terminates when no more bits are available in the vector. Exits upon first decoding error.
 </p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>tuple consisting of the terminating error if any and the accumulated value
 </p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scodec.DecoderFunctions#decodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -250,6 +250,22 @@ Terminates when no more bits are available in the vector. Exits upon the first e
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes a <code>C</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>, then applying the decoded values to the specified function to generate a <code>C</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes a <code>C</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>, then applying the decoded values to the specified function to generate a <code>C</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
+    </li><li name="scodec.DecoderFunctions#decodeCollect" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="decodeCollect[F[_],A](dec:scodec.Decoder[A],limit:Option[Int])(buffer:scodec.bits.BitVector)(implicitcbf:scala.collection.generic.CanBuildFrom[F[A],A,F[A]]):scalaz.\/[String,(scodec.bits.BitVector,F[A])]"></a>
+      <a id="decodeCollect[F[_],A](Decoder[A],Option[Int])(BitVector)(CanBuildFrom[F[A],A,F[A]]):\/[String,(BitVector,F[A])]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">decodeCollect</span><span class="tparams">[<span name="F">F<span class="tparams">[<span name="_">_</span>]</span></span>, <span name="A">A</span>]</span><span class="params">(<span name="dec">dec: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.DecoderFunctions.decodeCollect.A">A</span>]</span>, <span name="limit">limit: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Option" class="extype" target="_top">Option</a>[<a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a>]</span>)</span><span class="params">(<span name="buffer">buffer: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="cbf">cbf: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.collection.generic.CanBuildFrom" class="extype" target="_top">CanBuildFrom</a>[<span class="extype" name="scodec.DecoderFunctions.decodeCollect.F">F</span>[<span class="extype" name="scodec.DecoderFunctions.decodeCollect.A">A</span>], <span class="extype" name="scodec.DecoderFunctions.decodeCollect.A">A</span>, <span class="extype" name="scodec.DecoderFunctions.decodeCollect.F">F</span>[<span class="extype" name="scodec.DecoderFunctions.decodeCollect.A">A</span>]]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, (<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>, <span class="extype" name="scodec.DecoderFunctions.decodeCollect.F">F</span>[<span class="extype" name="scodec.DecoderFunctions.decodeCollect.A">A</span>])]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Repeatedly decodes values of type <code>A</code> from the specified vector and returns a collection of the specified type.</p><div class="fullcomment"><div class="comment cmt"><p>Repeatedly decodes values of type <code>A</code> from the specified vector and returns a collection of the specified type.
+Terminates when no more bits are available in the vector or when <code>limit</code> is defined and that many records have been
+decoded. Exits upon first decoding error.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scodec.DecoderFunctions#decodeValidValue" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="decodeValidValue[A](bits:scodec.bits.BitVector)(implicitevidence$3:scodec.Decoder[A]):A"></a>
       <a id="decodeValidValue[A](BitVector)(Decoder[A]):A"></a>
