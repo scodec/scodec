@@ -145,23 +145,27 @@ trait DecoderFunctions {
 
   /**
    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
-   * Terminates when no more bits are available in the vector. Exits upon the first error from decoding.
+   * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
+   * decoded. Exits upon the first error from decoding.
    */
-  final def decodeCollect[F[_], A](dec: Decoder[A])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): String \/ F[A] = {
+  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): String \/ (BitVector, F[A]) = {
     val bldr = cbf()
     var remaining = buffer
+    var count = 0
+    var maxCount = limit getOrElse Int.MaxValue
     var error: Option[String] = None
-    while (remaining.nonEmpty) {
+    while (count < maxCount && remaining.nonEmpty) {
       dec.decode(remaining) match {
         case \/-((rest, value)) =>
           bldr += value
+          count += 1
           remaining = rest
         case -\/(err) =>
           error = Some(err)
           remaining = BitVector.empty
       }
     }
-    error.toLeftDisjunction(bldr.result)
+    error.toLeftDisjunction((remaining, bldr.result))
   }
 }
 
