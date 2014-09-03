@@ -7,23 +7,23 @@ import shapeless.ops.hlist._
 object HListOps {
 
   /**
-   * Computes the inverse of `(k: K).filterNot[Unit]` -- i.e., inserts unit values wherever the unit type
-   * appears in `K`.
-   * @tparam K type that may have `Unit` params
-   * @tparam L equivalent to `K` with `Unit` params filtered out
-   * @param l list to insert unit values in to
+   * Computes the inverse of `(l: L).filterNot[Unit]` -- i.e., inserts unit values wherever the unit type
+   * appears in `L`.
+   * @tparam K HList type containing no `Unit` types
+   * @tparam L equivalent to `K` with `Unit` types added in arbitrary positions
+   * @param k list to insert unit values in to
    * @return new list with unit values inserted
    */
-  def reUnit[K <: HList, L <: HList](l: L)(implicit ru: ReUnit[K, L]): K = ru(l)
+  def reUnit[K <: HList, L <: HList](k: K)(implicit ru: ReUnit[K, L]): L = ru(k)
 
   /** Provides the `reUnit` method on an `HList`. */
-  implicit class ReUnitSyntax[L <: HList](val l: L) extends AnyVal {
-    def reUnit[K <: HList](implicit ru: ReUnit[K, L]): K = ru(l)
+  implicit class ReUnitSyntax[K <: HList](val k: K) extends AnyVal {
+    def reUnit[L <: HList](implicit ru: ReUnit[K, L]): L = ru(k)
   }
 
-  /** Typeclass that allows computation of the inverse of calling `filterNot[Unit]` on a `K`. */
+  /** Typeclass that allows computation of the inverse of calling `filterNot[Unit]` on a `L`. */
   sealed trait ReUnit[K <: HList, L <: HList] {
-    def apply(l: L): K
+    def apply(l: K): L
   }
 
   object ReUnit {
@@ -35,15 +35,15 @@ object HListOps {
       reUnit: ReUnit[KT, LT],
       notUnit: H =:!= Unit
     ): ReUnit[H :: KT, H :: LT] = new ReUnit[H :: KT, H :: LT] {
-      def apply(l: H :: LT): H :: KT =
-         l.head :: reUnit(l.tail)
+      def apply(k: H :: KT): H :: LT =
+         k.head :: reUnit(k.tail)
     }
 
-    implicit def `non-empty K and any L where head of K is Unit`[KT <: HList, L <: HList](implicit
-      reUnit: ReUnit[KT, L]
-    ): ReUnit[Unit :: KT, L] = new ReUnit[Unit :: KT, L] {
-      def apply(l: L): Unit :: KT =
-         () :: reUnit(l)
+    implicit def `non-empty K and any L where head of L is Unit`[K <: HList, LT <: HList](implicit
+      reUnit: ReUnit[K, LT]
+    ): ReUnit[K, Unit :: LT] = new ReUnit[K, Unit :: LT] {
+      def apply(k: K): Unit :: LT =
+         () :: reUnit(k)
     }
   }
 }

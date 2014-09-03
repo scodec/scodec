@@ -64,10 +64,6 @@ private[scodec] object HListCodec {
     l.foldRight(hnilCodec)(PrependCodec)
   }
 
-  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit fltr: FilterNot.Aux[K, Unit, L], ru: ReUnit[K, L]) = new Codec[L] {
-    override def encode(l: L) = codec.encode(HListOps.reUnit[K, L](l))
-    override def decode(buffer: BitVector) = {
-      codec.decode(buffer).map { case (rest, l) => (rest, l.filterNot[Unit]) }
-    }
-  }
+  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit fltr: FilterNot.Aux[K, Unit, L], ru: ReUnit[L, K]) =
+    codec.xmap[L](_.filterNot[Unit], _.reUnit[K])
 }
