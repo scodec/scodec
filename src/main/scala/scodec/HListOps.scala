@@ -7,7 +7,7 @@ import shapeless.ops.hlist._
 object HListOps {
 
   /**
-   * Computes the inverse of `(k: K).filterNot[L]` -- i.e., inserts unit values wherever the unit type
+   * Computes the inverse of `(k: K).filterNot[Unit]` -- i.e., inserts unit values wherever the unit type
    * appears in `K`.
    * @tparam K type that may have `Unit` params
    * @tparam L equivalent to `K` with `Unit` params filtered out
