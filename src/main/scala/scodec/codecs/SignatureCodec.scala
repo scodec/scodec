@@ -9,50 +9,70 @@ import java.security.cert.Certificate
 import scodec.bits.{ BitVector, ByteVector }
 
 /**
- * Represents the ability to create a `java.security.Signature` for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
+ * Represents the ability to create a "checksum" for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
  * @group crypto
  */
-trait SignatureFactory {
-
-  /** Creates a signature initialized for signing. */
-  def newSigner: Signature
-
-  /** Creates a signature initialized for verifying. */
-  def newVerifier: Signature
+trait Signer {
+   def update(data:Array[Byte]):Unit
+   def sign:Array[Byte]
+   def verify(signature:Array[Byte]):Boolean
 }
 
 /**
- * Companion for [[SignatureFactory]].
+ * Signer implementation for `java.security.Signature`
+ * @group crypto
+ */
+class SignatureSigner(impl:Signature) extends Signer {
+   def update(data:Array[Byte]):Unit = impl.update(data)
+   def sign:Array[Byte] = impl.sign
+   def verify(signature:Array[Byte]):Boolean = impl.verify(signature)
+}
+
+/**
+ * Represents the ability to create a [[Signer]] for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
+ * @group crypto
+ */
+trait SignerFactory {
+
+  /** Creates a [[Signer]] initialized for signing. */
+  def newSigner: Signer
+
+  /** Creates a [[Signer]] initialized for verifying. */
+  def newVerifier: Signer
+}
+
+/**
+ * Create `java.security.Signature` implementations for [[SignerFactory]]
  * @group crypto
  */
 object SignatureFactory {
-
+  
   /** Creates a signature factory for the specified algorithm using the specified private and public keys. */
-  def apply(algorithm: String, privateKey: PrivateKey, publicKey: PublicKey): SignatureFactory =
+  def apply(algorithm: String, privateKey: PrivateKey, publicKey: PublicKey): SignerFactory =
     new SimpleSignatureFactory(algorithm, privateKey, publicKey)
 
   /** Creates a signature factory for the specified algorithm using the specified key pair. */
-  def apply(algorithm: String, keyPair: KeyPair): SignatureFactory =
+  def apply(algorithm: String, keyPair: KeyPair): SignerFactory =
     new SimpleSignatureFactory(algorithm, keyPair.getPrivate, keyPair.getPublic)
 
   /** Creates a signature factory for the specified algorithm using the specified key pair. */
-  def apply(algorithm: String, privateKey: PrivateKey, certificate: Certificate): SignatureFactory =
+  def apply(algorithm: String, privateKey: PrivateKey, certificate: Certificate): SignerFactory =
     new SimpleSignatureFactory(algorithm, privateKey, certificate.getPublicKey)
 
   /** Creates a signature factory that only supports signing for the specified algorithm using the specified private key. */
-  def signing(algorithm: String, privateKey: PrivateKey): SignatureFactory =
-    new SimpleSignatureFactorySigning(algorithm, privateKey) with SignatureFactory {
+  def signing(algorithm: String, privateKey: PrivateKey): SignerFactory =
+    new SimpleSignatureFactorySigning(algorithm, privateKey) with SignerFactory {
       def newVerifier = sys.error("Cannot verify with a signature factory that only supports signing.")
     }
 
   /** Creates a signature factory that only supports signing for the specified algorithm using the specified public key. */
-  def verifying(algorithm: String, publicKey: PublicKey): SignatureFactory =
-    new SimpleSignatureFactoryVerifying(algorithm, publicKey) with SignatureFactory {
+  def verifying(algorithm: String, publicKey: PublicKey): SignerFactory =
+    new SimpleSignatureFactoryVerifying(algorithm, publicKey) with SignerFactory {
       def newSigner = sys.error("Cannot sign with a signature factory that only supports verifying.")
     }
 
   /** Creates a signature factory that only supports signing for the specified algorithm using the specified public key. */
-  def verifying(algorithm: String, certificate: Certificate): SignatureFactory =
+  def verifying(algorithm: String, certificate: Certificate): SignerFactory =
     verifying(algorithm, certificate.getPublicKey)
 
 
@@ -64,10 +84,10 @@ object SignatureFactory {
 
   private trait SignatureFactorySigning extends WithSignature {
     protected def privateKey: PrivateKey
-    def newSigner: Signature = {
+    def newSigner: Signer = {
       val sig = newSignature
       sig.initSign(privateKey)
-      sig
+      new SignatureSigner(sig)
     }
   }
 
@@ -78,10 +98,10 @@ object SignatureFactory {
 
   private trait SignatureFactoryVerifying extends WithSignature {
     protected def publicKey: PublicKey
-    def newVerifier: Signature = {
+    def newVerifier: Signer = {
      val sig = newSignature
       sig.initVerify(publicKey)
-      sig
+      new SignatureSigner(sig)
     }
   }
 
@@ -94,11 +114,12 @@ object SignatureFactory {
     protected val algorithm: String,
     protected val privateKey: PrivateKey,
     protected val publicKey: PublicKey
-  ) extends SignatureFactory with SignatureFactorySigning with SignatureFactoryVerifying
+  ) extends SignerFactory with SignatureFactorySigning with SignatureFactoryVerifying
+  
 }
 
 /** @see [[fixedSizeSignature]] and [[variableSizeSignature]] */
-private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignatureFactory) extends Codec[A] {
+private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignerFactory) extends Codec[A] {
   import Codec._
 
   override def encode(a: A) = for {

@@ -86,11 +86,16 @@ import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
  * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
  *
  *
- * === Cryptograhpy Codecs ===
+ * === Cryptography Codecs ===
  *
  * There are codecs that support working with encrypted data ([[encrypted]]) and digital signatures
  * ([[fixedSizeSignature]] and [[variableSizeSignature]]). Additionally, support for `java.security.cert.Certificate`s
  * is provided by [[certificate]] and [[x509Certificate]].
+ * 
+ * === Checksum Codecs ===
+ *
+ * There are codecs that support working with checksums and digests, extending the 
+ * [[fixedSizeSignature]] and [[variableSizeSignature]] functionality.
  *
  *
  * @groupname bits Bits and Bytes Codecs
@@ -110,6 +115,9 @@ import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
  *
  * @groupname crypto Cryptography
  * @groupprio crypto 4
+ * 
+ * @groupname checksum Checksums and Digests
+ * @groupprio checksum 5
  */
 package object codecs {
 
@@ -826,7 +834,7 @@ package object codecs {
    * @param signatureFactory factory to use for signing/verifying
    * @group crypto
    */
-  def fixedSizeSignature[A](size: Int)(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
+  def fixedSizeSignature[A](size: Int)(codec: Codec[A])(implicit signatureFactory: SignerFactory): Codec[A] =
     new SignatureCodec(codec, fixedSizeBytes(size, BitVectorCodec))(signatureFactory)
 
   /**
@@ -840,7 +848,7 @@ package object codecs {
    * @param signatureFactory factory to use for signing/verifying
    * @group crypto
    */
-  def variableSizeSignature[A](size: Codec[Int])(codec: Codec[A])(implicit signatureFactory: SignatureFactory): Codec[A] =
+  def variableSizeSignature[A](size: Codec[Int])(codec: Codec[A])(implicit signatureFactory: SignerFactory): Codec[A] =
     new SignatureCodec(codec, variableSizeBytes(size, BitVectorCodec))(signatureFactory)
 
   /**
