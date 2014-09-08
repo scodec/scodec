@@ -13,6 +13,9 @@ import scodec.bits.BitVector
  *
  * @groupname combinators Basic Combinators
  * @groupprio combinators 10
+ *
+ * @groupname coproduct Coproduct Support
+ * @groupprio coproduct 13
  */
 trait Encoder[-A] { self =>
 
@@ -63,6 +66,12 @@ trait Encoder[-A] { self =>
   def compact: Encoder[A] = new Encoder[A] {
     def encode(a: A) = self.encode(a).map { _.compact }
   }
+
+  /**
+   * Gets this as an `Encoder`.
+   * @group combinators
+   */
+  def asEncoder: Encoder[A] = this
 }
 
 /** Provides functions for working with encoders. */
