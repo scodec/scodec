@@ -46,7 +46,7 @@ trait SignerFactory {
  * @group crypto
  */
 object SignatureFactory {
-  
+
   /** Creates a signature factory for the specified algorithm using the specified private and public keys. */
   def apply(algorithm: String, privateKey: PrivateKey, publicKey: PublicKey): SignerFactory =
     new SimpleSignatureFactory(algorithm, privateKey, publicKey)
@@ -115,11 +115,11 @@ object SignatureFactory {
     protected val privateKey: PrivateKey,
     protected val publicKey: PublicKey
   ) extends SignerFactory with SignatureFactorySigning with SignatureFactoryVerifying
-  
+
 }
 
 /** @see [[fixedSizeSignature]] and [[variableSizeSignature]] */
-private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signatureFactory: SignerFactory) extends Codec[A] {
+private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signerFactory: SignerFactory) extends Codec[A] {
   import Codec._
 
   override def encode(a: A) = for {
@@ -130,7 +130,7 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
 
   private def sign(bits: BitVector): String \/ BitVector = {
     try {
-      val signature = signatureFactory.newSigner
+      val signature = signerFactory.newSigner
       signature.update(bits.toByteArray)
       \/-(BitVector(signature.sign))
     } catch {
@@ -149,7 +149,7 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
   } yield value).run(buffer)
 
   private def verify(data: ByteVector, signatureBytes: ByteVector): String \/ Unit = {
-    val verifier = signatureFactory.newVerifier
+    val verifier = signerFactory.newVerifier
     verifier.update(data.toArray)
     try {
       if (verifier.verify(signatureBytes.toArray)) {

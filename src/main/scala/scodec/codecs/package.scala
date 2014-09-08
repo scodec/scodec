@@ -88,15 +88,9 @@ import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
  *
  * === Cryptography Codecs ===
  *
- * There are codecs that support working with encrypted data ([[encrypted]]) and digital signatures
+ * There are codecs that support working with encrypted data ([[encrypted]]), digital signatures and checksums
  * ([[fixedSizeSignature]] and [[variableSizeSignature]]). Additionally, support for `java.security.cert.Certificate`s
  * is provided by [[certificate]] and [[x509Certificate]].
- * 
- * === Checksum Codecs ===
- *
- * There are codecs that support working with checksums and digests, extending the 
- * [[fixedSizeSignature]] and [[variableSizeSignature]] functionality.
- *
  *
  * @groupname bits Bits and Bytes Codecs
  * @groupprio bits 0
@@ -115,9 +109,6 @@ import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
  *
  * @groupname crypto Cryptography
  * @groupprio crypto 4
- * 
- * @groupname checksum Checksums and Digests
- * @groupprio checksum 5
  */
 package object codecs {
 
@@ -829,13 +820,15 @@ package object codecs {
    * string (e.g., ascii, utf8), decoding an encoded vector will result in the string codec trying to
    * decode the signature bits as part of the string.
    *
+   * Use [[SignatureFactory]] or [[ChecksumFactory]] to create a [[SignerFactory]].
+   *
    * @param size size in bytes of signature
    * @param codec codec to use to encode/decode value field
    * @param signatureFactory factory to use for signing/verifying
    * @group crypto
    */
-  def fixedSizeSignature[A](size: Int)(codec: Codec[A])(implicit signatureFactory: SignerFactory): Codec[A] =
-    new SignatureCodec(codec, fixedSizeBytes(size, BitVectorCodec))(signatureFactory)
+  def fixedSizeSignature[A](size: Int)(codec: Codec[A])(implicit signerFactory: SignerFactory): Codec[A] =
+    new SignatureCodec(codec, fixedSizeBytes(size, BitVectorCodec))(signerFactory)
 
   /**
    * Codec that includes a signature of the encoded bits.
@@ -843,13 +836,15 @@ package object codecs {
    * Same functionality as [[fixedSizeSignature]] with one difference -- the size of the signature bytes are
    * written between the encoded bits and the signature bits.
    *
+   * Use [[SignatureFactory]] or [[ChecksumFactory]] to create a [[SignerFactory]].
+   *
    * @param size codec to use to encode/decode size of signature field
    * @param codec codec to use to encode/decode value field
    * @param signatureFactory factory to use for signing/verifying
    * @group crypto
    */
-  def variableSizeSignature[A](size: Codec[Int])(codec: Codec[A])(implicit signatureFactory: SignerFactory): Codec[A] =
-    new SignatureCodec(codec, variableSizeBytes(size, BitVectorCodec))(signatureFactory)
+  def variableSizeSignature[A](size: Codec[Int])(codec: Codec[A])(implicit signerFactory: SignerFactory): Codec[A] =
+    new SignatureCodec(codec, variableSizeBytes(size, BitVectorCodec))(signerFactory)
 
   /**
    * Codec that encodes/decodes certificates using their default encoding.

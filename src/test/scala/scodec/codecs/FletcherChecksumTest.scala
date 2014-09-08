@@ -1,22 +1,17 @@
-package scodec.codecs
+package scodec
+package codecs
 
 import org.scalacheck._
-import org.scalatest.WordSpec
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import scodec.bits.ByteVector
 
-/**
- * Test the Fletcher checksum functionality
- *
- */
-class FletcherChecksumTest extends WordSpec with GeneratorDrivenPropertyChecks {
+/** Test the Fletcher checksum functionality. */
+class FletcherChecksumTest extends CodecSuite {
 
   "fletcher16 checksum" should {
     /**
      *  http://en.wikipedia.org/wiki/Fletcher's_checksum
      *
      *  "Example calculation of the Fletcher-16 checksum"
-     *
      */
     "wikipedia" in {
       val signer = ChecksumFactory.fletcher16.newSigner
@@ -51,5 +46,4 @@ class FletcherChecksumTest extends WordSpec with GeneratorDrivenPropertyChecks {
     signer.update(ByteVector.fill(3 * n + delta)(0xAA).toArray)
     assert(signer.verify(expected))
   }
-
 }
