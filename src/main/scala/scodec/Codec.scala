@@ -161,6 +161,13 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     override def decode(buffer: BitVector) = self.decode(buffer)
     override def toString = str
   }
+
+  /**
+   * Supports creation of a coproduct codec. See [[scodec.codecs.CoproductCodecBuilder]] for details.
+   * @group coproduct
+   */
+  def :+:[B](left: Codec[B]): codecs.CoproductCodecBuilder[B :+: A :+: CNil, Codec[B] :: Codec[A] :: HNil] =
+    new codecs.CoproductCodecBuilder(left :: self :: HNil)
 }
 
 /**

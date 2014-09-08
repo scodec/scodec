@@ -15,6 +15,9 @@ import scodec.bits.BitVector
  *
  * @groupname combinators Basic Combinators
  * @groupprio combinators 10
+ *
+ * @groupname coproduct Coproduct Support
+ * @groupprio coproduct 13
  */
 trait Decoder[+A] { self =>
 
@@ -83,6 +86,12 @@ trait Decoder[+A] { self =>
       }
     }
   }
+
+  /**
+   * Gets this as a `Decoder`.
+   * @group combinators
+   */
+  def asDecoder: Decoder[A] = this
 }
 
 /** Provides functions for working with decoders. */
