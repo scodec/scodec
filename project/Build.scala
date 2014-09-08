@@ -14,5 +14,12 @@ object ScodecBuild extends Build {
     val ref = extracted.get(thisProjectRef)
     extracted.runAggregated(publishSigned in Global in ref, st)
   }
+
+  def previousVersion(currentVersion: String): Option[String] = {
+    val Version = """(\d+)\.(\d+)\.(\d+).*""".r
+    val Version(x, y, z) = currentVersion
+    if (z == "0") None
+    else Some(s"$x.$y.${z.toInt - 1}")
+  }
 }
 
