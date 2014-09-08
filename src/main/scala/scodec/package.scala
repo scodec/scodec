@@ -185,4 +185,20 @@ package object scodec {
     def polyxmap1[B](p: Poly)(implicit aToB: Case.Aux[p.type, A :: HNil, B], bToA: Case.Aux[p.type, B :: HNil, A]): Codec[B] =
       polyxmap(p, p)
   }
+
+  final implicit class EnrichedCoproductEncoder[C <: Coproduct](val self: Encoder[C]) extends AnyVal {
+    /**
+     * When called on a `Encoder[C]` where `C` is a coproduct containing type `A`, converts to an `Encoder[A]`.
+     * @group coproduct
+     */
+    def selectEncoder[A](implicit inj: ops.coproduct.Inject[C, A]): Encoder[A] = self.contramap { a => Coproduct[C](a) }
+  }
+
+  final implicit class EnrichedCoproductDecoder[C <: Coproduct](val self: Decoder[C]) extends AnyVal {
+    /**
+     * When called on a `Decoder[C]` where `C` is a coproduct containing type `A`, converts to a `Decoder[Option[A]]`.
+     * @group coproduct
+     */
+    def selectDecoder[A](implicit sel: ops.coproduct.Selector[C, A]): Decoder[Option[A]] = self.map { c => c.select[A] }
+  }
 }
