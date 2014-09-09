@@ -92,6 +92,9 @@ There are various examples in the test directory, including codecs for:
 The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
 quality codecs for the above examples.
 
+The [bitcoin-scodec](https://github.com/yzernik/bitcoin-scodec) library has a codec
+for the Bitcoin network protocol.
+
 Getting Binaries
 ----------------
 
