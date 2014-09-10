@@ -95,6 +95,9 @@ quality codecs for the above examples.
 The [bitcoin-scodec](https://github.com/yzernik/bitcoin-scodec) library has a codec
 for the Bitcoin network protocol.
 
+The [scodec-msgpack](https://github.com/pocketberserker/scodec-msgpack) library provides
+codecs for [MessagePack](http://msgpack.org/).
+
 Getting Binaries
 ----------------
 
