@@ -49,5 +49,17 @@ class CoproductCodecTest extends CodecSuite {
         }
       }
     }
+
+    "support choice codecs" in {
+      type US = Unit :+: String :+: CNil
+      val codec: Codec[US] =
+        (constant(1) :+: variableSizeBytes(uint8, ascii)).choice
+
+      codec.encodeValid(Coproduct[US](())) shouldBe hex"01".bits
+      codec.complete.decodeValidValue(hex"01".bits) shouldBe Coproduct[US](())
+
+      codec.encodeValid(Coproduct[US]("Hello")) shouldBe hex"0548656c6c6f".bits
+      codec.complete.decodeValidValue(hex"0548656c6c6f".bits) shouldBe Coproduct[US]("Hello")
+    }
   }
 }

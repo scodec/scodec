@@ -176,6 +176,24 @@ trait DecoderFunctions {
     }
     error.toLeftDisjunction((remaining, bldr.result))
   }
+
+  /**
+   * Creates a decoder that decodes with each of the specified decoders, returning
+   * the first successful result.
+   */
+  final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
+    def decode(buffer: BitVector): String \/ (BitVector, A) = {
+      @annotation.tailrec def go(rem: List[Decoder[A]], lastErr: String): String \/ (BitVector, A) = rem match {
+        case Nil => \/.left(lastErr)
+        case hd :: tl =>
+          hd.decode(buffer) match {
+            case res @ \/-(_) => res
+            case -\/(err) => go(tl, err)
+          }
+      }
+      go(decoders.toList, "no decoders provided")
+    }
+  }
 }
 
 /** Companion for [[Decoder]]. */
