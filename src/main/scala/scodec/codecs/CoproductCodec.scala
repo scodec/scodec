@@ -21,10 +21,6 @@ private[scodec] object CoproductCodec {
     go(c, 0)
   }
 
-  implicit class AsCodecList[L <: HList](l: L) {
-    def asCodecList[C <: Coproduct](implicit aux: ToCoproductCodecs[C, L]): List[Codec[C]] = aux(l)
-  }
-
   private def encodeCoproduct[C <: Coproduct](codecs: List[Codec[C]], c: C): String \/ BitVector = {
     val index = indexOf(c)
     for {
@@ -46,20 +42,20 @@ private[scodec] object CoproductCodec {
     discriminatorToIndex: A => Option[Int]
   )(implicit aux: ToCoproductCodecs[C, L]) extends Codec[C] {
 
-    private val codecsList: List[Codec[C]] = codecs.asCodecList
+    private val liftedCodecs: List[Codec[C]] = aux(codecs)
 
     def encode(c: C) = {
       val discriminator = coproductToDiscriminator(c)
       for {
         encDiscriminator <- discriminatorCodec.encode(discriminator)
-        encValue <- encodeCoproduct(codecsList, c)
+        encValue <- encodeCoproduct(liftedCodecs, c)
       } yield encDiscriminator ++ encValue
     }
 
     def decode(buffer: BitVector) = (for {
       discriminator <- DecodingContext(discriminatorCodec.decode)
       index <- DecodingContext.liftE(discriminatorToIndex(discriminator).toRightDisjunction(s"Unsupported discriminator $discriminator"))
-      decoder <- DecodingContext.liftE(codecsList.lift(index).toRightDisjunction(s"Unsupported index $index (for discriminator $discriminator)"))
+      decoder <- DecodingContext.liftE(liftedCodecs.lift(index).toRightDisjunction(s"Unsupported index $index (for discriminator $discriminator)"))
       value <- DecodingContext(decoder.decode)
     } yield value).run(buffer)
 
@@ -71,10 +67,10 @@ private[scodec] object CoproductCodec {
     codecs: L
   )(implicit aux: ToCoproductCodecs[C, L]) extends Codec[C] {
 
-    private val codecsList: List[Codec[C]] = codecs.asCodecList
-    private val decoder: Decoder[C] = Decoder.choiceDecoder(codecsList: _*)
+    private val liftedCodecs: List[Codec[C]] = aux(codecs)
+    private val decoder: Decoder[C] = Decoder.choiceDecoder(liftedCodecs: _*)
 
-    def encode(c: C) = encodeCoproduct(codecsList, c)
+    def encode(c: C) = encodeCoproduct(liftedCodecs, c)
 
     def decode(buffer: BitVector) = decoder.decode(buffer)
 
