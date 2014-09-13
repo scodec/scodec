@@ -153,5 +153,7 @@ previousArtifact := previousVersion(version.value) map { pv =>
 binaryIssueFilters ++= Seq(
   ProblemFilters.exclude[MissingMethodProblem]("scodec.Codec.:+:"),
   ProblemFilters.exclude[MissingMethodProblem]("scodec.Decoder.asDecoder"),
-  ProblemFilters.exclude[MissingMethodProblem]("scodec.Encoder.asEncoder")
+  ProblemFilters.exclude[MissingMethodProblem]("scodec.DecoderFunctions.choiceDecoder"),
+  ProblemFilters.exclude[MissingMethodProblem]("scodec.Encoder.asEncoder"),
+  ProblemFilters.exclude[MissingMethodProblem]("scodec.EncoderFunctions.choiceEncoder")
 )
