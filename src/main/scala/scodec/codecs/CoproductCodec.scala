@@ -103,7 +103,7 @@ object ToCoproductCodecs {
         val codec: Codec[A] = l.head
         def encode(c: A :+: CT) = c match {
           case Inl(a) => codec.encode(a)
-          case Inr(ct) => \/.left("cannot encode $ct")
+          case Inr(ct) => \/.left(s"cannot encode $ct")
         }
         def decode(buffer: BitVector) =
           codec.decode(buffer).map { case (rem, a) => (rem, Coproduct[A :+: CT](a)) }
@@ -114,7 +114,7 @@ object ToCoproductCodecs {
         new Codec[A :+: CT] {
           def encode(c: A :+: CT) = c match {
             case Inr(a) => d.encode(a)
-            case Inl(ch) => \/.left("cannot encode $c")
+            case Inl(ch) => \/.left(s"cannot encode $c")
           }
           def decode(buffer: BitVector) =
             d.decode(buffer).map { case (rem, a) => (rem, Inr(a): A :+: CT) }
