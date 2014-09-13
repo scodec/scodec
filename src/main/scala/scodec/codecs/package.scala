@@ -646,6 +646,18 @@ package object codecs {
   def lookahead(target: Codec[Unit]): Codec[Boolean] = new RecoverCodec(target, true)
 
   /**
+   * Codec that encodes/decodes using the specified codecs by trying each codec in succession
+   * and using the first successful result.
+   *
+   * @group combinators
+   */
+  def choice[A](codecs: Codec[A]*): Codec[A] =
+    Codec(
+      Encoder.choiceEncoder(codecs: _*),
+      Decoder.choiceDecoder(codecs: _*)
+    ).withToString(codecs.mkString("choice(", ", ", ")"))
+
+  /**
    * Codec that encodes/decodes an immutable `IndexedSeq[A]` from a `Codec[A]`.
    *
    * When encoding, each `A` in the sequence is encoded and all of the resulting vectors are concatenated.

@@ -107,6 +107,24 @@ trait EncoderFunctions {
     }
     \/.right(merge(0, buf.size))
   }
+
+  /**
+   * Creates an encoder that encodes with each of the specified encoders, returning
+   * the first successful result.
+   */
+  final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A] {
+    def encode(a: A) = {
+      @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: String): String \/ BitVector = rem match {
+        case Nil => \/.left(lastErr)
+        case hd :: tl =>
+          hd.encode(a) match {
+            case res @ \/-(_) => res
+            case -\/(err) => go(tl, err)
+          }
+      }
+      go(encoders.toList, "no encoders provided")
+    }
+  }
 }
 
 /** Companion for [[Encoder]]. */
