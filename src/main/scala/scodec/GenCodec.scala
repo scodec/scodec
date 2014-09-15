@@ -8,16 +8,23 @@ import scodec.bits.BitVector
 trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
 
   /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => C`. */
-  override def map[C](f: B => C): GenCodec[A, C] = new GenCodec[A, C] {
-    def encode(a: A) = self.encode(a)
-    def decode(bits: BitVector) = self.decode(bits).map { case (rem, b) => (rem, f(b)) }
-  }
+  override def map[C](f: B => C): GenCodec[A, C] = GenCodec(this, super.map(f))
+
+  /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => String \/ C`. */
+  override def emap[C](f: B => String \/ C): GenCodec[A, C] = GenCodec(this, super.emap(f))
 
   /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => A`. */
-  override def contramap[C](f: C => A): GenCodec[C, B] = new GenCodec[C, B] {
-    def encode(c: C) = self.encode(f(c))
-    def decode(bits: BitVector) = self.decode(bits)
-  }
+  override def contramap[C](f: C => A): GenCodec[C, B] = GenCodec(super.contramap(f), this)
+
+  /**
+   * Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied partial
+   * function from `C` to `A`. The encoding will fail for any `C` that
+   * `f` maps to `None`.
+   */
+  override def pcontramap[C](f: C => Option[A]): GenCodec[C, B] = GenCodec(super.pcontramap(f), this)
+
+  /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => String \/ A`. */
+  override def econtramap[C](f: C => String \/ A): GenCodec[C, B] = GenCodec(super.econtramap(f), this)
 
   /**
    * Converts this generalized codec in to a non-generalized codec assuming `A` and `B` are the same type.
