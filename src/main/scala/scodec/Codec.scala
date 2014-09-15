@@ -46,6 +46,21 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     def encode(b: B): String \/ BitVector = g(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
     def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
+  
+  /**
+   * Maps to a codec of type `B` using two total functions,
+   *  `A => \/[String, B]` and `B => \/[String, A]`.
+   *  
+   *  f and g can then reject their argument and return an error.
+   *  
+   * @group combinators
+   */
+  final def exmap[B](f: A => String \/B, g: B => String \/ A): Codec[B] = new Codec[B] {
+     def encode(b: B): String \/ BitVector = g(b).flatMap(self.encode)
+     def decode(buffer: BitVector): String \/ (BitVector, B) =
+       self.decode(buffer) flatMap {case (rest,a) => f(a).flatMap(b => \/.right((rest, b)))}
+  }
+
 
   /**
    * Returns a new codec that encodes/decodes a value of type `B` by using an isomorphism between `A` and `B`.
