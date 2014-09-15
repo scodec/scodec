@@ -70,6 +70,14 @@ trait Decoder[+A] { self =>
   }
 
   /**
+   * Converts this decoder to a `Decoder[B]` using the supplied `A => String \/ B`.
+   * @group combinators
+   */
+  def emap[B](f: A => String \/ B): Decoder[B] = new Decoder[B] {
+    def decode(bits: BitVector) = self.decode(bits) flatMap { case (rem, a) => f(a).map { b => (rem, b) } }
+  }
+
+  /**
    * Converts this decoder to a new decoder that fails decoding if there are remaining bits.
    * @group combinators
    */

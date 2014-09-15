@@ -60,6 +60,14 @@ trait Encoder[-A] { self =>
   }
 
   /**
+   * Converts this encoder to an `Encoder[B]` using the supplied `B => String \/ A`.
+   * @group combinators
+   */
+  def econtramap[B](f: B => String \/ A): Encoder[B] = new Encoder[B] {
+    def encode(b: B) = f(b) flatMap self.encode
+  }
+
+  /**
    * Converts this encoder to a new encoder that compacts the generated bit vector before returning it
    * @group combinators
    */
