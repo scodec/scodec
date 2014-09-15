@@ -80,6 +80,15 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def asEncoder: Encoder[A] = this
+
+  /**
+   * Converts this to a codec that fails decoding with an error.
+   * @group combinators
+   */
+  def encodeOnly[AA <: A]: Codec[AA] = new Codec[AA] {
+    def encode(a: AA) = self.encode(a)
+    def decode(bits: BitVector) = \/.left("decoding not supported")
+  }
 }
 
 /** Provides functions for working with encoders. */
