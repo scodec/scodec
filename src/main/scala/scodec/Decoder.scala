@@ -2,7 +2,7 @@ package scodec
 
 import scala.language.higherKinds
 
-import scalaz.{ \/, \/-, -\/, Monad, Monoid }
+import scalaz.{ \/, \/-, -\/, Monad, Monoid, NotNothing }
 import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector
@@ -105,7 +105,7 @@ trait Decoder[+A] { self =>
    * Converts this to a codec that fails encoding with an error.
    * @group combinators
    */
-  def decodeOnly[AA >: A]: Codec[AA] = new Codec[AA] {
+  def decodeOnly[AA >: A : NotNothing]: Codec[AA] = new Codec[AA] {
     def encode(a: AA) = \/.left("encoding not supported")
     def decode(bits: BitVector) = self.decode(bits)
   }
