@@ -1,6 +1,6 @@
 package scodec
 
-import scalaz.{ \/, \/-, -\/, Contravariant, Corepresentable }
+import scalaz.{ \/, \/-, -\/, Contravariant, Corepresentable, NotNothing }
 import \/.left
 
 import scodec.bits.BitVector
@@ -85,7 +85,7 @@ trait Encoder[-A] { self =>
    * Converts this to a codec that fails decoding with an error.
    * @group combinators
    */
-  def encodeOnly[AA <: A]: Codec[AA] = new Codec[AA] {
+  def encodeOnly[AA <: A : NotNothing]: Codec[AA] = new Codec[AA] {
     def encode(a: AA) = self.encode(a)
     def decode(bits: BitVector) = \/.left("decoding not supported")
   }
