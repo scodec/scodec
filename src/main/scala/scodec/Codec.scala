@@ -184,18 +184,6 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   def :+:[B](left: Codec[B]): codecs.CoproductCodecBuilder[B :+: A :+: CNil, Codec[B] :: Codec[A] :: HNil] =
     new codecs.CoproductCodecBuilder(left :: self :: HNil)
-
-  /**
-   * Converts this to a codec that fails encoding with an error.
-   * @group combinators
-   */
-  def decodeOnly: Codec[A] = super.decodeOnly[A]
-
-  /**
-   * Converts this to a codec that fails decoding with an error.
-   * @group combinators
-   */
-  def encodeOnly: Codec[A] = super.encodeOnly[A]
 }
 
 /**
