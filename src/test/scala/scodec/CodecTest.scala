@@ -108,4 +108,23 @@ class CodecTest extends CodecSuite {
       }
     }
   }
+    "encodeOnly" should {
+      val char8: Codec[Char] = uint8.contramap[Char](_.toInt).encodeOnly
+      "encode works" which {
+        char8.encode('a') shouldBe \/-(BitVector(0x61))
+      }
+      "decode is rejected" which {
+        char8.decode(hex"61".bits) shouldBe -\/("decoding not supported")
+      }
+    }
+    
+    "decodeOnly" should {
+      val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
+      "decode works" which {
+        char8.decode(BitVector(0x61)) shouldBe \/-((BitVector.empty, 'a'))
+      }
+      "encode is rejected" which {
+        char8.encode('a') shouldBe -\/("encoding not supported")
+      }
+    }
 }
