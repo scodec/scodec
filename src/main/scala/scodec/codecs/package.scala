@@ -523,6 +523,8 @@ package object codecs {
     def decode(b: BitVector) = fcodec.decode(b)
     override def toString = s"fixedSizeBytes($size, $codec)"
   }
+  
+   def paddedFixedSizeBits[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new PaddedFixedSizeCodec(size, codec, padCodec)
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
