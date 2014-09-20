@@ -540,7 +540,7 @@ package object codecs {
    *
    * @param size number of bits
    * @param codec codec to limit
-   * @param padCodec codec to handle excess space
+   * @param padCodec codec to pad
    * @group combinators
    */
    def paddedFixedSizeBits[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new PaddedFixedSizeCodec(size, codec, padCodec)
@@ -549,7 +549,7 @@ package object codecs {
    * Byte equivalent of [[paddedFixedSizeBits]].
    * @param size number of bytes
    * @param codec codec to limit
-   * @param padCodec codec to handle excess space
+   * @param padCodec codec to fill
    * @group combinators
    */
    def paddedFixedSizeBytes[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new Codec[A] {
