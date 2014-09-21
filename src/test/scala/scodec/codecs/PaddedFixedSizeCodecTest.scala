@@ -7,8 +7,8 @@ import scodec.bits.HexStringSyntax
 
 class PaddedFixedSizeCodecTest extends CodecSuite {
   val ones = constant(hex"ff")
-  
-   "the paddedfixedSizeBytes combinators" should {
+
+  "the paddedfixedSizeBytes combinators" should {
     "roundtrip" in {
       roundtrip(paddedFixedSizeBytes(4, ascii, ones), "test")
       roundtrip(paddedFixedSizeBytes(1, uint8, ones), 12)
@@ -19,6 +19,14 @@ class PaddedFixedSizeCodecTest extends CodecSuite {
       paddedFixedSizeBytes(1, uint8, ones).encodeValid(12) shouldBe BitVector(hex"0c")
       paddedFixedSizeBytes(2, uint8, ones).encodeValid(12) shouldBe BitVector(hex"0cff")
       paddedFixedSizeBytes(3, uint8, ones).encodeValid(12) shouldBe BitVector(hex"0cffff")
+    }
+
+    "failed padCodec encode only reported if used" in {
+      paddedFixedSizeBytes(1, uint8, codecs.fail("bad pad")).encodeValid(12) shouldBe BitVector(hex"0c")
+    }
+
+    "report failed padCodec encode" in {
+      paddedFixedSizeBytes(2, uint8, codecs.fail("bad pad")).encode(12) shouldBe -\/("Padding codec [fail] failed : bad pad")
     }
   }
 
