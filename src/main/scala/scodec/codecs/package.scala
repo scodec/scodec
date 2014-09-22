@@ -523,17 +523,17 @@ package object codecs {
     def decode(b: BitVector) = fcodec.decode(b)
     override def toString = s"fixedSizeBytes($size, $codec)"
   }
-  
+
   /**
    * Codec that limits the number of bits the specified codec works with.
    *
    * If the encoded result is larger than the specified
    * size, an encoding error is returned.
-   * 
+   *
    * If encoding with the specified codec
    * results in less than the specified size, the vector is right padded by repeatedly encoding with padCodec.
    * An encoding error is returned if the padCodec result does not precisely fill the remaining space.
-   * 
+   *
    * When decoding, the specified codec is only given `size` bits. If the specified codec does not consume all the bits it was
    * given, all remaining bits are repeatedly decoded by padCodec. A decoding error is returned if any
    * padCodec decode returns an error. 
@@ -544,7 +544,7 @@ package object codecs {
    * @group combinators
    */
    def paddedFixedSizeBits[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new PaddedFixedSizeCodec(size, codec, padCodec)
-   
+
    /**
    * Byte equivalent of [[paddedFixedSizeBits]].
    * @param size number of bytes
@@ -553,11 +553,11 @@ package object codecs {
    * @group combinators
    */
    def paddedFixedSizeBytes[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new Codec[A] {
-    private val fcodec = paddedFixedSizeBits(size * 8, codec, padCodec)
-    def encode(a: A) = fcodec.encode(a)
-    def decode(b: BitVector) = fcodec.decode(b)
-    override def toString = s"paddedFixedSizeBytes($size, $codec, $padCodec)"
-  }
+     private val fcodec = paddedFixedSizeBits(size * 8, codec, padCodec)
+     def encode(a: A) = fcodec.encode(a)
+     def decode(b: BitVector) = fcodec.decode(b)
+     override def toString = s"paddedFixedSizeBytes($size, $codec, $padCodec)"
+   }
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
