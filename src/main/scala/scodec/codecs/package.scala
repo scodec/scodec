@@ -536,7 +536,7 @@ package object codecs {
    *
    * When decoding, the specified codec is only given `size` bits. If the specified codec does not consume all the bits it was
    * given, all remaining bits are repeatedly decoded by padCodec. A decoding error is returned if any
-   * padCodec decode returns an error. 
+   * padCodec decode returns an error.
    *
    * @param size number of bits
    * @param codec codec to limit
