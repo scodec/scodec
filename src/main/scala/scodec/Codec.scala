@@ -55,11 +55,34 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    *
    * @group combinators
    */
-  final def exmap[B](f: A => String \/B, g: B => String \/ A): Codec[B] = new Codec[B] {
+  final def exmap[B](f: A => String \/ B, g: B => String \/ A): Codec[B] = new Codec[B] {
      def encode(b: B): String \/ BitVector = g(b) flatMap self.encode
      def decode(buffer: BitVector): String \/ (BitVector, B) =
        self.decode(buffer) flatMap { case (rest, a) => f(a).flatMap { b => \/.right((rest, b)) } }
   }
+
+  /**
+   * Maps to a codec of type `B` using a total function on input to encode and a partial function on output from decode.
+   *
+   * The supplied functions form an injection from `B` to `A`. Hence, converting a `Codec[A]` to a `Codec[B]` converts from
+   * a larger to a smaller type. Hence, the name `narrow`.
+   *
+   * @group combinators
+   */
+  final def narrow[B](f: A => String \/ B, g: B => A): Codec[B] =
+    exmap(f, \/.right compose g)
+
+
+  /**
+   * Maps to a codec of type `B` using a partial function on input to encode and a total function on output from decode.
+   *
+   * The supplied functions form an injection from `A` to `B`. Hence, converting a `Codec[A]` to a `Codec[B]` converts from
+   * a smaller to a larger type. Hence, the name `widen`.
+
+   * @group combinators
+   */
+  final def widen[B](f: A => B, g: B => String \/ A): Codec[B] =
+    exmap(\/.right compose f, g)
 
   /**
    * Returns a new codec that encodes/decodes a value of type `B` by using an isomorphism between `A` and `B`.

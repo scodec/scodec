@@ -1,6 +1,7 @@
 package scodec
 
 import scalaz.{\/, -\/, \/-}
+import \/.{ right, left }
 
 import scodec.bits._
 import scodec.codecs._
@@ -63,44 +64,48 @@ class CodecTest extends CodecSuite {
       (hex"11223344".bits ~> uint8).encode(2) shouldBe \/.right(hex"1122334402".bits)
     }
   }
-  
-    "exmap" should {
-    "accept only values no greater than 9" which {
 
+  "exmap" should {
+    "support validating input and output" in {
       // accept 8 bit values no greater than 9
       val oneDigit: Codec[Int] = uint8.exmap[Int](
         v => if (v > 9) -\/("badv") else \/-(v),
         d => if (d > 9) -\/("badd") else \/-(d))
 
-      "3 is accepted" in {
-        oneDigit.encode(3) shouldBe \/-(BitVector(0x03))
-      }
-      "10 is rejected" in {
-        oneDigit.encode(10) shouldBe -\/("badd")
-      }
-      "too large to fit in 8 bits" in {
-        oneDigit.encode(30000000) shouldBe -\/("badd")
-      }
-      "0x05 is acceptable" in {
-        oneDigit.decode(BitVector(0x05)) shouldBe \/-((BitVector.empty, 5))
-      }
-      "0xff is rejected" in {
-        oneDigit.decode(BitVector(0xff)) shouldBe -\/("badv")
-      }
-      "empty BitVector is rejected" in {
-        oneDigit.decode(BitVector.empty) shouldBe uint8.decode(BitVector.empty)
+      oneDigit.encode(3) shouldBe \/-(BitVector(0x03))
+      oneDigit.encode(10) shouldBe -\/("badd")
+      oneDigit.encode(30000000) shouldBe -\/("badd")
+      oneDigit.decode(BitVector(0x05)) shouldBe \/-((BitVector.empty, 5))
+      oneDigit.decode(BitVector(0xff)) shouldBe -\/("badv")
+      oneDigit.decode(BitVector.empty) shouldBe uint8.decode(BitVector.empty)
+    }
+
+    "result in a no-op when mapping \\/.right over both sides" which {
+      val noop: Codec[Int] = uint8.exmap[Int](right, right)
+      forAll { (n: Int) =>
+        noop.encode(n) shouldBe uint8.encode(n)
       }
     }
-    "acccept any 8 bit value" which {
-      // empty implementation that accepts all values
-      val noop: Codec[Int] = uint8.exmap[Int](v => \/-(v),
-        d => \/-(d))
+  }
 
-      "value that fits in 8 bits" in {
-        noop.encode(10) shouldBe \/-(BitVector(0x0a))
-      }
-      "value that exceeds 8 bits" in {
-        noop.encode(30000000) shouldBe uint8.encode(30000000)
+  def i2l(i: Int): Long = i.toLong
+  def l2i(l: Long): String \/ Int = if (l >= Int.MinValue && l <= Int.MaxValue) right(l.toShort) else left("out of range")
+
+  "narrow" should {
+    "support converting to a smaller type" in {
+      val narrowed: Codec[Int] = uint32.narrow(l2i, i2l)
+      forAll { (n: Int) => narrowed.encode(n) shouldBe uint32.encode(n) }
+    }
+  }
+
+  "widen" should {
+    "support converting to a larger type" in {
+      val narrowed = int32.widen(i2l, l2i)
+      forAll { (n: Long) =>
+        if (n >= Int.MinValue && n <= Int.MaxValue)
+          narrowed.encode(n) shouldBe int32.encode(n.toInt)
+        else
+          narrowed.encode(n) shouldBe left("out of range")
       }
     }
   }
