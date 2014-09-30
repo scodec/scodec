@@ -23,8 +23,14 @@ class IntCodecTest extends CodecSuite {
   "the uint8L codec" should { "roundtrip" in { check(0, 255) { (n: Int) => roundtrip(uint8L, n) } } }
   "the uint4 codec" should { "roundtrip" in { check(0, 1 << 3) { (n: Int) => roundtrip(uint4, n) } } }
   "the uint4L codec" should { "roundtrip" in { check(0, (1 << 4) - 1) { (n: Int) => roundtrip(uint4L, n) } } }
-  "the uint(n) codec" should { "roundtrip" in { uint(13).encode(1) shouldBe \/.right(BitVector.low(13).set(12)) } }
-  "the uintL(n) codec" should { "roundtrip" in { uintL(13).encode(1) shouldBe \/.right(BitVector.low(13).set(7)) } }
+  "the uint(n) codec" should { "roundtrip" in {
+    uint(13).encode(1) shouldBe \/.right(BitVector.low(13).set(12))
+    check(0, 32768) { (n: Int) => roundtrip(uint(15), n) }
+  }}
+  "the uintL(n) codec" should { "roundtrip" in {
+    uintL(13).encode(1) shouldBe \/.right(BitVector.low(13).set(7))
+    check(0, 32768) { (n: Int) => roundtrip(uintL(15), n) }
+  }}
 
   "the int codecs" should {
     "support endianess correctly" in {

@@ -153,6 +153,12 @@ package object codecs {
   }
 
   /**
+   * Codec for 16-bit 2s complement big-endian shorts.
+   * @group numbers
+   */
+  val short16: Codec[Short] = new ShortCodec(16, true, ByteOrdering.BigEndian)
+
+  /**
    * Codec for 8-bit 2s complement big-endian integers.
    * @group numbers
    */
@@ -217,6 +223,12 @@ package object codecs {
    * @group numbers
    */
   val uint32: Codec[Long] = new LongCodec(32, false, ByteOrdering.BigEndian)
+
+  /**
+   * Codec for 16-bit 2s complement little-endian shorts.
+   * @group numbers
+   */
+  val short16L: Codec[Short] = new ShortCodec(16, true, ByteOrdering.LittleEndian)
 
   /**
    * Codec for 8-bit 2s complement little-endian integers.
@@ -285,6 +297,20 @@ package object codecs {
   val uint32L: Codec[Long] = new LongCodec(32, false, ByteOrdering.LittleEndian)
 
   /**
+   * Codec for n-bit 2s complement big-endian shorts.
+   * @param size number of bits (must be 0 < size <= 16)
+   * @group numbers
+   */
+  def short(size: Int): Codec[Short] = new ShortCodec(size, true, ByteOrdering.BigEndian)
+
+  /**
+   * Codec for n-bit unsigned big-endian shorts.
+   * @param size number of bits (must be 0 < size <= 15)
+   * @group numbers
+   */
+  def ushort(size: Int): Codec[Short] = new ShortCodec(size, false, ByteOrdering.BigEndian)
+
+  /**
    * Codec for n-bit 2s complement big-endian integers that are represented with `Int`.
    * @param size number of bits (must be 0 < size <= 32)
    * @group numbers
@@ -311,6 +337,20 @@ package object codecs {
    * @group numbers
    */
   def ulong(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.BigEndian)
+
+  /**
+   * Codec for n-bit 2s complement little-endian shorts.
+   * @param size number of bits (must be 0 < size <= 16)
+   * @group numbers
+   */
+  def shortL(size: Int): Codec[Short] = new ShortCodec(size, true, ByteOrdering.LittleEndian)
+
+  /**
+   * Codec for n-bit unsigned little-endian shorts.
+   * @param size number of bits (must be 0 < size <= 15)
+   * @group numbers
+   */
+  def ushortL(size: Int): Codec[Short] = new ShortCodec(size, false, ByteOrdering.LittleEndian)
 
   /**
    * Codec for n-bit 2s complement little-endian integers that are represented with `Int`.
