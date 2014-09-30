@@ -154,6 +154,18 @@ package object codecs {
   }
 
   /**
+   * Codec for 8-bit 2s complement bytes.
+   * @group numbers
+   */
+  val byte: Codec[Byte] = new ByteCodec(8, true)
+
+  /**
+   * Codec for 8-bit unsigned bytes.
+   * @group numbers
+   */
+  val ushort8: Codec[Short] = new ShortCodec(8, true, ByteOrdering.BigEndian)
+
+  /**
    * Codec for 16-bit 2s complement big-endian shorts.
    * @group numbers
    */
@@ -296,6 +308,20 @@ package object codecs {
    * @group numbers
    */
   val uint32L: Codec[Long] = new LongCodec(32, false, ByteOrdering.LittleEndian)
+
+  /**
+   * Codec for n-bit 2s complement bytes.
+   * @param size number of bits (must be 0 < size <= 8)
+   * @group numbers
+   */
+  def byte(size: Int): Codec[Byte] = new ByteCodec(size, true)
+
+  /**
+   * Codec for n-bit unsigned bytes.
+   * @param size number of bits (must be 0 < size <= 7)
+   * @group numbers
+   */
+  def ubyte(size: Int): Codec[Byte] = new ByteCodec(size, false)
 
   /**
    * Codec for n-bit 2s complement big-endian shorts.
