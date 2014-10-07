@@ -1,3 +1,13 @@
+1.2.2
+=====
+ - Added support for Shapeless coproduct codecs. See `CoproductCodecTest` for examples.
+ - Added `exmap` to `Codec`, `emap` to `Decoder` and `econtramap` to `Encoder`
+ - Added `narrow` and `widen` to `Codec`
+ - Added ability to lift an `Encoder` to a `Codec` via `encodeOnly` and a `Decoder` to a `Codec` via `decodeOnly`
+ - Added `paddedFixedSize{Bytes,Bits}` combinators
+ - Added numeric codecs for `Short` and `Byte`
+ - Fixed bug in `constantLenient` where decoding wasn't lenient
+
 1.2.1
 =====
  - Added `fail` combinator
