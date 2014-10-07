@@ -107,11 +107,23 @@ ScalaDoc for the latest version is available here: http://scodec.github.io/scode
 
 ### Releases
 
+#### Version 1.3.1
+
+ - Lots of new combinators and codecs. See [the changelog](CHANGELOG.md)
+ - Compatible with Scalaz 7.1.* and Shapeless 2.0.0
+ - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.3.1)
+
 #### Version 1.3.0
 
  - Lots of new combinators and codecs. See [the changelog](CHANGELOG.md)
  - Compatible with Scalaz 7.1.* and Shapeless 2.0.0
  - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.3.0)
+
+#### Version 1.2.2
+
+ - Lots of new combinators and codecs. See [the changelog](CHANGELOG.md)
+ - Compatible with Scalaz 7.1.* and Shapeless 2.0.0
+ - [ScalaDoc](http://docs.typelevel.org/api/scodec/core/stable/1.2.2)
 
 #### Version 1.2.1
 
