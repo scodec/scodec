@@ -1,9 +1,29 @@
+1.3.1
+=====
+ - Added support for Shapeless coproduct codecs. See `CoproductCodecTest` for examples.
+ - Added `exmap` to `Codec`, `emap` to `Decoder` and `econtramap` to `Encoder`
+ - Added `narrow` and `widen` to `Codec`
+ - Added ability to lift an `Encoder` to a `Codec` via `encodeOnly` and a `Decoder` to a `Codec` via `decodeOnly`
+ - Added `paddedFixedSize{Bytes,Bits}` combinators
+ - Added numeric codecs for `Short` and `Byte`
+ - Fixed bug in `constantLenient` where decoding wasn't lenient
+
 1.3.0
 =====
  - Changed `dropLeft`/`~>` and `dropRight`/`<~` to require a `Codec[Unit]` on the dropped side.
    Previously, the requirement was a `Codec[X]` and an implicitly available `Monoid[X]`.
    To convert a `Codec[X]` to a `Codec[Unit]`, use the `unit` combinator.
  - Changed size based codecs to use `Long` instead of `Int` sizes.
+
+1.2.2
+=====
+ - Added support for Shapeless coproduct codecs. See `CoproductCodecTest` for examples.
+ - Added `exmap` to `Codec`, `emap` to `Decoder` and `econtramap` to `Encoder`
+ - Added `narrow` and `widen` to `Codec`
+ - Added ability to lift an `Encoder` to a `Codec` via `encodeOnly` and a `Decoder` to a `Codec` via `decodeOnly`
+ - Added `paddedFixedSize{Bytes,Bits}` combinators
+ - Added numeric codecs for `Short` and `Byte`
+ - Fixed bug in `constantLenient` where decoding wasn't lenient
 
 1.2.1
 =====
