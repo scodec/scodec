@@ -1,3 +1,8 @@
+1.3.2
+=====
+ - Added `Codec.auto`, which automatically generates `HList` based codecs for case classes and `HList` types if all
+   component types have implicit codecs available
+
 1.3.1
 =====
  - Added support for Shapeless coproduct codecs. See `CoproductCodecTest` for examples.

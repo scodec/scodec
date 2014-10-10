@@ -282,6 +282,40 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   /** Gets the implicitly available codec for type `A`. */
   def apply[A: Codec]: Codec[A] = implicitly[Codec[A]]
 
+  /**
+   * Automatically creates an hlist based codec for the specified type.
+   *
+   * Support exists for both `HList` types and product types that are implicitly
+   * convertible to `HList`s -- e.g., case classes.
+   *
+   * Each component type must have an implicitly available codec.
+   *
+   * For example:
+   {{{
+  case class Point(x: Int, y: Int, z: Int)
+  implicit val ic = uint8
+  Codec.auto[Point].encode(Point(1, 2, 3)) // \/-(BitVector(24 bits, 0x010203))
+   }}}
+   */
+  def auto[A](implicit auto: AutoAux[A]): Codec[A] = auto.codec
+
+  /** Witness that a codec of type `A` can be automatically created. */
+  sealed trait AutoAux[A] {
+    def codec: Codec[A]
+  }
+
+  /** Companion for [[AutoAux]]. */
+  object AutoAux {
+    implicit def hnil: AutoAux[HNil] =
+      new AutoAux[HNil] { val codec = codecs.HListCodec.hnilCodec }
+
+    implicit def hlist[H, T <: HList](implicit headCodec: Codec[H], tailAux: AutoAux[T]): AutoAux[H :: T] =
+      new AutoAux[H :: T] { def codec = headCodec :: tailAux.codec }
+
+    implicit def product[A, L <: HList](implicit asAux: CodecAsAux[A, L], der: AutoAux[L]): AutoAux[A] =
+      new AutoAux[A] { def codec = der.codec.as(asAux) }
+  }
+
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
   }

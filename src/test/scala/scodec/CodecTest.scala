@@ -5,8 +5,10 @@ import \/.{ right, left }
 
 import scodec.bits._
 import scodec.codecs._
+import shapeless._
 
 class CodecTest extends CodecSuite {
+  case class Foo(x: Int, y: Int, s: String)
   case class Bar(x: Int)
 
   "all codecs" should {
@@ -111,6 +113,17 @@ class CodecTest extends CodecSuite {
         else
           narrowed.encode(n) shouldBe left("out of range")
       }
+    }
+  }
+
+  "automatic codec generation" should {
+    "support automatic generation of HList codecs" in {
+      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
+      Codec.auto[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
+    }
+    "support automatic generation of case class codecs" in {
+      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
+      Codec.auto[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
     }
   }
 }
