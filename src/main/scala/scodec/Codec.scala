@@ -15,7 +15,7 @@ import scodec.bits.BitVector
  * of type `A`. Hence, both encode and decode return either an error or the result. Furthermore, decode returns the
  * remaining bits in the bit vector that it did not use in decoding.
  *
- * Note: the decode function can be lifted to a state action via `StateT[String \/ ?, BitVector, A]`. This type alias
+ * Note: the decode function can be lifted to a state action via `StateT[Err \/ ?, BitVector, A]`. This type alias
  * and associated constructor is provided by `[[DecodingContext]]`.
  *
  *
@@ -32,8 +32,8 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
-    def encode(b: B): String \/ BitVector = self.encode(g(b))
-    def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
+    def encode(b: B): Err \/ BitVector = self.encode(g(b))
+    def decode(buffer: BitVector): Err \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
 
   /**
@@ -43,21 +43,21 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def pxmap[B](f: A => B, g: B => Option[A]): Codec[B] = new Codec[B] {
-    def encode(b: B): String \/ BitVector = g(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
-    def decode(buffer: BitVector): String \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
+    def encode(b: B): Err \/ BitVector = g(b).map(self.encode).getOrElse(left(Err(s"extraction failure: $b")))
+    def decode(buffer: BitVector): Err \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
   }
 
   /**
    * Maps to a codec of type `B` using two total functions,
-   * `A => String \/ B` and `B => String \/ A`.
+   * `A => Err \/ B` and `B => Err \/ A`.
    *
    * f and g can then reject their argument and return an error.
    *
    * @group combinators
    */
-  final def exmap[B](f: A => String \/ B, g: B => String \/ A): Codec[B] = new Codec[B] {
-     def encode(b: B): String \/ BitVector = g(b) flatMap self.encode
-     def decode(buffer: BitVector): String \/ (BitVector, B) =
+  final def exmap[B](f: A => Err \/ B, g: B => Err \/ A): Codec[B] = new Codec[B] {
+     def encode(b: B): Err \/ BitVector = g(b) flatMap self.encode
+     def decode(buffer: BitVector): Err \/ (BitVector, B) =
        self.decode(buffer) flatMap { case (rest, a) => f(a).flatMap { b => \/.right((rest, b)) } }
   }
 
@@ -69,7 +69,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    *
    * @group combinators
    */
-  final def narrow[B](f: A => String \/ B, g: B => A): Codec[B] =
+  final def narrow[B](f: A => Err \/ B, g: B => A): Codec[B] =
     exmap(f, \/.right compose g)
 
 
@@ -81,7 +81,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
 
    * @group combinators
    */
-  final def widen[B](f: A => B, g: B => String \/ A): Codec[B] =
+  final def widen[B](f: A => B, g: B => Err \/ A): Codec[B] =
     exmap(\/.right compose f, g)
 
   /**
@@ -268,7 +268,7 @@ object CodecAsAux {
 object Codec extends EncoderFunctions with DecoderFunctions {
 
   /** Creates a codec from encoder and decoder functions. */
-  def apply[A](encoder: A => String \/ BitVector, decoder: BitVector => String \/ (BitVector, A)): Codec[A] = new Codec[A] {
+  def apply[A](encoder: A => Err \/ BitVector, decoder: BitVector => Err \/ (BitVector, A)): Codec[A] = new Codec[A] {
     override def encode(a: A) = encoder(a)
     override def decode(bits: BitVector) = decoder(bits)
   }

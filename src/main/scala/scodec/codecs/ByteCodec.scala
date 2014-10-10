@@ -20,9 +20,9 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
 
   override def encode(b: Byte) = {
     if (b > MaxValue) {
-      \/.left(s"$b is greater than maximum value $MaxValue for $description")
+      \/.left(Err(s"$b is greater than maximum value $MaxValue for $description"))
     } else if (b < MinValue) {
-      \/.left(s"$b is less than minimum value $MinValue for $description")
+      \/.left(Err(s"$b is less than minimum value $MinValue for $description"))
     } else {
       \/.right(BitVector.fromByte(b, bits))
     }
@@ -30,7 +30,7 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(bits, buffer.size))
       case Right(b) => \/.right((buffer.drop(bits), b.toByte(signed)))
     }
 

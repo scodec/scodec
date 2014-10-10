@@ -19,7 +19,7 @@ private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Do
 
   override def decode(buffer: BitVector) =
     buffer.acquire(64) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(64, buffer.size))
       case Right(b) => \/.right((buffer.drop(64), ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble))
     }
 }

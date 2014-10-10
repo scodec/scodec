@@ -19,7 +19,7 @@ class DoubleCodecTest extends CodecSuite {
     }
 
     "return an error when decoding with too few bits" in {
-      double.decode(BitVector.low(8)) shouldBe \/.left("cannot acquire 64 bits from a vector that contains 8 bits")
+      double.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(64, 8))
     }
   }
 }

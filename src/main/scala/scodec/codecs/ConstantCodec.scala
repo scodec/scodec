@@ -14,9 +14,9 @@ private[codecs] final class ConstantCodec(constant: BitVector, validate: Boolean
   override def decode(buffer: BitVector) =
     if (validate) {
       buffer.acquire(constant.size) match {
-        case Left(e) => \/.left(e)
+        case Left(e) => \/.left(Err.insufficientBits(constant.size, buffer.size))
         case Right(b) =>
-          if (b == constant) \/.right((buffer.drop(constant.size), ())) else \/.left(s"expected constant $constant but got $b")
+          if (b == constant) \/.right((buffer.drop(constant.size), ())) else \/.left(Err(s"expected constant $constant but got $b"))
       }
     } else \/.right((buffer drop constant.size, ()))
 

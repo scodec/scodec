@@ -15,17 +15,17 @@ private[codecs] final class PaddedFixedSizeCodec[A](size: Long, codec: Codec[A],
     encoded <- codec.encode(a)
     result <- {
       if (encoded.size > size)
-        \/.left(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
+        \/.left(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
       else if (encoded.size == size)
         \/.right(encoded)
       else {
         padCodec.encode(()).fold(
-          err => \/.left(s"Padding codec [$padCodec] failed : $err"),
+          err => \/.left(Err(s"Padding codec [$padCodec] failed: ${err.messageWithContext}")),
           padding => {
-            @tailrec def pad(bits: BitVector): String \/ BitVector = bits.size ?|? size match {
+            @tailrec def pad(bits: BitVector): Err \/ BitVector = bits.size ?|? size match {
               case Ordering.EQ => \/.right(bits)
               case Ordering.LT => pad(bits ++ padding)
-              case Ordering.GT => \/.left(s"[$a] padded by [$padCodec] overflows fixed size field of $size bits")
+              case Ordering.GT => \/.left(Err(s"[$a] padded by [$padCodec] overflows fixed size field of $size bits"))
             }
             pad(encoded)
           })
@@ -35,12 +35,12 @@ private[codecs] final class PaddedFixedSizeCodec[A](size: Long, codec: Codec[A],
 
   override def decode(buffer: BitVector) =
     buffer.acquire(size) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(size, buffer.size))
       case Right(b) =>
         codec.decode(b) match {
           case e @ -\/(_) => e
           case \/-((rest, res)) => {
-            @tailrec def validate(bits: BitVector): String \/ (BitVector, A) =
+            @tailrec def validate(bits: BitVector): Err \/ (BitVector, A) =
               if (bits.isEmpty)
                 \/-((buffer.drop(size), res))
               else

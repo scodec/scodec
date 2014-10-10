@@ -128,14 +128,14 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
     encodedSig <- signatureCodec.encode(sig)
   } yield encoded ++ encodedSig
 
-  private def sign(bits: BitVector): String \/ BitVector = {
+  private def sign(bits: BitVector): Err \/ BitVector = {
     try {
       val signature = signerFactory.newSigner
       signature.update(bits.toByteArray)
       \/-(BitVector(signature.sign))
     } catch {
       case e: SignatureException =>
-        -\/("Failed to sign: " + e.getMessage)
+        -\/(Err("Failed to sign: " + e.getMessage))
     }
   }
 
@@ -148,18 +148,18 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
     _ <- DecodingContext liftE verify(valueBits.toByteVector, decodedSig.toByteVector)
   } yield value).run(buffer)
 
-  private def verify(data: ByteVector, signatureBytes: ByteVector): String \/ Unit = {
+  private def verify(data: ByteVector, signatureBytes: ByteVector): Err \/ Unit = {
     val verifier = signerFactory.newVerifier
     verifier.update(data.toArray)
     try {
       if (verifier.verify(signatureBytes.toArray)) {
         \/-(())
       } else {
-        -\/("Signature verification failed")
+        -\/(Err("Signature verification failed"))
       }
     } catch {
       case e: SignatureException =>
-        -\/("Signature verification failed: " + e)
+        -\/(Err("Signature verification failed: " + e))
     }
   }
 

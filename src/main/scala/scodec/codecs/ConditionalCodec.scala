@@ -10,7 +10,7 @@ import scodec.bits.BitVector
 private[codecs] final class ConditionalCodec[A](included: Boolean, codec: Codec[A]) extends Codec[Option[A]] {
 
   override def encode(a: Option[A]) = {
-    a.filter { _ => included }.fold(BitVector.empty.right[String]) { a => codec.encode(a) }
+    a.filter { _ => included }.fold(BitVector.empty.right[Err]) { a => codec.encode(a) }
   }
 
   override def decode(buffer: BitVector) = {

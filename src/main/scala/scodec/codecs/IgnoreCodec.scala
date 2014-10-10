@@ -13,7 +13,7 @@ private[codecs] final class IgnoreCodec(bits: Long) extends Codec[Unit] {
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(bits, buffer.size))
       case Right(_) => \/.right((buffer.drop(bits), ()))
     }
 

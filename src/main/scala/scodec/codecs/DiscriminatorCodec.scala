@@ -314,33 +314,33 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
   private def appendCase[R](c: Case[A, B, R]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]])
 
-  private val matcher: B => (String \/ Case[A, B, Any]) =
+  private val matcher: B => (Err \/ Case[A, B, Any]) =
     if (cases.forall(_.condition.isLeft)) { // build a little table
       // we reverse the cases so earlier cases 'win' in event of overlap
       val tbl = cases.reverse.map(kase => kase.condition.swap.toOption.get -> kase).toMap
       b => tbl.get(b) match {
-        case None => left(s"unknown discrimination tag $b")
+        case None => left(Err(s"unknown discrimination tag $b"))
         case Some(kase) => right(kase)
       }
     }
     else // this could be a bit smarter, but we fall back to linear scan
       b => cases.find(_.condition.fold(_ == b, _._2(b))) match {
-        case None => left(s"unknown discrimination tag $b")
+        case None => left(Err(s"unknown discrimination tag $b"))
         case Some(kase) => right(kase)
       }
 
-  def encode(a: A): String \/ BitVector =
+  def encode(a: A): Err \/ BitVector =
     cases.iterator.flatMap { k =>
       k.prism.preview(a).map { r =>
         by.encode(k.representative)
           .flatMap { bits => k.prism.repCodec.encode(r).map(bits ++ _) }
       }.map(List(_)).getOrElse(List())
     }.toStream.headOption match {
-      case None => left(s"could not find matching case for $a")
+      case None => left(Err(s"could not find matching case for $a"))
       case Some(r) => r
     }
 
-  def decode(bits: BitVector): String \/ (BitVector, A) = for {
+  def decode(bits: BitVector): Err \/ (BitVector, A) = for {
     remb <- by.decode(bits)
     (rem, b) = remb
     k <- matcher(b)

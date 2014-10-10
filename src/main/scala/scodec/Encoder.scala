@@ -28,7 +28,7 @@ trait Encoder[-A] { self =>
    * @param return error or binary encoding of the value
    * @group primary
    */
-  def encode(value: A): String \/ BitVector
+  def encode(value: A): Err \/ BitVector
 
   /**
    * Encodes the specified value in to a bit vector, throwing an
@@ -40,7 +40,7 @@ trait Encoder[-A] { self =>
    * @group primary
    */
   final def encodeValid(value: A): BitVector =
-    encode(value) valueOr { err => throw new IllegalArgumentException(err) }
+    encode(value) valueOr { err => throw new IllegalArgumentException(err.messageWithContext) }
 
   /**
    * Converts this encoder to an `Encoder[B]` using the supplied `B => A`.
@@ -57,15 +57,15 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B] {
-    def encode(b: B): String \/ BitVector =
-      f(b).map(self.encode).getOrElse(left(s"extraction failure: $b"))
+    def encode(b: B): Err \/ BitVector =
+      f(b).map(self.encode).getOrElse(left(Err(s"extraction failure: $b")))
   }
 
   /**
-   * Converts this encoder to an `Encoder[B]` using the supplied `B => String \/ A`.
+   * Converts this encoder to an `Encoder[B]` using the supplied `B => Err \/ A`.
    * @group combinators
    */
-  def econtramap[B](f: B => String \/ A): Encoder[B] = new Encoder[B] {
+  def econtramap[B](f: B => Err \/ A): Encoder[B] = new Encoder[B] {
     def encode(b: B) = f(b) flatMap self.encode
   }
 
@@ -89,7 +89,7 @@ trait Encoder[-A] { self =>
    */
   def encodeOnly: Codec[A @uncheckedVariance] = new Codec[A] {
     def encode(a: A) = self.encode(a)
-    def decode(bits: BitVector) = \/.left("decoding not supported")
+    def decode(bits: BitVector) = \/.left(Err("decoding not supported"))
   }
 }
 
@@ -97,19 +97,19 @@ trait Encoder[-A] { self =>
 trait EncoderFunctions {
 
   /** Encodes the specified value to a bit vector using an implicitly available encoder. */
-  final def encode[A: Encoder](a: A): String \/ BitVector = Encoder[A].encode(a)
+  final def encode[A: Encoder](a: A): Err \/ BitVector = Encoder[A].encode(a)
 
   /** Encodes the specified value to a bit vector using an implicitly available encoder or throws an `IllegalArgumentException` if encoding fails. */
   final def encodeValid[A: Encoder](a: A): BitVector = Encoder[A].encodeValid(a)
 
   /** Encodes the specified values, one after the other, to a bit vector using the specified encoders. */
-  final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): String \/ BitVector = for {
+  final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): Err \/ BitVector = for {
     encodedA <- encA.encode(a)
     encodedB <- encB.encode(b)
   } yield encodedA ++ encodedB
 
   /** Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error. */
-  final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): String \/ BitVector = {
+  final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): Err \/ BitVector = {
     val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
     seq foreach { a =>
       enc.encode(a) match {
@@ -133,7 +133,7 @@ trait EncoderFunctions {
    */
   final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A] {
     def encode(a: A) = {
-      @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: String): String \/ BitVector = rem match {
+      @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: Err): Err \/ BitVector = rem match {
         case Nil => \/.left(lastErr)
         case hd :: tl =>
           hd.encode(a) match {
@@ -141,7 +141,7 @@ trait EncoderFunctions {
             case -\/(err) => go(tl, err)
           }
       }
-      go(encoders.toList, "no encoders provided")
+      go(encoders.toList, Err("no encoders provided"))
     }
   }
 }
@@ -152,7 +152,7 @@ object Encoder extends EncoderFunctions {
   /** Provides syntaax for summoning an `Encoder[A]` from implicit scope. */
   def apply[A](implicit enc: Encoder[A]): Encoder[A] = enc
 
-  def instance[A](f: A => String \/ BitVector): Encoder[A] = new Encoder[A] {
+  def instance[A](f: A => Err \/ BitVector): Encoder[A] = new Encoder[A] {
     def encode(value: A) = f(value)
   }
 
@@ -160,8 +160,8 @@ object Encoder extends EncoderFunctions {
     def contramap[A, B](e: Encoder[A])(f: B => A) = e contramap f
   }
 
-  implicit val corepresentableInstance: Corepresentable[Encoder, String \/ BitVector] = new Corepresentable[Encoder, String \/ BitVector] {
-    def corep[A](f: A => String \/ BitVector): Encoder[A] = Encoder.instance(f)
-    def uncorep[A](f: Encoder[A]): A => String \/ BitVector = f.encode
+  implicit val corepresentableInstance: Corepresentable[Encoder, Err \/ BitVector] = new Corepresentable[Encoder, Err \/ BitVector] {
+    def corep[A](f: A => Err \/ BitVector): Encoder[A] = Encoder.instance(f)
+    def uncorep[A](f: Encoder[A]): A => Err \/ BitVector = f.encode
   }
 }

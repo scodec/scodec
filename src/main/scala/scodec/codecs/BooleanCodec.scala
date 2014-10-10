@@ -13,7 +13,7 @@ private[codecs] object BooleanCodec extends Codec[Boolean] {
 
   override def decode(buffer: BitVector) =
     buffer.acquire(1) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(1, 0))
       case Right(b) => \/.right((buffer.tail, b.head))
     }
 

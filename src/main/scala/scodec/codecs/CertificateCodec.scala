@@ -22,7 +22,7 @@ private[codecs] final class CertificateCodec(certType: String) extends Codec[Cer
       \/-((BitVector.empty, cert))
     } catch {
       case e: CertificateException =>
-        -\/("Failed to decode certificate: " + e.getMessage)
+        -\/(Err("Failed to decode certificate: " + e.getMessage))
     }
   }
 

@@ -30,11 +30,11 @@ class LongCodecTest extends CodecSuite {
     }
 
     "return an error when value to encode is out of legal range" in {
-      uint32.encode(-1) shouldBe \/.left("-1 is less than minimum value 0 for 32-bit unsigned integer")
+      uint32.encode(-1) shouldBe \/.left(Err("-1 is less than minimum value 0 for 32-bit unsigned integer"))
     }
 
     "return an error when decoding with too few bits" in {
-      uint32.decode(BitVector.low(8)) shouldBe \/.left("cannot acquire 32 bits from a vector that contains 8 bits")
+      uint32.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(32, 8))
     }
   }
 }

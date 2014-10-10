@@ -893,14 +893,14 @@ package object codecs {
    *
    * @group combinators
    */
-  def fail[A](message: String): Codec[A] = fail(message, message)
+  def fail[A](err: Err): Codec[A] = fail(err, err)
 
   /**
    * Codec that always fails encoding and decoding with the specified messages.
    *
    * @group combinators
    */
-  def fail[A](encMessage: String, decMessage: String): Codec[A] = new FailCodec[A](encMessage, decMessage)
+  def fail[A](encErr: Err, decErr: Err): Codec[A] = new FailCodec[A](encErr, decErr)
 
   /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
