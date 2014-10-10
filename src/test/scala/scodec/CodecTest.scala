@@ -5,8 +5,10 @@ import \/.{ right, left }
 
 import scodec.bits._
 import scodec.codecs._
+import shapeless._
 
 class CodecTest extends CodecSuite {
+  case class Foo(x: Int, y: Int, s: String)
   case class Bar(x: Int)
 
   "all codecs" should {
@@ -113,23 +115,35 @@ class CodecTest extends CodecSuite {
       }
     }
   }
-    "encodeOnly" should {
-      val char8: Codec[Char] = uint8.contramap[Char](_.toInt).encodeOnly
-      "encode works" which {
-        char8.encode('a') shouldBe \/-(BitVector(0x61))
-      }
-      "decode is rejected" which {
-        char8.decode(hex"61".bits) shouldBe -\/("decoding not supported")
-      }
+
+  "encodeOnly" should {
+    val char8: Codec[Char] = uint8.contramap[Char](_.toInt).encodeOnly
+    "encode works" which {
+      char8.encode('a') shouldBe \/-(BitVector(0x61))
     }
-    
-    "decodeOnly" should {
-      val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
-      "decode works" which {
-        char8.decode(BitVector(0x61)) shouldBe \/-((BitVector.empty, 'a'))
-      }
-      "encode is rejected" which {
-        char8.encode('a') shouldBe -\/("encoding not supported")
-      }
+    "decode is rejected" which {
+      char8.decode(hex"61".bits) shouldBe -\/("decoding not supported")
     }
+  }
+
+  "decodeOnly" should {
+    val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
+    "decode works" which {
+      char8.decode(BitVector(0x61)) shouldBe \/-((BitVector.empty, 'a'))
+    }
+    "encode is rejected" which {
+      char8.encode('a') shouldBe -\/("encoding not supported")
+    }
+  }
+
+  "automatic codec generation" should {
+    "support automatic generation of HList codecs" in {
+      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
+      Codec.auto[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
+    }
+    "support automatic generation of case class codecs" in {
+      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
+      Codec.auto[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
+    }
+  }
 }
