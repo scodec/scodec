@@ -5,6 +5,10 @@ import scala.language.implicitConversions
 import scalaz.{ \/, InvariantFunctor, Monoid, StateT }
 import \/.left
 import shapeless._
+import shapeless.record._
+import shapeless.ops.hlist._
+import shapeless.ops.record._
+import shapeless.syntax._
 
 import scodec.bits.BitVector
 
@@ -285,16 +289,22 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   /**
    * Automatically creates an hlist based codec for the specified type.
    *
-   * Support exists for both `HList` types and product types that are implicitly
-   * convertible to `HList`s -- e.g., case classes.
-   *
+   * Support exists for `HList`s, records, and case classes.
    * Each component type must have an implicitly available codec.
    *
    * For example:
    {{{
   case class Point(x: Int, y: Int, z: Int)
   implicit val ic = uint8
-  Codec.auto[Point].encode(Point(1, 2, 3)) // \/-(BitVector(24 bits, 0x010203))
+  val res = Codec.auto[Point].encode(Point(1, 2, 3))
+  res: scalaz.\/[scodec.Err,scodec.bits.BitVector] = \/-(BitVector(24 bits, 0x010203))
+   }}}
+   *
+   * For records and case classes, the record name / field name is included on
+   * each component codec. For example:
+   {{{
+  val res = Codec.auto[Point].encode(Point(1, 2, 256))
+  res: scalaz.\/[scodec.Err,scodec.bits.BitVector] = -\/(z: 256 is greater than maximum value 255 for 8-bit unsigned integer)
    }}}
    */
   def auto[A](implicit auto: AutoAux[A]): Codec[A] = auto.codec
@@ -310,10 +320,27 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       new AutoAux[HNil] { val codec = codecs.HListCodec.hnilCodec }
 
     implicit def hlist[H, T <: HList](implicit headCodec: Codec[H], tailAux: AutoAux[T]): AutoAux[H :: T] =
-      new AutoAux[H :: T] { def codec = headCodec :: tailAux.codec }
+      new AutoAux[H :: T] { val codec = headCodec :: tailAux.codec }
 
-    implicit def product[A, L <: HList](implicit asAux: CodecAsAux[A, L], der: AutoAux[L]): AutoAux[A] =
-      new AutoAux[A] { def codec = der.codec.as(asAux) }
+    implicit def record[KH <: Symbol, VH, TRec <: HList, KT <: HList](implicit
+      headCodec: Codec[VH],
+      tailAux: AutoAux[TRec],
+      keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT]
+    ): AutoAux[FieldType[KH, VH] :: TRec] = new AutoAux[FieldType[KH, VH] :: TRec] {
+      val codec = {
+        import codecs.StringEnrichedWithCodecNamingSupport
+        val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
+        val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.xmap[FieldType[KH, VH]](vh => field[KH](vh), identity)
+        headFieldCodec :: tailAux.codec
+      }
+    }
+
+    implicit def labelledProduct[A, Rec <: HList](implicit
+      lgen: LabelledGeneric.Aux[A, Rec],
+      auto: AutoAux[Rec]
+    ): AutoAux[A] = new AutoAux[A] {
+      val codec = auto.codec.xmap(lgen.from, lgen.to)
+    }
   }
 
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
