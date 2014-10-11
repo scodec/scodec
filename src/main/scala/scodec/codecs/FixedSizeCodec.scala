@@ -12,7 +12,7 @@ private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) exten
     encoded <- codec.encode(a)
     result <- {
       if (encoded.size > size)
-        \/.left(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
+        \/.left(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
       else
         \/.right(encoded.padTo(size))
     }
@@ -20,7 +20,7 @@ private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) exten
 
   override def decode(buffer: BitVector) =
     buffer.acquire(size) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(size, buffer.size))
       case Right(b) =>
         codec.decode(b) match {
           case e @ -\/(_) => e

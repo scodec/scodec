@@ -19,7 +19,7 @@ private[codecs] final class FloatCodec(ordering: ByteOrdering) extends Codec[Flo
 
   override def decode(buffer: BitVector) =
     buffer.acquire(32) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(32, buffer.size))
       case Right(b) => \/.right((buffer.drop(32), ByteBuffer.wrap(b.toByteArray).order(byteOrder).getFloat))
     }
 }

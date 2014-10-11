@@ -20,9 +20,9 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
 
   override def encode(s: Short) = {
     if (s > MaxValue) {
-      \/.left(s"$s is greater than maximum value $MaxValue for $description")
+      \/.left(Err(s"$s is greater than maximum value $MaxValue for $description"))
     } else if (s < MinValue) {
-      \/.left(s"$s is less than minimum value $MinValue for $description")
+      \/.left(Err(s"$s is less than minimum value $MinValue for $description"))
     } else {
       \/.right(BitVector.fromShort(s, bits, ordering))
     }
@@ -30,7 +30,7 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(bits, buffer.size))
       case Right(b) => \/.right((buffer.drop(bits), b.toShort(signed, ordering)))
     }
 

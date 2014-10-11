@@ -17,7 +17,7 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
     try \/.right(BitVector(encoder.encode(buffer)))
     catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        \/.left(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'")
+        \/.left(Err(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'"))
     }
   }
 
@@ -27,7 +27,7 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
       \/.right((BitVector.empty, decoder.decode(buffer.toByteBuffer).toString))
     } catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        \/.left(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'")
+        \/.left(Err(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'"))
     }
   }
 

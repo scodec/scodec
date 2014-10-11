@@ -28,7 +28,7 @@ trait Decoder[+A] { self =>
    * @return error if value could not be decoded or the remaining bits and the decoded value
    * @group primary
    */
-  def decode(bits: BitVector): String \/ (BitVector, A)
+  def decode(bits: BitVector): Err \/ (BitVector, A)
 
   /**
    * Attempts to decode a value of type `A` from the specified bit vector and discards any
@@ -38,7 +38,7 @@ trait Decoder[+A] { self =>
    * @return error if value could not be decoded or the decoded value
    * @group primary
    */
-  final def decodeValue(bits: BitVector): String \/ A =
+  final def decodeValue(bits: BitVector): Err \/ A =
     decode(bits) map { case (rem, value) => value }
 
     /**
@@ -51,7 +51,7 @@ trait Decoder[+A] { self =>
    * @group primary
    */
   final def decodeValidValue(bits: BitVector): A =
-    decodeValue(bits) valueOr { err => throw new IllegalArgumentException(err) }
+    decodeValue(bits) valueOr { err => throw new IllegalArgumentException(err.messageWithContext) }
 
   /**
    * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
@@ -70,10 +70,10 @@ trait Decoder[+A] { self =>
   }
 
   /**
-   * Converts this decoder to a `Decoder[B]` using the supplied `A => String \/ B`.
+   * Converts this decoder to a `Decoder[B]` using the supplied `A => Err \/ B`.
    * @group combinators
    */
-  def emap[B](f: A => String \/ B): Decoder[B] = new Decoder[B] {
+  def emap[B](f: A => Err \/ B): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits) flatMap { case (rem, a) => f(a).map { b => (rem, b) } }
   }
 
@@ -88,8 +88,8 @@ trait Decoder[+A] { self =>
           val max = 512
           if (rem.sizeLessThan(max + 1)) {
             val preview = rem.take(max)
-            s"${preview.size} bits remaining: 0x${preview.toHex}"
-          } else s"more than $max bits remaining"
+            Err(s"${preview.size} bits remaining: 0x${preview.toHex}")
+          } else Err(s"more than $max bits remaining")
         }
       }
     }
@@ -106,7 +106,7 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def decodeOnly[AA >: A]: Codec[AA] = new Codec[AA] {
-    def encode(a: AA) = \/.left("encoding not supported")
+    def encode(a: AA) = \/.left(Err("encoding not supported"))
     def decode(bits: BitVector) = self.decode(bits)
   }
 }
@@ -115,13 +115,13 @@ trait Decoder[+A] { self =>
 trait DecoderFunctions {
 
   /** Decodes the specified bit vector in to a value of type `A` using an implicitly available codec. */
-  final def decode[A: Decoder](bits: BitVector): String \/ (BitVector, A) = Decoder[A].decode(bits)
+  final def decode[A: Decoder](bits: BitVector): Err \/ (BitVector, A) = Decoder[A].decode(bits)
 
   /**
    * Decodes the specified bit vector in to a value of type `A` using an implicitly available
    * codec and discards the remaining bits.
    */
-  final def decodeValue[A: Decoder](bits: BitVector): String \/ A = Decoder[A].decodeValue(bits)
+  final def decodeValue[A: Decoder](bits: BitVector): Err \/ A = Decoder[A].decodeValue(bits)
 
   /**
    * Decodes the specified bit vector in to a value of type `A` using an implicitly available
@@ -131,11 +131,11 @@ trait DecoderFunctions {
   final def decodeValidValue[A: Decoder](bits: BitVector): A = Decoder[A].decodeValidValue(bits)
 
   /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`. */
-  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): String \/ (BitVector, (A, B)) =
+  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): Err \/ (BitVector, (A, B)) =
     decodeBothCombine(decA, decB)(buffer) { (a, b) => (a, b) }
 
   /** Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`. */
-  final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): String \/ (BitVector, C) = {
+  final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): Err \/ (BitVector, C) = {
     // Note: this could be written using DecodingContext but this function is called *a lot* and needs to be very fast
     decA.decode(buffer) match {
       case e @ -\/(_) => e
@@ -153,7 +153,7 @@ trait DecoderFunctions {
    *
    * @return tuple consisting of the terminating error if any and the accumulated value
    */
-  final def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[String], B) = {
+  final def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[Err], B) = {
     val decoder = Decoder[A]
     var remaining = buffer
     var acc = Monoid[B].zero
@@ -174,12 +174,12 @@ trait DecoderFunctions {
    * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
    * decoded. Exits upon first decoding error.
    */
-  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): String \/ (BitVector, F[A]) = {
+  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): Err \/ (BitVector, F[A]) = {
     val bldr = cbf()
     var remaining = buffer
     var count = 0
     var maxCount = limit getOrElse Int.MaxValue
-    var error: Option[String] = None
+    var error: Option[Err] = None
     while (count < maxCount && remaining.nonEmpty) {
       dec.decode(remaining) match {
         case \/-((rest, value)) =>
@@ -199,8 +199,8 @@ trait DecoderFunctions {
    * the first successful result.
    */
   final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
-    def decode(buffer: BitVector): String \/ (BitVector, A) = {
-      @annotation.tailrec def go(rem: List[Decoder[A]], lastErr: String): String \/ (BitVector, A) = rem match {
+    def decode(buffer: BitVector): Err \/ (BitVector, A) = {
+      @annotation.tailrec def go(rem: List[Decoder[A]], lastErr: Err): Err \/ (BitVector, A) = rem match {
         case Nil => \/.left(lastErr)
         case hd :: tl =>
           hd.decode(buffer) match {
@@ -208,7 +208,7 @@ trait DecoderFunctions {
             case -\/(err) => go(tl, err)
           }
       }
-      go(decoders.toList, "no decoders provided")
+      go(decoders.toList, Err("no decoders provided"))
     }
   }
 }

@@ -20,12 +20,12 @@ class StringCodecTest extends CodecSuite {
 
   "string codecs" should {
     "fail encoding with an error when string to encode contains chars unsupported by charset" in {
-      ascii.encode("λ") shouldBe \/.left("US-ASCII cannot encode character 'λ'")
-      ascii.encode("Includes a λ") shouldBe \/.left("US-ASCII cannot encode character 'λ'")
+      ascii.encode("λ") shouldBe \/.left(Err("US-ASCII cannot encode character 'λ'"))
+      ascii.encode("Includes a λ") shouldBe \/.left(Err("US-ASCII cannot encode character 'λ'"))
     }
 
     "fail decoding with an error when buffer contains bytes unsupported by charset" in {
-      utf8.decode(BitVector(ByteVector.fromValidHex("0xf4ffffff"))) shouldBe \/.left("UTF-8 cannot decode string from '0xf4ffffff'")
+      utf8.decode(BitVector(ByteVector.fromValidHex("0xf4ffffff"))) shouldBe \/.left(Err("UTF-8 cannot decode string from '0xf4ffffff'"))
     }
   }
 }

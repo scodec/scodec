@@ -19,7 +19,7 @@ class FloatCodecTest extends CodecSuite {
     }
 
     "return an error when decoding with too few bits" in {
-      float.decode(BitVector.low(8)) shouldBe \/.left("cannot acquire 32 bits from a vector that contains 8 bits")
+      float.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(32, 8))
     }
   }
 }

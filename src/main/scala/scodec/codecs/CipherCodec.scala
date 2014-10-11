@@ -80,27 +80,27 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
   override def encode(a: A) =
     codec.encode(a) >>= encrypt
 
-  private def encrypt(bits: BitVector): String \/ BitVector = {
+  private def encrypt(bits: BitVector): Err \/ BitVector = {
     val blocks = bits.toByteArray
     try {
       val encrypted = cipherFactory.newEncryptCipher.doFinal(blocks)
       \/-(BitVector(encrypted))
     } catch {
-      case e: IllegalBlockSizeException => -\/(s"Failed to encrypt: invalid block size ${blocks.size}")
+      case e: IllegalBlockSizeException => -\/(Err(s"Failed to encrypt: invalid block size ${blocks.size}"))
     }
   }
 
   override def decode(buffer: BitVector) =
     (decrypt(buffer) >>= codec.decode) map { case (remaining, a) => (BitVector.empty, a) }
 
-  private def decrypt(buffer: BitVector): String \/ BitVector = {
+  private def decrypt(buffer: BitVector): Err \/ BitVector = {
     val blocks = buffer.toByteArray
     try {
       val decrypted = cipherFactory.newDecryptCipher.doFinal(blocks)
       \/-(BitVector(decrypted))
     } catch {
       case e @ (_: IllegalBlockSizeException | _: BadPaddingException) =>
-        -\/("Failed to decrypt: " + e.getMessage)
+        -\/(Err("Failed to decrypt: " + e.getMessage))
     }
   }
 

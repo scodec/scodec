@@ -10,8 +10,8 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
   /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => C`. */
   override def map[C](f: B => C): GenCodec[A, C] = GenCodec(this, super.map(f))
 
-  /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => String \/ C`. */
-  override def emap[C](f: B => String \/ C): GenCodec[A, C] = GenCodec(this, super.emap(f))
+  /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => Err \/ C`. */
+  override def emap[C](f: B => Err \/ C): GenCodec[A, C] = GenCodec(this, super.emap(f))
 
   /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => A`. */
   override def contramap[C](f: C => A): GenCodec[C, B] = GenCodec(super.contramap(f), this)
@@ -23,8 +23,8 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
    */
   override def pcontramap[C](f: C => Option[A]): GenCodec[C, B] = GenCodec(super.pcontramap(f), this)
 
-  /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => String \/ A`. */
-  override def econtramap[C](f: C => String \/ A): GenCodec[C, B] = GenCodec(super.econtramap(f), this)
+  /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => Err \/ A`. */
+  override def econtramap[C](f: C => Err \/ A): GenCodec[C, B] = GenCodec(super.econtramap(f), this)
 
   /**
    * Converts this generalized codec in to a non-generalized codec assuming `A` and `B` are the same type.

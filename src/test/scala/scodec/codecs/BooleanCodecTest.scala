@@ -33,7 +33,7 @@ class BooleanCodecTest extends CodecSuite {
       bool(8).decode(bin"00000001") shouldBe \/.right((BitVector.empty, true))
     }
     "return an error when decoding with too few bits" in {
-      bool(8).decode(BitVector.low(4)) shouldBe \/.left("cannot acquire 8 bits from a vector that contains 4 bits")
+      bool(8).decode(BitVector.low(4)) shouldBe \/.left(Err.insufficientBits(8, 4))
     }
   }
 }

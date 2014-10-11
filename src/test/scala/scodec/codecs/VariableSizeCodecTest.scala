@@ -18,7 +18,7 @@ class VariableSizeCodecTest extends CodecSuite {
     }
 
     "fail encoding when value is too large to be encoded by size codec" in {
-      variableSizeBytes(uint2, ascii).encode("too long") shouldBe -\/("[too long] is too long to be encoded: 8 is greater than maximum value 3 for 2-bit unsigned integer")
+      variableSizeBytes(uint2, ascii).encode("too long") shouldBe -\/(Err("[too long] is too long to be encoded: 8 is greater than maximum value 3 for 2-bit unsigned integer"))
     }
 
     "support padding of size" in {

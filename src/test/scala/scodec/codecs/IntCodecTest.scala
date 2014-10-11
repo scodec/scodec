@@ -40,19 +40,19 @@ class IntCodecTest extends CodecSuite {
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 15) { (n: Int) =>
-        val bigEndian = uint4.encode(n).valueOr(sys.error).toByteVector
-        val littleEndian = uint4L.encode(n).valueOr(sys.error).toByteVector
+        val bigEndian = uint4.encodeValid(n).toByteVector
+        val littleEndian = uint4L.encodeValid(n).toByteVector
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, (1 << 24) - 1) { (n: Int) =>
-        val bigEndian = uint24.encode(n).valueOr(sys.error).toByteVector
-        val littleEndian = uint24L.encode(n).valueOr(sys.error).toByteVector
+        val bigEndian = uint24.encodeValid(n).toByteVector
+        val littleEndian = uint24L.encodeValid(n).toByteVector
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 8191) { (n: Int) =>
         whenever(n >= 0 && n <= 8191) {
-          val bigEndian = uint(13).encode(n).valueOr(sys.error)
-          val littleEndian = uintL(13).encode(n).valueOr(sys.error).toByteVector
+          val bigEndian = uint(13).encodeValid(n)
+          val littleEndian = uintL(13).encodeValid(n).toByteVector
           val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
           flipped shouldBe bigEndian
         }
@@ -60,13 +60,13 @@ class IntCodecTest extends CodecSuite {
     }
 
     "return an error when value to encode is out of legal range" in {
-      int16.encode(65536) shouldBe \/.left("65536 is greater than maximum value 32767 for 16-bit signed integer")
-      int16.encode(-32769) shouldBe \/.left("-32769 is less than minimum value -32768 for 16-bit signed integer")
-      uint16.encode(-1) shouldBe \/.left("-1 is less than minimum value 0 for 16-bit unsigned integer")
+      int16.encode(65536) shouldBe \/.left(Err("65536 is greater than maximum value 32767 for 16-bit signed integer"))
+      int16.encode(-32769) shouldBe \/.left(Err("-32769 is less than minimum value -32768 for 16-bit signed integer"))
+      uint16.encode(-1) shouldBe \/.left(Err("-1 is less than minimum value 0 for 16-bit unsigned integer"))
     }
 
     "return an error when decoding with too few bits" in {
-      int16.decode(BitVector.low(8)) shouldBe \/.left("cannot acquire 16 bits from a vector that contains 8 bits")
+      int16.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(16, 8))
     }
   }
 }

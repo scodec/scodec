@@ -20,9 +20,9 @@ private[codecs] final class LongCodec(bits: Int, signed: Boolean, ordering: Byte
 
   override def encode(i: Long) = {
     if (i > MaxValue) {
-      \/.left(s"$i is greater than maximum value $MaxValue for $description")
+      \/.left(Err(s"$i is greater than maximum value $MaxValue for $description"))
     } else if (i < MinValue) {
-      \/.left(s"$i is less than minimum value $MinValue for $description")
+      \/.left(Err(s"$i is less than minimum value $MinValue for $description"))
     } else {
       \/.right(BitVector.fromLong(i, bits, ordering))
     }
@@ -30,7 +30,7 @@ private[codecs] final class LongCodec(bits: Int, signed: Boolean, ordering: Byte
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => \/.left(e)
+      case Left(e) => \/.left(Err.insufficientBits(bits, buffer.size))
       case Right(b) => \/.right((buffer.drop(bits), b.toLong(signed, ordering)))
     }
 

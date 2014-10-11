@@ -21,10 +21,10 @@ private[scodec] object CoproductCodec {
     go(c, 0)
   }
 
-  private def encodeCoproduct[C <: Coproduct](codecs: List[Codec[C]], c: C): String \/ BitVector = {
+  private def encodeCoproduct[C <: Coproduct](codecs: List[Codec[C]], c: C): Err \/ BitVector = {
     val index = indexOf(c)
     for {
-      codec <- codecs.lift(index).toRightDisjunction(s"Not possible - index $index is out of bounds")
+      codec <- codecs.lift(index).toRightDisjunction(Err(s"Not possible - index $index is out of bounds"))
       encValue <- codec.encode(c)
     } yield encValue
   }
@@ -54,8 +54,8 @@ private[scodec] object CoproductCodec {
 
     def decode(buffer: BitVector) = (for {
       discriminator <- DecodingContext(discriminatorCodec.decode)
-      index <- DecodingContext.liftE(discriminatorToIndex(discriminator).toRightDisjunction(s"Unsupported discriminator $discriminator"))
-      decoder <- DecodingContext.liftE(liftedCodecs.lift(index).toRightDisjunction(s"Unsupported index $index (for discriminator $discriminator)"))
+      index <- DecodingContext.liftE(discriminatorToIndex(discriminator).toRightDisjunction(Err(s"Unsupported discriminator $discriminator")))
+      decoder <- DecodingContext.liftE(liftedCodecs.lift(index).toRightDisjunction(Err(s"Unsupported index $index (for discriminator $discriminator)")))
       value <- DecodingContext(decoder.decode)
     } yield value).run(buffer)
 
@@ -99,7 +99,7 @@ object ToCoproductCodecs {
         val codec: Codec[A] = l.head
         def encode(c: A :+: CT) = c match {
           case Inl(a) => codec.encode(a)
-          case Inr(ct) => \/.left(s"cannot encode $ct")
+          case Inr(ct) => \/.left(Err(s"cannot encode $ct"))
         }
         def decode(buffer: BitVector) =
           codec.decode(buffer).map { case (rem, a) => (rem, Coproduct[A :+: CT](a)) }
@@ -110,7 +110,7 @@ object ToCoproductCodecs {
         new Codec[A :+: CT] {
           def encode(c: A :+: CT) = c match {
             case Inr(a) => d.encode(a)
-            case Inl(ch) => \/.left(s"cannot encode $c")
+            case Inl(ch) => \/.left(Err(s"cannot encode $c"))
           }
           def decode(buffer: BitVector) =
             d.decode(buffer).map { case (rem, a) => (rem, Inr(a): A :+: CT) }
