@@ -127,7 +127,7 @@ class CodecTest extends CodecSuite {
     }
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Foo].encode(Foo(1, 256, "Hello")) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
+      Codec.auto[Foo].encode(Foo(1, 256, "Hello")) shouldBe left("y: 256 is greater than maximum value 255 for 8-bit unsigned integer")
     }
   }
 }
