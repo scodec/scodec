@@ -307,26 +307,26 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   res: scalaz.\/[scodec.Err,scodec.bits.BitVector] = -\/(z: 256 is greater than maximum value 255 for 8-bit unsigned integer)
    }}}
    */
-  def auto[A](implicit auto: AutoAux[A]): Codec[A] = auto.codec
+  def auto[A](implicit auto: Auto[A]): Codec[A] = auto.codec
 
   /** Witness that a codec of type `A` can be automatically created. */
-  sealed trait AutoAux[A] {
+  sealed trait Auto[A] {
     def codec: Codec[A]
   }
 
-  /** Companion for [[AutoAux]]. */
-  object AutoAux {
-    implicit def hnil: AutoAux[HNil] =
-      new AutoAux[HNil] { val codec = codecs.HListCodec.hnilCodec }
+  /** Companion for [[Auto]]. */
+  object Auto {
+    implicit def hnil: Auto[HNil] =
+      new Auto[HNil] { val codec = codecs.HListCodec.hnilCodec }
 
-    implicit def hlist[H, T <: HList](implicit headCodec: Codec[H], tailAux: AutoAux[T]): AutoAux[H :: T] =
-      new AutoAux[H :: T] { val codec = headCodec :: tailAux.codec }
+    implicit def hlist[H, T <: HList](implicit headCodec: Codec[H], tailAux: Auto[T]): Auto[H :: T] =
+      new Auto[H :: T] { val codec = headCodec :: tailAux.codec }
 
     implicit def record[KH <: Symbol, VH, TRec <: HList, KT <: HList](implicit
       headCodec: Codec[VH],
-      tailAux: AutoAux[TRec],
+      tailAux: Auto[TRec],
       keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT]
-    ): AutoAux[FieldType[KH, VH] :: TRec] = new AutoAux[FieldType[KH, VH] :: TRec] {
+    ): Auto[FieldType[KH, VH] :: TRec] = new Auto[FieldType[KH, VH] :: TRec] {
       val codec = {
         import codecs.StringEnrichedWithCodecNamingSupport
         val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
@@ -337,8 +337,8 @@ object Codec extends EncoderFunctions with DecoderFunctions {
 
     implicit def labelledProduct[A, Rec <: HList](implicit
       lgen: LabelledGeneric.Aux[A, Rec],
-      auto: AutoAux[Rec]
-    ): AutoAux[A] = new AutoAux[A] {
+      auto: Auto[Rec]
+    ): Auto[A] = new Auto[A] {
       val codec = auto.codec.xmap(lgen.from, lgen.to)
     }
   }
@@ -355,30 +355,35 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   codec.encode(Coproduct[C](Foo(...)))
    }}}
    */
-  def coproduct[C <: Coproduct](implicit auto: CoproductAutoAux[C]): auto.Builder = auto.builder
+  def coproduct[A](implicit auto: CoproductAuto[A]): auto.Out = auto.apply
 
-  /** Witness that a coproduct codec builder of type `C` can be automatically created. */
-  sealed trait CoproductAutoAux[C <: Coproduct] {
+  /** Witness that a coproduct codec builder of type `A` can be automatically created. */
+  sealed trait CoproductAuto[A] extends DepFn0 {
+    type C <: Coproduct
     type L <: HList
-    type Builder = codecs.CoproductCodecBuilder[C, L]
-    def builder: Builder
+    type Out = codecs.CoproductCodecBuilder[C, L]
+    def apply: Out
   }
 
-  /** Companion for [[CoproductAutoAux]]. */
-  object CoproductAutoAux {
-    implicit def cnil: CoproductAutoAux[CNil] =
-      new CoproductAutoAux[CNil] {
+  /** Companion for [[CoproductAuto]]. */
+  object CoproductAuto {
+    type Aux[A, C0] = CoproductAuto[A] { type C = C0 }
+
+    implicit def cnil: CoproductAuto.Aux[CNil, CNil] =
+      new CoproductAuto[CNil] {
+        type C = CNil
         type L = HNil
-        def builder = new codecs.CoproductCodecBuilder[CNil, HNil](HNil)
+        def apply = new codecs.CoproductCodecBuilder[CNil, HNil](HNil)
       }
 
     implicit def coproduct[H, T <: Coproduct](implicit
       headCodec: Codec[H],
-      tailAux: CoproductAutoAux[T]
-    ): CoproductAutoAux[H :+: T] =
-      new CoproductAutoAux[H :+: T] {
+      tailAux: CoproductAuto.Aux[T, T]
+    ): CoproductAuto.Aux[H :+: T, H :+: T] =
+      new CoproductAuto[H :+: T] {
+        type C = H :+: T
         type L = Codec[H] :: tailAux.L
-        def builder = headCodec :+: tailAux.builder
+        def apply = headCodec :+: tailAux.apply
       }
   }
 
