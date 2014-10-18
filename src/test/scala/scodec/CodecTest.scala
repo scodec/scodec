@@ -6,6 +6,9 @@ import \/.{ right, left }
 import scodec.bits._
 import scodec.codecs._
 import shapeless._
+import shapeless.record._
+import shapeless.union._
+import shapeless.syntax.singleton._
 
 class CodecTest extends CodecSuite {
   case class Foo(x: Int, y: Int, s: String)
@@ -135,6 +138,14 @@ class CodecTest extends CodecSuite {
       val codec = Codec.coproduct[C].choice
       codec.encodeValid(Coproduct[C]("Hello")) shouldBe hex"000548656c6c6f".bits
       codec.encodeValid(Coproduct[C](())) shouldBe hex"01".bits
+    }
+    "support automatic generation of coproduct codec builders from union types" in {
+      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
+      val uSchema = RecordType.like('i ->> 24 :: 's ->> "foo" :: HNil)
+      type U = uSchema.Union
+      val codec = Codec.coproduct[U].discriminatedByIndex(uint8)
+      codec.encodeValid(Coproduct[U]('s ->> "Hello")) shouldBe hex"01000548656c6c6f".bits
+      codec.encode(Coproduct[U]('i ->> 256)) shouldBe left("i: 256 is greater than maximum value 255 for 8-bit unsigned integer")
     }
   }
 }

@@ -211,6 +211,13 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   def :+:[B](left: Codec[B]): codecs.CoproductCodecBuilder[B :+: A :+: CNil, Codec[B] :: Codec[A] :: HNil] =
     new codecs.CoproductCodecBuilder(left :: self :: HNil)
+
+  /**
+   * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
+   * @group combinators
+   */
+  def toField[K]: Codec[FieldType[K, A]] =
+    xmap[FieldType[K, A]](a => field[K](a), identity)
 }
 
 /**
@@ -330,7 +337,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       val codec = {
         import codecs.StringEnrichedWithCodecNamingSupport
         val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
-        val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.xmap[FieldType[KH, VH]](vh => field[KH](vh), identity)
+        val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.toField[KH]
         headFieldCodec :: tailAux.codec
       }
     }
@@ -346,6 +353,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   /**
    * Creates a coproduct codec builder for the specified type.
    *
+   * Support exists for coproducts and unions.
    * Each component type must have an implicitly available codec.
    *
    * For example:
@@ -384,6 +392,23 @@ object Codec extends EncoderFunctions with DecoderFunctions {
         type C = H :+: T
         type L = Codec[H] :: tailAux.L
         def apply = headCodec :+: tailAux.apply
+      }
+
+    import shapeless.ops.union.{ Keys => UnionKeys }
+
+    implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList](implicit
+      headCodec: Codec[VH],
+      tailAux: CoproductAuto.Aux[T, T],
+      keys: UnionKeys.Aux[FieldType[KH, VH] :+: T, KH :: KT]
+    ): CoproductAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T] =
+      new CoproductAuto[FieldType[KH, VH] :+: T] {
+        type C = FieldType[KH, VH] :+: T
+        type L = Codec[FieldType[KH, VH]] :: tailAux.L
+        def apply = {
+          import codecs.StringEnrichedWithCodecNamingSupport
+          val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
+          namedHeadCodec.toField[KH] :+: tailAux.apply
+        }
       }
   }
 
