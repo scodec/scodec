@@ -343,6 +343,45 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     }
   }
 
+  /**
+   * Creates a coproduct codec builder for the specified type.
+   *
+   * Each component type must have an implicitly available codec.
+   *
+   * For example:
+   {{{
+  type C = Foo :+: Bar :+: Baz :+: CNil
+  val codec = Codec.coproduct[C].choice
+  codec.encode(Coproduct[C](Foo(...)))
+   }}}
+   */
+  def coproduct[C <: Coproduct](implicit auto: CoproductAutoAux[C]): auto.Builder = auto.builder
+
+  /** Witness that a coproduct codec builder of type `C` can be automatically created. */
+  sealed trait CoproductAutoAux[C <: Coproduct] {
+    type L <: HList
+    type Builder = codecs.CoproductCodecBuilder[C, L]
+    def builder: Builder
+  }
+
+  /** Companion for [[CoproductAutoAux]]. */
+  object CoproductAutoAux {
+    implicit def cnil: CoproductAutoAux[CNil] =
+      new CoproductAutoAux[CNil] {
+        type L = HNil
+        def builder = new codecs.CoproductCodecBuilder[CNil, HNil](HNil)
+      }
+
+    implicit def coproduct[H, T <: Coproduct](implicit
+      headCodec: Codec[H],
+      tailAux: CoproductAutoAux[T]
+    ): CoproductAutoAux[H :+: T] =
+      new CoproductAutoAux[H :+: T] {
+        type L = Codec[H] :: tailAux.L
+        def builder = headCodec :+: tailAux.builder
+      }
+  }
+
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
   }
