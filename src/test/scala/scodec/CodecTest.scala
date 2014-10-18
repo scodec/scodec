@@ -129,5 +129,12 @@ class CodecTest extends CodecSuite {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
       Codec.auto[Foo].encode(Foo(1, 256, "Hello")) shouldBe left("y: 256 is greater than maximum value 255 for 8-bit unsigned integer")
     }
+    "support automatic generation of coproduct codec builders" in {
+      implicit val (u, s) = (constant(1), variableSizeBytes(uint16, utf8))
+      type C = Unit :+: String :+: CNil
+      val codec = Codec.coproduct[C].choice
+      codec.encodeValid(Coproduct[C]("Hello")) shouldBe hex"000548656c6c6f".bits
+      codec.encodeValid(Coproduct[C](())) shouldBe hex"01".bits
+    }
   }
 }
