@@ -11,8 +11,9 @@ import shapeless.union._
 import shapeless.syntax.singleton._
 
 class CodecTest extends CodecSuite {
-  case class Foo(x: Int, y: Int, s: String)
-  case class Bar(x: Int)
+  sealed trait Parent
+  case class Foo(x: Int, y: Int, s: String) extends Parent
+  case class Bar(x: Int) extends Parent
 
   "all codecs" should {
 
@@ -165,7 +166,14 @@ class CodecTest extends CodecSuite {
       type U = uSchema.Union
       val codec = Codec.coproduct[U].discriminatedByIndex(uint8)
       codec.encodeValid(Coproduct[U]('s ->> "Hello")) shouldBe hex"01000548656c6c6f".bits
-      codec.encode(Coproduct[U]('i ->> 256)) shouldBe left("i: 256 is greater than maximum value 255 for 8-bit unsigned integer")
+      codec.encode(Coproduct[U]('i ->> 256)) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("i"))
+    }
+    "support automatic generation of coproduct codec builders from sealed trait and subclasses" in {
+      implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
+      implicit val (f, b) = (Codec.auto[Foo], Codec.auto[Bar])
+      val codec: Codec[Parent] = Codec.coproduct[Parent].discriminatedByIndex(uint8)
+      codec.encodeValid(Foo(1, 2, "Hello")) shouldBe hex"010102000548656c6c6f".bits
+      codec.encodeValid(Bar(1)) shouldBe hex"0001".bits
     }
   }
 }
