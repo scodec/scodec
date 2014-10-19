@@ -143,15 +143,15 @@ class CodecTest extends CodecSuite {
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
+      Codec.product[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
     }
     "support automatic generation of case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
+      Codec.product[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
     }
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Foo].encode(Foo(1, 256, "Hello")) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
+      Codec.product[Foo].encode(Foo(1, 256, "Hello")) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
     }
     "support automatic generation of coproduct codec builders" in {
       implicit val (u, s) = (constant(1), variableSizeBytes(uint16, utf8))
@@ -170,7 +170,7 @@ class CodecTest extends CodecSuite {
     }
     "support automatic generation of coproduct codec builders from sealed trait and subclasses" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      implicit val (f, b) = (Codec.auto[Foo], Codec.auto[Bar])
+      implicit val (f, b) = (Codec.product[Foo], Codec.product[Bar])
       val codec: Codec[Parent] = Codec.coproduct[Parent].discriminatedByIndex(uint8)
       codec.encodeValid(Foo(1, 2, "Hello")) shouldBe hex"010102000548656c6c6f".bits
       codec.encodeValid(Bar(1)) shouldBe hex"0001".bits
