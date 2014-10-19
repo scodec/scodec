@@ -91,13 +91,13 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   /**
    * Returns a new codec that encodes/decodes a value of type `B` by using an isomorphism between `A` and `B`.
    *
-   * The isomorphism is provided by the implicit `CodecAsAux` instance.
+   * The isomorphism is provided by the implicit `CodecAs` instance.
    *
    * Typically used when `B` is a case class and `A` is an `HList` with the same shape as the elements of `B`.
    *
    * @group hlist
    */
-  final def as[B](implicit as: CodecAsAux[B, A]): Codec[B] = as(this)
+  final def as[B](implicit as: CodecAs[B, A]): Codec[B] = as(this)
 
   /**
    * Lifts this codec in to a codec of a singleton hlist.
@@ -231,15 +231,15 @@ trait Codec[A] extends GenCodec[A, A] { self =>
  */
 @annotation.implicitNotFound("""Could not prove that ${B} can be converted to/from ${A}.
 Proof is automatically available between case classes and HLists that have the same shape, as singleton case classes and values of matching types.""")
-abstract class CodecAsAux[B, A] {
+abstract class CodecAs[B, A] {
   def apply(ca: Codec[A]): Codec[B]
 }
 
-/** Companion for [[CodecAsAux]]. */
-object CodecAsAux {
+/** Companion for [[CodecAs]]. */
+object CodecAs {
 
-  /** Provides a `CodecAsAux[B, A]` for case class `B` and HList `A`. */
-  implicit def mkAs[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): CodecAsAux[B, A]  = new CodecAsAux[B, A] {
+  /** Provides a `CodecAs[B, A]` for case class `B` and HList `A`. */
+  implicit def mkAs[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): CodecAs[B, A]  = new CodecAs[B, A] {
     def apply(ca: Codec[A]): Codec[B] = {
       val from: A => B = a => gen.from(a)
       val to: B => A = b => gen.to(b)
@@ -247,8 +247,8 @@ object CodecAsAux {
     }
   }
 
-  /** Provides a `CodecAsAux[B, A]` for HList `B` and case class `A`. */
-  implicit def mkAsReverse[B, Repr, A](implicit gen: Generic.Aux[A, Repr], bToR: B =:= Repr, rToB: Repr =:= B): CodecAsAux[B, A]  = new CodecAsAux[B, A] {
+  /** Provides a `CodecAs[B, A]` for HList `B` and case class `A`. */
+  implicit def mkAsReverse[B, Repr, A](implicit gen: Generic.Aux[A, Repr], bToR: B =:= Repr, rToB: Repr =:= B): CodecAs[B, A]  = new CodecAs[B, A] {
     def apply(ca: Codec[A]): Codec[B] = {
       val from: A => B = a => gen.to(a)
       val to: B => A = b => gen.from(b)
@@ -256,8 +256,8 @@ object CodecAsAux {
     }
   }
 
-  /** Provides a `CodecAsAux[B, A]` for singleton case class `B` and value `A`. */
-  implicit def mkAsSingleton[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: (A :: HNil) =:= Repr, rToA: Repr =:= (A :: HNil)): CodecAsAux[B, A]  = new CodecAsAux[B, A] {
+  /** Provides a `CodecAs[B, A]` for singleton case class `B` and value `A`. */
+  implicit def mkAsSingleton[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: (A :: HNil) =:= Repr, rToA: Repr =:= (A :: HNil)): CodecAs[B, A]  = new CodecAs[B, A] {
     def apply(ca: Codec[A]): Codec[B] = {
       val from: A => B = a => gen.from(a :: HNil)
       val to: B => A = b => gen.to(b).head
@@ -265,8 +265,8 @@ object CodecAsAux {
     }
   }
 
-  /** Provides a `CodecAsAux[B, A]` for value `B` and singleton case class `A`. */
-  implicit def mkAsSingletonReverse[B, Repr, A](implicit gen: Generic.Aux[A, Repr], bToR: (B :: HNil) =:= Repr, rToB: Repr =:= (B :: HNil)): CodecAsAux[B, A]  = new CodecAsAux[B, A] {
+  /** Provides a `CodecAs[B, A]` for value `B` and singleton case class `A`. */
+  implicit def mkAsSingletonReverse[B, Repr, A](implicit gen: Generic.Aux[A, Repr], bToR: (B :: HNil) =:= Repr, rToB: Repr =:= (B :: HNil)): CodecAs[B, A]  = new CodecAs[B, A] {
     def apply(ca: Codec[A]): Codec[B] = {
       val from: A => B = a => gen.to(a).head
       val to: B => A = b => gen.from(b :: HNil)
