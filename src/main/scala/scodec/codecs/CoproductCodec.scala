@@ -159,7 +159,9 @@ object ToCoproductCodecs {
  * @tparam L hlist type that has a codec for each type in the coproduct `C`
  * @tparam R resulting codec type
  */
-final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec] (codecs: L, cToR: C => Err \/ R, rToC: R => Err \/ C)(implicit aux: ToCoproductCodecs[C, L]) {
+final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec] (
+  codecs: L, cToR: C => Err \/ R, rToC: R => Err \/ C
+)(implicit aux: ToCoproductCodecs[C, L]) {
 
   private def toR(c: Codec[C]): Codec[R] = c.exmap(cToR, rToC)
 
@@ -190,6 +192,7 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
 
     /** Specified the discriminator values for each of the coproduct type members. */
     def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.hlist.Length.Aux[L, N]): Codec[R] = {
+      // TODO Upon upgrading to shapeless 2.1, change the evidence param to ops.coproduct.Length
       val toDiscriminator: C => A = c => discriminators.seq(CoproductCodec.indexOf(c))
       val fromDiscriminator: A => Option[Int] = a => {
         val idx = discriminators.seq.indexWhere { (x: A) => x == a }

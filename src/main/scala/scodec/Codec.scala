@@ -375,35 +375,35 @@ object Codec extends EncoderFunctions with DecoderFunctions {
 
   /** Companion for [[CoproductAuto]]. */
   object CoproductAuto {
-    type Aux[A, C0] = CoproductAuto[A] { type C = C0 }
+    type Aux[A, C0, L0] = CoproductAuto[A] { type C = C0; type L = L0 }
 
-    implicit def cnil: CoproductAuto.Aux[CNil, CNil] =
+    implicit def cnil: CoproductAuto.Aux[CNil, CNil, HNil] =
       new CoproductAuto[CNil] {
         type C = CNil
         type L = HNil
         def apply = codecs.CoproductCodecBuilder(HNil)
       }
 
-    implicit def coproduct[H, T <: Coproduct](implicit
+    implicit def coproduct[H, T <: Coproduct, TL <: HList](implicit
       headCodec: Codec[H],
-      tailAux: CoproductAuto.Aux[T, T]
-    ): CoproductAuto.Aux[H :+: T, H :+: T] =
+      tailAux: CoproductAuto.Aux[T, T, TL]
+    ): CoproductAuto.Aux[H :+: T, H :+: T, Codec[H] :: TL] =
       new CoproductAuto[H :+: T] {
         type C = H :+: T
-        type L = Codec[H] :: tailAux.L
+        type L = Codec[H] :: TL
         def apply = headCodec :+: tailAux.apply
       }
 
     import shapeless.ops.union.{ Keys => UnionKeys }
 
-    implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList](implicit
+    implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList, TL <: HList](implicit
       headCodec: Codec[VH],
-      tailAux: CoproductAuto.Aux[T, T],
+      tailAux: CoproductAuto.Aux[T, T, TL],
       keys: UnionKeys.Aux[FieldType[KH, VH] :+: T, KH :: KT]
-    ): CoproductAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T] =
+    ): CoproductAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T, Codec[FieldType[KH, VH]] :: TL] =
       new CoproductAuto[FieldType[KH, VH] :+: T] {
         type C = FieldType[KH, VH] :+: T
-        type L = Codec[FieldType[KH, VH]] :: tailAux.L
+        type L = Codec[FieldType[KH, VH]] :: TL
         def apply = {
           import codecs.StringEnrichedWithCodecNamingSupport
           val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
@@ -411,10 +411,10 @@ object Codec extends EncoderFunctions with DecoderFunctions {
         }
       }
 
-    implicit def labelledGeneric[A, U <: Coproduct](implicit
+    implicit def labelledGeneric[A, U <: Coproduct, UL <: HList](implicit
       lgen: LabelledGeneric.Aux[A, U],
-      auto: CoproductAuto.Aux[U, U]
-    ): CoproductAuto.Aux[A, U] = new CoproductAuto[A] {
+      auto: CoproductAuto.Aux[U, U, UL]
+    ): CoproductAuto.Aux[A, U, UL] = new CoproductAuto[A] {
       type C = U
       type L = auto.L
       def apply = auto.apply.xmap(lgen.from, lgen.to)
