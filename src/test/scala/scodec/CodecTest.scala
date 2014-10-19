@@ -122,15 +122,15 @@ class CodecTest extends CodecSuite {
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
+      Codec.product[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
     }
     "support automatic generation of case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
+      Codec.product[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
     }
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.auto[Foo].encode(Foo(1, 256, "Hello")) shouldBe left("y: 256 is greater than maximum value 255 for 8-bit unsigned integer")
+      Codec.product[Foo].encode(Foo(1, 256, "Hello")) shouldBe left("y: 256 is greater than maximum value 255 for 8-bit unsigned integer")
     }
     "support automatic generation of coproduct codec builders" in {
       implicit val (u, s) = (constant(1), variableSizeBytes(uint16, utf8))
