@@ -78,6 +78,15 @@ class CoproductsExample extends CodecSuite {
       codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
     }
 
+    "demonstrate errors" in {
+      // All union based coproduct codecs include the field name in errors
+      // that occur in encoding and decoding. For codecs generated from
+      // sealed type hierarchies, the field name is the subtype name.
+      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedByIndex(uint8)
+
+      codec.encode(Woozle(256, 0)) shouldBe \/.left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("Woozle"))
+    }
+
     "demonstrate arbitrary discriminators" in {
       // Index based discriminators are typically not useful when working with
       // binary formats defined by protocols. Instead, an arbitrary discriminator
