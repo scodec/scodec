@@ -110,5 +110,30 @@ class CoproductsExample extends CodecSuite {
       """Codec.coproduct[Sprocket].discriminatedBy(uint8).using(Sized(2, 1, 3))""" shouldNot compile
       """Codec.coproduct[Sprocket].discriminatedBy(uint8).using(Sized(2))""" shouldNot compile
     }
+
+    "demonstrate key based discriminators" in {
+      // Rather than relying on an arbitrary index to bind a discriminator to a subtype,
+      // the binding can be performed by key instead assuming the codec
+      // is a union based codec. For sealed class hierarchies, this means the
+      // subtype name can be used.
+      import shapeless.syntax.singleton._
+
+      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedByKey(uint8,
+        'Wocket ->> 2 :: 'Woozle ->> 1 :: HNil)
+
+      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      encodedWoozle shouldBe hex"01030a".bits
+      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      encodedWocket shouldBe hex"020101".bits
+
+      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
+      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
+
+      // However, the discriminator records must be aligned with the coproduct types.
+      // In a future version, this limitation will probably be lifted. As of now,
+      // it is equal in power to `discriminatedBy(...).using(Sized(...))` but offers
+      // better readability.
+      """Codec.coproduct[Sprocket].discriminatedByKey(uint8, 'Woozle ->> 1 :: 'Wocket ->> 2 :: HNil)""" shouldNot compile
+    }
   }
 }

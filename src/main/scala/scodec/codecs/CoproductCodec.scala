@@ -5,6 +5,7 @@ import scalaz.\/
 import scalaz.syntax.std.option._
 
 import shapeless._
+import record._
 import ops.coproduct._
 import ops.hlist._
 
@@ -202,6 +203,16 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
     }
   }
 
+  def discriminatedByKey[A, L <: HList](
+    discriminatorCodec: Codec[A], bindings: L
+  )(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, L, A]): Codec[R] = {
+    toR(new CoproductCodec.Discriminated(
+      codecs,
+      discriminatorCodec,
+      keyDiscriminators.toDiscriminator(bindings),
+      (a: A) => keyDiscriminators.fromDiscriminator(bindings)(a, 0)))
+  }
+
   /**
    * Creates a coproduct codec that encodes no discriminator. Rather, decoding is accomplished by
    * trying each codec in order and using the first successful result.
@@ -225,4 +236,33 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
 object CoproductCodecBuilder {
   def apply[C <: Coproduct, L <: HList](codecs: L)(implicit aux: ToCoproductCodecs[C, L]): CoproductCodecBuilder[C, L, C] =
     new CoproductCodecBuilder(codecs, \/.right, \/.right)
+}
+
+sealed trait CoproductBuilderKeyDiscriminators[C <: Coproduct, L <: HList, A] {
+  def toDiscriminator(bindings: L)(c: C): A
+  def fromDiscriminator(bindings: L)(a: A, idx: Int): Option[Int]
+}
+
+object CoproductBuilderKeyDiscriminators {
+  implicit def nil[A]: CoproductBuilderKeyDiscriminators[CNil, HNil, A] =
+    new CoproductBuilderKeyDiscriminators[CNil, HNil, A] {
+      def toDiscriminator(bindings: HNil)(c: CNil): A = sys.error("impossible")
+      def fromDiscriminator(bindings: HNil)(a: A, idx: Int): Option[Int] = None
+    }
+
+  implicit def step[K <: Symbol, V, CT <: Coproduct, LT <: HList, A](implicit
+    tailDiscriminators: CoproductBuilderKeyDiscriminators[CT, LT, A]
+  ): CoproductBuilderKeyDiscriminators[FieldType[K, V] :+: CT, FieldType[K, A] :: LT, A] =
+    new CoproductBuilderKeyDiscriminators[FieldType[K, V] :+: CT, FieldType[K, A] :: LT, A] {
+      def toDiscriminator(bindings: FieldType[K, A] :: LT)(c: FieldType[K, V] :+: CT): A = {
+        c match {
+          case Inl(_) => bindings.head
+          case Inr(ct) => tailDiscriminators.toDiscriminator(bindings.tail)(ct)
+        }
+      }
+      def fromDiscriminator(bindings: FieldType[K, A] :: LT)(a: A, idx: Int): Option[Int] = {
+        if (bindings.head == a) Some(idx)
+        else tailDiscriminators.fromDiscriminator(bindings.tail)(a, idx + 1)
+      }
+    }
 }
