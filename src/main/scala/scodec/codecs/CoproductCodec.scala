@@ -210,7 +210,7 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
      * Determines discriminators values automatically by looking for a `Discriminator[R, X, A]`
      * for each component type `X` in the coproduct `C`.
      */
-    def auto(implicit auto: CoproductAutoDiscriminators[R, C, A]): Codec[R] = usingUnsafe(auto.discriminators)
+    def auto(implicit auto: CoproductBuilderAutoDiscriminators[R, C, A]): Codec[R] = usingUnsafe(auto.discriminators)
 
     /** Unsafe version of `using` -- discriminators must be equal in length to the number of components in `C`. */
     private def usingUnsafe(discriminators: Seq[A]): Codec[R] = {
@@ -280,31 +280,31 @@ object CoproductBuilderKeyDiscriminators {
 }
 
 /** Witness for `CoproductCodecBuilder#NeedDiscriminators#auto`. */
-sealed trait CoproductAutoDiscriminators[X, C <: Coproduct, A] {
+sealed trait CoproductBuilderAutoDiscriminators[X, C <: Coproduct, A] {
   def discriminators: List[A]
 }
 
-/** Companion for [[CoproductAutoDiscriminators]]. */
-object CoproductAutoDiscriminators {
+/** Companion for [[CoproductBuilderAutoDiscriminators]]. */
+object CoproductBuilderAutoDiscriminators {
 
-  implicit def cnil[X, A]: CoproductAutoDiscriminators[X, CNil, A] =
-    new CoproductAutoDiscriminators[X, CNil, A] {
+  implicit def cnil[X, A]: CoproductBuilderAutoDiscriminators[X, CNil, A] =
+    new CoproductBuilderAutoDiscriminators[X, CNil, A] {
       def discriminators = Nil
     }
 
   implicit def coproduct[X, A, CH, CT <: Coproduct](implicit
     headDiscriminator: Discriminator[X, CH, A],
-    tailAuto: CoproductAutoDiscriminators[X, CT, A]
-  ): CoproductAutoDiscriminators[X, CH :+: CT, A] =
-    new CoproductAutoDiscriminators[X, CH :+: CT, A] {
+    tailAuto: CoproductBuilderAutoDiscriminators[X, CT, A]
+  ): CoproductBuilderAutoDiscriminators[X, CH :+: CT, A] =
+    new CoproductBuilderAutoDiscriminators[X, CH :+: CT, A] {
       def discriminators = headDiscriminator.value :: tailAuto.discriminators
     }
 
   implicit def union[X, A, K, V, CT <: Coproduct](implicit
     headDiscriminator: Discriminator[X, V, A],
-    tailAuto: CoproductAutoDiscriminators[X, CT, A]
-  ): CoproductAutoDiscriminators[X, FieldType[K, V] :+: CT, A] =
-    new CoproductAutoDiscriminators[X, FieldType[K, V] :+: CT, A] {
+    tailAuto: CoproductBuilderAutoDiscriminators[X, CT, A]
+  ): CoproductBuilderAutoDiscriminators[X, FieldType[K, V] :+: CT, A] =
+    new CoproductBuilderAutoDiscriminators[X, FieldType[K, V] :+: CT, A] {
       def discriminators = headDiscriminator.value :: tailAuto.discriminators
     }
 }

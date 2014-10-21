@@ -159,5 +159,22 @@ class CoproductsExample extends CodecSuite {
       codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
       codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
     }
+
+    "demonstrate fixing the codec to a known subtype" in {
+      // In some protocols, the discriminator value is not adjacent to the data values. Hence,
+      // it is useful to be able to use a coproduct codec inside a `flatXYZ` operation,
+      // where the discriminator value is accessed directly in the function argument.
+      //
+      // This can be accomplished by using the `provide` codec as the discriminator codec.
+      def codec(d: Int): Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(provide(d)).auto
+
+      codec(1).decodeValidValue(hex"030a".bits) shouldBe Woozle(3, 10)
+      codec(2).decodeValidValue(hex"0101".bits) shouldBe Wocket(1, true)
+
+      val hlistCodec: Codec[Int :: Long :: Sprocket :: Int :: HNil] =
+        (uint8 :: uint32) flatConcat { case d :: _ :: HNil => codec(d) :: uint16 }
+
+      hlistCodec.encodeValid(1 :: 0L :: Woozle(3, 10) :: 0 :: HNil) shouldBe hex"0100000000030a0000".bits
+    }
   }
 }
