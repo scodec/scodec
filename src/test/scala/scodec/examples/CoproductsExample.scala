@@ -14,11 +14,13 @@ class CoproductsExample extends CodecSuite {
   case class Woozle(count: Int, strength: Int) extends Sprocket
   object Woozle {
     implicit val codec: Codec[Woozle] = (uint8 :: uint8).as[Woozle]
+    implicit val discriminator: Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
   }
 
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket
   object Wocket {
     implicit val codec: Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
+    implicit val discriminator: Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
   }
 
   "coproduct codec examples" should {
@@ -118,7 +120,7 @@ class CoproductsExample extends CodecSuite {
       // subtype name can be used.
       import shapeless.syntax.singleton._
 
-      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedByKey(uint8,
+      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).using(
         'Wocket ->> 2 :: 'Woozle ->> 1 :: HNil)
 
       val encodedWoozle = codec.encodeValid(Woozle(3, 10))
@@ -133,7 +135,29 @@ class CoproductsExample extends CodecSuite {
       // In a future version, this limitation will probably be lifted. As of now,
       // it is equal in power to `discriminatedBy(...).using(Sized(...))` but offers
       // better readability.
-      """Codec.coproduct[Sprocket].discriminatedByKey(uint8, 'Woozle ->> 1 :: 'Wocket ->> 2 :: HNil)""" shouldNot compile
+      """Codec.coproduct[Sprocket].discriminatedBy(uint8).using('Woozle ->> 1 :: 'Wocket ->> 2 :: HNil)""" shouldNot compile
+    }
+
+    "demonstrate arbitrary implicit discriminators" in {
+      // If, for some target type `R` and for each `X` in the coproduct type representing `R`,
+      // there's an implicit `Discriminator[R, X, A]` in scope, where `A` is the discriminator type, then
+      // the `.auto` combinator can be used to create the codec.
+      //
+      // In this example, the `Woozle` companion defines an implicit `Discriminator[Sprocket, Woozle, Int]` and
+      // the `Wocket` companion defines an implict `Discriminator[Sprocket, Wocket, Int]`.
+      //
+      // More specifically, `Sprocket` is represented by a union of the subtypes and we are indicating it
+      // is discriminated by `uint8`, which sets the discriminator type to `Int`. Hence, `auto` works
+      // as long as there's a `Discriminator[Sprocket, X, Int]` in scope for each subtype of `Sprocket` `X`.
+      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).auto
+
+      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      encodedWoozle shouldBe hex"01030a".bits
+      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      encodedWocket shouldBe hex"020101".bits
+
+      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
+      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
     }
   }
 }

@@ -180,37 +180,47 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
   def discriminatedByIndex(discriminatorCodec: Codec[Int]): Codec[R] =
     toR(CoproductCodec.indexBased(codecs, discriminatorCodec))
 
-  /**
-   * Supports creation of a coproduct codec that uses an arbitrary discriminator.
-   *
-   * After calling this method, the caller must call `using(Sized(...))`, specifying the
-   * discriminator value for each coproduct type, in the order that the types appear in the coproduct.
-   */
+  /** Supports creation of a coproduct codec that uses an arbitrary discriminator. */
   def discriminatedBy[A](discriminatorCodec: Codec[A]): NeedDiscriminators[A] =
     new NeedDiscriminators(discriminatorCodec)
 
+  /** Assists in creating a coproduct codec, after the coproduct type and discriminator type have been fixed. */
   final class NeedDiscriminators[A] private[CoproductCodecBuilder] (discriminatorCodec: Codec[A]) {
 
-    /** Specified the discriminator values for each of the coproduct type members. */
-    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.hlist.Length.Aux[L, N]): Codec[R] = {
-      // TODO Upon upgrading to shapeless 2.1, change the evidence param to ops.coproduct.Length
-      val toDiscriminator: C => A = c => discriminators.seq(CoproductCodec.indexOf(c))
+    /**
+     * Specifies the discriminator values for each of the coproduct type members.
+     *
+     * The collection must list the discriminators in the order that the corresponding types appear in the coproduct.
+     */
+    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.hlist.Length.Aux[L, N]): Codec[R] =
+      usingUnsafe(discriminators.seq)
+
+    /**
+     * Specifies the discriminator values for each of the union type members by providing the discriminators
+     * as a record with the same keys as the union.
+     */
+    def using[L <: HList](bindings: L)(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, L, A]): Codec[R] =
+      toR(new CoproductCodec.Discriminated(
+        codecs,
+        discriminatorCodec,
+        keyDiscriminators.toDiscriminator(bindings),
+        (a: A) => keyDiscriminators.fromDiscriminator(bindings)(a, 0)))
+
+    /**
+     * Determines discriminators values automatically by looking for a `Discriminator[R, X, A]`
+     * for each component type `X` in the coproduct `C`.
+     */
+    def auto(implicit auto: CoproductAutoDiscriminators[R, C, A]): Codec[R] = usingUnsafe(auto.discriminators)
+
+    /** Unsafe version of `using` -- discriminators must be equal in length to the number of components in `C`. */
+    private def usingUnsafe(discriminators: Seq[A]): Codec[R] = {
+      val toDiscriminator: C => A = c => discriminators(CoproductCodec.indexOf(c))
       val fromDiscriminator: A => Option[Int] = a => {
-        val idx = discriminators.seq.indexWhere { (x: A) => x == a }
+        val idx = discriminators.indexWhere { (x: A) => x == a }
         if (idx >= 0) Some(idx) else None
       }
       toR(new CoproductCodec.Discriminated(codecs, discriminatorCodec, toDiscriminator, fromDiscriminator))
     }
-  }
-
-  def discriminatedByKey[A, L <: HList](
-    discriminatorCodec: Codec[A], bindings: L
-  )(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, L, A]): Codec[R] = {
-    toR(new CoproductCodec.Discriminated(
-      codecs,
-      discriminatorCodec,
-      keyDiscriminators.toDiscriminator(bindings),
-      (a: A) => keyDiscriminators.fromDiscriminator(bindings)(a, 0)))
   }
 
   /**
@@ -238,11 +248,13 @@ object CoproductCodecBuilder {
     new CoproductCodecBuilder(codecs, \/.right, \/.right)
 }
 
+/** Witness for `CoproductCodecBuilder#NeedDiscriminators#using`. */
 sealed trait CoproductBuilderKeyDiscriminators[C <: Coproduct, L <: HList, A] {
   def toDiscriminator(bindings: L)(c: C): A
   def fromDiscriminator(bindings: L)(a: A, idx: Int): Option[Int]
 }
 
+/** Companion for [[CoproductBuilderKeyDiscriminators]]. */
 object CoproductBuilderKeyDiscriminators {
   implicit def nil[A]: CoproductBuilderKeyDiscriminators[CNil, HNil, A] =
     new CoproductBuilderKeyDiscriminators[CNil, HNil, A] {
@@ -264,5 +276,35 @@ object CoproductBuilderKeyDiscriminators {
         if (bindings.head == a) Some(idx)
         else tailDiscriminators.fromDiscriminator(bindings.tail)(a, idx + 1)
       }
+    }
+}
+
+/** Witness for `CoproductCodecBuilder#NeedDiscriminators#auto`. */
+sealed trait CoproductAutoDiscriminators[X, C <: Coproduct, A] {
+  def discriminators: List[A]
+}
+
+/** Companion for [[CoproductAutoDiscriminators]]. */
+object CoproductAutoDiscriminators {
+
+  implicit def cnil[X, A]: CoproductAutoDiscriminators[X, CNil, A] =
+    new CoproductAutoDiscriminators[X, CNil, A] {
+      def discriminators = Nil
+    }
+
+  implicit def coproduct[X, A, CH, CT <: Coproduct](implicit
+    headDiscriminator: Discriminator[X, CH, A],
+    tailAuto: CoproductAutoDiscriminators[X, CT, A]
+  ): CoproductAutoDiscriminators[X, CH :+: CT, A] =
+    new CoproductAutoDiscriminators[X, CH :+: CT, A] {
+      def discriminators = headDiscriminator.value :: tailAuto.discriminators
+    }
+
+  implicit def union[X, A, K, V, CT <: Coproduct](implicit
+    headDiscriminator: Discriminator[X, V, A],
+    tailAuto: CoproductAutoDiscriminators[X, CT, A]
+  ): CoproductAutoDiscriminators[X, FieldType[K, V] :+: CT, A] =
+    new CoproductAutoDiscriminators[X, FieldType[K, V] :+: CT, A] {
+      def discriminators = headDiscriminator.value :: tailAuto.discriminators
     }
 }
