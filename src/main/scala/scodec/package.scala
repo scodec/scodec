@@ -90,6 +90,30 @@ package object scodec {
     ): Codec[KL] = HListCodec.concat(k, self)
 
     /**
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec the encodes/decodes
+     * the `HList L` followed by the `HList M`, where the latter is encoded/decoded with the codec
+     * returned from applying `L` to `f`.
+     * @group hlist
+     */
+    def flatConcat[M <: HList, LM <: HList, LLen <: Nat](f: L => Codec[M])(implicit
+      prepend: Prepend.Aux[L, M, LM],
+      lengthK: Length.Aux[L, LLen],
+      split: Split.Aux[LM, LLen, (L, M)]
+    ): Codec[LM] = HListCodec.flatConcat(self, f)
+
+    /**
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec the encodes/decodes
+     * the `HList L` followed by the value `A`, where the latter is encoded/decoded with the codec
+     * returned from applying `L` to `f`.
+     * @group hlist
+     */
+    def flatAppend[A, LA <: HList, Len <: Nat](f: L => Codec[A])(implicit
+      prepend: Prepend.Aux[L, A :: HNil, LA],
+      length: Length.Aux[L, Len],
+      split: Split.Aux[LA, Len, (L, A :: HNil)]
+    ): Codec[LA] = HListCodec.flatAppend(self, f)
+
+    /**
      * Polymorphic function version of `xmap`.
      *
      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
