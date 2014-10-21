@@ -60,6 +60,38 @@ private[scodec] object HListCodec {
     override def toString = s"flatPrepend($codecA, $f)"
   }
 
+  def flatConcat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](codecK: Codec[K], f: K => Codec[L])(implicit
+    prepend: Prepend.Aux[K, L, KL],
+    lengthK: Length.Aux[K, KLen],
+    split: Split.Aux[KL, KLen, (K, L)]
+  ): Codec[KL] = new Codec[KL] {
+    override def encode(xs: KL) = {
+      val (k, l) = xs.split[KLen]
+      Codec.encodeBoth(codecK, f(k))(k, l)
+    }
+    override def decode(buffer: BitVector) = (for {
+      k <- DecodingContext(codecK.decode)
+      l <- DecodingContext(f(k).decode)
+    } yield k ::: l).run(buffer)
+    override def toString = s"flatConcat($codecK, $f)"
+  }
+
+  def flatAppend[L <: HList, A, LA <: HList, Len <: Nat](codecL: Codec[L], f: L => Codec[A])(implicit
+    prepend: Prepend.Aux[L, A :: HNil, LA],
+    length: Length.Aux[L, Len],
+    split: Split.Aux[LA, Len, (L, A :: HNil)]
+  ): Codec[LA] = new Codec[LA] {
+    override def encode(xs: LA) = {
+      val (l, rest) = xs.split[Len]
+      Codec.encodeBoth(codecL, f(l))(l, rest.head)
+    }
+    override def decode(buffer: BitVector) = (for {
+      l <- DecodingContext(codecL.decode)
+      a <- DecodingContext(f(l).decode)
+    } yield l :+ a).run(buffer)
+    override def toString = s"flatConcat($codecL, $f)"
+  }
+
   def apply[L <: HList : *->*[Codec]#λ, M <: HList](l: L)(implicit folder: RightFolder.Aux[L, Codec[HNil], PrependCodec.type, Codec[M]]): Codec[M] = {
     l.foldRight(hnilCodec)(PrependCodec)
   }
