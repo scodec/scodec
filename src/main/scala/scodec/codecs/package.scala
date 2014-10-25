@@ -471,7 +471,7 @@ package object codecs {
   val ascii = string(Charset.forName("US-ASCII"))
 
   /**
-   * String codec that uses the `US-ASCII` charset. See [[string]] for more information on `String` codecs.
+   * String codec that uses the `UTF-8` charset. See [[string]] for more information on `String` codecs.
    * @group values
    */
   val utf8 = string(Charset.forName("UTF-8"))
