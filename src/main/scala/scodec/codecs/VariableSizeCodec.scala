@@ -4,14 +4,13 @@ package codecs
 import scalaz.\/._
 import scodec.bits.BitVector
 
-private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Int], valueCodec: Codec[A], sizePadding: Int = 0) extends Codec[A] {
+private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Long], valueCodec: Codec[A], sizePadding: Long) extends Codec[A] {
 
   private val decoder = sizeCodec flatZip { sz => fixedSizeBits(sz - sizePadding, valueCodec) }
 
   override def encode(a: A) = for {
     encA <- valueCodec.encode(a)
-    encSize <- encA.intSize.map { n => sizeCodec.encode(n + sizePadding).leftMap { fail(a, _) } }
-                           .getOrElse(left(fail(a, s"${encA.size} exceeds maximum 32-bit integer value ${Int.MaxValue}")))
+    encSize <- sizeCodec.encode(encA.size + sizePadding).leftMap { fail(a, _) }
   } yield encSize ++ encA
 
   private def fail(a: A, msg: String): String =

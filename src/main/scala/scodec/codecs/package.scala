@@ -644,7 +644,7 @@ package object codecs {
    * @group combinators
    */
   def variableSizeBits[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
-    new VariableSizeCodec(size, value, sizePadding)
+    variableSizeBitsLong(widenIntToLong(size), value, sizePadding)
 
   /**
    * Byte equivalent of [[variableSizeBits]].
@@ -653,8 +653,41 @@ package object codecs {
    * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
    * @group combinators
    */
-  def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] = new Codec[A] {
-    private val codec = variableSizeBits(size.xmap[Int](_ * 8, _ / 8), value, sizePadding * 8)
+  def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
+    variableSizeBytesLong(widenIntToLong(size), value, sizePadding)
+
+  private def widenIntToLong(c: Codec[Int]): Codec[Long] =
+    c.widen(i => i, l => if (l > Int.MaxValue && l < Int.MinValue) \/.left(s"$l cannot be converted to an integer") else \/.right(l.toInt))
+
+  /**
+   * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
+   *
+   * For example, encoding the string `"hello"` with `variableSizeBitsLong(uint32, ascii)` yields a vector of 9 bytes -- the first four bytes being
+   * 0x00000005 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * The `size` field can be any `Long` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
+   * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
+   *
+   * For example, encoding `"hello"` with `variableSizeBitsLong(uint32, ascii, 1)` yields a vector of 9 bytes -- the first 4 bytes being
+   * 0x00000006 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bits to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizeBitsLong[A](size: Codec[Long], value: Codec[A], sizePadding: Long = 0): Codec[A] =
+    new VariableSizeCodec(size, value, sizePadding)
+
+  /**
+   * Byte equivalent of [[variableSizeBitsLong]].
+   * @param size codec that encodes/decodes the size in bytes
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizeBytesLong[A](size: Codec[Long], value: Codec[A], sizePadding: Long = 0): Codec[A] = new Codec[A] {
+    private val codec = variableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), value, sizePadding * 8)
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"variableSizeBytes($size, $value)"
