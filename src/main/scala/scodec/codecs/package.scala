@@ -656,7 +656,7 @@ package object codecs {
     variableSizeBytesLong(widenIntToLong(size), value, sizePadding)
 
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
-    c.widen(i => i, l => if (l > Int.MaxValue && l < Int.MinValue) \/.left(s"$l cannot be converted to an integer") else \/.right(l.toInt))
+    c.widen(i => i, l => if (l > Int.MaxValue && l < Int.MinValue) \/.left(Err(s"$l cannot be converted to an integer")) else \/.right(l.toInt))
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
