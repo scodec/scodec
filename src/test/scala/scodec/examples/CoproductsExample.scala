@@ -131,11 +131,11 @@ class CoproductsExample extends CodecSuite {
       codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
       codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
 
-      // However, the discriminator records must be aligned with the coproduct types.
-      // In a future version, this limitation will probably be lifted. As of now,
-      // it is equal in power to `discriminatedBy(...).using(Sized(...))` but offers
-      // better readability.
-      """Codec.coproduct[Sprocket].discriminatedBy(uint8).using('Woozle ->> 1 :: 'Wocket ->> 2 :: HNil)""" shouldNot compile
+      // The discriminator records do not need to be aligned with the coproduct types.
+      Codec.coproduct[Sprocket].discriminatedBy(uint8).using('Woozle ->> 1 :: 'Wocket ->> 2 :: HNil)
+
+      // Extra keys may not be included in the bindings.
+      """Codec.coproduct[Sprocket].discriminatedBy(uint8).using('Woozle ->> 1 :: 'Wocket ->> 2 :: 'Pocket ->> 3 :: HNil)""" shouldNot compile
     }
 
     "demonstrate arbitrary implicit discriminators" in {

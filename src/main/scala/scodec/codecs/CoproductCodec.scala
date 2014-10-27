@@ -262,19 +262,22 @@ object CoproductBuilderKeyDiscriminators {
       def fromDiscriminator(bindings: HNil)(a: A, idx: Int): Option[Int] = None
     }
 
-  implicit def step[K <: Symbol, V, CT <: Coproduct, LT <: HList, A](implicit
+  implicit def step[K <: Symbol, V, CT <: Coproduct, L <: HList, LT <: HList, A](implicit
+    remover: ops.record.Remover.Aux[L, K, (A, LT)],
     tailDiscriminators: CoproductBuilderKeyDiscriminators[CT, LT, A]
-  ): CoproductBuilderKeyDiscriminators[FieldType[K, V] :+: CT, FieldType[K, A] :: LT, A] =
-    new CoproductBuilderKeyDiscriminators[FieldType[K, V] :+: CT, FieldType[K, A] :: LT, A] {
-      def toDiscriminator(bindings: FieldType[K, A] :: LT)(c: FieldType[K, V] :+: CT): A = {
+  ): CoproductBuilderKeyDiscriminators[FieldType[K, V] :+: CT, L, A] =
+    new CoproductBuilderKeyDiscriminators[FieldType[K, V] :+: CT, L, A] {
+      def toDiscriminator(bindings: L)(c: FieldType[K, V] :+: CT): A = {
+        val (binding, restBindings) = remover(bindings)
         c match {
-          case Inl(_) => bindings.head
-          case Inr(ct) => tailDiscriminators.toDiscriminator(bindings.tail)(ct)
+          case Inl(_) => binding
+          case Inr(ct) => tailDiscriminators.toDiscriminator(restBindings)(ct)
         }
       }
-      def fromDiscriminator(bindings: FieldType[K, A] :: LT)(a: A, idx: Int): Option[Int] = {
-        if (bindings.head == a) Some(idx)
-        else tailDiscriminators.fromDiscriminator(bindings.tail)(a, idx + 1)
+      def fromDiscriminator(bindings: L)(a: A, idx: Int): Option[Int] = {
+        val (binding, restBindings) = remover(bindings)
+        if (binding == a) Some(idx)
+        else tailDiscriminators.fromDiscriminator(restBindings)(a, idx + 1)
       }
     }
 }
