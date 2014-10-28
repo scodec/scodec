@@ -41,7 +41,7 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Encoder.scala" target="_blank">Encoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
         
 
@@ -94,7 +94,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -107,7 +107,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -133,7 +133,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -146,7 +146,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -176,6 +176,22 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.EncoderFunctions#choiceEncoder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="choiceEncoder[A](encoders:scodec.Encoder[A]*):scodec.Encoder[A]"></a>
+      <a id="choiceEncoder[A](Encoder[A]*):Encoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">final </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">choiceEncoder</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="encoders">encoders: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.choiceEncoder.A">A</span>]*</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.choiceEncoder.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates an encoder that encodes with each of the specified encoders, returning
+the first successful result.</p><div class="fullcomment"><div class="comment cmt"><p>Creates an encoder that encodes with each of the specified encoders, returning
+the first successful result.
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -185,7 +201,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -209,54 +225,54 @@
       </h4>
       
     </li><li name="scodec.Encoder#corepresentableInstance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="corepresentableInstance:scalaz.Corepresentable[scodec.Encoder,scalaz.\/[String,scodec.bits.BitVector]]"></a>
-      <a id="corepresentableInstance:Corepresentable[Encoder,\/[String,BitVector]]"></a>
+      <a id="corepresentableInstance:scalaz.Corepresentable[scodec.Encoder,scalaz.\/[scodec.Err,scodec.bits.BitVector]]"></a>
+      <a id="corepresentableInstance:Corepresentable[Encoder,\/[Err,BitVector]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">corepresentableInstance</span><span class="result">: <span class="extype" name="scalaz.Corepresentable">Corepresentable</span>[<a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>, <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]]</span>
+        <span class="name">corepresentableInstance</span><span class="result">: <span class="extype" name="scalaz.Corepresentable">Corepresentable</span>[<a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>, <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]]</span>
       </span>
       </h4>
       
     </li><li name="scodec.EncoderFunctions#encode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encode[A](a:A)(implicitevidence$1:scodec.Encoder[A]):scalaz.\/[String,scodec.bits.BitVector]"></a>
-      <a id="encode[A](A)(Encoder[A]):\/[String,BitVector]"></a>
+      <a id="encode[A](a:A)(implicitevidence$1:scodec.Encoder[A]):scalaz.\/[scodec.Err,scodec.bits.BitVector]"></a>
+      <a id="encode[A](A)(Encoder[A]):\/[Err,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encode.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
+        <span class="name">encode</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encode.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encode.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified value to a bit vector using an implicitly available encoder.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value to a bit vector using an implicitly available encoder.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
     </li><li name="scodec.EncoderFunctions#encodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeBoth[A,B](encA:scodec.Encoder[A],encB:scodec.Encoder[B])(a:A,b:B):scalaz.\/[String,scodec.bits.BitVector]"></a>
-      <a id="encodeBoth[A,B](Encoder[A],Encoder[B])(A,B):\/[String,BitVector]"></a>
+      <a id="encodeBoth[A,B](encA:scodec.Encoder[A],encB:scodec.Encoder[B])(a:A,b:B):scalaz.\/[scodec.Err,scodec.bits.BitVector]"></a>
+      <a id="encodeBoth[A,B](Encoder[A],Encoder[B])(A,B):\/[Err,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeBoth</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="encA">encA: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span>]</span>, <span name="encB">encB: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span>]</span>)</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span></span>, <span name="b">b: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
+        <span class="name">encodeBoth</span><span class="tparams">[<span name="A">A</span>, <span name="B">B</span>]</span><span class="params">(<span name="encA">encA: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span>]</span>, <span name="encB">encB: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span>]</span>)</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.A">A</span></span>, <span name="b">b: <span class="extype" name="scodec.EncoderFunctions.encodeBoth.B">B</span></span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
     </li><li name="scodec.EncoderFunctions#encodeSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="encodeSeq[A](enc:scodec.Encoder[A])(seq:scala.collection.immutable.Seq[A]):scalaz.\/[String,scodec.bits.BitVector]"></a>
-      <a id="encodeSeq[A](Encoder[A])(Seq[A]):\/[String,BitVector]"></a>
+      <a id="encodeSeq[A](enc:scodec.Encoder[A])(seq:scala.collection.immutable.Seq[A]):scalaz.\/[scodec.Err,scodec.bits.BitVector]"></a>
+      <a id="encodeSeq[A](Encoder[A])(Seq[A]):\/[Err,BitVector]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">final </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeSeq</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="enc">enc: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeSeq.A">A</span>]</span>)</span><span class="params">(<span name="seq">seq: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.collection.immutable.Seq" class="extype" target="_top">Seq</a>[<span class="extype" name="scodec.EncoderFunctions.encodeSeq.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
+        <span class="name">encodeSeq</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="enc">enc: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeSeq.A">A</span>]</span>)</span><span class="params">(<span name="seq">seq: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.collection.immutable.Seq" class="extype" target="_top">Seq</a>[<span class="extype" name="scodec.EncoderFunctions.encodeSeq.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
@@ -269,7 +285,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">encodeValid</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encodeValid.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeValid.A">A</span>]</span>)</span><span class="result">: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a></span>
+        <span class="name">encodeValid</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.EncoderFunctions.encodeValid.A">A</span></span>)</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.EncoderFunctions.encodeValid.A">A</span>]</span>)</span><span class="result">: <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a></span>
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified value to a bit vector using an implicitly available encoder or throws an <code>IllegalArgumentException</code> if encoding fails.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value to a bit vector using an implicitly available encoder or throws an <code>IllegalArgumentException</code> if encoding fails.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
@@ -282,7 +298,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -295,7 +311,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -345,15 +361,15 @@
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scodec.Encoder#instance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="instance[A](f:A=&gt;scalaz.\/[String,scodec.bits.BitVector]):scodec.Encoder[A]"></a>
-      <a id="instance[A]((A)⇒\/[String,BitVector]):Encoder[A]"></a>
+      <a id="instance[A](f:A=&gt;scalaz.\/[scodec.Err,scodec.bits.BitVector]):scodec.Encoder[A]"></a>
+      <a id="instance[A]((A)⇒\/[Err,BitVector]):Encoder[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">instance</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.instance.A">A</span>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Predef.String">String</span>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.instance.A">A</span>]</span>
+        <span class="name">instance</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.instance.A">A</span>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.instance.A">A</span>]</span>
       </span>
       </h4>
       
@@ -379,7 +395,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -504,9 +520,9 @@
         <div class="parent" name="scodec.EncoderFunctions">
               <h3>Inherited from <a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></h3>
             </div><div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         
         </div>

@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>SignatureFactory - scodec.codecs.SignatureFactory</title>
-          <meta name="description" content="SignatureFactory - scodec.codecs.SignatureFactory" />
-          <meta name="keywords" content="SignatureFactory scodec.codecs.SignatureFactory" />
+          <title>ToCoproductCodecs - scodec.codecs.ToCoproductCodecs</title>
+          <meta name="description" content="ToCoproductCodecs - scodec.codecs.ToCoproductCodecs" />
+          <meta name="keywords" content="ToCoproductCodecs scodec.codecs.ToCoproductCodecs" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'scodec.codecs.SignatureFactory';
+            var hash = 'scodec.codecs.ToCoproductCodecs';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,29 +24,25 @@
         </head>
         <body class="type">
       <div id="definition">
-        <a href="SignatureFactory$.html" title="Go to companion"><img src="../../lib/trait_to_object_big.png" /></a>
+        <a href="ToCoproductCodecs$.html" title="Go to companion"><img src="../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
-        <h1><a href="SignatureFactory$.html" title="Go to companion">SignatureFactory</a></h1>
+        <h1><a href="ToCoproductCodecs$.html" title="Go to companion">ToCoproductCodecs</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">sealed </span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <span class="name">SignatureFactory</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">ToCoproductCodecs</span><span class="tparams">[<span name="C">C &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>, <span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Represents the ability to create a <code>java.security.Signature</code> for use with <a href="package.html#fixedSizeSignature[A](size:Int)(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]" class="extmbr" name="scodec.codecs#fixedSizeSignature">fixedSizeSignature</a> and <a href="package.html#variableSizeSignature[A](size:scodec.Codec[Int])(codec:scodec.Codec[A])(implicitsignatureFactory:scodec.codecs.SignatureFactory):scodec.Codec[A]" class="extmbr" name="scodec.codecs#variableSizeSignature">variableSizeSignature</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/SignatureCodec.scala" target="_blank">SignatureCodec.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Witness that allows converting an <code>HList</code> of codecs in to a list of coproduct codecs, where the coproduct is type aligned with the <code>HList</code>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/CoproductCodec.scala" target="_blank">CoproductCodec.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
-                <span class="toggle diagram-link">Type Hierarchy</span>
-                <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#diagrams" target="_blank" class="diagram-help">Learn more about scaladoc diagrams</a>
-                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph6" viewBox="0.00 0.00 525.00 125.00" height="125pt" width="525pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 121)" class="graph" id="graph0"><polygon points="-4,4 -4,-121 521,-121 521,4 -4,4" stroke="none" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust2"></g><g class="cluster" id="clust3"></g><!-- node2 --><g class="node implicit-outgoing class" id="graph6_2"><g id="a_implicit-outgoing class|graph6_2"><a xlink:title="scodec.codecs.SignatureFactory can be implicitly converted to ValueEnrichedWithTuplingSupport[SignatureFactory] by the implicit method ValueEnrichedWithTuplingSupport in package scodec.codecs" xlink:href="package$$ValueEnrichedWithTuplingSupport.html#inheritance-diagram"><polygon points="492.5,-49 215.5,-49 215.5,-24 492.5,-24 492.5,-49" stroke="#ababab" fill="#e1e1e1"></polygon><image xlink:href="../../lib/class_diagram.png" y="-43.5" x="226" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#7d7d7d" font-size="10.00" font-family="Arial" y="-33.7495" x="246.882" text-anchor="start">ValueEnrichedWithTuplingSupport[SignatureFactory]</text></a></g></g><!-- node0 --><g class="node this trait" id="graph6_0"><g id="a_this trait|graph6_0"><a xlink:title="scodec.codecs.SignatureFactory (this trait)" xlink:href="#inheritance-diagram"><polygon points="143.5,-49 24.5,-49 24.5,-24 143.5,-24 143.5,-49" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../../lib/trait_diagram.png" y="-43.5" x="35" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-33.7495" x="55.5371" text-anchor="start">SignatureFactory</text></a></g></g><!-- node0&#45;&gt;node2 --><g class="edge implicit-outgoing" id="0_2"><g id="a_implicit-outgoing|0_2"><a xlink:title="SignatureFactory can be implicitly converted to ValueEnrichedWithTuplingSupport[SignatureFactory]"><path d="M151.647,-36.5C167.358,-36.5 184.704,-36.5 202.438,-36.5" stroke="#d4d4d4" fill="none"></path><polygon points="202.456,-38.2501 207.456,-36.5 202.456,-34.7501 202.456,-38.2501" stroke="#d4d4d4" fill="#d4d4d4"></polygon></a></g><text fill="#aaaaaa" font-size="10.00" font-family="Arial" y="-42.999" x="179.5" text-anchor="middle">implicitly</text></g><!-- node1 --><g class="node class" id="graph6_1"><g id="a_class|graph6_1"><a xlink:title="scala.AnyRef"><polygon points="122,-117 46,-117 46,-92 122,-92 122,-117" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../lib/class_diagram.png" y="-111.5" x="56" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-101.75" x="76.7144" text-anchor="start">AnyRef</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph6_1_0"><g id="a_inheritance|graph6_1_0"><a xlink:title="SignatureFactory is a subtype of AnyRef"><path d="M84,-86.6005C84,-74.8849 84,-59.583 84,-49.1973" stroke="#d4d4d4" fill="none"></path><polygon points="82.2501,-86.7005 84,-91.7005 85.7501,-86.7006 82.2501,-86.7005" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
-              </div></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -63,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.codecs.SignatureFactory"><span>SignatureFactory</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.codecs.ToCoproductCodecs"><span>ToCoproductCodecs</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -92,32 +88,19 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="scodec.codecs.SignatureFactory#newSigner" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="newSigner:java.security.Signature"></a>
-      <a id="newSigner:Signature"></a>
+              <ol><li name="scodec.codecs.ToCoproductCodecs#apply" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="apply(l:L):List[scodec.Codec[C]]"></a>
+      <a id="apply(L):List[Codec[C]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">newSigner</span><span class="result">: <span class="extype" name="java.security.Signature">Signature</span></span>
+        <span class="name">apply</span><span class="params">(<span name="l">l: <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>]]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Creates a signature initialized for signing.</p>
-    </li><li name="scodec.codecs.SignatureFactory#newVerifier" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="newVerifier:java.security.Signature"></a>
-      <a id="newVerifier:Signature"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">newVerifier</span><span class="result">: <span class="extype" name="java.security.Signature">Signature</span></span>
-      </span>
-      </h4>
-      <p class="shortcomment cmt">Creates a signature initialized for verifying.</p>
+      
     </li></ol>
             </div>
 
@@ -132,7 +115,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -145,7 +128,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
@@ -175,25 +158,25 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
-      <a id="-&gt;[B](B):(SignatureFactory,B)"></a>
+      <a id="-&gt;[B](B):(ToCoproductCodecs[C,L],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -208,7 +191,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -221,25 +204,25 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#a" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="a:A"></a>
-      <a id="a:SignatureFactory"></a>
+      <a id="a:ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -264,7 +247,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
@@ -276,70 +259,70 @@
         </dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring((SignatureFactory)⇒Boolean,⇒Any):SignatureFactory"></a>
+      <a id="ensuring((ToCoproductCodecs[C,L])⇒Boolean,⇒Any):ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
-      <a id="ensuring((SignatureFactory)⇒Boolean):SignatureFactory"></a>
+      <a id="ensuring((ToCoproductCodecs[C,L])⇒Boolean):ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring(Boolean,⇒Any):SignatureFactory"></a>
+      <a id="ensuring(Boolean,⇒Any):ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
-      <a id="ensuring(Boolean):SignatureFactory"></a>
+      <a id="ensuring(Boolean):ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -351,7 +334,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -364,7 +347,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -400,7 +383,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
@@ -455,7 +438,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
+        <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
@@ -570,36 +553,36 @@
         </dd></dl></div>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="~[B](b:B):(A,B)"></a>
-      <a id="~[B](B):(SignatureFactory,B)"></a>
+      <a id="~[B](B):(ToCoproductCodecs[C,L],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>, <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
+        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>], <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
-      <a id="→[B](B):(SignatureFactory,B)"></a>
+      <a id="→[B](B):(ToCoproductCodecs[C,L],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -616,14 +599,14 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed">self</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+        <span class="implicit shadowed">self</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(signatureFactory: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(toCoproductCodecs: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
@@ -633,14 +616,14 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed">self</span><span class="result">: <span class="extype" name="scala.Any">Any</span></span>
+        <span class="implicit shadowed">self</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(signatureFactory: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(toCoproductCodecs: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
@@ -648,41 +631,41 @@
               <h3>Deprecated Value Members</h3>
               <ol><li name="scala.Predef.any2ArrowAssoc#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:SignatureFactory"></a>
+      <a id="x:ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(signatureFactory: ArrowAssoc[SignatureFactory]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(toCoproductCodecs: ArrowAssoc[ToCoproductCodecs[C, L]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>leftOfArrow<code> instead</code></u></code></p></dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:SignatureFactory"></a>
+      <a id="x:ToCoproductCodecs[C,L]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a></span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]] performed by method any2Ensuring in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(signatureFactory: Ensuring[SignatureFactory]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(toCoproductCodecs: Ensuring[ToCoproductCodecs[C, L]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>resultOfEnsuring<code> instead</code></u></code></p></dd></dl></div>
@@ -692,29 +675,29 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         <div class="conversion" name="scodec.codecs.ValueEnrichedWithTuplingSupport">
               <h3>Inherited by implicit conversion ValueEnrichedWithTuplingSupport from
-                <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>]
+                <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
+                <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringfmt">
               <h3>Inherited by implicit conversion any2stringfmt from
-                <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
+                <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2ArrowAssoc">
               <h3>Inherited by implicit conversion any2ArrowAssoc from
-                <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>]
+                <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2Ensuring">
               <h3>Inherited by implicit conversion any2Ensuring from
-                <a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.SignatureFactory">SignatureFactory</a>]
+                <a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ToCoproductCodecs">ToCoproductCodecs</a>[<span class="extype" name="scodec.codecs.ToCoproductCodecs.C">C</span>, <span class="extype" name="scodec.codecs.ToCoproductCodecs.L">L</span>]]
               </h3>
             </div>
         </div>

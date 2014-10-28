@@ -50,12 +50,8 @@ reconstitue a <code>Codec</code> from the <code>GenCodec</code> by calling <code
 codecs out of smaller ones.</p><p>For the categorically minded, note the following:</p><ul><li><code>Decoder</code> is a monad</li><li><code>Encoder</code> is a contravariant functor</li><li><code>GenCodec</code> is a profunctor</li><li><code>Codec</code> is an invariant functor</li></ul><p>Each type has the corresponding Scalaz typeclass defined in its companion object.
 </p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div><div class="toggleContainer block diagram-container" id="content-diagram-container">
-                <span class="toggle diagram-link">Content Hierarchy</span>
-                <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#diagrams" target="_blank" class="diagram-help">Learn more about scaladoc diagrams</a>
-                <div class="diagram" id="content-diagram"><svg class="package-diagram" id="graph1" viewBox="0.00 0.00 600.00 155.00" height="155pt" width="600pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 151)" class="graph" id="graph0"><polygon points="-4,4 -4,-151 596,-151 596,4 -4,4" stroke="none" fill="white"></polygon><!-- node0 --><g class="node object" id="graph1_0"><g id="a_object|graph1_0"><a xlink:title="scodec.GenCodec" xlink:href="GenCodec$.html#inheritance-diagram"><polygon points="190,-86 99,-86 99,-61 190,-61 190,-86" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../lib/object_diagram.png" y="-80.5" x="109.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-70.7495" x="130.207" text-anchor="start">GenCodec</text></a></g></g><!-- node1 --><g class="node trait" id="graph1_1"><g id="a_trait|graph1_1"><a xlink:title="scodec.GenCodec" xlink:href="GenCodec.html#inheritance-diagram"><polygon points="548.5,-86 432.5,-86 432.5,-61 548.5,-61 548.5,-86" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-80.5" x="442.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-70.7495" x="463.48" text-anchor="start">GenCodec[A, B]</text></a></g></g><!-- node9 --><g class="node trait" id="graph1_9"><g id="a_trait|graph1_9"><a xlink:title="scodec.Codec" xlink:href="Codec.html#inheritance-diagram"><polygon points="532.5,-25 448.5,-25 448.5,-0 532.5,-0 532.5,-25" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-19.5" x="458.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-9.74951" x="479.044" text-anchor="start">Codec[A]</text></a></g></g><!-- node1&#45;&gt;node9 --><g class="edge inheritance" id="graph1_1_9"><g id="a_inheritance|graph1_1_9"><a xlink:title="Codec[A] is a subtype of GenCodec[A, B]"><path d="M490.5,-55.6874C490.5,-45.9173 490.5,-33.8534 490.5,-25.1323" stroke="#d4d4d4" fill="none"></path><polygon points="488.75,-55.8435 490.5,-60.8435 492.25,-55.8435 488.75,-55.8435" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node2 --><g class="node object" id="graph1_2"><g id="a_object|graph1_2"><a xlink:title="scodec.Encoder" xlink:href="Encoder$.html#inheritance-diagram"><polygon points="81,-86 0,-86 0,-61 81,-61 81,-86" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../lib/object_diagram.png" y="-80.5" x="10.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-70.7495" x="31.4878" text-anchor="start">Encoder</text></a></g></g><!-- node3 --><g class="node trait" id="graph1_3"><g id="a_trait|graph1_3"><a xlink:title="scodec.EncoderFunctions" xlink:href="EncoderFunctions.html#inheritance-diagram"><polygon points="185.5,-147 61.5,-147 61.5,-122 185.5,-122 185.5,-147" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-141.5" x="71.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-131.75" x="92.3105" text-anchor="start">EncoderFunctions</text></a></g></g><!-- node3&#45;&gt;node0 --><g class="edge inheritance" id="graph1_3_0"><g id="a_inheritance|graph1_3_0"><a xlink:title="GenCodec is a subtype of EncoderFunctions"><path d="M129.388,-116.958C132.882,-107.141 137.227,-94.9342 140.36,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="127.677,-116.546 127.649,-121.843 130.974,-117.72 127.677,-116.546" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node3&#45;&gt;node2 --><g class="edge inheritance" id="graph1_3_2"><g id="a_inheritance|graph1_3_2"><a xlink:title="Encoder is a subtype of EncoderFunctions"><path d="M102.846,-118.819C88.644,-108.723 70.0416,-95.4995 56.8641,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="102.013,-120.373 107.102,-121.843 104.04,-117.52 102.013,-120.373" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node8 --><g class="node object" id="graph1_8"><g id="a_object|graph1_8"><a xlink:title="scodec.Codec" xlink:href="Codec$.html#inheritance-diagram"><polygon points="280.5,-86 208.5,-86 208.5,-61 280.5,-61 280.5,-86" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../lib/object_diagram.png" y="-80.5" x="218.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-70.7495" x="239.158" text-anchor="start">Codec</text></a></g></g><!-- node3&#45;&gt;node8 --><g class="edge inheritance" id="graph1_3_8"><g id="a_inheritance|graph1_3_8"><a xlink:title="Codec is a subtype of EncoderFunctions"><path d="M151.723,-119.738C172.603,-109.557 200.735,-95.8399 220.529,-86.1884" stroke="#d4d4d4" fill="none"></path><polygon points="150.844,-118.22 147.117,-121.984 152.378,-121.366 150.844,-118.22" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node4 --><g class="node trait" id="graph1_4"><g id="a_trait|graph1_4"><a xlink:title="scodec.Encoder" xlink:href="Encoder.html#inheritance-diagram"><polygon points="481,-147 388,-147 388,-122 481,-122 481,-147" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-141.5" x="398.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-131.75" x="419.375" text-anchor="start">Encoder[A]</text></a></g></g><!-- node4&#45;&gt;node1 --><g class="edge inheritance" id="graph1_4_1"><g id="a_inheritance|graph1_4_1"><a xlink:title="GenCodec[A, B] is a subtype of Encoder[A]"><path d="M449.184,-118.029C458.664,-108.041 470.798,-95.2572 479.459,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="447.737,-117.012 445.564,-121.843 450.275,-119.422 447.737,-117.012" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node5 --><g class="node object" id="graph1_5"><g id="a_object|graph1_5"><a xlink:title="scodec.Decoder" xlink:href="Decoder$.html#inheritance-diagram"><polygon points="380,-86 299,-86 299,-61 380,-61 380,-86" stroke="#102966" fill="#3556a7"></polygon><image xlink:href="../lib/object_diagram.png" y="-80.5" x="309.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-70.7495" x="330.212" text-anchor="start">Decoder</text></a></g></g><!-- node6 --><g class="node trait" id="graph1_6"><g id="a_trait|graph1_6"><a xlink:title="scodec.DecoderFunctions" xlink:href="DecoderFunctions.html#inheritance-diagram"><polygon points="327.5,-147 203.5,-147 203.5,-122 327.5,-122 327.5,-147" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-141.5" x="213.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-131.75" x="234.035" text-anchor="start">DecoderFunctions</text></a></g></g><!-- node6&#45;&gt;node0 --><g class="edge inheritance" id="graph1_6_0"><g id="a_inheritance|graph1_6_0"><a xlink:title="GenCodec is a subtype of DecoderFunctions"><path d="M237.277,-119.738C216.397,-109.557 188.265,-95.8399 168.471,-86.1884" stroke="#d4d4d4" fill="none"></path><polygon points="236.622,-121.366 241.883,-121.984 238.156,-118.22 236.622,-121.366" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node6&#45;&gt;node5 --><g class="edge inheritance" id="graph1_6_5"><g id="a_inheritance|graph1_6_5"><a xlink:title="Decoder is a subtype of DecoderFunctions"><path d="M284.242,-118.557C296.862,-108.495 313.263,-95.4187 324.91,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="282.939,-117.358 280.12,-121.843 285.121,-120.095 282.939,-117.358" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node6&#45;&gt;node8 --><g class="edge inheritance" id="graph1_6_8"><g id="a_inheritance|graph1_6_8"><a xlink:title="Codec is a subtype of DecoderFunctions"><path d="M259.612,-116.958C256.118,-107.141 251.773,-94.9342 248.64,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="258.026,-117.72 261.351,-121.843 261.323,-116.546 258.026,-117.72" stroke="#d4d4d4" fill="none"></polygon></a></g></g><!-- node7 --><g class="node trait" id="graph1_7"><g id="a_trait|graph1_7"><a xlink:title="scodec.Decoder" xlink:href="Decoder.html#inheritance-diagram"><polygon points="592,-147 499,-147 499,-122 592,-122 592,-147" stroke="#37657d" fill="#498aad"></polygon><image xlink:href="../lib/trait_diagram.png" y="-141.5" x="509.5" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-131.75" x="530.099" text-anchor="start">Decoder[A]</text></a></g></g><!-- node7&#45;&gt;node1 --><g class="edge inheritance" id="graph1_7_1"><g id="a_inheritance|graph1_7_1"><a xlink:title="GenCodec[A, B] is a subtype of Decoder[A]"><path d="M531.078,-118.029C521.767,-108.041 509.85,-95.2572 501.344,-86.1323" stroke="#d4d4d4" fill="none"></path><polygon points="529.944,-119.379 534.634,-121.843 532.504,-116.993 529.944,-119.379" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
-              </div></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -107,16 +103,16 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
       </span>
       </h4>
       <p class="comment cmt">Supports encoding a value of type <code>A</code> to a <code>BitVector</code> and decoding a <code>BitVector</code> to a value of <code>A</code>.</p>
-    </li><li name="scodec.CodecAsAux" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
-      <a id="CodecAsAux[B,A]extendsAnyRef"></a>
-      <a id="CodecAsAux[B,A]:CodecAsAux[B,A]"></a>
+    </li><li name="scodec.CodecAs" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="CodecAs[B,A]extendsAnyRef"></a>
+      <a id="CodecAs[B,A]:CodecAs[B,A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="CodecAsAux.html"><span class="name">CodecAsAux</span></a><span class="tparams">[<span name="B">B</span>, <span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="CodecAs.html"><span class="name">CodecAs</span></a><span class="tparams">[<span name="B">B</span>, <span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Typeclass that witnesses that a <code>Codec[A]</code> can be xmapped in to a <code>Codec[B]</code>.</p>
@@ -129,7 +125,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Decoder.html"><span class="name">Decoder</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="Decoder.html"><span class="name">Decoder</span></a><span class="tparams">[<span name="A">+A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Supports decoding a value of type <code>A</code> from a <code>BitVector</code>.</p>
@@ -142,12 +138,12 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="DecoderFunctions.html"><span class="name">DecoderFunctions</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="DecoderFunctions.html"><span class="name">DecoderFunctions</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Provides functions for working with decoders.</p>
     </li><li name="scodec.DecodingContext" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DecodingContext[A]=scalaz.StateT[[a]scalaz.\/[String,a],scodec.bits.BitVector,A]"></a>
+      <a id="DecodingContext[A]=scalaz.StateT[[a]scalaz.\/[scodec.Err,a],scodec.bits.BitVector,A]"></a>
       <a id="DecodingContext[A]:DecodingContext[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -155,7 +151,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">DecodingContext</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <span class="extype" name="scalaz.IndexedStateT">IndexedStateT</span>[[a]<span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="java.lang.String">String</span>, <span class="extype" name="scodec.&lt;refinement&gt;.λ.a">a</span>], <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>, <span class="extype" name="scodec.DecodingContext.A">A</span>]</span>
+        <span class="name">DecodingContext</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> = <span class="extype" name="scalaz.IndexedStateT">IndexedStateT</span>[[a]<span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <span class="extype" name="scodec.&lt;refinement&gt;.λ.a">a</span>], <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>, <span class="extype" name="scodec.DecodingContext.A">A</span>]</span>
       </span>
       </h4>
       <p class="shortcomment cmt">Alias for state/either transformer that simplifies calling decode on a series of codecs, wiring the remaining bit vector of each in to the next entry.</p>
@@ -168,7 +164,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="Encoder.html"><span class="name">Encoder</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="Encoder.html"><span class="name">Encoder</span></a><span class="tparams">[<span name="A">-A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Supports encoding a value of type <code>A</code> to a <code>BitVector</code>.</p>
@@ -181,10 +177,49 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="EncoderFunctions.html"><span class="name">EncoderFunctions</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="EncoderFunctions.html"><span class="name">EncoderFunctions</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
       <p class="comment cmt">Provides functions for working with encoders.</p>
+    </li><li name="scodec.EnrichedCoproductDecoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EnrichedCoproductDecoder[C&lt;:shapeless.Coproduct]extendsAnyVal"></a>
+      <a id="EnrichedCoproductDecoder[C&lt;:Coproduct]:EnrichedCoproductDecoder[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$EnrichedCoproductDecoder.html"><span class="name">EnrichedCoproductDecoder</span></a><span class="tparams">[<span name="C">C &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.EnrichedCoproductEncoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="EnrichedCoproductEncoder[C&lt;:shapeless.Coproduct]extendsAnyVal"></a>
+      <a id="EnrichedCoproductEncoder[C&lt;:Coproduct]:EnrichedCoproductEncoder[C]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit final </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="package$$EnrichedCoproductEncoder.html"><span class="name">EnrichedCoproductEncoder</span></a><span class="tparams">[<span name="C">C &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.Err" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ErrextendsAnyRef"></a>
+      <a id="Err:Err"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Err.html"><span class="name">Err</span></a><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Describes an error.</p>
     </li><li name="scodec.GenCodec" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="GenCodec[-A,+B]extendsEncoder[A]withDecoder[B]"></a>
       <a id="GenCodec[-A,+B]:GenCodec[A,B]"></a>
@@ -207,7 +242,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="package$$HListCodecEnrichedWithHListSupport.html"><span class="name">HListCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+        <a href="package$$HListCodecEnrichedWithHListSupport.html"><span class="name">HListCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="L">L &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
       </span>
       </h4>
       <p class="comment cmt">Provides common operations on a <code>Codec[HList]</code>.</p>
@@ -220,7 +255,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="package$$ValueCodecEnrichedWithHListSupport.html"><span class="name">ValueCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyVal">AnyVal</span></span>
+        <a href="package$$ValueCodecEnrichedWithHListSupport.html"><span class="name">ValueCodecEnrichedWithHListSupport</span></a><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
       </span>
       </h4>
       <p class="comment cmt">Provides <code>HList</code> related syntax for codecs of any type.</p>
@@ -244,19 +279,19 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
       </span>
       </h4>
       <p class="comment cmt">Companion for <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>.</p>
-    </li><li name="scodec.CodecAsAux" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="CodecAsAux"></a>
-      <a id="CodecAsAux:CodecAsAux"></a>
+    </li><li name="scodec.CodecAs" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CodecAs"></a>
+      <a id="CodecAs:CodecAs"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="CodecAsAux$.html"><span class="name">CodecAsAux</span></a>
+        <a href="CodecAs$.html"><span class="name">CodecAs</span></a>
       </span>
       </h4>
-      <p class="comment cmt">Companion for <a href="CodecAsAux.html" class="extype" name="scodec.CodecAsAux">CodecAsAux</a>.</p>
+      <p class="comment cmt">Companion for <a href="CodecAs.html" class="extype" name="scodec.CodecAs">CodecAs</a>.</p>
     </li><li name="scodec.Decoder" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Decoder"></a>
       <a id="Decoder:Decoder"></a>
@@ -296,6 +331,19 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
       </span>
       </h4>
       <p class="comment cmt">Companion for <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>.</p>
+    </li><li name="scodec.Err" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Err"></a>
+      <a id="Err:Err"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Err$.html"><span class="name">Err</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Companion for <a href="Err.html" class="extype" name="scodec.Err">Err</a>.</p>
     </li><li name="scodec.GenCodec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="GenCodec"></a>
       <a id="GenCodec:GenCodec"></a>
@@ -331,7 +379,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">bitVectorMonoidInstance</span><span class="result">: <span class="extype" name="scalaz.Monoid">Monoid</span>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
+        <span class="name">bitVectorMonoidInstance</span><span class="result">: <span class="extype" name="scalaz.Monoid">Monoid</span>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>
       </span>
       </h4>
       
@@ -344,7 +392,7 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">byteVectorMonoidInstance</span><span class="result">: <span class="extype" name="scalaz.Monoid">Monoid</span>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.2/index.html#scodec.bits.ByteVector" class="extype" target="_top">ByteVector</a>]</span>
+        <span class="name">byteVectorMonoidInstance</span><span class="result">: <span class="extype" name="scalaz.Monoid">Monoid</span>[<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.ByteVector" class="extype" target="_top">ByteVector</a>]</span>
       </span>
       </h4>
       
@@ -371,9 +419,9 @@ codecs out of smaller ones.</p><p>For the categorically minded, note the followi
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.AnyRef">
-              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
-              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         
         </div>
