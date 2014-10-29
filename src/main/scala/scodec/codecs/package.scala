@@ -606,23 +606,57 @@ package object codecs {
    *
    * @param size number of bits
    * @param codec codec to limit
-   * @param padCodec codec to pad
+   * @param padCodec codec to use for padding
    * @group combinators
    */
-   def paddedFixedSizeBits[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new PaddedFixedSizeCodec(size, codec, padCodec)
+  def paddedFixedSizeBits[A](size: Long, codec: Codec[A], padCodec: Codec[Unit]): Codec[A] = new PaddedFixedSizeCodec(size, codec, _ => padCodec)
+
+  /**
+   * Codec that limits the number of bits the specified codec works with.
+   *
+   * If the encoded result is larger than the specified
+   * size, an encoding error is returned.
+   *
+   * If encoding with the specified codec
+   * results in less than the specified size, the vector is right padded by repeatedly encoding with the
+   * codec returned from `padCodec(numberOfPaddingBits)`.
+   * An encoding error is returned if the padCodec result does not precisely fill the remaining space.
+   *
+   * When decoding, the specified codec is only given `size` bits. If the specified codec does not consume all the bits it was
+   * given, all remaining bits are repeatedly decoded by the codec returned from `padCodec(remainingBitCount)`.
+   * A decoding error is returned if any padding decode iteration returns an error.
+   *
+   * @param size number of bits
+   * @param codec codec to limit
+   * @param padCodec function that provides the codec to use for padding
+   * @group combinators
+   */
+  def paddedFixedSizeBitsDependent[A](size: Long, codec: Codec[A], padCodec: Long => Codec[Unit]): Codec[A] = new PaddedFixedSizeCodec(size, codec, padCodec)
 
    /**
    * Byte equivalent of [[paddedFixedSizeBits]].
    * @param size number of bytes
    * @param codec codec to limit
-   * @param padCodec codec to fill
+   * @param padCodec codec to use for padding
    * @group combinators
    */
-   def paddedFixedSizeBytes[A](size: Long, codec: Codec[A], padCodec:Codec[Unit]): Codec[A] = new Codec[A] {
-     private val fcodec = paddedFixedSizeBits(size * 8, codec, padCodec)
+  def paddedFixedSizeBytes[A](size: Long, codec: Codec[A], padCodec: Codec[Unit]): Codec[A] = paddedFixedSizeBytesDependent(size, codec, _ => padCodec)
+
+  /**
+   * Byte equivalent of [[paddedFixedSizeBitsDependent]].
+   *
+   * The `padCodec` function is passed the number of *bits* of padding required -- not bytes.
+   *
+   * @param size number of bytes
+   * @param codec codec to limit
+   * @param padCodec function that provides the codec to use for padding
+   * @group combinators
+   */
+   def paddedFixedSizeBytesDependent[A](size: Long, codec: Codec[A], padCodec: Long => Codec[Unit]): Codec[A] = new Codec[A] {
+     private val fcodec = paddedFixedSizeBitsDependent(size * 8, codec, padCodec)
      def encode(a: A) = fcodec.encode(a)
      def decode(b: BitVector) = fcodec.decode(b)
-     override def toString = s"paddedFixedSizeBytes($size, $codec, $padCodec)"
+     override def toString = s"paddedFixedSizeBytes($size, $codec)"
    }
 
   /**
