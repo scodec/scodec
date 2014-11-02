@@ -171,6 +171,13 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
     CoproductCodecBuilder(left :: codecs)
 
   /**
+   * Automatically generates a `Codec[R]` given an implicit `Discriminated[R, A]` and an implicit
+   * `Discriminator[R, X, A]` for each `X` that is a member of the coproduct type that represents `R`.
+   */
+  def auto[A](implicit discriminated: Discriminated[R, A], auto: CoproductBuilderAutoDiscriminators[R, C, A]): Codec[R] =
+    discriminatedBy(discriminated.codec).auto
+
+  /**
    * Creates the coproduct codec using the specified integer codec as the discriminator codec
    * and using coproduct indices as discriminators.
    *

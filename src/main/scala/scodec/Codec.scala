@@ -421,6 +421,39 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     }
   }
 
+  /**
+   * Derives a codec for the specified type.
+   *
+   * Codecs can be derived for:
+   *  - case classes, when each component type of the case has an implicitly available codec
+   *  - sealed class hierarchies, where:
+   *    - the root type, `A`, has an implicitly availble `Discriminated[A, D]` for some `D`
+   *    - each subtype has an implicitly available codec or can have one derived
+   *    - each subtype `X` has an implicitly available `Discriminator[A, X, D]`
+   */
+  implicit def derive[A](implicit derive: Derive[A]): Codec[A] = derive.codec
+
+  /** Witness that a codec can be implicitly derived for the specified type. */
+  trait Derive[A] {
+    def codec: Codec[A]
+  }
+
+  /** Companion for [[Derive]]. */
+  object Derive {
+
+    implicit def product[A](implicit auto: ProductAuto[A]): Derive[A] = new Derive[A] {
+      def codec = auto.codec
+    }
+
+    implicit def coproduct[A, D, C <: Coproduct, L <: HList](implicit
+      auto: CoproductAuto.Aux[A, C, L],
+      discriminated: codecs.Discriminated[A, D],
+      auto2: codecs.CoproductBuilderAutoDiscriminators[A, C, D]
+    ): Derive[A] = new Derive[A] {
+      def codec = auto.apply.auto
+    }
+  }
+
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
   }

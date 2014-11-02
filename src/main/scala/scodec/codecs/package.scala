@@ -1210,5 +1210,8 @@ package object codecs {
       acc.subcaseO(tag)(a => if (a == value) Some(a) else None)(provide(value))
     }
   }
+
+  /** Provides common implicit codecs. */
+  object implicits extends ImplicitCodecs
 }
 

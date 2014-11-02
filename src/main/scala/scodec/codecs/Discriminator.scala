@@ -10,3 +10,14 @@ package codecs
  * for each.
  */
 case class Discriminator[X, Y, D](value: D)
+
+/**
+ * Wrapper class that indicates subtypes of `Y` are discriminated by type `D`
+ * using the supplied `Codec[D]`.
+ *
+ * For example, an implicit `Discriminated` value can be defined in the companion
+ * of a sealed trait, along with implicit `Discriminator` values in each subtype
+ * companion. Given such implicits, a codec for the trait can be automatically
+ * created using `Codec.derive[Y]`.
+ */
+case class Discriminated[Y, D](codec: Codec[D])
