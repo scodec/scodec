@@ -34,7 +34,7 @@ class DerivedCodecsExample extends CodecSuite {
       // type has an implicit codec available.
       //
       // In this example, Woozle is a product of two integers, and scodec.codecs.implicits._
-      // is imported in this file, resulting an an implicit Codec[Int]`being available.
+      // is imported in this file, resulting an an implicit Codec[Int] being available.
       Codec[Woozle].encodeValid(Woozle(1, 2)) shouldBe hex"0000000100000002".bits
     }
 

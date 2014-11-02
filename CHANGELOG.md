@@ -1,3 +1,16 @@
+1.4.0
+=====
+ - *Breaking Change* - Changed error type from String to `scodec.Err`. `Err` is a non-sealed class, allowing
+   codecs to return custom subtypes describing domain specific errors. This allows dispatching on those domain
+   specific errors. To upgrade, instead of returning a string, wrap the string with `Err(str)`. See
+   [the PR](https://github.com/scodec/scodec/pull/27) for details.
+ - Added `Codec.coproduct`, which helps create `Coproduct` based codecs.
+   See [CoproductsExample](src/test/scala/scodec/examples/CoproductsExample.scala).
+ - Added support for automatically deriving codecs, based on `Codec.product` and `Codec.coproduct`. See
+   [DerivedCodecExamples](src/test/scala/scodec/examples/DerivedCodecExamples.scala).
+ - Added `scodec.codecs.implicits`, which provides implicit codecs for primitive values and collections.
+ - Updated `paddedFixedSize{Bits,Bytes}Dependent` combinator for building PKCS5/PKCS7 style padding.
+
 1.3.2
 =====
  - Added `flatAppend` and `flatConcat` to `HList` based codecs.
