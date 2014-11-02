@@ -162,5 +162,8 @@ binaryIssueFilters ++= Seq(
   ProblemFilters.exclude[MissingMethodProblem]("scodec.Encoder.asEncoder"),
   ProblemFilters.exclude[MissingMethodProblem]("scodec.Encoder.econtramap"),
   ProblemFilters.exclude[MissingMethodProblem]("scodec.Encoder.encodeOnly"),
-  ProblemFilters.exclude[MissingMethodProblem]("scodec.EncoderFunctions.choiceEncoder")
+  ProblemFilters.exclude[MissingMethodProblem]("scodec.EncoderFunctions.choiceEncoder"),
+  ProblemFilters.exclude[MissingMethodProblem]("scodec.Codec.toField"),
+  ProblemFilters.exclude[MissingClassProblem]("scodec.codecs.VariableSizeCodec$"),
+  ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.codecs.VariableSizeCodec.this")
 )
