@@ -350,69 +350,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     }
   }
 
-  /**
-   * Creates a coproduct codec builder for the specified type.
-   *
-   * Support exists for coproducts and unions.
-   * Each component type must have an implicitly available codec.
-   *
-   * For example:
-   {{{
-  type C = Foo :+: Bar :+: Baz :+: CNil
-  val codec = Codec.coproduct[C].choice
-  codec.encode(Coproduct[C](Foo(...)))
-   }}}
-   */
-  def coproduct[A](implicit auto: CoproductAuto[A]): auto.Out = auto.apply
-
-  /** Witness that a coproduct codec builder of type `A` can be automatically created. */
-  sealed trait CoproductAuto[A] extends DepFn0 {
-    type C <: Coproduct
-    type L <: HList
-    type Out = codecs.CoproductCodecBuilder[C, L]
-    def apply: Out
-  }
-
-  /** Companion for [[CoproductAuto]]. */
-  object CoproductAuto {
-    type Aux[A, C0, L0] = CoproductAuto[A] { type C = C0; type L = L0 }
-
-    implicit def cnil: CoproductAuto.Aux[CNil, CNil, HNil] =
-      new CoproductAuto[CNil] {
-        type C = CNil
-        type L = HNil
-        def apply = new codecs.CoproductCodecBuilder(HNil)
-      }
-
-    implicit def coproduct[H, T <: Coproduct, TL <: HList](implicit
-      headCodec: Codec[H],
-      tailAux: CoproductAuto.Aux[T, T, TL]
-    ): CoproductAuto.Aux[H :+: T, H :+: T, Codec[H] :: TL] =
-      new CoproductAuto[H :+: T] {
-        type C = H :+: T
-        type L = Codec[H] :: TL
-        def apply = headCodec :+: tailAux.apply
-      }
-
-    import shapeless.ops.union.{ Keys => UnionKeys }
-
-    implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList, TL <: HList](implicit
-      headCodec: Codec[VH],
-      tailAux: CoproductAuto.Aux[T, T, TL],
-      keys: UnionKeys.Aux[FieldType[KH, VH] :+: T, KH :: KT]
-    ): CoproductAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T, Codec[FieldType[KH, VH]] :: TL] =
-      new CoproductAuto[FieldType[KH, VH] :+: T] {
-        type C = FieldType[KH, VH] :+: T
-        type L = Codec[FieldType[KH, VH]] :: TL
-        def apply = {
-          import codecs.StringEnrichedWithCodecNamingSupport
-          val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
-          namedHeadCodec.toField[KH] :+: tailAux.apply
-        }
-      }
-    }
-
-
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
   }
