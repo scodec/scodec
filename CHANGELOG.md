@@ -1,7 +1,12 @@
 1.3.2
 =====
- - Added `Codec.auto`, which automatically generates `HList` based codecs for case classes and `HList` types if all
-   component types have implicit codecs available
+ - Added `flatAppend` and `flatConcat` to `HList` based codecs.
+ - Added `Codec.product`, which automatically generates `HList` based codecs for case classes and `HList` types if all
+   component types have implicit codecs available. See [ProductsExample](src/test/scala/scodec/examples/ProductsExample.scala).
+ - Added the `toField` combinator to `Codec`, allowing creation of Shapeless field codecs from value codecs.
+   That is, `toField[K]` on `Codec` converts a `Codec[A]` to a `Codec[FieldType[K, A]]`
+ - Added `variableSize{Bits,Bytes}Long` as alternatives to `variableSize{Bits,Bytes}`, where the size is encoded/decoded
+   via a `Codec[Long]` instead of a `Codec[Int]`.
 
 1.3.1
 =====
