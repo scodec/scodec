@@ -41,11 +41,11 @@ The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a nu
     val firstCodec = (uint8 ~ uint8 ~ uint16)
 
     // Decode a bit vector using that codec
-    val result: String \/ (Int ~ Int ~ Int) = Codec.decode(firstCodec, BitVector(0x10, 0x2a, 0x03, 0xff))
+    val result: Err \/ (Int ~ Int ~ Int) = Codec.decode(firstCodec, BitVector(0x10, 0x2a, 0x03, 0xff))
 
     // Sum the result
     val add3 = (_: Int) + (_: Int) + (_: Int)
-    val sum: String \/ Int = result map add3
+    val sum: Err \/ Int = result map add3
 ```
 
 Automatic case class binding is supported via Shapeless HLists:
