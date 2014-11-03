@@ -290,65 +290,27 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     override def decode(bits: BitVector) = decoder.decode(bits)
   }
 
-  /** Gets the implicitly available codec for type `A`. */
-  def apply[A: Codec]: Codec[A] = implicitly[Codec[A]]
+  /** Gets the implicitly available codec for type `A` -- either an explicitly defined implicit or a derived codec. */
+  def apply[A](implicit c: ImplicitCodec[A]): Codec[A] = c.codec
+
+  /** Gets the implicitly available codec for type `A` -- the codec is guaranteed to not be derived. */
+  def nonDerived[A](implicit c: Codec[A]): Codec[A] = c
 
   /**
-   * Automatically creates an hlist based codec for the specified type.
+   * Derives a codec for the specified type.
    *
-   * Support exists for `HList`s, records, and case classes.
-   * Each component type must have an implicitly available codec.
-   *
-   * For example:
-   {{{
-  case class Point(x: Int, y: Int, z: Int)
-  implicit val ic = uint8
-  val res = Codec.product[Point].encode(Point(1, 2, 3))
-  res: scalaz.\/[scodec.Err,scodec.bits.BitVector] = \/-(BitVector(24 bits, 0x010203))
-   }}}
-   *
-   * For records and case classes, the record name / field name is included on
-   * each component codec. For example:
-   {{{
-  val res = Codec.product[Point].encode(Point(1, 2, 256))
-  res: scalaz.\/[scodec.Err,scodec.bits.BitVector] = -\/(z: 256 is greater than maximum value 255 for 8-bit unsigned integer)
-   }}}
+   * Codecs can be derived for:
+   *  - case classes, when each component type of the case has an implicitly available codec
+   *  - sealed class hierarchies, where:
+   *    - the root type, `A`, has an implicitly availble `Discriminated[A, D]` for some `D`
+   *    - each subtype has an implicitly available codec or can have one derived
+   *    - each subtype `X` has an implicitly available `Discriminator[A, X, D]`
    */
-  def product[A](implicit auto: ProductAuto[A]): Codec[A] = auto.codec
+  def derive[A](implicit d: DerivedCodec[A]): Codec[A] = d.codec
 
-  /** Witness that a codec of type `A` can be automatically created. */
-  sealed trait ProductAuto[A] {
-    def codec: Codec[A]
-  }
-
-  /** Companion for [[ProductAuto]]. */
-  object ProductAuto {
-    implicit def hnil: ProductAuto[HNil] =
-      new ProductAuto[HNil] { val codec = codecs.HListCodec.hnilCodec }
-
-    implicit def hlist[H, T <: HList](implicit headCodec: Codec[H], tailAux: ProductAuto[T]): ProductAuto[H :: T] =
-      new ProductAuto[H :: T] { val codec = headCodec :: tailAux.codec }
-
-    implicit def record[KH <: Symbol, VH, TRec <: HList, KT <: HList](implicit
-      headCodec: Codec[VH],
-      tailAux: ProductAuto[TRec],
-      keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT]
-    ): ProductAuto[FieldType[KH, VH] :: TRec] = new ProductAuto[FieldType[KH, VH] :: TRec] {
-      val codec = {
-        import codecs.StringEnrichedWithCodecNamingSupport
-        val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
-        val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.toField[KH]
-        headFieldCodec :: tailAux.codec
-      }
-    }
-
-    implicit def labelledProduct[A, Rec <: HList](implicit
-      lgen: LabelledGeneric.Aux[A, Rec],
-      auto: ProductAuto[Rec]
-    ): ProductAuto[A] = new ProductAuto[A] {
-      val codec = auto.codec.xmap(lgen.from, lgen.to)
-    }
-  }
+  /** Alias for [[derive]]. */
+  @deprecated("As of 1.5, this method is redundant with Codec.derive.", "1.5")
+  def product[A](implicit d: DerivedCodec[A]): Codec[A] = d.codec
 
   /**
    * Creates a coproduct codec builder for the specified type.
@@ -363,96 +325,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   codec.encode(Coproduct[C](Foo(...)))
    }}}
    */
-  def coproduct[A](implicit auto: CoproductAuto[A]): auto.Out = auto.apply
-
-  /** Witness that a coproduct codec builder of type `A` can be automatically created. */
-  sealed trait CoproductAuto[A] extends DepFn0 {
-    type C <: Coproduct
-    type L <: HList
-    type Out = codecs.CoproductCodecBuilder[C, L, A]
-    def apply: Out
-  }
-
-  /** Companion for [[CoproductAuto]]. */
-  object CoproductAuto {
-    type Aux[A, C0, L0] = CoproductAuto[A] { type C = C0; type L = L0 }
-
-    implicit def cnil: CoproductAuto.Aux[CNil, CNil, HNil] =
-      new CoproductAuto[CNil] {
-        type C = CNil
-        type L = HNil
-        def apply = codecs.CoproductCodecBuilder(HNil)
-      }
-
-    implicit def coproduct[H, T <: Coproduct, TL <: HList](implicit
-      headCodec: Codec[H],
-      tailAux: CoproductAuto.Aux[T, T, TL]
-    ): CoproductAuto.Aux[H :+: T, H :+: T, Codec[H] :: TL] =
-      new CoproductAuto[H :+: T] {
-        type C = H :+: T
-        type L = Codec[H] :: TL
-        def apply = headCodec :+: tailAux.apply
-      }
-
-    import shapeless.ops.union.{ Keys => UnionKeys }
-
-    implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList, TL <: HList](implicit
-      headCodec: Codec[VH],
-      tailAux: CoproductAuto.Aux[T, T, TL],
-      keys: UnionKeys.Aux[FieldType[KH, VH] :+: T, KH :: KT]
-    ): CoproductAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T, Codec[FieldType[KH, VH]] :: TL] =
-      new CoproductAuto[FieldType[KH, VH] :+: T] {
-        type C = FieldType[KH, VH] :+: T
-        type L = Codec[FieldType[KH, VH]] :: TL
-        def apply = {
-          import codecs.StringEnrichedWithCodecNamingSupport
-          val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
-          namedHeadCodec.toField[KH] :+: tailAux.apply
-        }
-      }
-
-    implicit def labelledGeneric[A, U <: Coproduct, UL <: HList](implicit
-      lgen: LabelledGeneric.Aux[A, U],
-      auto: CoproductAuto.Aux[U, U, UL]
-    ): CoproductAuto.Aux[A, U, UL] = new CoproductAuto[A] {
-      type C = U
-      type L = auto.L
-      def apply = auto.apply.xmap(lgen.from, lgen.to)
-    }
-  }
-
-  /**
-   * Derives a codec for the specified type.
-   *
-   * Codecs can be derived for:
-   *  - case classes, when each component type of the case has an implicitly available codec
-   *  - sealed class hierarchies, where:
-   *    - the root type, `A`, has an implicitly availble `Discriminated[A, D]` for some `D`
-   *    - each subtype has an implicitly available codec or can have one derived
-   *    - each subtype `X` has an implicitly available `Discriminator[A, X, D]`
-   */
-  implicit def derive[A](implicit derive: Derive[A]): Codec[A] = derive.codec
-
-  /** Witness that a codec can be implicitly derived for the specified type. */
-  trait Derive[A] {
-    def codec: Codec[A]
-  }
-
-  /** Companion for [[Derive]]. */
-  object Derive {
-
-    implicit def product[A](implicit auto: ProductAuto[A]): Derive[A] = new Derive[A] {
-      def codec = auto.codec
-    }
-
-    implicit def coproduct[A, D, C <: Coproduct, L <: HList](implicit
-      auto: CoproductAuto.Aux[A, C, L],
-      discriminated: codecs.Discriminated[A, D],
-      auto2: codecs.CoproductBuilderAutoDiscriminators[A, C, D]
-    ): Derive[A] = new Derive[A] {
-      def codec = auto.apply.auto
-    }
-  }
+  def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
 
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
