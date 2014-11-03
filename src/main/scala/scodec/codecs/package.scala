@@ -162,7 +162,7 @@ package object codecs {
    * Codec for 8-bit unsigned bytes.
    * @group numbers
    */
-  val ushort8: Codec[Short] = new ShortCodec(8, true, ByteOrdering.BigEndian)
+  val ushort8: Codec[Short] = new ShortCodec(8, false, ByteOrdering.BigEndian)
 
   /**
    * Codec for 16-bit 2s complement big-endian shorts.
