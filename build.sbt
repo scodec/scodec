@@ -56,7 +56,7 @@ libraryDependencies ++= Seq(
   "org.scalaz" %% "scalaz-core" % "7.1.0",
   "com.chuusai" % "shapeless" % "2.0.0" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"
-    case "2.11.0" => "2.11"
+    case x if x startsWith "2.11." => "2.11"
   },
   "org.scalatest" %% "scalatest" % "2.2.0" % "test",
   "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",

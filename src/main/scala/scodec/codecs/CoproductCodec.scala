@@ -255,8 +255,66 @@ object CoproductCodecBuilder {
     new CoproductCodecBuilder(codecs, \/.right, \/.right)
 }
 
+/** Witness that a coproduct codec builder of type `A` can be automatically created. */
+sealed abstract class CoproductBuilderAuto[A] extends DepFn0 {
+  type C <: Coproduct
+  type L <: HList
+  type Out = codecs.CoproductCodecBuilder[C, L, A]
+  def apply: Out
+}
+
+/** Companion for [[CoproductBuilderAuto]]. */
+object CoproductBuilderAuto {
+  type Aux[A, C0, L0] = CoproductBuilderAuto[A] { type C = C0; type L = L0 }
+
+  def apply[A](implicit auto: CoproductBuilderAuto[A]): auto.Out = auto.apply
+
+  implicit def cnil: CoproductBuilderAuto.Aux[CNil, CNil, HNil] =
+    new CoproductBuilderAuto[CNil] {
+      type C = CNil
+      type L = HNil
+      def apply = codecs.CoproductCodecBuilder(HNil)
+    }
+
+  implicit def coproduct[H, T <: Coproduct, TL <: HList](implicit
+    headCodec: ImplicitCodec[H],
+    tailAux: CoproductBuilderAuto.Aux[T, T, TL]
+  ): CoproductBuilderAuto.Aux[H :+: T, H :+: T, Codec[H] :: TL] =
+    new CoproductBuilderAuto[H :+: T] {
+      type C = H :+: T
+      type L = Codec[H] :: TL
+      def apply = headCodec :+: tailAux.apply
+    }
+
+  import shapeless.ops.union.{ Keys => UnionKeys }
+
+  implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList, TL <: HList](implicit
+    headCodec: ImplicitCodec[VH],
+    tailAux: CoproductBuilderAuto.Aux[T, T, TL],
+    keys: UnionKeys.Aux[FieldType[KH, VH] :+: T, KH :: KT]
+  ): CoproductBuilderAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T, Codec[FieldType[KH, VH]] :: TL] =
+    new CoproductBuilderAuto[FieldType[KH, VH] :+: T] {
+      type C = FieldType[KH, VH] :+: T
+      type L = Codec[FieldType[KH, VH]] :: TL
+      def apply = {
+        import codecs.StringEnrichedWithCodecNamingSupport
+        val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
+        namedHeadCodec.toField[KH] :+: tailAux.apply
+      }
+    }
+
+  implicit def labelledGeneric[A, U <: Coproduct, UL <: HList](implicit
+    lgen: LabelledGeneric.Aux[A, U],
+    auto: CoproductBuilderAuto.Aux[U, U, UL]
+  ): CoproductBuilderAuto.Aux[A, U, UL] = new CoproductBuilderAuto[A] {
+    type C = U
+    type L = auto.L
+    def apply = auto.apply.xmap(lgen.from, lgen.to)
+  }
+}
+
 /** Witness for `CoproductCodecBuilder#NeedDiscriminators#using`. */
-sealed trait CoproductBuilderKeyDiscriminators[C <: Coproduct, L <: HList, A] {
+sealed abstract class CoproductBuilderKeyDiscriminators[C <: Coproduct, L <: HList, A] {
   def toDiscriminator(bindings: L)(c: C): A
   def fromDiscriminator(bindings: L)(a: A, idx: Int): Option[Int]
 }
@@ -290,7 +348,7 @@ object CoproductBuilderKeyDiscriminators {
 }
 
 /** Witness for `CoproductCodecBuilder#NeedDiscriminators#auto`. */
-sealed trait CoproductBuilderAutoDiscriminators[X, C <: Coproduct, A] {
+sealed abstract class CoproductBuilderAutoDiscriminators[X, C <: Coproduct, A] {
   def discriminators: List[A]
 }
 
