@@ -445,10 +445,10 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       def codec = auto.codec
     }
 
-    implicit def coproduct[A, D, C <: Coproduct, L <: HList](implicit
-      auto: CoproductAuto.Aux[A, C, L],
+    implicit def coproduct[A, D, C0 <: Coproduct](implicit
       discriminated: codecs.Discriminated[A, D],
-      auto2: codecs.CoproductBuilderAutoDiscriminators[A, C, D]
+      auto: CoproductAuto[A] { type C = C0 },
+      auto2: codecs.CoproductBuilderAutoDiscriminators[A, C0, D]
     ): Derive[A] = new Derive[A] {
       def codec = auto.apply.auto
     }
