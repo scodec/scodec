@@ -30,42 +30,43 @@ sealed abstract class DerivedCodec[A] {
 /** Companion for [[DerivedCodec]]. */
 object DerivedCodec {
 
+  /** Implicitly unwraps an implicit codec to a regular codec. */
   implicit def unwrap[A](dc: DerivedCodec[A]): Codec[A] = dc.codec
+
+  /** Lifts a codec in to a derived codec. */
+  private def wrap[A](c: Codec[A]): DerivedCodec[A] = new DerivedCodec[A] {
+    val codec = c
+    override def toString = c.toString
+  }
 
   /** Derives a codec for the specified type. */
   def apply[A](implicit dc: DerivedCodec[A]): DerivedCodec[A] = dc
 
   implicit def hnil: DerivedCodec[HNil] =
-    new DerivedCodec[HNil] { val codec = codecs.HListCodec.hnilCodec }
+    wrap(codecs.HListCodec.hnilCodec)
 
   implicit def hlist[H, T <: HList](implicit headCodec: ImplicitCodec[H], tailAux: DerivedCodec[T]): DerivedCodec[H :: T] =
-    new DerivedCodec[H :: T] { val codec = headCodec :: tailAux.codec }
+    wrap(headCodec :: tailAux.codec)
 
   implicit def record[KH <: Symbol, VH, TRec <: HList, KT <: HList](implicit
     keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT],
     headCodec: ImplicitCodec[VH],
     tailAux: DerivedCodec[TRec]
-  ): DerivedCodec[FieldType[KH, VH] :: TRec] = new DerivedCodec[FieldType[KH, VH] :: TRec] {
-    val codec = {
-      import codecs.StringEnrichedWithCodecNamingSupport
-      val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
-      val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.toField[KH]
-      headFieldCodec :: tailAux.codec
-    }
+  ): DerivedCodec[FieldType[KH, VH] :: TRec] = wrap {
+    import codecs.StringEnrichedWithCodecNamingSupport
+    val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
+    val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.toField[KH]
+    headFieldCodec :: tailAux.codec
   }
 
   implicit def labelledProduct[A, Rec <: HList](implicit
     lgen: LabelledGeneric.Aux[A, Rec],
     auto: DerivedCodec[Rec]
-  ): DerivedCodec[A] = new DerivedCodec[A] {
-    val codec = auto.codec.xmap(lgen.from, lgen.to)
-  }
+  ): DerivedCodec[A] = wrap(auto.codec.xmap(lgen.from, lgen.to))
 
   implicit def coproduct[A, D, C0 <: Coproduct](implicit
     discriminated: codecs.Discriminated[A, D],
     auto: codecs.CoproductBuilderAuto[A] { type C = C0 },
     auto2: codecs.CoproductBuilderAutoDiscriminators[A, C0, D]
-  ): DerivedCodec[A] = new DerivedCodec[A] {
-    def codec = auto.apply.auto
-  }
+  ): DerivedCodec[A] = wrap(auto.apply.auto)
 }

@@ -12,20 +12,25 @@ sealed abstract class ImplicitCodec[A] {
 
 /** Defines derived codecs as a fallback to regular implicit `Codec` instances. */
 sealed trait LowPriorityImplicitCodec {
-  implicit def derive[A](implicit d: DerivedCodec[A]): ImplicitCodec[A] = new ImplicitCodec[A] {
-    val codec = d.codec
+  /** Lifts a derived codec in to an implicit codec. */
+  implicit def derive[A](implicit d: DerivedCodec[A]): ImplicitCodec[A] = wrap(d.codec)
+
+  /** Lifts a codec in to an implicit codec. */
+  def wrap[A](c: Codec[A]): ImplicitCodec[A] = new ImplicitCodec[A] {
+    val codec = c
+    override def toString = c.toString
   }
 }
 
 /** Companion for [[ImplicitCodec]]. */
 object ImplicitCodec extends LowPriorityImplicitCodec {
 
+  /** Implicitly unwraps an implicit codec to a regular codec. */
   implicit def unwrap[A](ic: ImplicitCodec[A]): Codec[A] = ic.codec
+
+  /** Implicitly wraps an implicit codec instance. */
+  implicit def implicitWrap[A](implicit c: Codec[A]): ImplicitCodec[A] = wrap(c)
 
   /** Gets the implicitly available codec for type `A` -- either an explicitly defined implicit or a derived codec. */
   def apply[A](implicit ic: ImplicitCodec[A]): ImplicitCodec[A] = ic
-
-  implicit def fromImplicit[A](implicit c: Codec[A]): ImplicitCodec[A] = new ImplicitCodec[A] {
-    val codec = c
-  }
 }
