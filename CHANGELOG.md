@@ -1,3 +1,14 @@
+1.5.0
+=====
+ - Due to diverging implicit errors introduced by 1.4.0, the derived codec support was refactored.
+   For non-generic uses, the syntax is the same -- call `Codec[Foo]` to auto-derive a codec for `Foo`.
+   For generic uses, combinators should be changed to take an implicit `ImplicitCodec[A]` instead of
+   an implicit `Codec[A]`. See [the issue](https://github.com/scodec/scodec/issues/30) for more
+   details on the problem and [the PR](https://github.com/scodec/scodec/pull/32) for more details
+   on the new structure.
+ - Fixed a bug in `ushort8` where it was treating binary as a signed `short8`.
+ - Added `withContext` to `Codec` -- this is an alias for `"context" | codec`.
+
 1.4.0
 =====
  - *Breaking Change* - Changed error type from String to `scodec.Err`. `Err` is a non-sealed class, allowing
