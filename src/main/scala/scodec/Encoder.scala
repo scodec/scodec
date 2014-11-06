@@ -210,7 +210,7 @@ object Encoder extends EncoderFunctions {
    * @group inst
    */
   implicit val corepresentableInstance: Corepresentable[Encoder, Err \/ BitVector] = new Corepresentable[Encoder, Err \/ BitVector] {
-    def corep[A](f: A => Err \/ BitVector): Encoder[A] = Encoder.instance(f)
+    def corep[A](f: A => Err \/ BitVector): Encoder[A] = Encoder(f)
     def uncorep[A](f: Encoder[A]): A => Err \/ BitVector = f.encode
   }
 }
