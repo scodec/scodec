@@ -67,7 +67,7 @@ class DerivedCodecsExample extends CodecSuite {
       //  - each subtype has an implicit codec (or can have one derived)
       //
       // In this example, Sprocket defines a Discriminated[Sprocket, Int] in its companion
-      // and each subclass defines a Discriminated[Sprocket, X, Int] in their companions.
+      // and each subclass defines a Discriminator[Sprocket, X, Int] in their companions.
       Codec[Sprocket].encodeValid(Wocket(3, true)) shouldBe hex"0200000003ff".bits
     }
 
