@@ -39,7 +39,8 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Decoder.scala" target="_blank">Decoder.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Decoder.scala" target="_blank">Decoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -50,7 +51,7 @@
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -150,7 +151,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.Decoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.Decoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="ctor">
+      <a id="apply[A](f:scodec.bits.BitVector=&gt;scalaz.\/[scodec.Err,(scodec.bits.BitVector,A)]):scodec.Decoder[A]"></a>
+      <a id="apply[A]((BitVector)⇒\/[Err,(BitVector,A)]):Decoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, (<a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>, <span class="extype" name="scodec.Decoder.apply.A">A</span>)]</span>)</span><span class="result">: <a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.Decoder.apply.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates a decoder from the specified function.</p>
+    </li><li name="scodec.Decoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="ctor">
       <a id="apply[A](implicitdec:scodec.Decoder[A]):scodec.Decoder[A]"></a>
       <a id="apply[A](Decoder[A]):Decoder[A]"></a>
       <h4 class="signature">
@@ -176,7 +190,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#choiceDecoder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.DecoderFunctions#choiceDecoder" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="choiceDecoder[A](decoders:scodec.Decoder[A]*):scodec.Decoder[A]"></a>
       <a id="choiceDecoder[A](Decoder[A]*):Decoder[A]"></a>
       <h4 class="signature">
@@ -190,8 +204,7 @@
       </h4>
       <p class="shortcomment cmt">Creates a decoder that decodes with each of the specified decoders, returning
 the first successful result.</p><div class="fullcomment"><div class="comment cmt"><p>Creates a decoder that decodes with each of the specified decoders, returning
-the first successful result.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
+the first successful result.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -211,7 +224,7 @@ the first successful result.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.DecoderFunctions#decode" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decode[A](bits:scodec.bits.BitVector)(implicitevidence$1:scodec.Decoder[A]):scalaz.\/[scodec.Err,(scodec.bits.BitVector,A)]"></a>
       <a id="decode[A](BitVector)(Decoder[A]):\/[Err,(BitVector,A)]"></a>
       <h4 class="signature">
@@ -224,7 +237,7 @@ the first successful result.
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available codec.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available codec.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decodeAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.DecoderFunctions#decodeAll" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decodeAll[A,B](buffer:scodec.bits.BitVector)(f:A=&gt;B)(implicitevidence$4:scodec.Decoder[A],implicitevidence$5:scalaz.Monoid[B]):(Option[scodec.Err],B)"></a>
       <a id="decodeAll[A,B](BitVector)((A)⇒B)(Decoder[A],Monoid[B]):(Option[Err],B)"></a>
       <h4 class="signature">
@@ -238,9 +251,8 @@ the first successful result.
       </h4>
       <p class="shortcomment cmt">Repeatedly decodes values of type <code>A</code> from the specified vector, converts each value to a <code>B</code> and appends it to an accumulator of type <code>B</code> using the <code>Monoid[B]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Repeatedly decodes values of type <code>A</code> from the specified vector, converts each value to a <code>B</code> and appends it to an accumulator of type <code>B</code> using the <code>Monoid[B]</code>.
 Terminates when no more bits are available in the vector. Exits upon first decoding error.
-</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>tuple consisting of the terminating error if any and the accumulated value
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>tuple consisting of the terminating error if any and the accumulated value</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
+    </li><li name="scodec.DecoderFunctions#decodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decodeBoth[A,B](decA:scodec.Decoder[A],decB:scodec.Decoder[B])(buffer:scodec.bits.BitVector):scalaz.\/[scodec.Err,(scodec.bits.BitVector,(A,B))]"></a>
       <a id="decodeBoth[A,B](Decoder[A],Decoder[B])(BitVector):\/[Err,(BitVector,(A,B))]"></a>
       <h4 class="signature">
@@ -253,7 +265,7 @@ Terminates when no more bits are available in the vector. Exits upon first decod
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes a tuple <code>(A, B)</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes a tuple <code>(A, B)</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decodeBothCombine" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.DecoderFunctions#decodeBothCombine" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decodeBothCombine[A,B,C](decA:scodec.Decoder[A],decB:scodec.Decoder[B])(buffer:scodec.bits.BitVector)(f:(A,B)=&gt;C):scalaz.\/[scodec.Err,(scodec.bits.BitVector,C)]"></a>
       <a id="decodeBothCombine[A,B,C](Decoder[A],Decoder[B])(BitVector)((A,B)⇒C):\/[Err,(BitVector,C)]"></a>
       <h4 class="signature">
@@ -266,7 +278,7 @@ Terminates when no more bits are available in the vector. Exits upon first decod
       </span>
       </h4>
       <p class="shortcomment cmt">Decodes a <code>C</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>, then applying the decoded values to the specified function to generate a <code>C</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes a <code>C</code> by first decoding <code>A</code> and then using the remaining bits to decode <code>B</code>, then applying the decoded values to the specified function to generate a <code>C</code>.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decodeCollect" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.DecoderFunctions#decodeCollect" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decodeCollect[F[_],A](dec:scodec.Decoder[A],limit:Option[Int])(buffer:scodec.bits.BitVector)(implicitcbf:scala.collection.generic.CanBuildFrom[F[A],A,F[A]]):scalaz.\/[scodec.Err,(scodec.bits.BitVector,F[A])]"></a>
       <a id="decodeCollect[F[_],A](Decoder[A],Option[Int])(BitVector)(CanBuildFrom[F[A],A,F[A]]):\/[Err,(BitVector,F[A])]"></a>
       <h4 class="signature">
@@ -280,9 +292,8 @@ Terminates when no more bits are available in the vector. Exits upon first decod
       </h4>
       <p class="shortcomment cmt">Repeatedly decodes values of type <code>A</code> from the specified vector and returns a collection of the specified type.</p><div class="fullcomment"><div class="comment cmt"><p>Repeatedly decodes values of type <code>A</code> from the specified vector and returns a collection of the specified type.
 Terminates when no more bits are available in the vector or when <code>limit</code> is defined and that many records have been
-decoded. Exits upon first decoding error.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decodeValidValue" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+decoded. Exits upon first decoding error.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
+    </li><li name="scodec.DecoderFunctions#decodeValidValue" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decodeValidValue[A](bits:scodec.bits.BitVector)(implicitevidence$3:scodec.Decoder[A]):A"></a>
       <a id="decodeValidValue[A](BitVector)(Decoder[A]):A"></a>
       <h4 class="signature">
@@ -298,9 +309,8 @@ decoded. Exits upon first decoding error.
 codec and discards the remaining bits or throws an <code>IllegalArgumentException</code> if decoding
 fails.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available
 codec and discards the remaining bits or throws an <code>IllegalArgumentException</code> if decoding
-fails.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.DecoderFunctions#decodeValue" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+fails.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
+    </li><li name="scodec.DecoderFunctions#decodeValue" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="decodeValue[A](bits:scodec.bits.BitVector)(implicitevidence$2:scodec.Decoder[A]):scalaz.\/[scodec.Err,A]"></a>
       <a id="decodeValue[A](BitVector)(Decoder[A]):\/[Err,A]"></a>
       <h4 class="signature">
@@ -314,8 +324,7 @@ fails.
       </h4>
       <p class="shortcomment cmt">Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available
 codec and discards the remaining bits.</p><div class="fullcomment"><div class="comment cmt"><p>Decodes the specified bit vector in to a value of type <code>A</code> using an implicitly available
-codec and discards the remaining bits.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
+codec and discards the remaining bits.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DecoderFunctions.html" class="extype" name="scodec.DecoderFunctions">DecoderFunctions</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -400,7 +409,7 @@ codec and discards the remaining bits.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.Decoder#monadInstance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.Decoder#monadInstance" visbl="pub" data-isabs="false" fullComment="no" group="inst">
       <a id="monadInstance:scalaz.Monad[scodec.Decoder]"></a>
       <a id="monadInstance:Monad[Decoder]"></a>
       <h4 class="signature">
@@ -412,8 +421,8 @@ codec and discards the remaining bits.
         <span class="name">monadInstance</span><span class="result">: <span class="extype" name="scalaz.Monad">Monad</span>[<a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>]</span>
       </span>
       </h4>
-      
-    </li><li name="scodec.Decoder#monoidInstance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Monad instance.</p>
+    </li><li name="scodec.Decoder#monoidInstance" visbl="pub" data-isabs="false" fullComment="no" group="inst">
       <a id="monoidInstance[A](implicitevidence$6:scalaz.Monoid[A]):scalaz.Monoid[scodec.Decoder[A]]"></a>
       <a id="monoidInstance[A](Monoid[A]):Monoid[Decoder[A]]"></a>
       <h4 class="signature">
@@ -425,7 +434,7 @@ codec and discards the remaining bits.
         <span class="name">monoidInstance</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="arg0">arg0: <span class="extype" name="scalaz.Monoid">Monoid</span>[<span class="extype" name="scodec.Decoder.monoidInstance.A">A</span>]</span>)</span><span class="result">: <span class="extype" name="scalaz.Monoid">Monoid</span>[<a href="Decoder.html" class="extype" name="scodec.Decoder">Decoder</a>[<span class="extype" name="scodec.Decoder.monoidInstance.A">A</span>]]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Monoid instance.</p>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -465,7 +474,7 @@ codec and discards the remaining bits.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scodec.Decoder#point" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.Decoder#point" visbl="pub" data-isabs="false" fullComment="no" group="ctor">
       <a id="point[A](a:=&gt;A):scodec.Decoder[A]"></a>
       <a id="point[A](⇒A):Decoder[A]"></a>
       <h4 class="signature">
@@ -581,7 +590,16 @@ codec and discards the remaining bits.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="ctor">
+              <h3>Constructors</h3>
+              
+            </div><div class="group" name="conv">
+              <h3>Conveniences</h3>
+              
+            </div><div class="group" name="inst">
+              <h3>Typeclass Instances</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

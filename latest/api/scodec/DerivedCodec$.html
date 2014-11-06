@@ -2,17 +2,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>CoproductBuilderAutoDiscriminators - scodec.codecs.CoproductBuilderAutoDiscriminators</title>
-          <meta name="description" content="CoproductBuilderAutoDiscriminators - scodec.codecs.CoproductBuilderAutoDiscriminators" />
-          <meta name="keywords" content="CoproductBuilderAutoDiscriminators scodec.codecs.CoproductBuilderAutoDiscriminators" />
+          <title>DerivedCodec - scodec.DerivedCodec</title>
+          <meta name="description" content="DerivedCodec - scodec.DerivedCodec" />
+          <meta name="keywords" content="DerivedCodec scodec.DerivedCodec" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
-      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
-      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <link href="../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
       <script type="text/javascript">
          if(top === self) {
-            var url = '../../index.html';
-            var hash = 'scodec.codecs.CoproductBuilderAutoDiscriminators$';
+            var url = '../index.html';
+            var hash = 'scodec.DerivedCodec$';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -24,9 +24,9 @@
         </head>
         <body class="value">
       <div id="definition">
-        <a href="CoproductBuilderAutoDiscriminators.html" title="Go to companion"><img src="../../lib/object_to_class_big.png" /></a>
-        <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
-        <h1><a href="CoproductBuilderAutoDiscriminators.html" title="Go to companion">CoproductBuilderAutoDiscriminators</a></h1>
+        <a href="DerivedCodec.html" title="Go to companion"><img src="../lib/object_to_class_big.png" /></a>
+        <p id="owner"><a href="package.html" class="extype" name="scodec">scodec</a></p>
+        <h1><a href="DerivedCodec.html" title="Go to companion">DerivedCodec</a></h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,11 +35,11 @@
         <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <span class="name">CoproductBuilderAutoDiscriminators</span>
+        <span class="name">DerivedCodec</span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/CoproductCodec.scala" target="_blank">CoproductCodec.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/DerivedCodec.scala" target="_blank">DerivedCodec.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -59,7 +59,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.codecs.CoproductBuilderAutoDiscriminators"><span>CoproductBuilderAutoDiscriminators</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.DerivedCodec"><span>DerivedCodec</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -150,6 +150,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.DerivedCodec#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="apply[A](implicitdc:scodec.DerivedCodec[A]):scodec.DerivedCodec[A]"></a>
+      <a id="apply[A](DerivedCodec[A]):DerivedCodec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="dc">dc: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.apply.A">A</span>]</span>)</span><span class="result">: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.apply.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Derives a codec for the specified type.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -175,36 +188,23 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="defval" name="classOf[java.lang.CloneNotSupportedException]">...</span>
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scodec.codecs.CoproductBuilderAutoDiscriminators#cnil" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="cnil[X,A]:scodec.codecs.CoproductBuilderAutoDiscriminators[X,shapeless.CNil,A]"></a>
-      <a id="cnil[X,A]:CoproductBuilderAutoDiscriminators[X,CNil,A]"></a>
+    </li><li name="scodec.DerivedCodec#coproduct" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="coproduct[A,D,C0&lt;:shapeless.Coproduct](implicitdiscriminated:scodec.codecs.Discriminated[A,D],implicitauto:scodec.codecs.CoproductBuilderAuto[A]{typeC=C0},implicitauto2:scodec.codecs.CoproductBuilderAutoDiscriminators[A,C0,D]):scodec.DerivedCodec[A]"></a>
+      <a id="coproduct[A,D,C0&lt;:Coproduct](Discriminated[A,D],CoproductBuilderAuto[A]{typeC=C0},CoproductBuilderAutoDiscriminators[A,C0,D]):DerivedCodec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">cnil</span><span class="tparams">[<span name="X">X</span>, <span name="A">A</span>]</span><span class="result">: <a href="CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.cnil.X">X</span>, <span class="extype" name="shapeless.CNil">CNil</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.cnil.A">A</span>]</span>
-      </span>
-      </h4>
-      
-    </li><li name="scodec.codecs.CoproductBuilderAutoDiscriminators#coproduct" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="coproduct[X,A,CH,CT&lt;:shapeless.Coproduct](implicitheadDiscriminator:scodec.codecs.Discriminator[X,CH,A],implicittailAuto:scodec.codecs.CoproductBuilderAutoDiscriminators[X,CT,A]):scodec.codecs.CoproductBuilderAutoDiscriminators[X,shapeless.:+:[CH,CT],A]"></a>
-      <a id="coproduct[X,A,CH,CT&lt;:Coproduct](Discriminator[X,CH,A],CoproductBuilderAutoDiscriminators[X,CT,A]):CoproductBuilderAutoDiscriminators[X,:+:[CH,CT],A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">implicit </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">coproduct</span><span class="tparams">[<span name="X">X</span>, <span name="A">A</span>, <span name="CH">CH</span>, <span name="CT">CT &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="headDiscriminator">headDiscriminator: <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.X">X</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.CH">CH</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.A">A</span>]</span>, <span name="tailAuto">tailAuto: <a href="CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.X">X</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.CT">CT</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.A">A</span>]</span>)</span><span class="result">: <a href="CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.X">X</span>, <span class="extype" name="shapeless.:+:">:+:</span>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.CH">CH</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.CT">CT</span>], <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.coproduct.A">A</span>]</span>
+        <span class="name">coproduct</span><span class="tparams">[<span name="A">A</span>, <span name="D">D</span>, <span name="C0">C0 &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="discriminated">discriminated: <a href="codecs/Discriminated.html" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.DerivedCodec.coproduct.A">A</span>, <span class="extype" name="scodec.DerivedCodec.coproduct.D">D</span>]</span>, <span name="auto">auto: <a href="codecs/CoproductBuilderAuto.html" class="extype" name="scodec.codecs.CoproductBuilderAuto">CoproductBuilderAuto</a>[<span class="extype" name="scodec.DerivedCodec.coproduct.A">A</span>] { type C = C0 }</span>, <span name="auto2">auto2: <a href="codecs/CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>[<span class="extype" name="scodec.DerivedCodec.coproduct.A">A</span>, <span class="extype" name="scodec.DerivedCodec.coproduct.C0">C0</span>, <span class="extype" name="scodec.DerivedCodec.coproduct.D">D</span>]</span>)</span><span class="result">: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.coproduct.A">A</span>]</span>
       </span>
       </h4>
       
@@ -246,7 +246,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Unit" class="extype" target="_top">Unit</a></span>
       </span>
       </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
       <span class="symbol">classOf[java.lang.Throwable]</span>
@@ -279,6 +279,32 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="scodec.DerivedCodec#hlist" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hlist[H,T&lt;:shapeless.HList](implicitheadCodec:scodec.ImplicitCodec[H],implicittailAux:scodec.DerivedCodec[T]):scodec.DerivedCodec[shapeless.::[H,T]]"></a>
+      <a id="hlist[H,T&lt;:HList](ImplicitCodec[H],DerivedCodec[T]):DerivedCodec[::[H,T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hlist</span><span class="tparams">[<span name="H">H</span>, <span name="T">T &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="headCodec">headCodec: <a href="ImplicitCodec.html" class="extype" name="scodec.ImplicitCodec">ImplicitCodec</a>[<span class="extype" name="scodec.DerivedCodec.hlist.H">H</span>]</span>, <span name="tailAux">tailAux: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.hlist.T">T</span>]</span>)</span><span class="result">: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.DerivedCodec.hlist.H">H</span>, <span class="extype" name="scodec.DerivedCodec.hlist.T">T</span>]]</span>
+      </span>
+      </h4>
+      
+    </li><li name="scodec.DerivedCodec#hnil" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="hnil:scodec.DerivedCodec[shapeless.HNil]"></a>
+      <a id="hnil:DerivedCodec[HNil]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">hnil</span><span class="result">: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="shapeless.HNil">HNil</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -292,6 +318,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.DerivedCodec#labelledProduct" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="labelledProduct[A,Rec&lt;:shapeless.HList](implicitlgen:shapeless.LabelledGeneric.Aux[A,Rec],implicitauto:scodec.DerivedCodec[Rec]):scodec.DerivedCodec[A]"></a>
+      <a id="labelledProduct[A,Rec&lt;:HList](Aux[A,Rec],DerivedCodec[Rec]):DerivedCodec[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">labelledProduct</span><span class="tparams">[<span name="A">A</span>, <span name="Rec">Rec &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="lgen">lgen: <span class="extype" name="shapeless.LabelledGeneric.Aux">Aux</span>[<span class="extype" name="scodec.DerivedCodec.labelledProduct.A">A</span>, <span class="extype" name="scodec.DerivedCodec.labelledProduct.Rec">Rec</span>]</span>, <span name="auto">auto: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.labelledProduct.Rec">Rec</span>]</span>)</span><span class="result">: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.labelledProduct.A">A</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -331,6 +370,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scodec.DerivedCodec#record" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="record[KH&lt;:Symbol,VH,TRec&lt;:shapeless.HList,KT&lt;:shapeless.HList](implicitkeys:shapeless.ops.record.Keys.Aux[shapeless.::[shapeless.record.FieldType[KH,VH],TRec],shapeless.::[KH,KT]],implicitheadCodec:scodec.ImplicitCodec[VH],implicittailAux:scodec.DerivedCodec[TRec]):scodec.DerivedCodec[shapeless.::[shapeless.record.FieldType[KH,VH],TRec]]"></a>
+      <a id="record[KH&lt;:Symbol,VH,TRec&lt;:HList,KT&lt;:HList](Aux[::[FieldType[KH,VH],TRec],::[KH,KT]],ImplicitCodec[VH],DerivedCodec[TRec]):DerivedCodec[::[FieldType[KH,VH],TRec]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">record</span><span class="tparams">[<span name="KH">KH &lt;: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Symbol" class="extype" target="_top">Symbol</a></span>, <span name="VH">VH</span>, <span name="TRec">TRec &lt;: <span class="extype" name="shapeless.HList">HList</span></span>, <span name="KT">KT &lt;: <span class="extype" name="shapeless.HList">HList</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="keys">keys: <span class="extype" name="shapeless.ops.record.Keys.Aux">Aux</span>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.record.FieldType">FieldType</span>[<span class="extype" name="scodec.DerivedCodec.record.KH">KH</span>, <span class="extype" name="scodec.DerivedCodec.record.VH">VH</span>], <span class="extype" name="scodec.DerivedCodec.record.TRec">TRec</span>], <span class="extype" name="shapeless.::">::</span>[<span class="extype" name="scodec.DerivedCodec.record.KH">KH</span>, <span class="extype" name="scodec.DerivedCodec.record.KT">KT</span>]]</span>, <span name="headCodec">headCodec: <a href="ImplicitCodec.html" class="extype" name="scodec.ImplicitCodec">ImplicitCodec</a>[<span class="extype" name="scodec.DerivedCodec.record.VH">VH</span>]</span>, <span name="tailAux">tailAux: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.record.TRec">TRec</span>]</span>)</span><span class="result">: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="shapeless.::">::</span>[<span class="extype" name="shapeless.record.FieldType">FieldType</span>[<span class="extype" name="scodec.DerivedCodec.record.KH">KH</span>, <span class="extype" name="scodec.DerivedCodec.record.VH">VH</span>], <span class="extype" name="scodec.DerivedCodec.record.TRec">TRec</span>]]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -357,19 +409,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scodec.codecs.CoproductBuilderAutoDiscriminators#union" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="union[X,A,K,V,CT&lt;:shapeless.Coproduct](implicitheadDiscriminator:scodec.codecs.Discriminator[X,V,A],implicittailAuto:scodec.codecs.CoproductBuilderAutoDiscriminators[X,CT,A]):scodec.codecs.CoproductBuilderAutoDiscriminators[X,shapeless.:+:[shapeless.record.FieldType[K,V],CT],A]"></a>
-      <a id="union[X,A,K,V,CT&lt;:Coproduct](Discriminator[X,V,A],CoproductBuilderAutoDiscriminators[X,CT,A]):CoproductBuilderAutoDiscriminators[X,:+:[FieldType[K,V],CT],A]"></a>
+    </li><li name="scodec.DerivedCodec#unwrap" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="unwrap[A](dc:scodec.DerivedCodec[A]):scodec.Codec[A]"></a>
+      <a id="unwrap[A](DerivedCodec[A]):Codec[A]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">implicit </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">union</span><span class="tparams">[<span name="X">X</span>, <span name="A">A</span>, <span name="K">K</span>, <span name="V">V</span>, <span name="CT">CT &lt;: <span class="extype" name="shapeless.Coproduct">Coproduct</span></span>]</span><span class="params">(<span class="implicit">implicit </span><span name="headDiscriminator">headDiscriminator: <a href="Discriminator.html" class="extype" name="scodec.codecs.Discriminator">Discriminator</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.X">X</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.V">V</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.A">A</span>]</span>, <span name="tailAuto">tailAuto: <a href="CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.X">X</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.CT">CT</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.A">A</span>]</span>)</span><span class="result">: <a href="CoproductBuilderAutoDiscriminators.html" class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators">CoproductBuilderAutoDiscriminators</a>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.X">X</span>, <span class="extype" name="shapeless.:+:">:+:</span>[<span class="extype" name="shapeless.record.FieldType">FieldType</span>[<span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.K">K</span>, <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.V">V</span>], <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.CT">CT</span>], <span class="extype" name="scodec.codecs.CoproductBuilderAutoDiscriminators.union.A">A</span>]</span>
+        <span class="name">unwrap</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="dc">dc: <a href="DerivedCodec.html" class="extype" name="scodec.DerivedCodec">DerivedCodec</a>[<span class="extype" name="scodec.DerivedCodec.unwrap.A">A</span>]</span>)</span><span class="result">: <a href="Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.DerivedCodec.unwrap.A">A</span>]</span>
       </span>
       </h4>
-      
+      <p class="shortcomment cmt">Implicitly unwraps an implicit codec to a regular codec.</p>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -456,6 +508,6 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../../lib/diagrams.js"></script>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../lib/template.js"></script><script defer="defer" type="text/javascript" id="modernizr-custom-js" src="../lib/modernizr.custom.js"></script><script defer="defer" type="text/javascript" id="diagrams-js" src="../lib/diagrams.js"></script>
     </body>
       </html>

@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>ValueEnrichedWithTuplingSupport - scodec.codecs.ValueEnrichedWithTuplingSupport</title>
-          <meta name="description" content="ValueEnrichedWithTuplingSupport - scodec.codecs.ValueEnrichedWithTuplingSupport" />
-          <meta name="keywords" content="ValueEnrichedWithTuplingSupport scodec.codecs.ValueEnrichedWithTuplingSupport" />
+          <title>Discriminated - scodec.codecs.Discriminated</title>
+          <meta name="description" content="Discriminated - scodec.codecs.Discriminated" />
+          <meta name="keywords" content="Discriminated scodec.codecs.Discriminated" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'scodec.codecs.package$$ValueEnrichedWithTuplingSupport';
+            var hash = 'scodec.codecs.Discriminated';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,27 +26,28 @@
       <div id="definition">
         <img src="../../lib/class_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
-        <h1>ValueEnrichedWithTuplingSupport</h1>
+        <h1>Discriminated</h1>
       </div>
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier">implicit final </span>
-        <span class="kind">class</span>
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ValueEnrichedWithTuplingSupport</span><span class="tparams">[<span name="A">A</span>]</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></span>
+        <span class="name">Discriminated</span><span class="tparams">[<span name="Y">Y</span>, <span name="D">D</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>)</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Product" class="extype" target="_top">Product</a> with <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Allows creation of left nested pairs by successive usage of <code>~</code> operator.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Wrapper class that indicates subtypes of <code>Y</code> are discriminated by type <code>D</code>
+using the supplied <code>Codec[D]</code>.</p><p>For example, an implicit <code>Discriminated</code> value can be defined in the companion
+of a sealed trait, along with implicit <code>Discriminator</code> values in each subtype
+companion. Given such implicits, a codec for the trait can be automatically
+created using <code>Codec.derive[Y]</code>.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/Discriminator.scala" target="_blank">Discriminator.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
-        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
-                <span class="toggle diagram-link">Type Hierarchy</span>
-                <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#diagrams" target="_blank" class="diagram-help">Learn more about scaladoc diagrams</a>
-                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph7" viewBox="0.00 0.00 864.00 125.00" height="125pt" width="864pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 121)" class="graph" id="graph0"><polygon points="-4,4 -4,-121 860,-121 860,4 -4,4" stroke="none" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust4"></g><g class="cluster" id="clust3"></g><g class="cluster" id="clust2"></g><!-- node3 --><g class="node implicit-outgoing class" id="graph7_3"><g id="a_implicit-outgoing class|graph7_3"><a xlink:title="scodec.codecs.ValueEnrichedWithTuplingSupport can be implicitly converted to ValueEnrichedWithTuplingSupport[ValueEnrichedWithTuplingSupport[A]] by the implicit method ValueEnrichedWithTuplingSupport in package scodec.codecs" xlink:href="#inheritance-diagram"><polygon points="389.5,-49 24.5,-49 24.5,-24 389.5,-24 389.5,-49" stroke="#ababab" fill="#e1e1e1"></polygon><image xlink:href="../../lib/class_diagram.png" y="-43.5" x="35" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#7d7d7d" font-size="10.00" font-family="Arial" y="-33.7495" x="55.9663" text-anchor="start">ValueEnrichedWithTuplingSupport[ValueEnrichedWithTuplingSupport[A]]</text></a></g></g><!-- node0 --><g class="node this class" id="graph7_0"><g id="a_this class|graph7_0"><a xlink:title="scodec.codecs.ValueEnrichedWithTuplingSupport (this class)" xlink:href="#inheritance-diagram"><polygon points="668.5,-49 461.5,-49 461.5,-24 668.5,-24 668.5,-49" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../lib/class_diagram.png" y="-43.5" x="472" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-33.7495" x="492.621" text-anchor="start">ValueEnrichedWithTuplingSupport[A]</text></a></g></g><!-- node0&#45;&gt;node3 --><g class="edge implicit-outgoing" id="0_3"><g id="a_implicit-outgoing|0_3"><a xlink:title="ValueEnrichedWithTuplingSupport[A] can be implicitly converted to ValueEnrichedWithTuplingSupport[ValueEnrichedWithTuplingSupport[A]]"><path d="M453.102,-36.5C436.939,-36.5 419.923,-36.5 402.699,-36.5" stroke="#d4d4d4" fill="none"></path><polygon points="402.551,-34.7501 397.551,-36.5 402.551,-38.2501 402.551,-34.7501" stroke="#d4d4d4" fill="#d4d4d4"></polygon></a></g><text fill="#aaaaaa" font-size="10.00" font-family="Arial" y="-42.999" x="425.5" text-anchor="middle">implicitly</text></g><!-- node2 --><g class="node implicit-incoming" id="graph7_2"><g id="a_implicit-incoming|graph7_2"><a xlink:title="StringEnrichedWithCodecContextSupport, ImplicitCodecs, ImplicitCollections, ImplicitValues, SignerFactory, SignatureSigner, Signer, NeedDiscriminatorCodec[A], DiscriminatorCodec[A, B], Discriminated[Y, D], Discriminator[X, Y, D], CoproductBuilderAutoDiscriminators[X, C, A], CoproductBuilderKeyDiscriminators[C, L, A], CoproductBuilderAuto[A], NeedDiscriminators[A], CoproductCodecBuilder[C, L, R], ToCoproductCodecs[C, L], CipherFactory"><polygon points="831.5,-47 740.5,-47 740.5,-26 831.5,-26 831.5,-47" stroke="#ababab" fill="#e1e1e1"></polygon><text fill="#7d7d7d" font-size="10.00" font-family="Arial" y="-33.5" x="750.653" text-anchor="start">18 classes/traits</text></a></g></g><!-- node2&#45;&gt;node0 --><g class="edge implicit-incoming" id="2_0"><g id="a_implicit-incoming|2_0"><a xlink:title="18 classes/traits can be implicitly converted to ValueEnrichedWithTuplingSupport[A]"><path d="M732.377,-36.5C716.93,-36.5 699.445,-36.5 681.746,-36.5" stroke="#d4d4d4" fill="none"></path><polygon points="681.743,-34.7501 676.743,-36.5 681.743,-38.2501 681.743,-34.7501" stroke="#d4d4d4" fill="#d4d4d4"></polygon></a></g><text fill="#aaaaaa" font-size="10.00" font-family="Arial" y="-42.999" x="704.5" text-anchor="middle">implicitly</text></g><!-- node1 --><g class="node class" id="graph7_1"><g id="a_class|graph7_1"><a xlink:title="scala.AnyRef"><polygon points="603,-117 527,-117 527,-92 603,-92 603,-117" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../lib/class_diagram.png" y="-111.5" x="537" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-101.75" x="557.714" text-anchor="start">AnyRef</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph7_1_0"><g id="a_inheritance|graph7_1_0"><a xlink:title="ValueEnrichedWithTuplingSupport[A] is a subtype of AnyRef"><path d="M565,-86.6005C565,-74.8849 565,-59.583 565,-49.1973" stroke="#d4d4d4" fill="none"></path><polygon points="563.25,-86.7005 565,-91.7005 566.75,-86.7006 563.25,-86.7005" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
-              </div></div>
+          <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Serializable" class="extype" target="_top">Serializable</a>, <span class="extype" name="java.io.Serializable">Serializable</span>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Product" class="extype" target="_top">Product</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Equals" class="extype" target="_top">Equals</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
+        </div></div>
         
 
       <div id="mbrsel">
@@ -63,7 +64,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.codecs.ValueEnrichedWithTuplingSupport"><span>ValueEnrichedWithTuplingSupport</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.codecs.Discriminated"><span>Discriminated</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -88,16 +89,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(a:A):scodec.codecs.package.ValueEnrichedWithTuplingSupport[A]"></a>
-      <a id="&lt;init&gt;:ValueEnrichedWithTuplingSupport[A]"></a>
+              <ol><li name="scodec.codecs.Discriminated#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(codec:scodec.Codec[D]):scodec.codecs.Discriminated[Y,D]"></a>
+      <a id="&lt;init&gt;:Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">ValueEnrichedWithTuplingSupport</span><span class="params">(<span name="a">a: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span></span>)</span>
+        <span class="name">Discriminated</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>)</span>
       </span>
       </h4>
       
@@ -162,25 +163,25 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
-      <a id="-&gt;[B](B):(ValueEnrichedWithTuplingSupport[A],B)"></a>
+      <a id="-&gt;[B](B):(Discriminated[Y,D],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>], <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -212,19 +213,23 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#a" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#a" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="a:A"></a>
-      <a id="a:A"></a>
+      <a id="a:Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">a</span><span class="result">: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span></span>
+        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            
+          </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -257,72 +262,85 @@
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="scodec.codecs.Discriminated#codec" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="codec:scodec.Codec[D]"></a>
+      <a id="codec:Codec[D]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">codec</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring((ValueEnrichedWithTuplingSupport[A])⇒Boolean,⇒Any):ValueEnrichedWithTuplingSupport[A]"></a>
+      <a id="ensuring((Discriminated[Y,D])⇒Boolean,⇒Any):Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
-      <a id="ensuring((ValueEnrichedWithTuplingSupport[A])⇒Boolean):ValueEnrichedWithTuplingSupport[A]"></a>
+      <a id="ensuring((Discriminated[Y,D])⇒Boolean):Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring(Boolean,⇒Any):ValueEnrichedWithTuplingSupport[A]"></a>
+      <a id="ensuring(Boolean,⇒Any):Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
-      <a id="ensuring(Boolean):ValueEnrichedWithTuplingSupport[A]"></a>
+      <a id="ensuring(Boolean):Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -338,19 +356,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="equals(x$1:Any):Boolean"></a>
-      <a id="equals(Any):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -383,7 +388,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
@@ -400,19 +405,6 @@
       </span>
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="hashCode():Int"></a>
-      <a id="hashCode():Int"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Int" class="extype" target="_top">Int</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
@@ -481,19 +473,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="toString():String"></a>
-      <a id="toString():String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -551,34 +530,38 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="~[B](b:B):(A,B)"></a>
-      <a id="~[B](B):(A,B)"></a>
+      <a id="~[B](B):(Discriminated[Y,D],B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde" class="name">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>, <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
-      </span>
-      </h4>
-      
-    </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="→[B](y:B):(A,B)"></a>
-      <a id="→[B](B):(ValueEnrichedWithTuplingSupport[A],B)"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>], <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            
+          </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
+    </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="→[B](y:B):(A,B)"></a>
+      <a id="→[B](B):(Discriminated[Y,D],B)"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>], <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -586,24 +569,7 @@
 
         <div id="values" class="values members">
               <h3>Shadowed Implicit Value Members</h3>
-              <ol><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#a" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="a:A"></a>
-      <a id="a:ValueEnrichedWithTuplingSupport[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="implicit shadowed">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueEnrichedWithTuplingSupport: ValueEnrichedWithTuplingSupport[ValueEnrichedWithTuplingSupport[A]]).a</pre></div></dd></dl></div>
-    </li><li name="scala.Predef.any2stringadd#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+              <ol><li name="scala.Predef.any2stringadd#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
       <h4 class="signature">
@@ -616,10 +582,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueEnrichedWithTuplingSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminated: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
@@ -633,27 +599,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueEnrichedWithTuplingSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
-    </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="~[B](b:B):(A,B)"></a>
-      <a id="~[B](B):(ValueEnrichedWithTuplingSupport[A],B)"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $tilde" class="implicit shadowed">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>], <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
-            
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is shadowed by one or more members in this class.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueEnrichedWithTuplingSupport: ValueEnrichedWithTuplingSupport[ValueEnrichedWithTuplingSupport[A]]).~(b)</pre></div></dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminated: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
@@ -661,41 +610,41 @@
               <h3>Deprecated Value Members</h3>
               <ol><li name="scala.Predef.any2ArrowAssoc#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:ValueEnrichedWithTuplingSupport[A]"></a>
+      <a id="x:Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2ArrowAssoc in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueEnrichedWithTuplingSupport: ArrowAssoc[ValueEnrichedWithTuplingSupport[A]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminated: ArrowAssoc[Discriminated[Y, D]]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>leftOfArrow<code> instead</code></u></code></p></dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:ValueEnrichedWithTuplingSupport[A]"></a>
+      <a id="x:Discriminated[Y,D]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]</span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]] performed by method any2Ensuring in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(valueEnrichedWithTuplingSupport: Ensuring[ValueEnrichedWithTuplingSupport[A]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(discriminated: Ensuring[Discriminated[Y, D]]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>resultOfEnsuring<code> instead</code></u></code></p></dd></dl></div>
@@ -704,30 +653,38 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.AnyRef">
+        <div class="parent" name="scala.Serializable">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Serializable" class="extype" target="_top">Serializable</a></h3>
+            </div><div class="parent" name="java.io.Serializable">
+              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
+            </div><div class="parent" name="scala.Product">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Product" class="extype" target="_top">Product</a></h3>
+            </div><div class="parent" name="scala.Equals">
+              <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Equals" class="extype" target="_top">Equals</a></h3>
+            </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a></h3>
             </div><div class="parent" name="scala.Any">
               <h3>Inherited from <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></h3>
             </div>
         <div class="conversion" name="scodec.codecs.ValueEnrichedWithTuplingSupport">
               <h3>Inherited by implicit conversion ValueEnrichedWithTuplingSupport from
-                <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]]
+                <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
+                <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringfmt">
               <h3>Inherited by implicit conversion any2stringfmt from
-                <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
+                <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2ArrowAssoc">
               <h3>Inherited by implicit conversion any2ArrowAssoc from
-                <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]]
+                <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2Ensuring">
               <h3>Inherited by implicit conversion any2Ensuring from
-                <a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.A">A</span>]]
+                <a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>] to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.Discriminated">Discriminated</a>[<span class="extype" name="scodec.codecs.Discriminated.Y">Y</span>, <span class="extype" name="scodec.codecs.Discriminated.D">D</span>]]
               </h3>
             </div>
         </div>

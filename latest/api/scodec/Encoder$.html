@@ -39,7 +39,8 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>.</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Encoder.scala" target="_blank">Encoder.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Companion for <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>.
+</p></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/Encoder.scala" target="_blank">Encoder.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyRef" class="extype" target="_top">AnyRef</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
         </div></div>
@@ -50,7 +51,7 @@
         <div id="order">
               <span class="filtertype">Ordering</span>
               <ol>
-                
+                <li class="group out"><span>Grouped</span></li>
                 <li class="alpha in"><span>Alphabetic</span></li>
                 <li class="inherit out"><span>By inheritance</span></li>
               </ol>
@@ -150,7 +151,20 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.Encoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.Encoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="ctor">
+      <a id="apply[A](f:A=&gt;scalaz.\/[scodec.Err,scodec.bits.BitVector]):scodec.Encoder[A]"></a>
+      <a id="apply[A]((A)⇒\/[Err,BitVector]):Encoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.apply.A">A</span>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.apply.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates an encoder from the specified function.</p>
+    </li><li name="scodec.Encoder#apply" visbl="pub" data-isabs="false" fullComment="no" group="ctor">
       <a id="apply[A](implicitenc:scodec.Encoder[A]):scodec.Encoder[A]"></a>
       <a id="apply[A](Encoder[A]):Encoder[A]"></a>
       <h4 class="signature">
@@ -162,7 +176,7 @@
         <span class="name">apply</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span class="implicit">implicit </span><span name="enc">enc: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.apply.A">A</span>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.apply.A">A</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Provides syntaax for summoning an <code>Encoder[A]</code> from implicit scope.</p>
+      <p class="shortcomment cmt">Provides syntax for summoning an <code>Encoder[A]</code> from implicit scope.</p>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -176,7 +190,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.EncoderFunctions#choiceEncoder" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.EncoderFunctions#choiceEncoder" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="choiceEncoder[A](encoders:scodec.Encoder[A]*):scodec.Encoder[A]"></a>
       <a id="choiceEncoder[A](Encoder[A]*):Encoder[A]"></a>
       <h4 class="signature">
@@ -190,8 +204,7 @@
       </h4>
       <p class="shortcomment cmt">Creates an encoder that encodes with each of the specified encoders, returning
 the first successful result.</p><div class="fullcomment"><div class="comment cmt"><p>Creates an encoder that encodes with each of the specified encoders, returning
-the first successful result.
-</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
+the first successful result.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -211,7 +224,7 @@ the first successful result.
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="scodec.Encoder#contravariantInstance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.Encoder#contravariantInstance" visbl="pub" data-isabs="false" fullComment="no" group="inst">
       <a id="contravariantInstance:scalaz.Contravariant[scodec.Encoder]"></a>
       <a id="contravariantInstance:Contravariant[Encoder]"></a>
       <h4 class="signature">
@@ -223,8 +236,8 @@ the first successful result.
         <span class="name">contravariantInstance</span><span class="result">: <span class="extype" name="scalaz.Contravariant">Contravariant</span>[<a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>]</span>
       </span>
       </h4>
-      
-    </li><li name="scodec.Encoder#corepresentableInstance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Contravariant functor instance.</p>
+    </li><li name="scodec.Encoder#corepresentableInstance" visbl="pub" data-isabs="false" fullComment="no" group="inst">
       <a id="corepresentableInstance:scalaz.Corepresentable[scodec.Encoder,scalaz.\/[scodec.Err,scodec.bits.BitVector]]"></a>
       <a id="corepresentableInstance:Corepresentable[Encoder,\/[Err,BitVector]]"></a>
       <h4 class="signature">
@@ -236,8 +249,8 @@ the first successful result.
         <span class="name">corepresentableInstance</span><span class="result">: <span class="extype" name="scalaz.Corepresentable">Corepresentable</span>[<a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>, <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]]</span>
       </span>
       </h4>
-      
-    </li><li name="scodec.EncoderFunctions#encode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <p class="shortcomment cmt">Corepresentable instance.</p>
+    </li><li name="scodec.EncoderFunctions#encode" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="encode[A](a:A)(implicitevidence$1:scodec.Encoder[A]):scalaz.\/[scodec.Err,scodec.bits.BitVector]"></a>
       <a id="encode[A](A)(Encoder[A]):\/[Err,BitVector]"></a>
       <h4 class="signature">
@@ -250,7 +263,7 @@ the first successful result.
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified value to a bit vector using an implicitly available encoder.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified value to a bit vector using an implicitly available encoder.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.EncoderFunctions#encodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.EncoderFunctions#encodeBoth" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="encodeBoth[A,B](encA:scodec.Encoder[A],encB:scodec.Encoder[B])(a:A,b:B):scalaz.\/[scodec.Err,scodec.bits.BitVector]"></a>
       <a id="encodeBoth[A,B](Encoder[A],Encoder[B])(A,B):\/[Err,BitVector]"></a>
       <h4 class="signature">
@@ -263,7 +276,7 @@ the first successful result.
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes the specified values, one after the other, to a bit vector using the specified encoders.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.EncoderFunctions#encodeSeq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.EncoderFunctions#encodeSeq" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="encodeSeq[A](enc:scodec.Encoder[A])(seq:scala.collection.immutable.Seq[A]):scalaz.\/[scodec.Err,scodec.bits.BitVector]"></a>
       <a id="encodeSeq[A](Encoder[A])(Seq[A]):\/[Err,BitVector]"></a>
       <h4 class="signature">
@@ -276,7 +289,7 @@ the first successful result.
       </span>
       </h4>
       <p class="shortcomment cmt">Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.</p><div class="fullcomment"><div class="comment cmt"><p>Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="EncoderFunctions.html" class="extype" name="scodec.EncoderFunctions">EncoderFunctions</a></dd></dl></div>
-    </li><li name="scodec.EncoderFunctions#encodeValid" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="scodec.EncoderFunctions#encodeValid" visbl="pub" data-isabs="false" fullComment="yes" group="conv">
       <a id="encodeValid[A](a:A)(implicitevidence$2:scodec.Encoder[A]):scodec.bits.BitVector"></a>
       <a id="encodeValid[A](A)(Encoder[A]):BitVector"></a>
       <h4 class="signature">
@@ -360,19 +373,6 @@ the first successful result.
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="scodec.Encoder#instance" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="instance[A](f:A=&gt;scalaz.\/[scodec.Err,scodec.bits.BitVector]):scodec.Encoder[A]"></a>
-      <a id="instance[A]((A)⇒\/[Err,BitVector]):Encoder[A]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">instance</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.instance.A">A</span>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.instance.A">A</span>]</span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -513,7 +513,26 @@ the first successful result.
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Deprecated Value Members</h3>
+              <ol><li name="scodec.Encoder#instance" visbl="pub" data-isabs="false" fullComment="yes" group="ctor">
+      <a id="instance[A](f:A=&gt;scalaz.\/[scodec.Err,scodec.bits.BitVector]):scodec.Encoder[A]"></a>
+      <a id="instance[A]((A)⇒\/[Err,BitVector]):Encoder[A]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name deprecated" title="Deprecated: (Since version 1.5.0) Use apply instead">instance</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="f">f: (<span class="extype" name="scodec.Encoder.instance.A">A</span>) ⇒ <span class="extype" name="scalaz.\/">\/</span>[<a href="Err.html" class="extype" name="scodec.Err">Err</a>, <a href="http://docs.typelevel.org/api/scodec/bits/stable/1.0.4/index.html#scodec.bits.BitVector" class="extype" target="_top">BitVector</a>]</span>)</span><span class="result">: <a href="Encoder.html" class="extype" name="scodec.Encoder">Encoder</a>[<span class="extype" name="scodec.Encoder.instance.A">A</span>]</span>
+      </span>
+      </h4>
+      <p class="shortcomment cmt">Creates an encoder from the specified function.</p><div class="fullcomment"><div class="comment cmt"><p>Creates an encoder from the specified function.</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@deprecated</span>
+              
+        </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 1.5.0)</i> Use apply instead</p></dd></dl></div>
+    </li></ol>
+            </div>
         </div>
 
         <div id="inheritedMembers">
@@ -528,7 +547,16 @@ the first successful result.
         </div>
 
         <div id="groupedMembers">
-        <div class="group" name="Ungrouped">
+        <div class="group" name="ctor">
+              <h3>Constructors</h3>
+              
+            </div><div class="group" name="conv">
+              <h3>Conveniences</h3>
+              
+            </div><div class="group" name="inst">
+              <h3>Typeclass Instances</h3>
+              
+            </div><div class="group" name="Ungrouped">
               <h3>Ungrouped</h3>
               
             </div>

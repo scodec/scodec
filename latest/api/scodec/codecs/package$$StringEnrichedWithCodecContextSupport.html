@@ -2,9 +2,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
         <head>
-          <title>StringEnrichedWithCodecNamingSupport - scodec.codecs.StringEnrichedWithCodecNamingSupport</title>
-          <meta name="description" content="StringEnrichedWithCodecNamingSupport - scodec.codecs.StringEnrichedWithCodecNamingSupport" />
-          <meta name="keywords" content="StringEnrichedWithCodecNamingSupport scodec.codecs.StringEnrichedWithCodecNamingSupport" />
+          <title>StringEnrichedWithCodecContextSupport - scodec.codecs.StringEnrichedWithCodecContextSupport</title>
+          <meta name="description" content="StringEnrichedWithCodecContextSupport - scodec.codecs.StringEnrichedWithCodecContextSupport" />
+          <meta name="keywords" content="StringEnrichedWithCodecContextSupport scodec.codecs.StringEnrichedWithCodecContextSupport" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -12,7 +12,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
-            var hash = 'scodec.codecs.package$$StringEnrichedWithCodecNamingSupport';
+            var hash = 'scodec.codecs.package$$StringEnrichedWithCodecContextSupport';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -26,7 +26,7 @@
       <div id="definition">
         <img src="../../lib/class_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="scodec">scodec</a>.<a href="package.html" class="extype" name="scodec.codecs">codecs</a></p>
-        <h1>StringEnrichedWithCodecNamingSupport</h1>
+        <h1>StringEnrichedWithCodecContextSupport</h1>
       </div>
 
       <h4 id="signature" class="signature">
@@ -35,14 +35,18 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">StringEnrichedWithCodecNamingSupport</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
+        <span class="name">StringEnrichedWithCodecContextSupport</span><span class="result"> extends <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides the <code>|</code> method on <code>String</code> that allows creation of a named codec.</p><p>Usage: </p><pre><span class="kw">val</span> codec = <span class="lit">"id"</span> | uint8</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Provides the <code>|</code> method on <code>String</code>, which is reverse syntax for <code>codec withContext ctx</code>.</p><p>Usage: </p><pre><span class="kw">val</span> codec = <span class="lit">"id"</span> | uint8</pre></div><dl class="attributes block"> <dt>Source</dt><dd><a href="https:/github.com/scodec/scodec/tree/master/src/main/scala/scodec/codecs/package.scala" target="_blank">package.scala</a></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.AnyVal" class="extype" target="_top">AnyVal</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.NotNull" class="extype" target="_top">NotNull</a>, <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></div>
-        </div></div>
+        </div><div class="toggleContainer block diagram-container" id="inheritance-diagram-container">
+                <span class="toggle diagram-link">Type Hierarchy</span>
+                <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#diagrams" target="_blank" class="diagram-help">Learn more about scaladoc diagrams</a>
+                <div class="diagram" id="inheritance-diagram"><svg class="class-diagram" id="graph8" viewBox="0.00 0.00 741.00 125.00" height="125pt" width="741pt" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg"><g transform="scale(1 1) rotate(0) translate(4 121)" class="graph" id="graph0"><polygon points="-4,4 -4,-121 737,-121 737,4 -4,4" stroke="none" fill="white"></polygon><g class="cluster" id="clust1"></g><g class="cluster" id="clust3"></g><g class="cluster" id="clust2"></g><!-- node2 --><g class="node implicit-outgoing class" id="graph8_2"><g id="a_implicit-outgoing class|graph8_2"><a xlink:title="scodec.codecs.StringEnrichedWithCodecContextSupport can be implicitly converted to ValueEnrichedWithTuplingSupport[StringEnrichedWithCodecContextSupport] by the implicit method ValueEnrichedWithTuplingSupport in package scodec.codecs" xlink:href="package$$ValueEnrichedWithTuplingSupport.html#inheritance-diagram"><polygon points="409.5,-49 24.5,-49 24.5,-24 409.5,-24 409.5,-49" stroke="#ababab" fill="#e1e1e1"></polygon><image xlink:href="../../lib/class_diagram.png" y="-43.5" x="35" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#7d7d7d" font-size="10.00" font-family="Arial" y="-33.7495" x="55.9639" text-anchor="start">ValueEnrichedWithTuplingSupport[StringEnrichedWithCodecContextSupport]</text></a></g></g><!-- node0 --><g class="node this class" id="graph8_0"><g id="a_this class|graph8_0"><a xlink:title="scodec.codecs.StringEnrichedWithCodecContextSupport (this class)" xlink:href="#inheritance-diagram"><polygon points="708.5,-49 481.5,-49 481.5,-24 708.5,-24 708.5,-49" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../lib/class_diagram.png" y="-43.5" x="492" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-33.7495" x="512.619" text-anchor="start">StringEnrichedWithCodecContextSupport</text></a></g></g><!-- node0&#45;&gt;node2 --><g class="edge implicit-outgoing" id="0_2"><g id="a_implicit-outgoing|0_2"><a xlink:title="StringEnrichedWithCodecContextSupport can be implicitly converted to ValueEnrichedWithTuplingSupport[StringEnrichedWithCodecContextSupport]"><path d="M473.122,-36.5C457.007,-36.5 440.143,-36.5 423.093,-36.5" stroke="#d4d4d4" fill="none"></path><polygon points="422.997,-34.7501 417.997,-36.5 422.997,-38.2501 422.997,-34.7501" stroke="#d4d4d4" fill="#d4d4d4"></polygon></a></g><text fill="#aaaaaa" font-size="10.00" font-family="Arial" y="-42.999" x="445.5" text-anchor="middle">implicitly</text></g><!-- node1 --><g class="node class" id="graph8_1"><g id="a_class|graph8_1"><a xlink:title="scala.AnyVal"><polygon points="632,-117 558,-117 558,-92 632,-92 632,-117" stroke="#115f3b" fill="#0a955b"></polygon><image xlink:href="../../lib/class_diagram.png" y="-111.5" x="568" preserveAspectRatio="xMinYMin meet" height="15px" width="15px"></image><text fill="#ffffff" font-size="10.00" font-family="Arial" y="-101.75" x="588.64" text-anchor="start">AnyVal</text></a></g></g><!-- node1&#45;&gt;node0 --><g class="edge inheritance" id="graph8_1_0"><g id="a_inheritance|graph8_1_0"><a xlink:title="StringEnrichedWithCodecContextSupport is a subtype of AnyVal"><path d="M595,-86.6005C595,-74.8849 595,-59.583 595,-49.1973" stroke="#d4d4d4" fill="none"></path><polygon points="593.25,-86.7005 595,-91.7005 596.75,-86.7006 593.25,-86.7005" stroke="#d4d4d4" fill="none"></polygon></a></g></g></g></svg></div>
+              </div></div>
         
 
       <div id="mbrsel">
@@ -59,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="scodec.codecs.StringEnrichedWithCodecNamingSupport"><span>StringEnrichedWithCodecNamingSupport</span></li><li class="in" name="scala.AnyVal"><span>AnyVal</span></li><li class="in" name="scala.NotNull"><span>NotNull</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="scodec.codecs.StringEnrichedWithCodecContextSupport"><span>StringEnrichedWithCodecContextSupport</span></li><li class="in" name="scala.AnyVal"><span>AnyVal</span></li><li class="in" name="scala.NotNull"><span>NotNull</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
                 <span class="filtertype">Implicitly<br />
@@ -84,16 +88,16 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="scodec.codecs.StringEnrichedWithCodecNamingSupport#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(name:String):scodec.codecs.package.StringEnrichedWithCodecNamingSupport"></a>
-      <a id="&lt;init&gt;:StringEnrichedWithCodecNamingSupport"></a>
+              <ol><li name="scodec.codecs.StringEnrichedWithCodecContextSupport#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(context:String):scodec.codecs.package.StringEnrichedWithCodecContextSupport"></a>
+      <a id="&lt;init&gt;:StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">StringEnrichedWithCodecNamingSupport</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
+        <span class="name">StringEnrichedWithCodecContextSupport</span><span class="params">(<span name="context">context: <span class="extype" name="scala.Predef.String">String</span></span>)</span>
       </span>
       </h4>
       
@@ -145,25 +149,25 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#-&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="-&gt;[B](y:B):(A,B)"></a>
-      <a id="-&gt;[B](B):(StringEnrichedWithCodecNamingSupport,B)"></a>
+      <a id="-&gt;[B](B):(StringEnrichedWithCodecContextSupport,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
+        <span title="gt4s: $minus$greater" class="implicit">-&gt;</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>, <span class="extype" name="scala.Predef.ArrowAssoc.-&gt;.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@inline</span><span class="args">()</span>
@@ -184,19 +188,19 @@
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#a" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="a:A"></a>
-      <a id="a:StringEnrichedWithCodecNamingSupport"></a>
+      <a id="a:StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit">a</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -212,72 +216,85 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="scodec.codecs.StringEnrichedWithCodecContextSupport#context" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="context:String"></a>
+      <a id="context:String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">context</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4>
+      
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring((StringEnrichedWithCodecNamingSupport)⇒Boolean,⇒Any):StringEnrichedWithCodecNamingSupport"></a>
+      <a id="ensuring((StringEnrichedWithCodecContextSupport)⇒Boolean,⇒Any):StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:A=&gt;Boolean):A"></a>
-      <a id="ensuring((StringEnrichedWithCodecNamingSupport)⇒Boolean):StringEnrichedWithCodecNamingSupport"></a>
+      <a id="ensuring((StringEnrichedWithCodecContextSupport)⇒Boolean):StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>) ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean,msg:=&gt;Any):A"></a>
-      <a id="ensuring(Boolean,⇒Any):StringEnrichedWithCodecNamingSupport"></a>
+      <a id="ensuring(Boolean,⇒Any):StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>, <span name="msg">msg: ⇒ <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Any" class="extype" target="_top">Any</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#ensuring" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ensuring(cond:Boolean):A"></a>
-      <a id="ensuring(Boolean):StringEnrichedWithCodecNamingSupport"></a>
+      <a id="ensuring(Boolean):StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit">ensuring</span><span class="params">(<span name="cond">cond: <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.Boolean" class="extype" target="_top">Boolean</a></span>)</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2Ensuring in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>Ensuring</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#formatted" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -293,7 +310,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>StringFormat</dd><dt>Annotations</dt><dd>
@@ -326,19 +343,6 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.codecs.StringEnrichedWithCodecNamingSupport#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="name:String"></a>
-      <a id="name:String"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">name</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
-      </span>
-      </h4>
-      
     </li><li name="scala.Any#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -352,7 +356,7 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="scodec.codecs.StringEnrichedWithCodecNamingSupport#|" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="scodec.codecs.StringEnrichedWithCodecContextSupport#|" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="|[A](codec:scodec.Codec[A]):scodec.Codec[A]"></a>
       <a id="|[A](Codec[A]):Codec[A]"></a>
       <h4 class="signature">
@@ -361,42 +365,42 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport.|.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport.|.A">A</span>]</span>
+        <span title="gt4s: $bar" class="name">|</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="codec">codec: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport.|.A">A</span>]</span>)</span><span class="result">: <a href="../Codec.html" class="extype" name="scodec.Codec">Codec</a>[<span class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport.|.A">A</span>]</span>
       </span>
       </h4>
-      <p class="shortcomment cmt">Names the specified codec, resulting in the name being included in error messages.</p>
+      <p class="shortcomment cmt">Pushes context into the specified codec.</p>
     </li><li name="scodec.codecs.ValueEnrichedWithTuplingSupport#~" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="~[B](b:B):(A,B)"></a>
-      <a id="~[B](B):(StringEnrichedWithCodecNamingSupport,B)"></a>
+      <a id="~[B](B):(StringEnrichedWithCodecContextSupport,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>, <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
+        <span title="gt4s: $tilde" class="implicit">~</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="b">b: <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>, <span class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport.~.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method ValueEnrichedWithTuplingSupport in <a href="package.html" class="extype" name="scodec.codecs">scodec.codecs</a>.
             
           </dd><dt>Definition Classes</dt><dd><a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a></dd></dl></div>
     </li><li name="scala.Predef.any2ArrowAssoc#→" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="→[B](y:B):(A,B)"></a>
-      <a id="→[B](B):(StringEnrichedWithCodecNamingSupport,B)"></a>
+      <a id="→[B](B):(StringEnrichedWithCodecContextSupport,B)"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
+        <span title="gt4s: $u2192" class="implicit">→</span><span class="tparams">[<span name="B">B</span>]</span><span class="params">(<span name="y">y: <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span></span>)</span><span class="result">: (<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>, <span class="extype" name="scala.Predef.ArrowAssoc.→.B">B</span>)</span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2ArrowAssoc in scala.Predef.
             
           </dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd></dl></div>
     </li></ol>
@@ -417,10 +421,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a> performed by method any2stringadd in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecNamingSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecContextSupport: StringAdd).self</pre></div></dd><dt>Definition Classes</dt><dd>StringAdd</dd></dl></div>
     </li><li name="scala.Predef.any2stringfmt#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:Any"></a>
       <a id="self:Any"></a>
@@ -434,10 +438,10 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
             <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a> performed by method any2stringfmt in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecNamingSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecContextSupport: StringFormat).self</pre></div></dd><dt>Definition Classes</dt><dd>StringFormat</dd></dl></div>
     </li></ol>
             </div>
 
@@ -445,41 +449,41 @@
               <h3>Deprecated Value Members</h3>
               <ol><li name="scala.Predef.any2ArrowAssoc#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:StringEnrichedWithCodecNamingSupport"></a>
+      <a id="x:StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use leftOfArrow instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2ArrowAssoc in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2ArrowAssoc in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecNamingSupport: ArrowAssoc[StringEnrichedWithCodecNamingSupport]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecContextSupport: ArrowAssoc[StringEnrichedWithCodecContextSupport]).x</pre></div></dd><dt>Definition Classes</dt><dd>ArrowAssoc</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>leftOfArrow<code> instead</code></u></code></p></dd></dl></div>
     </li><li name="scala.Predef.any2Ensuring#x" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="x:A"></a>
-      <a id="x:StringEnrichedWithCodecNamingSupport"></a>
+      <a id="x:StringEnrichedWithCodecContextSupport"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a></span>
+        <span class="implicit shadowed deprecated" title="Deprecated: (Since version 2.10.0) Use resultOfEnsuring instead">x</span><span class="result">: <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a></span>
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt class="implicit">Implicit information</dt><dd>
-            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to
-            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>] performed by method any2Ensuring in scala.Predef.
+            This member is added by an implicit conversion from <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to
+            <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>] performed by method any2Ensuring in scala.Predef.
             
-          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecNamingSupport: Ensuring[StringEnrichedWithCodecNamingSupport]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
+          </dd><dt class="implicit">Shadowing</dt><dd>This implicitly inherited member is ambiguous. One or more implicitly inherited members have similar signatures, so calling this member may produce an ambiguous implicit conversion compiler error.<br />To access this member you can use a <a href="http://stackoverflow.com/questions/2087250/what-is-the-purpose-of-type-ascription-in-scala" target="_blank">type ascription</a>:<br /><div class="cmt"><pre>(stringEnrichedWithCodecContextSupport: Ensuring[StringEnrichedWithCodecContextSupport]).x</pre></div></dd><dt>Definition Classes</dt><dd>Ensuring</dd><dt>Annotations</dt><dd>
                 <span class="name">@deprecated</span>
               
         </dd><dt>Deprecated</dt><dd class="cmt"><p><i>(Since version 2.10.0)</i> Use <code><u>resultOfEnsuring<code> instead</code></u></code></p></dd></dl></div>
@@ -497,23 +501,23 @@
             </div>
         <div class="conversion" name="scodec.codecs.ValueEnrichedWithTuplingSupport">
               <h3>Inherited by implicit conversion ValueEnrichedWithTuplingSupport from
-                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>]
+                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to <a href="package$$ValueEnrichedWithTuplingSupport.html" class="extype" name="scodec.codecs.ValueEnrichedWithTuplingSupport">ValueEnrichedWithTuplingSupport</a>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringadd">
               <h3>Inherited by implicit conversion any2stringadd from
-                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
+                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringAdd" class="extype" target="_top">StringAdd</a>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2stringfmt">
               <h3>Inherited by implicit conversion any2stringfmt from
-                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
+                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to <a href="http://www.scala-lang.org/api/2.10.4/index.html#scala.runtime.StringFormat" class="extype" target="_top">StringFormat</a>
               </h3>
             </div><div class="conversion" name="scala.Predef.any2ArrowAssoc">
               <h3>Inherited by implicit conversion any2ArrowAssoc from
-                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>]
+                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to <span class="extype" name="scala.Predef.ArrowAssoc">ArrowAssoc</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>]
               </h3>
             </div><div class="conversion" name="scala.Predef.any2Ensuring">
               <h3>Inherited by implicit conversion any2Ensuring from
-                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecNamingSupport">StringEnrichedWithCodecNamingSupport</a>]
+                <a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a> to <span class="extype" name="scala.Predef.Ensuring">Ensuring</span>[<a href="" class="extype" name="scodec.codecs.StringEnrichedWithCodecContextSupport">StringEnrichedWithCodecContextSupport</a>]
               </h3>
             </div>
         </div>
