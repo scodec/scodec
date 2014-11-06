@@ -5,7 +5,7 @@ import scalaz.{ \/, Profunctor }
 import scodec.bits.BitVector
 
 /** Generalized codec that allows the type to encode to vary from the type to decode. */
-trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
+trait GenCodec[A, B] extends Encoder[A] with Decoder[B] { self =>
 
   /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => C`. */
   override def map[C](f: B => C): GenCodec[A, C] = GenCodec(this, super.map(f))

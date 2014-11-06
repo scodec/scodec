@@ -19,7 +19,7 @@ import scodec.bits.BitVector
  * @groupname coproduct Coproduct Support
  * @groupprio coproduct 13
  */
-trait Encoder[-A] { self =>
+trait Encoder[A] { self =>
 
   /**
    * Attempts to encode the specified value in to a bit vector.

@@ -19,7 +19,7 @@ import scodec.bits.BitVector
  * @groupname coproduct Coproduct Support
  * @groupprio coproduct 13
  */
-trait Decoder[+A] { self =>
+trait Decoder[A] { self =>
 
   /**
    * Attempts to decode a value of type `A` from the specified bit vector.
