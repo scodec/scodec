@@ -111,15 +111,24 @@ trait Decoder[+A] { self =>
   }
 }
 
-/** Provides functions for working with decoders. */
+/**
+ * Provides functions for working with decoders.
+ *
+ * @groupname conv Conveniences
+ * @groupprio conv 2
+ */
 trait DecoderFunctions {
 
-  /** Decodes the specified bit vector in to a value of type `A` using an implicitly available codec. */
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
+   * @group conv
+   */
   final def decode[A: Decoder](bits: BitVector): Err \/ (BitVector, A) = Decoder[A].decode(bits)
 
   /**
    * Decodes the specified bit vector in to a value of type `A` using an implicitly available
    * codec and discards the remaining bits.
+   * @group conv
    */
   final def decodeValue[A: Decoder](bits: BitVector): Err \/ A = Decoder[A].decodeValue(bits)
 
@@ -127,14 +136,21 @@ trait DecoderFunctions {
    * Decodes the specified bit vector in to a value of type `A` using an implicitly available
    * codec and discards the remaining bits or throws an `IllegalArgumentException` if decoding
    * fails.
+   * @group conv
    */
   final def decodeValidValue[A: Decoder](bits: BitVector): A = Decoder[A].decodeValidValue(bits)
 
-  /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`. */
+  /**
+   * Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`.
+   * @group conv
+   */
   final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): Err \/ (BitVector, (A, B)) =
     decodeBothCombine(decA, decB)(buffer) { (a, b) => (a, b) }
 
-  /** Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`. */
+  /**
+   * Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`.
+   * @group conv
+   */
   final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): Err \/ (BitVector, C) = {
     // Note: this could be written using DecodingContext but this function is called *a lot* and needs to be very fast
     decA.decode(buffer) match {
@@ -152,6 +168,7 @@ trait DecoderFunctions {
    * Terminates when no more bits are available in the vector. Exits upon first decoding error.
    *
    * @return tuple consisting of the terminating error if any and the accumulated value
+   * @group conv
    */
   final def decodeAll[A: Decoder, B: Monoid](buffer: BitVector)(f: A => B): (Option[Err], B) = {
     val decoder = Decoder[A]
@@ -173,6 +190,7 @@ trait DecoderFunctions {
    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
    * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
    * decoded. Exits upon first decoding error.
+   * @group conv
    */
   final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): Err \/ (BitVector, F[A]) = {
     val bldr = cbf()
@@ -197,6 +215,7 @@ trait DecoderFunctions {
   /**
    * Creates a decoder that decodes with each of the specified decoders, returning
    * the first successful result.
+   * @group conv
    */
   final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
     def decode(buffer: BitVector): Err \/ (BitVector, A) = {
@@ -213,24 +232,54 @@ trait DecoderFunctions {
   }
 }
 
-/** Companion for [[Decoder]]. */
+/**
+ * Companion for [[Decoder]].
+ *
+ * @groupname ctor Constructors
+ * @groupprio ctor 1
+ *
+ * @groupname inst Typeclass Instances
+ * @groupprio inst 3
+ */
 object Decoder extends DecoderFunctions {
 
-  /** Provides syntax for summoning a `Decoder[A]` from implicit scope. */
+  /**
+   * Provides syntax for summoning a `Decoder[A]` from implicit scope.
+   * @group ctor
+   */
   def apply[A](implicit dec: Decoder[A]): Decoder[A] = dec
 
-  /** Creates a decoder that always decodes the specified value and returns the input bit vector unmodified. */
+  /**
+   * Creates a decoder from the specified function.
+   * @group ctor
+   */
+  def apply[A](f: BitVector => Err \/ (BitVector, A)): Decoder[A] = new Decoder[A] {
+    def decode(bits: BitVector) = f(bits)
+  }
+
+  /**
+   * Creates a decoder that always decodes the specified value and returns the input bit vector unmodified.
+   * @group ctor
+   */
   def point[A](a: => A): Decoder[A] = new Decoder[A] {
     private lazy val value = a
     def decode(bits: BitVector) = \/.right((bits, value))
     override def toString = s"const($value)"
   }
 
+  /**
+   * Monad instance.
+   * @group inst
+   */
   implicit val monadInstance: Monad[Decoder] = new Monad[Decoder] {
     def point[A](a: => A) = Decoder.point(a)
     def bind[A, B](decoder: Decoder[A])(f: A => Decoder[B]) = decoder.flatMap(f)
   }
 
+  /**
+   * Monoid instance.
+   * @group inst
+   */
   implicit def monoidInstance[A: Monoid]: Monoid[Decoder[A]] = new Monoid[Decoder[A]] {
     def zero = Decoder.point(Monoid[A].zero)
     def append(x: Decoder[A], y: => Decoder[A]) = new Decoder[A] {

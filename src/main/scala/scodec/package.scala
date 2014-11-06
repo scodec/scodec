@@ -18,7 +18,7 @@ import scodec.bits._
  * more general abstractions, `map` is impossible to define (e.g., how would `codec.map(f).encode(b)` be implemented?).
  * Given a `GenCodec[A, B]`, the encoding functionality can be ignored by treating it as a `Decoder[B]`, or the encoding
  * type can be changed via `contramap`. If after further transformations, the two types to `GenCodec` are equal, we can
- * reconstitue a `Codec` from the `GenCodec` by calling `fuse`.
+ * reconstitute a `Codec` from the `GenCodec` by calling `fuse`.
  *
  * See the [[codecs]] package object for pre-defined codecs for many common data types and combinators for building larger
  * codecs out of smaller ones.
@@ -210,6 +210,7 @@ package object scodec {
       polyxmap(p, p)
   }
 
+  /** Provides methods specific to encoders of Shapeless coproducts. */
   final implicit class EnrichedCoproductEncoder[C <: Coproduct](val self: Encoder[C]) extends AnyVal {
     /**
      * When called on a `Encoder[C]` where `C` is a coproduct containing type `A`, converts to an `Encoder[A]`.
@@ -218,6 +219,7 @@ package object scodec {
     def selectEncoder[A](implicit inj: ops.coproduct.Inject[C, A]): Encoder[A] = self.contramap { a => Coproduct[C](a) }
   }
 
+  /** Provides methods specific to decoders of Shapeless coproducts. */
   final implicit class EnrichedCoproductDecoder[C <: Coproduct](val self: Decoder[C]) extends AnyVal {
     /**
      * When called on a `Decoder[C]` where `C` is a coproduct containing type `A`, converts to a `Decoder[Option[A]]`.

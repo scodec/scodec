@@ -48,18 +48,36 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
   override def compact: GenCodec[A, B] = GenCodec(super.compact, this)
 }
 
-/** Companion for [[GenCodec]]. */
+/**
+ * Companion for [[GenCodec]].
+ *
+ * @groupname ctor Constructors
+ * @groupprio ctor 1
+ *
+ * @groupname inst Typeclass Instances
+ * @groupprio inst 3
+ */
 object GenCodec extends EncoderFunctions with DecoderFunctions {
 
-  /** Provides syntaax for summoning a `GenCodec[A, B]` from implicit scope. */
+  /**
+   * Provides syntax for summoning a `GenCodec[A, B]` from implicit scope.
+   * @group ctor
+   */
   def apply[A, B](implicit gc: GenCodec[A, B]): GenCodec[A, B] = gc
 
-  /** Creates a generalized codec from an encoder and a decoder. */
+  /**
+   * Creates a generalized codec from an encoder and a decoder.
+   * @group ctor
+   */
   def apply[A, B](encoder: Encoder[A], decoder: Decoder[B]): GenCodec[A, B] = new GenCodec[A, B] {
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
   }
 
+  /**
+   * Profunctor instance.
+   * @group inst
+   */
   implicit val profunctorInstance: Profunctor[GenCodec] = new Profunctor[GenCodec] {
     def mapfst[A, B, C](gc: GenCodec[A, B])(f: C => A) = gc contramap f
     def mapsnd[A, B, C](gc: GenCodec[A, B])(f: B => C) = gc map f

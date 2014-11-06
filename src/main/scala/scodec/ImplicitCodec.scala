@@ -4,6 +4,25 @@ import scala.language.implicitConversions
 
 /**
  * Type class that supports implicit lookup of implicit `Codec` instances with a fallback to automatically derived codecs.
+ *
+ * When writing general combinators that depend on implicit codecs, it is generally best to use `ImplicitCodec[A]` as
+ * an implicit parameter, as opposed to using `Codec[A]` directly. The advantage of using `ImplicitCodec[A]` is that
+ * it allows for codecs that can be automatically derived via `Codec.derive`.
+ *
+ * @groupname primary Primary Members
+ * @groupprio primary 0
+ *
+ * @groupname combinators Basic Combinators
+ * @groupprio combinators 10
+ *
+ * @groupname tuple Tuple Support
+ * @groupprio tuple 11
+ *
+ * @groupname hlist HList Support
+ * @groupprio hlist 12
+ *
+ * @groupname coproduct Coproduct Support
+ * @groupprio coproduct 13
  */
 @annotation.implicitNotFound("""Could not find an implicit Codec[${A}] and a codec could not be automatically derived. Derivation support exists for case classes, where each component type has an implicit codec in scope, and for sealed class hierarchies, where there is an implicit Discriminated[${A}, D] and implicit Discriminators[${A}, X, D] for each subtype X of ${A}.""")
 sealed abstract class ImplicitCodec[A] {

@@ -19,9 +19,175 @@ import scodec.bits.BitVector
  * of type `A`. Hence, both encode and decode return either an error or the result. Furthermore, decode returns the
  * remaining bits in the bit vector that it did not use in decoding.
  *
+ * There are various ways to create instances of `Codec`. The trait can be implemented directly or one of the
+ * constructor methods in the companion can be used (e.g., `apply`, `derive`). Most of the methods on `Codec`
+ * create return a new codec that has been transformed in some way. For example, the [[xmap]] method
+ * converts a `Codec[A]` to a `Codec[B]` given two functions, `A => B` and `B => A`.
+ *
+ * One of the simplest transformation methods is `def withContext(context: String): Codec[A]`, which
+ * pushes the specified context string in to any errors (i.e., `Err`s) returned from encode or decode.
+ *
+ * See the methods on this trait for additional transformation types.
+ *
+ * See the [[codecs]] package object for pre-defined codecs for many common data types and combinators for building larger
+ * codecs out of smaller ones.
+ *
+ * == Tuple Codecs ==
+ *
+ * The `~` operator supports combining a `Codec[A]` and a `Codec[B]` in to a `Codec[(A, B)]`.
+ *
+ * For example: {{{
+   val codec: Codec[Int ~ Int ~ Int] = uint8 ~ uint8 ~ uint8}}}
+ *
+ * Codecs generated with `~` result in left nested tuples. These left nested tuples can
+ * be pulled back apart by pattern matching with `~`. For example: {{{
+  Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map { case a ~ b ~ c => a + b + c }
+ }}}
+ *
+ * Alternatively, a function of N arguments can be lifted to a function of left-nested tuples. For example: {{{
+  val add3 = (_: Int) + (_: Int) + (_: Int)
+  Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map add3
+ }}}
+ *
+ * Similarly, a left nested tuple can be created with the `~` operator. This is useful when creating the tuple structure
+ * to pass to encode. For example: {{{
+  (uint8 ~ uint8 ~ uint8).encode(1 ~ 2 ~ 3)
+ }}}
+ *
+ * Tuple based codecs are of limited use compared to `HList` based codecs, which is discussed later.
+ *
+ * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
+ *
+ * === flatZip ===
+ *
+ * Sometimes when combining codecs, a latter codec depends on a formerly decoded value.
+ * The `flatZip` method is important in these types of situations -- it represents a dependency between
+ * the left hand side and right hand side. Its signature is `def flatZip[B](f: A => Codec[B]): Codec[(A, B)]`.
+ * This is similar to `flatMap` except the return type is `Codec[(A, B)]` instead of `Decoder[B]`.
+ *
+ * Consider a binary format of an 8-bit unsigned integer indicating the number of bytes following it.
+ * To implement this with `flatZip`, we could write: {{{
+  val x: Codec[(Int, ByteVector)] = uint8 flatZip { numBytes => bytes(numBytes) }
+  val y: Codec[ByteVector] = x.xmap[ByteVector]({ case (_, bv) => bv }, bv => (bv.size, bv))
+ }}}
+ * In this example, `x` is a `Codec[(Int, ByteVector)]` but we do not need the size directly in the model
+ * because it is redundant with the size stored in the `ByteVector`. Hence, we remove the `Int` by
+ * `xmap`-ping over `x`. The notion of removing redundant data from models comes up frequently.
+ * Note: there is a combinator that expresses this pattern more succinctly -- `variableSizeBytes(uint8, bytes)`.
+ *
+ * == HList Codecs ==
+ *
+ * `HList`s are similar to tuples in that they represent the product of an arbitrary number of types. That is,
+ * the size of an `HList` is known at compile time and the type of each element is also known at compile time.
+ * For more information on `HList`s in general, see [[https://github.com/milessabin/shapeless Shapeless]].
+ *
+ * `Codec` makes heavy use of `HList`s. The primary operation is extending a `Codec[L]` for some `L <: HList` to
+ * a `Codec[A :: L]`. For example: {{{
+  val uint8: Codec[Int] = ...
+  val string: Codec[String] = ...
+  val codec: Codec[Int :: Int :: String] = uint8 :: uint8 :: string}}}
+ * The `::` method is sort of like cons-ing on to the `HList` but it is doing so *inside* the `Codec` type.
+ * The resulting codec encodes values by passing each component of the `HList` to the corresponding codec
+ * and concatenating all of the results.
+ *
+ * There are various methods on this trait that only work on `Codec[L]` for some `L <: HList`. Besides the aforementioned
+ * `::` method, there are others like `:::`, `flatPrepend`, `flatConcat`, etc. One particularly useful method is
+ * `dropUnits`, which removes any `Unit` values from the `HList`.
+ *
+ * Given a `Codec[X0 :: X1 :: ... Xn :: HNil]` and a case class with types `X0` to `Xn` in the same order,
+ * the `HList` codec can be turned in to a case class codec via the `as` method. For example:
+ {{{
+  case class Point(x: Int, y: Int, z: Int)
+  val threeInts: Codec[Int :: Int :: Int :: HNil] = uint8 :: uint8 :: uint8
+  val point: Codec[Point] = threeInts.as[Point]
+ }}}
+ *
+ * === flatPrepend ===
+ *
+ * The `HList` analog to `flatZip` is `flatPrepend`. It has the signature: {{{
+  def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L]
+ }}}
+ * It forms a codec of `A` consed on to `L` when called on a `Codec[A]` and passed a function `A => Codec[L]`.
+ * Note that the specified function must return an `HList` based codec. Implementing our example from earlier
+ * using `flatPrepend`: {{{
+  val x: Codec[Int :: ByteVector :: HNil] = uint8 flatPrepend { numBytes => bytes(numBytes).hlist }
+ }}}
+ * In this example, `bytes(numBytes)` returns a `Codec[ByteVector]` so we called `.hlist` on it to lift it
+ * in to a `Codec[ByteVector :: HNil]`.
+ *
+ * There are similar methods for flat appending and flat concating.
+ *
+ * == Coproduct Codecs ==
+ *
+ * Given some ordered list of types, potentially with duplicates, a value of the `HList` of those types
+ * has a value for *every* type in the list. In other words, an `HList` represents having an `X0` AND `X1` AND
+ * ... AND `XN`. A `Coproduct` for the same list of types represents having a value for *one* of those types.
+ * In other words, a `Coproduct` represents having an `X0` OR `X1` OR ... OR `XN`. This is somewhat imprecise
+ * because a coproduct can tell us exactly which `Xi` we have, even in the presence of duplicate types.
+ *
+ * A coproduct can also be thought of as an `Either` that has an unlimited number of choices instead of just 2 choices.
+ *
+ * Shapeless represents coproducts in a similar way as `HList`s. A coproduct type is built using the `:+:` operator
+ * with a sentinal value of `CNil`. For example, an `Int` or `Long` or `String` is represented as the coproduct type: {{{
+  Int :+: Long :+: String :+: CNil }}}
+ *
+ * For more information on coproducts in general, see [[https://github.com/milessabin/shapeless Shapeless]].
+ *
+ * Like `HList` based codecs, scodec supports `Coproduct` based codecs by coopting syntax from Shapeless. Specifically,
+ * the `:+:` operator is used: {{{
+  val builder = uint8 :+: int64 :+: utf8
+ }}}
+ * Unlike `HList` based codecs, the result of `:+:` is not a codec but rather a [[codecs.CoproductCodecBuilder]].
+ * Having a list of types and a codec for each is not sufficient to build a coproduct codec. We also need to describe
+ * how each entry in the coproduct is differentiated from the other entries. There are a number of ways to do this
+ * and each way changes the binary format significantly. See the docs on `CoproductCodecBuilder` for details.
+ *
+ * == Derived Codecs ==
+ *
+ * Codecs for case classes and sealed class hierarchies can often be automatically derived.
+ *
+ * Consider this example: {{{
+  import scodec.codecs.implicits._
+  case class Point(x: Int, y: Int, z: Int)
+  Codec[Point].encode(Point(1, 2, 3))
+ }}}
+ * In this example, no explicit codec was defined for `Point` yet `Codec[Point]` successfully created one.
+ * It did this by "reflecting" over the structure of `Point` and looking up a codec for each component type
+ * (note: no runtime reflection is performed - rather, this is implemented using macro-based compile time reflection).
+ * In this case, there are three components, each of type `Int`, so it looked for an implicit `Codec[Int]`.
+ * It then combined each `Codec[Int]` using an `HList` based codec and finally converted the `HList` codec
+ * to a `Codec[Point]`. It found the implicit `Codec[Int]` instances due to the import of `scodec.codecs.implicits._`.
+ * Furthermore, if there was an error encoding or decoding a field, the field name (i.e., x, y, or z) is included
+ * as context on the `Err` returned.
+ *
+ * This works similarly for sealed class hierarchies -- each subtype is internally represented as a member
+ * of a coproduct. There must be the following implicits in scope however:
+ *  - `Discriminated[A, D]` for some discriminator type `D`, which provides the `Codec[D]` to use for encoding/decoding
+ *     the discriminator
+ *  - `Discriminator[A, X, D]` for each subtype `X` of `A`, which provides the discriminator value for type `X`
+ *  - `Codec[X]` for each subtype `X` of `A`
+ *
+ * Full examples are available in the test directory of this project.
+ *
+ * Note that both case class and sealed hierarchies require implicit component codecs in scope. In both cases,
+ * those implicit codecs can themselves be automatically derived.
+ *
+ * === Implicit Codecs ===
+ *
+ * Codecs derived automatically are not defined implicitly -- meaning that if `Codec.derive[Foo]` returns
+ * a derived codec, that derived codec will not be available via `implicitly[Codec[Foo]]`. Instead,
+ * derived codecs are provided implicitly via the [[DerivedCodec]] witness. In fact, `Codec.derive[A]`
+ * is just an implicit summoning method for `DerivedCodec[A]`.
+ *
+ * When writing generic combinators that depend on implicitly available codecs, it is often useful
+ * to allow for fallback to a derived codec if there is no explicitly defined implicit codec available.
+ * This support is provided by the [[ImplicitCodec]] witness. Instead of requesting an implicit `Codec[A]`,
+ * request an `ImplicitCodec[A]` to get the fallback to derived behavior.
+ *
+ * == Miscellaneous ==
+ *
  * Note: the decode function can be lifted to a state action via `StateT[Err \/ ?, BitVector, A]`. This type alias
  * and associated constructor is provided by `[[DecodingContext]]`.
- *
  *
  * @groupname tuple Tuple Support
  * @groupprio tuple 11
@@ -196,6 +362,17 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final override def compact: Codec[A] = Codec(super.compact, this)
 
   /**
+   * Creates a new codec that is functionally equivalent to this codec but pushes the specified
+   * context string in to any errors returned from encode or decode.
+   * @group combinators
+   */
+  final def withContext(context: String): Codec[A] = new Codec[A] {
+    override def encode(a: A) = self.encode(a).leftMap { _ pushContext context }
+    override def decode(buffer: BitVector) = self.decode(buffer).leftMap { _ pushContext context }
+    override def toString = s"$context($self)"
+  }
+
+  /**
    * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
    * @group combinators
    */
@@ -275,40 +452,70 @@ object CodecAs {
   }
 }
 
-/** Companion for [[Codec]]. */
+/**
+ * Companion for [[Codec]].
+ *
+ * @groupname ctor Constructors
+ * @groupprio ctor 1
+ *
+ * @groupname conv Conveniences
+ * @groupprio conv 2
+ *
+ * @groupname inst Typeclass Instances
+ * @groupprio inst 3
+ */
 object Codec extends EncoderFunctions with DecoderFunctions {
 
-  /** Creates a codec from encoder and decoder functions. */
+  /**
+   * Creates a codec from encoder and decoder functions.
+   * @group ctor
+   */
   def apply[A](encoder: A => Err \/ BitVector, decoder: BitVector => Err \/ (BitVector, A)): Codec[A] = new Codec[A] {
     override def encode(a: A) = encoder(a)
     override def decode(bits: BitVector) = decoder(bits)
   }
 
-  /** Creates a codec from an encoder and a decoder. */
+  /**
+   * Creates a codec from an encoder and a decoder.
+   * @group ctor
+   */
   def apply[A](encoder: Encoder[A], decoder: Decoder[A]): Codec[A] = new Codec[A] {
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
   }
 
-  /** Gets the implicitly available codec for type `A` -- either an explicitly defined implicit or a derived codec. */
+  /**
+   * Gets an implicitly available codec for type `A` -- either an explicitly defined implicit or a derived codec.
+   * See [[derive]] for more information on derived codecs.
+   * @group ctor
+   */
   def apply[A](implicit c: ImplicitCodec[A]): Codec[A] = c.codec
 
-  /** Gets the implicitly available codec for type `A` -- the codec is guaranteed to not be derived. */
+  /**
+   * Gets an implicitly available codec for type `A` -- the codec is guaranteed to not be derived.
+   * @group ctor
+   */
   def nonDerived[A](implicit c: Codec[A]): Codec[A] = c
 
   /**
    * Derives a codec for the specified type.
    *
    * Codecs can be derived for:
-   *  - case classes, when each component type of the case has an implicitly available codec
-   *  - sealed class hierarchies, where:
-   *    - the root type, `A`, has an implicitly availble `Discriminated[A, D]` for some `D`
+   *  - case classes (and hlists and records), where each component type of the case class either has an
+   *    implicitly available codec or one can be automatically derived
+   *  - sealed class hierarchies (and coproducts and unions), where:
+   *    - the root type, `A`, has an implicitly available `Discriminated[A, D]` for some `D`
    *    - each subtype has an implicitly available codec or can have one derived
    *    - each subtype `X` has an implicitly available `Discriminator[A, X, D]`
+   *
+   * @group ctor
    */
   def derive[A](implicit d: DerivedCodec[A]): Codec[A] = d.codec
 
-  /** Alias for [[derive]]. */
+  /**
+   * Alias for [[derive]].
+   * @group ctor
+   */
   @deprecated("As of 1.5, this method is redundant with Codec.derive.", "1.5")
   def product[A](implicit d: DerivedCodec[A]): Codec[A] = d.codec
 
@@ -324,9 +531,14 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   val codec = Codec.coproduct[C].choice
   codec.encode(Coproduct[C](Foo(...)))
    }}}
+   * @group ctor
    */
   def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
 
+  /**
+   * Invariant functor typeclass instance.
+   * @group inst
+   */
   val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
   }

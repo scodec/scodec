@@ -60,32 +60,6 @@ import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
  * provides its own DSL for building a large codec out of many small codecs. For a list of all combinators,
  * see the Combinators section below.
  *
- *
- * === Tuple Codecs ===
- *
- * The `~` operator supports combining a `Codec[A]` and a `Codec[B]` in to a `Codec[(A, B)]`.
- *
- * For example: {{{
-   val codec: Codec[Int ~ Int ~ Int] = uint8 ~ uint8 ~ uint8}}}
- *
- * Codecs generated with `~` result in left nested tuples. These left nested tuples can
- * be pulled back apart by pattern matching with `~`. For example: {{{
-  Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map { case a ~ b ~ c => a + b + c }
- }}}
- *
- * Alternatively, a function of N arguments can be lifted to a function of left-nested tuples. For example: {{{
-  val add3 = (_: Int) + (_: Int) + (_: Int)
-  Codec.decode(uint8 ~ uint8 ~ uint8, bytes) map add3
- }}}
- *
- * Similarly, a left nested tuple can be created with the `~` operator. This is useful when creating the tuple structure
- * to pass to encode. For example: {{{
-  (uint8 ~ uint8 ~ uint8).encode(1 ~ 2 ~ 3)
- }}}
- *
- * Note: this design is heavily based on Scala's parser combinator library and the syntax it provides.
- *
- *
  * === Cryptography Codecs ===
  *
  * There are codecs that support working with encrypted data ([[encrypted]]), digital signatures and checksums
@@ -1045,15 +1019,15 @@ package object codecs {
       withToString("x509certificate")
 
   /**
-   * Provides the `|` method on `String` that allows creation of a named codec.
+   * Provides the `|` method on `String`, which is reverse syntax for `codec withContext ctx`.
    *
    * Usage: {{{val codec = "id" | uint8}}}
    *
    * @group combinators
    */
-  final implicit class StringEnrichedWithCodecNamingSupport(val name: String) extends AnyVal {
-    /** Names the specified codec, resulting in the name being included in error messages. */
-    def |[A](codec: Codec[A]): Codec[A] = new NamedCodec(name, codec)
+  final implicit class StringEnrichedWithCodecContextSupport(val context: String) extends AnyVal {
+    /** Pushes context into the specified codec. */
+    def |[A](codec: Codec[A]): Codec[A] = codec withContext context
   }
 
   // Tuple codec syntax

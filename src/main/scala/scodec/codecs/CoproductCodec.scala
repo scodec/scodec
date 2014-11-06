@@ -134,8 +134,8 @@ object ToCoproductCodecs {
  *    a codec that encodes no discriminator and hence, decodes by trying each codec in succession and using
  *    the first successful result
  *
- * To specify the discriminator, call either `discriminatedByIndex(intCodec)` or `discriminatedBy(codec).using(Sized(...))`.
- * The former uses the type index as the discriminator value.
+ * To specify the discriminator, call either `discriminatedByIndex(intCodec)` or `discriminatedBy(codec)` followed by
+ * one of the methods on [[NeedDiscriminators]]. The former uses the type index as the discriminator value.
  *
  * For example: {{{
 (int32 :+: bool(8) :+: variableSizeBytes(uint8, ascii)).discriminatedByIndex(uint8)
@@ -297,8 +297,7 @@ object CoproductBuilderAuto {
       type C = FieldType[KH, VH] :+: T
       type L = Codec[FieldType[KH, VH]] :: TL
       def apply = {
-        import codecs.StringEnrichedWithCodecNamingSupport
-        val namedHeadCodec: Codec[VH] = keys().head.name | headCodec
+        val namedHeadCodec: Codec[VH] = headCodec withContext keys().head.name
         namedHeadCodec.toField[KH] :+: tailAux.apply
       }
     }
