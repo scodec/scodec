@@ -170,7 +170,13 @@ import scodec.bits.BitVector
  * Full examples are available in the test directory of this project.
  *
  * Note that both case class and sealed hierarchies require implicit component codecs in scope. In both cases,
- * those implicit codecs can themselves be automatically derived.
+ * those implicit codecs can themselves be automatically derived, although diverging implicit expansion
+ * errors often occur when recursively deriving codecs. These errors can be avoided by lifting derived
+ * codecs for the component types to implicit codecs like so: {{{
+ case class Foo(x: Bar, y: Baz, ...)
+ implicit val codecBar = Codec.derive[Bar]
+ implicit val codecBaz = Codec.derive[Baz]
+ Codec.derive[Foo] }}}
  *
  * === Implicit Codecs ===
  *
