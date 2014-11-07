@@ -401,6 +401,15 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   def toField[K]: Codec[FieldType[K, A]] =
     xmap[FieldType[K, A]](a => field[K](a), identity)
+
+  /**
+   * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
+   * The specified key is pushed in to the context of any errors that are returned from the resulting codec.
+   * @group combinators
+   */
+  def toFieldWithContext[K <: Symbol](k: K): Codec[FieldType[K, A]] =
+    toField[K].withContext(k.name)
+
 }
 
 /**

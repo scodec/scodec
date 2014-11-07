@@ -297,8 +297,7 @@ object CoproductBuilderAuto {
       type C = FieldType[KH, VH] :+: T
       type L = Codec[FieldType[KH, VH]] :: TL
       def apply = {
-        val namedHeadCodec: Codec[VH] = headCodec withContext keys().head.name
-        namedHeadCodec.toField[KH] :+: tailAux.apply
+        headCodec.toFieldWithContext(keys().head) :+: tailAux.apply
       }
     }
 
