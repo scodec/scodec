@@ -48,6 +48,15 @@ class CodecTest extends CodecSuite {
         import shapeless._
         uint8.hlist.as[Bar].as[Int]
       }
+
+      "supports converting from a coproduct to a sealed class hierarchy, regardless of order in which types appear" in {
+        val foo = (uint8 :: uint8 :: variableSizeBytes(uint8, utf8)).as[Foo]
+        val bar = uint8.as[Bar]
+        val parent = (bar :+: foo).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]
+        roundtripAll(parent, Seq(Foo(1, 2, "Hi"), Bar(1)))
+
+        """(foo :+: bar).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]""" shouldNot compile // because coproduct component types are out of order
+      }
     }
 
     "support the unit combinator" in {
