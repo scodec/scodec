@@ -202,5 +202,27 @@ class CoproductsExample extends CodecSuite {
 
       hlistCodec.encodeValid(1 :: 0L :: Woozle(3, 10) :: 0 :: HNil) shouldBe hex"0100000000030a0000".bits
     }
+
+    "demonstrate defining dependent subtype codecs" in {
+      // Sometimes, the subtype codecs are dependent on a previously decoded value, like a header.
+      // In the following example, the `Sprocket` codec is dependent on a `Header` class that defines
+      // both the message type, i.e. discriminator, and a message version. The message version is
+      // passed to each of the component codecs, allowing them to customize their implementation
+      // based on version.
+      case class Header(messageType: Int, version: Int)
+
+      // The woozle and wocket codecs are defined dependently on the header but
+      // are not actually taking advantage of the header in this case.
+      def woozleCodec(header: Header): Codec[Woozle] = Woozle.codec
+      def wocketCodec(header: Header): Codec[Wocket] = Wocket.codec
+
+      // The sprocket codec is also defined dependently on the header. It manually
+      // builds a `CoproductCodecBuilder` using `wocketCodec` and `woozleCodec`,
+      // defers transformation to `Sprocket`, defines the discriminator type as
+      // `provide(...)` to fix the subtype to the message type from the header,
+      // and automatically looks up the discriminator types.
+      def codec(header: Header): Codec[Sprocket] =
+        (wocketCodec(header) :+: woozleCodec(header)).as[Sprocket].discriminatedBy(provide(header.messageType)).auto
+    }
   }
 }
