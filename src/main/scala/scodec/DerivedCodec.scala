@@ -62,8 +62,7 @@ object DerivedCodec {
     headCodec: ImplicitCodec[VH],
     tailAux: DerivedCodec[TRec]
   ): DerivedCodec[FieldType[KH, VH] :: TRec] = wrap {
-    val namedHeadCodec: Codec[VH] = headCodec withContext keys().head.name
-    val headFieldCodec: Codec[FieldType[KH, VH]] = namedHeadCodec.toField[KH]
+    val headFieldCodec: Codec[FieldType[KH, VH]] = headCodec.toFieldWithContext(keys().head)
     headFieldCodec :: tailAux.codec
   }
 
