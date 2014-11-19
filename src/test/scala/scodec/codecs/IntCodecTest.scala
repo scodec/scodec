@@ -8,9 +8,7 @@ import scodec.bits.BitVector
 
 class IntCodecTest extends CodecSuite {
   def check(low: Int, high: Int)(f: (Int) => Unit) {
-    forAll(Gen.choose(low, high)) { n =>
-      whenever(n >= low) { f(n) }
-    }
+    forAll(Gen.choose(low, high)) { n => f(n) }
   }
 
   "the int32 codec" should { "roundtrip" in { forAll { (n: Int) => roundtrip(int32, n) } } }
@@ -25,11 +23,11 @@ class IntCodecTest extends CodecSuite {
   "the uint4L codec" should { "roundtrip" in { check(0, (1 << 4) - 1) { (n: Int) => roundtrip(uint4L, n) } } }
   "the uint(n) codec" should { "roundtrip" in {
     uint(13).encode(1) shouldBe \/.right(BitVector.low(13).set(12))
-    check(0, 32768) { (n: Int) => roundtrip(uint(15), n) }
+    check(0, 32767) { (n: Int) => roundtrip(uint(15), n) }
   }}
   "the uintL(n) codec" should { "roundtrip" in {
     uintL(13).encode(1) shouldBe \/.right(BitVector.low(13).set(7))
-    check(0, 32768) { (n: Int) => roundtrip(uintL(15), n) }
+    check(0, 32767) { (n: Int) => roundtrip(uintL(15), n) }
   }}
 
   "the int codecs" should {
