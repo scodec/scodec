@@ -151,4 +151,5 @@ previousArtifact := previousVersion(version.value) map { pv =>
 }
 
 binaryIssueFilters ++= Seq(
+  ProblemFilters.exclude[MissingMethodProblem]("scodec.Codec.toFieldWithContext")
 )
