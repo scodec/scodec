@@ -223,6 +223,11 @@ class CoproductsExample extends CodecSuite {
       // and automatically looks up the discriminator types.
       def codec(header: Header): Codec[Sprocket] =
         (wocketCodec(header) :+: woozleCodec(header)).as[Sprocket].discriminatedBy(provide(header.messageType)).auto
+
+      // The component codecs do not have to be specified in the same order
+      // as the Shapeless coproduct type.
+      def outOfOrder(header: Header): Codec[Sprocket] =
+        (woozleCodec(header) :+: wocketCodec(header)).as[Sprocket].discriminatedBy(provide(header.messageType)).auto
     }
   }
 }

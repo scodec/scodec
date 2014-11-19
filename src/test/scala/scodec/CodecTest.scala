@@ -55,7 +55,8 @@ class CodecTest extends CodecSuite {
         val parent = (bar :+: foo).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]
         roundtripAll(parent, Seq(Foo(1, 2, "Hi"), Bar(1)))
 
-        """(foo :+: bar).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]""" shouldNot compile // because coproduct component types are out of order
+        val outOfOrder = (foo :+: bar).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]
+        roundtripAll(outOfOrder, Seq(Foo(1, 2, "Hi"), Bar(1)))
       }
     }
 

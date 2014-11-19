@@ -264,8 +264,23 @@ trait CoproductCodecAs[A, Repr] {
   def from(repr: Repr): A
 }
 
+sealed abstract class CoproductCodecAsLowPriority {
+
+  /** Provides a `CoproductCodecAs[A, X]` for where `X` is a coproduct whose component types can be aligned with the coproduct representation of `A`. */
+  implicit def alignCoproduct[A, Repr <: Coproduct, AlignedRepr <: Coproduct, X](implicit
+    gen: Generic.Aux[A, Repr],
+    xToAligned: X =:= AlignedRepr,
+    alignedToX: AlignedRepr =:= X,
+    toAligned: CoproductOps.Align[Repr, AlignedRepr],
+    fromAligned: CoproductOps.Align[AlignedRepr, Repr]
+  ): CoproductCodecAs[A, X] = new CoproductCodecAs[A, X] {
+    def to(a: A) = alignedToX(toAligned(gen.to(a)))
+    def from(x: X) = gen.from(fromAligned(xToAligned(x)))
+  }
+}
+
 /** Companion for [[CoproductCodecAs]]. */
-object CoproductCodecAs {
+object CoproductCodecAs extends CoproductCodecAsLowPriority {
   /** Provides a `CoproductCodecAs[A, X]` based on a Shapeless `Generic` instance. */
   implicit def mkAs[A, Repr, X](implicit gen: Generic.Aux[A, Repr], xToR: X =:= Repr, xToA: Repr =:= X): CoproductCodecAs[A, X]  = new CoproductCodecAs[A, X] {
     def to(a: A) = gen.to(a)

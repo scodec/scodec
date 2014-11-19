@@ -427,8 +427,24 @@ abstract class CodecAs[B, A] {
   def apply(ca: Codec[A]): Codec[B]
 }
 
+/** Low priority implicits supporting [[CodecAs]]. */
+sealed abstract class CodecAsLowPriority {
+
+  /** Provides a `CodecAs[B, A]` for where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
+  implicit def alignCoproduct[B, Repr <: Coproduct, AlignedRepr <: Coproduct, A](implicit
+    gen: Generic.Aux[B, Repr],
+    aToAligned: A =:= AlignedRepr,
+    alignedToA: AlignedRepr =:= A,
+    toAligned: CoproductOps.Align[Repr, AlignedRepr],
+    fromAligned: CoproductOps.Align[AlignedRepr, Repr]
+  ): CodecAs[B, A] = new CodecAs[B, A] {
+    def apply(ca: Codec[A]): Codec[B] =
+      ca.xmap(a => gen.from(fromAligned(aToAligned(a))), b => alignedToA(toAligned(gen.to(b))))
+  }
+}
+
 /** Companion for [[CodecAs]]. */
-object CodecAs {
+object CodecAs extends CodecAsLowPriority {
 
   /** Provides a `CodecAs[B, A]` for case class `B` and HList `A`. */
   implicit def mkAs[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): CodecAs[B, A]  = new CodecAs[B, A] {
