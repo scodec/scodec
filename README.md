@@ -55,10 +55,10 @@ Automatic case class binding is supported via Shapeless HLists:
 
     val pointCodec = (int8 :: int8 :: int8).as[Point]
 
-    val encoded: String \/ BitVector = pointCodec.encode(Point(-5, 10, 1))
+    val encoded: Err \/ BitVector = pointCodec.encode(Point(-5, 10, 1))
     // \/-(BitVector(24 bits, 0xfb0a01))
 
-    val decoded: String \/ (BitVector, Point) = Codec.decode(BitVector(0xfb, 0x0a, 0x01))(pointCodec)
+    val decoded: Err \/ (BitVector, Point) = Codec.decode(BitVector(0xfb, 0x0a, 0x01))(pointCodec)
     // \/-((BitVector(empty),Point(-5,10,1)))
 ```
 
