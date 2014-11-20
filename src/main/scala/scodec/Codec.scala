@@ -3,7 +3,8 @@ package scodec
 import scala.language.implicitConversions
 
 import scalaz.{ \/, InvariantFunctor, Monoid, StateT }
-import \/.left
+import \/.{ left, right }
+import scalaz.syntax.std.option._
 import shapeless._
 import shapeless.record._
 import shapeless.ops.hlist._
@@ -197,38 +198,19 @@ import scodec.bits.BitVector
  *
  * @groupname tuple Tuple Support
  * @groupprio tuple 11
-
+ *
  * @groupname hlist HList Support
  * @groupprio hlist 12
+ *
+ * @groupname generic Generic Support
+ * @groupprio generic 13
+ *
+ * @define TransformTC Codec
  */
 trait Codec[A] extends GenCodec[A, A] { self =>
 
   /**
-   * Maps to a codec of type `B` using two total functions, `A => B` and `B => A`.
-   * @group combinators
-   */
-  final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
-    def encode(b: B): Err \/ BitVector = self.encode(g(b))
-    def decode(buffer: BitVector): Err \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
-  }
-
-  /**
-   * Maps to a `codec` of type `B`, where there is a partial function
-   * from `B` to `A`. The encoding will fail for any `B` that
-   * `g` maps to `None`.
-   * @group combinators
-   */
-  final def pxmap[B](f: A => B, g: B => Option[A]): Codec[B] = new Codec[B] {
-    def encode(b: B): Err \/ BitVector = g(b).map(self.encode).getOrElse(left(Err(s"extraction failure: $b")))
-    def decode(buffer: BitVector): Err \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
-  }
-
-  /**
-   * Maps to a codec of type `B` using two total functions,
-   * `A => Err \/ B` and `B => Err \/ A`.
-   *
-   * f and g can then reject their argument and return an error.
-   *
+   * Transforms using two functions, `A => Err \/ B` and `B => Err \/ A`.
    * @group combinators
    */
   final def exmap[B](f: A => Err \/ B, g: B => Err \/ A): Codec[B] = new Codec[B] {
@@ -238,42 +220,34 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   }
 
   /**
-   * Maps to a codec of type `B` using a total function on input to encode and a partial function on output from decode.
+   * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
+   * @group combinators
+   */
+  final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
+    def encode(b: B): Err \/ BitVector = self.encode(g(b))
+    def decode(buffer: BitVector): Err \/ (BitVector, B) = self.decode(buffer).map { case (rest, a) => (rest, f(a)) }
+  }
+
+  /**
+   * Transforms using two functions, `A => Err \/ B` and `B => A`.
    *
-   * The supplied functions form an injection from `B` to `A`. Hence, converting a `Codec[A]` to a `Codec[B]` converts from
+   * The supplied functions form an injection from `B` to `A`. Hence, this method converts from
    * a larger to a smaller type. Hence, the name `narrow`.
-   *
    * @group combinators
    */
-  final def narrow[B](f: A => Err \/ B, g: B => A): Codec[B] =
-    exmap(f, \/.right compose g)
-
+  final def narrow[B](f: A => Err \/ B, g: B => A): Codec[B] = exmap(f, right compose g)
 
   /**
-   * Maps to a codec of type `B` using a partial function on input to encode and a total function on output from decode.
+   * Transforms using two functions, `A => B` and `B => Err \/ A`.
    *
-   * The supplied functions form an injection from `A` to `B`. Hence, converting a `Codec[A]` to a `Codec[B]` converts from
+   * The supplied functions form an injection from `A` to `B`. Hence, this method converts from
    * a smaller to a larger type. Hence, the name `widen`.
-
    * @group combinators
    */
-  final def widen[B](f: A => B, g: B => Err \/ A): Codec[B] =
-    exmap(\/.right compose f, g)
-
-  /**
-   * Returns a new codec that encodes/decodes a value of type `B` by using an isomorphism between `A` and `B`.
-   *
-   * The isomorphism is provided by the implicit `CodecAs` instance.
-   *
-   * Typically used when `B` is a case class and `A` is an `HList` with the same shape as the elements of `B`.
-   *
-   * @group hlist
-   */
-  final def as[B](implicit as: CodecAs[B, A]): Codec[B] = as(this)
+  final def widen[B](f: A => B, g: B => Err \/ A): Codec[B] = exmap(right compose f, g)
 
   /**
    * Lifts this codec in to a codec of a singleton hlist.
-   *
    * @group hlist
    */
   final def hlist: Codec[A :: HNil] = xmap(_ :: HNil, _.head)
@@ -413,77 +387,6 @@ trait Codec[A] extends GenCodec[A, A] { self =>
 }
 
 /**
- * Typeclass that witnesses that a `Codec[A]` can be xmapped in to a `Codec[B]`.
- *
- * Implicit instances (forward and reverse) are provided between:
- *  - case classes and `HList`s of compatible shapes
- *  - singleton case classes and values of proper types
- *
- * Credit: Miles Sabin
- */
-@annotation.implicitNotFound("""Could not prove that ${B} can be converted to/from ${A}.
-Proof is automatically available between case classes and HLists that have the same shape, as singleton case classes and values of matching types.""")
-abstract class CodecAs[B, A] {
-  def apply(ca: Codec[A]): Codec[B]
-}
-
-/** Low priority implicits supporting [[CodecAs]]. */
-sealed abstract class CodecAsLowPriority {
-
-  /** Provides a `CodecAs[B, A]` for where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
-  implicit def alignCoproduct[B, Repr <: Coproduct, AlignedRepr <: Coproduct, A](implicit
-    gen: Generic.Aux[B, Repr],
-    aToAligned: A =:= AlignedRepr,
-    alignedToA: AlignedRepr =:= A,
-    toAligned: CoproductOps.Align[Repr, AlignedRepr],
-    fromAligned: CoproductOps.Align[AlignedRepr, Repr]
-  ): CodecAs[B, A] = new CodecAs[B, A] {
-    def apply(ca: Codec[A]): Codec[B] =
-      ca.xmap(a => gen.from(fromAligned(aToAligned(a))), b => alignedToA(toAligned(gen.to(b))))
-  }
-}
-
-/** Companion for [[CodecAs]]. */
-object CodecAs extends CodecAsLowPriority {
-
-  /** Provides a `CodecAs[B, A]` for case class `B` and HList `A`. */
-  implicit def mkAs[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): CodecAs[B, A]  = new CodecAs[B, A] {
-    def apply(ca: Codec[A]): Codec[B] = {
-      val from: A => B = a => gen.from(a)
-      val to: B => A = b => gen.to(b)
-      ca.xmap(from, to)
-    }
-  }
-
-  /** Provides a `CodecAs[B, A]` for HList `B` and case class `A`. */
-  implicit def mkAsReverse[B, Repr, A](implicit gen: Generic.Aux[A, Repr], bToR: B =:= Repr, rToB: Repr =:= B): CodecAs[B, A]  = new CodecAs[B, A] {
-    def apply(ca: Codec[A]): Codec[B] = {
-      val from: A => B = a => gen.to(a)
-      val to: B => A = b => gen.from(b)
-      ca.xmap(from, to)
-    }
-  }
-
-  /** Provides a `CodecAs[B, A]` for singleton case class `B` and value `A`. */
-  implicit def mkAsSingleton[B, Repr, A](implicit gen: Generic.Aux[B, Repr], aToR: (A :: HNil) =:= Repr, rToA: Repr =:= (A :: HNil)): CodecAs[B, A]  = new CodecAs[B, A] {
-    def apply(ca: Codec[A]): Codec[B] = {
-      val from: A => B = a => gen.from(a :: HNil)
-      val to: B => A = b => gen.to(b).head
-      ca.xmap(from, to)
-    }
-  }
-
-  /** Provides a `CodecAs[B, A]` for value `B` and singleton case class `A`. */
-  implicit def mkAsSingletonReverse[B, Repr, A](implicit gen: Generic.Aux[A, Repr], bToR: (B :: HNil) =:= Repr, rToB: Repr =:= (B :: HNil)): CodecAs[B, A]  = new CodecAs[B, A] {
-    def apply(ca: Codec[A]): Codec[B] = {
-      val from: A => B = a => gen.to(a).head
-      val to: B => A = b => gen.from(b :: HNil)
-      ca.xmap(from, to)
-    }
-  }
-}
-
-/**
  * Companion for [[Codec]].
  *
  * @groupname ctor Constructors
@@ -570,7 +473,19 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * Invariant functor typeclass instance.
    * @group inst
    */
-  val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
+  implicit val invariantFunctorInstance: InvariantFunctor[Codec] = new InvariantFunctor[Codec] {
     def xmap[A, B](c: Codec[A], f: A => B, g: B => A) = c.xmap(f, g)
+  }
+
+  /**
+   * Transform typeclass instance.
+   * @group inst
+   */
+  implicit val transformInstance: Transform[Codec] = new Transform[Codec] {
+    def exmap[A, B](codec: Codec[A], f: A => Err \/ B, g: B => Err \/ A): Codec[B] =
+      codec.exmap(f, g)
+
+    override def xmap[A, B](codec: Codec[A], f: A => B, g: B => A): Codec[B] =
+      codec.xmap(f, g)
   }
 }

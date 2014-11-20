@@ -1,3 +1,5 @@
+import language.higherKinds
+
 import scalaz.{ \/, Monoid, StateT }
 import shapeless._
 import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot, Mapper}
@@ -39,6 +41,61 @@ package object scodec {
   implicit val bitVectorMonoidInstance: Monoid[BitVector] = Monoid.instance(_ ++ _, BitVector.empty)
 
   implicit val byteVectorMonoidInstance: Monoid[ByteVector] = Monoid.instance(_ ++ _, ByteVector.empty)
+
+  /**
+   * Provides method syntax for working with a type constructor that has a [[Transform]] typeclass instance.
+   */
+  implicit class TransformSyntax[F[_], A](val fa: F[A])(implicit t: Transform[F]) {
+
+    /**
+     * Transforms using two functions, `A => Err \/ B` and `B => Err \/ A`.
+     * @group combinators
+     */
+    def exmap[B](f: A => Err \/ B, g: B => Err \/ A): F[B] = t.exmap(fa, f, g)
+
+    /**
+     * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
+     * @group combinators
+     */
+    def xmap[B](f: A => B, g: B => A): F[B] = t.xmap(fa, f, g)
+
+    /**
+     * Transforms using two functions, `A => Err \/ B` and `B => A`.
+     *
+     * The supplied functions form an injection from `B` to `A`. Hence, this method converts from
+     * a larger to a smaller type. Hence, the name `narrow`.
+     * @group combinators
+     */
+    def narrow[B](f: A => Err \/ B, g: B => A): F[B] = t.narrow(fa, f, g)
+
+    /**
+     * Transforms using two functions, `A => B` and `B => Err \/ A`.
+     *
+     * The supplied functions form an injection from `A` to `B`. Hence, this method converts from
+     * a smaller to a larger type. Hence, the name `widen`.
+     * @group combinators
+     */
+    def widen[B](f: A => B, g: B => Err \/ A): F[B] = t.widen(fa, f, g)
+
+    /**
+     * Transforms using two functions, `A => B` and `B => Option[A]`.
+     *
+     * Particularly useful when combined with case class apply/unapply. E.g., `pxmap(fa, Foo.apply, Foo.unappy)`.
+     */
+    def pxmap[B](f: A => B, g: B => Option[A]): F[B] = t.pxmap(fa, f, g)
+
+    /**
+     * Transforms using implicitly available evidence that such a transformation is possible.
+     *
+     * Typical transformations include converting:
+     *  - an `F[L]` for some `L <: HList` to/from an `F[CC]` for some case class `CC`, where the types in the case class are
+     *    aligned with the types in `L`
+     *  - an `F[C]` for some `C <: Coproduct` to/from an `F[SC]` for some sealed class `SC`, where the component types in
+     *    the coproduct are the leaf subtypes of the sealed class.
+     * @group combinators
+     */
+    def as[B](implicit as: Transformer[A, B]): F[B] = as(fa)
+  }
 
   /** Provides common operations on a `Codec[HList]`. */
   final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val self: Codec[L]) extends AnyVal {
@@ -122,7 +179,7 @@ package object scodec {
      *
      * @param p polymorphic function that converts from `L` to `M`
      * @param q polymorphic function that converts from `M` to `L`
-     * @group hlist
+     * @group generic
      */
     def polyxmap[M <: HList](p: Poly, q: Poly)(implicit lToM: Mapper.Aux[p.type, L, M], mToL: Mapper.Aux[q.type, M, L]): Codec[M] =
       self.xmap(_ map p, _ map q)
@@ -134,7 +191,7 @@ package object scodec {
      * xmapping with `p` for both forward and reverse directions.
      *
      * @param p polymorphic function that converts from `L` to `M` and from `M` to `L`
-     * @group hlist
+     * @group generic
      */
     def polyxmap1[M <: HList](p: Poly)(implicit m: Mapper.Aux[p.type, L, M], m2: Mapper.Aux[p.type, M, L]): Codec[M] =
       polyxmap(p, p)
@@ -182,6 +239,10 @@ package object scodec {
      * @group hlist
      */
     def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
+  }
+
+  /** Provides syntax related to generic programming for codecs of any type. */
+  final implicit class ValueCodecEnrichedWithGenericSupport[A](val self: Codec[A]) extends AnyVal {
 
     /**
      * Polymorphic function version of `xmap`.
@@ -192,7 +253,7 @@ package object scodec {
      *
      * @param p polymorphic function that converts from `A` to `B`
      * @param q polymorphic function that converts from `B` to `A`
-     * @group hlist
+     * @group generic
      */
     def polyxmap[B](p: Poly, q: Poly)(implicit aToB: Case.Aux[p.type, A :: HNil, B], bToA: Case.Aux[q.type, B :: HNil, A]): Codec[B] =
       self.xmap(aToB, bToA)
@@ -204,7 +265,7 @@ package object scodec {
      * xmapping with `p` for both forward and reverse directions.
      *
      * @param p polymorphic function that converts from `A` to `B` and from `B` to `A`
-     * @group hlist
+     * @group generic
      */
     def polyxmap1[B](p: Poly)(implicit aToB: Case.Aux[p.type, A :: HNil, B], bToA: Case.Aux[p.type, B :: HNil, A]): Codec[B] =
       polyxmap(p, p)
