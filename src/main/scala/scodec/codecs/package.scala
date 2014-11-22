@@ -10,6 +10,8 @@ import scalaz.{ \/, -\/, \/- }
 import scalaz.syntax.std.option._
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
 
+import shapeless.HList
+
 /**
  * Provides codecs for common types and combinators for building larger codecs.
  *
@@ -1184,6 +1186,14 @@ package object codecs {
       acc.subcaseO(tag)(a => if (a == value) Some(a) else None)(provide(value))
     }
   }
+
+  /**
+   * Converts an `HList` of codecs in to a single codec.
+   * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a
+   * `Codec[X0 :: X1 :: ... :: Xn :: HNil].
+   * @group combinators
+   */
+  final def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out = toHListCodec(l)
 
   /** Provides common implicit codecs. */
   object implicits extends ImplicitCodecs
