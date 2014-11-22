@@ -210,6 +210,15 @@ package object scodec {
       polyxmap(p, p)
   }
 
+  /** Provides additional methods on `HList`s. */
+  final implicit class EnrichedHList[L <: HList](val self: L) extends AnyVal {
+    /**
+     * Converts an `HList` of codecs in to a single codec.
+     * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a `Codec[X0 :: X1 :: ... :: Xn :: HNil].
+     */
+    def toCodec(implicit to: codecs.ToHListCodec[L]): to.Out = to(self)
+  }
+
   /** Provides methods specific to encoders of Shapeless coproducts. */
   final implicit class EnrichedCoproductEncoder[C <: Coproduct](val self: Encoder[C]) extends AnyVal {
     /**

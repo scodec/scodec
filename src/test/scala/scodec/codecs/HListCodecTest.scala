@@ -14,6 +14,7 @@ class HListCodecTest extends CodecSuite {
 
   "HList codec support" should {
 
+
     "support construction via :: operator" in {
       roundtripAll((uint8 :: uint8 :: ascii), Seq(1 :: 2 :: "test" :: HNil))
     }
@@ -24,6 +25,10 @@ class HListCodecTest extends CodecSuite {
 
     "support conversion of non-HList codec to a case class codec via as method" in {
       roundtripAll(uint8.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
+    }
+
+    "support converting an hlist of codecs" in {
+      val a: Codec[Int :: Long :: Boolean :: HNil] = (uint8 :: int64 :: bool :: HNil).toCodec
     }
 
     "provide a flatPrepend method" in {

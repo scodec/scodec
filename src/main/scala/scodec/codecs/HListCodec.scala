@@ -99,3 +99,26 @@ private[scodec] object HListCodec {
   def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit fltr: FilterNot.Aux[K, Unit, L], ru: ReUnit[L, K]) =
     codec.xmap[L](_.filterNot[Unit], _.reUnit[K])
 }
+
+/**
+ * Converts an `HList` of codecs in to a single codec.
+ * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a `Codec[X0 :: X1 :: ... :: Xn :: HNil].
+ */
+trait ToHListCodec[In <: HList] extends DepFn1[In] {
+  type L <: HList
+  type Out = Codec[L]
+}
+
+/** Companion for [[ToHListCodec]]. */
+object ToHListCodec {
+  type Aux[In0 <: HList, L0 <: HList] = ToHListCodec[In0] { type L = L0 }
+
+  implicit def mk[I <: HList, L0 <: HList](implicit
+    allCodecs: *->*[Codec]#λ[I],
+    folder: RightFolder.Aux[I, Codec[HNil], HListCodec.PrependCodec.type, Codec[L0]]
+  ): ToHListCodec.Aux[I, L0] = new ToHListCodec[I] {
+    type L = L0
+    def apply(i: I): Codec[L0] = HListCodec(i)
+  }
+}
+
