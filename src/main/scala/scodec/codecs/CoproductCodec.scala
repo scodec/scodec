@@ -35,15 +35,15 @@ private[scodec] object CoproductCodec {
   /** Creates a coproduct codec that uses the type index of the coproduct as the discriminator. */
   def indexBased[C <: Coproduct, L <: HList](codecs: L, discriminatorCodec: Codec[Int])(
     implicit aux: ToCoproductCodecs[C, L]
-  ): Codec[C] = new Discriminated[C, L, Int](codecs, discriminatorCodec, indexOf, Some.apply)
+  ): Codec[C] with KnownDiscriminatorType[Int] = new Discriminated[C, L, Int](codecs, discriminatorCodec, indexOf, Some.apply)
 
-  /** Codec that encodes/decodes a coproduct `C` discriminated by `A`. */
-  private[scodec] class Discriminated[C <: Coproduct, L <: HList, A](
+  /** Codec that encodes/decodes a coproduct `C` discriminated by `D`. */
+  private[scodec] class Discriminated[C <: Coproduct, L <: HList, D](
     codecs: L,
-    discriminatorCodec: Codec[A],
-    coproductToDiscriminator: C => A,
-    discriminatorToIndex: A => Option[Int]
-  )(implicit aux: ToCoproductCodecs[C, L]) extends Codec[C] {
+    discriminatorCodec: Codec[D],
+    coproductToDiscriminator: C => D,
+    discriminatorToIndex: D => Option[Int]
+  )(implicit aux: ToCoproductCodecs[C, L]) extends Codec[C] with KnownDiscriminatorType[D] {
 
     private val liftedCodecs: List[Codec[C]] = aux(codecs)
 
@@ -57,7 +57,7 @@ private[scodec] object CoproductCodec {
 
     def decode(buffer: BitVector) = (for {
       discriminator <- DecodingContext(discriminatorCodec.decode)
-      index <- DecodingContext.liftE(discriminatorToIndex(discriminator).toRightDisjunction(Err(s"Unsupported discriminator $discriminator")))
+      index <- DecodingContext.liftE(discriminatorToIndex(discriminator).toRightDisjunction(new UnknownDiscriminator(discriminator)))
       decoder <- DecodingContext.liftE(liftedCodecs.lift(index).toRightDisjunction(Err(s"Unsupported index $index (for discriminator $discriminator)")))
       value <- DecodingContext(decoder.decode)
     } yield value).run(buffer)
@@ -166,6 +166,10 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
   codecs: L, cToR: C => Err \/ R, rToC: R => Err \/ C
 )(implicit aux: ToCoproductCodecs[C, L]) {
 
+  private def toRDiscriminated[D](c: Codec[C] with KnownDiscriminatorType[D]): Codec[R] with KnownDiscriminatorType[D] = {
+    // cast is safe because xmapping is unable to change the discriminator type
+    toR(c).asInstanceOf[Codec[R] with KnownDiscriminatorType[D]]
+  }
   private def toR(c: Codec[C]): Codec[R] = c.exmap(cToR, rToC)
 
   /** Adds a codec to the head of this coproduct codec. */
@@ -186,8 +190,8 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
    * For example, `(a :+: b :+: c).discriminatedByIndex(uint8)` results in using `0` for `a`,
    * `1` for `b`, and `2` for `c`.
    */
-  def discriminatedByIndex(discriminatorCodec: Codec[Int]): Codec[R] =
-    toR(CoproductCodec.indexBased(codecs, discriminatorCodec))
+  def discriminatedByIndex(discriminatorCodec: Codec[Int]): Codec[R] with KnownDiscriminatorType[Int] =
+    toRDiscriminated(CoproductCodec.indexBased(codecs, discriminatorCodec))
 
   /** Supports creation of a coproduct codec that uses an arbitrary discriminator. */
   def discriminatedBy[A](discriminatorCodec: Codec[A]): NeedDiscriminators[A] =
@@ -201,15 +205,15 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
      *
      * The collection must list the discriminators in the order that the corresponding types appear in the coproduct.
      */
-    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.hlist.Length.Aux[L, N]): Codec[R] =
+    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.hlist.Length.Aux[L, N]): Codec[R] with KnownDiscriminatorType[A] =
       usingUnsafe(discriminators.seq)
 
     /**
      * Specifies the discriminator values for each of the union type members by providing the discriminators
      * as a record with the same keys as the union.
      */
-    def using[L <: HList](bindings: L)(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, L, A]): Codec[R] =
-      toR(new CoproductCodec.Discriminated(
+    def using[L <: HList](bindings: L)(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, L, A]): Codec[R] with KnownDiscriminatorType[A] =
+      toRDiscriminated(new CoproductCodec.Discriminated(
         codecs,
         discriminatorCodec,
         keyDiscriminators.toDiscriminator(bindings),
@@ -219,16 +223,16 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
      * Determines discriminators values automatically by looking for a `Discriminator[R, X, A]`
      * for each component type `X` in the coproduct `C`.
      */
-    def auto(implicit auto: CoproductBuilderAutoDiscriminators[R, C, A]): Codec[R] = usingUnsafe(auto.discriminators)
+    def auto(implicit auto: CoproductBuilderAutoDiscriminators[R, C, A]): Codec[R] with KnownDiscriminatorType[A] = usingUnsafe(auto.discriminators)
 
     /** Unsafe version of `using` -- discriminators must be equal in length to the number of components in `C`. */
-    private def usingUnsafe(discriminators: Seq[A]): Codec[R] = {
+    private def usingUnsafe(discriminators: Seq[A]): Codec[R] with KnownDiscriminatorType[A] = {
       val toDiscriminator: C => A = c => discriminators(CoproductCodec.indexOf(c))
       val fromDiscriminator: A => Option[Int] = a => {
         val idx = discriminators.indexWhere { (x: A) => x == a }
         if (idx >= 0) Some(idx) else None
       }
-      toR(new CoproductCodec.Discriminated(codecs, discriminatorCodec, toDiscriminator, fromDiscriminator))
+      toRDiscriminated(new CoproductCodec.Discriminated(codecs, discriminatorCodec, toDiscriminator, fromDiscriminator))
     }
   }
 

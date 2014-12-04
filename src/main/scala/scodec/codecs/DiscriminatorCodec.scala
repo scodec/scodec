@@ -55,7 +55,7 @@ import DiscriminatorCodec.{ Case, Prism }
  * @define paramFromRep function used during decoding that converts an `R` to an `A`
  * @define paramCr codec that encodes/decodes `R`s
  */
-final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B, Any]]) extends Codec[A] {
+final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B, Any]]) extends Codec[A] with KnownDiscriminatorType[B] {
 
   /**
    * $methodCaseCombinator
@@ -314,20 +314,18 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
   private def appendCase[R](c: Case[A, B, R]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]])
 
-  private val matcher: B => (Err \/ Case[A, B, Any]) =
-    if (cases.forall(_.condition.isLeft)) { // build a little table
+  private val matcher: B => (Err \/ Case[A, B, Any]) = {
+    def errOrCase(b: B, opt: Option[Case[A, B, Any]]) = opt \/> new UnknownDiscriminator(b)
+    if (cases.forall(_.condition.isLeft)) {
       // we reverse the cases so earlier cases 'win' in event of overlap
       val tbl = cases.reverse.map(kase => kase.condition.swap.toOption.get -> kase).toMap
-      b => tbl.get(b) match {
-        case None => left(Err(s"unknown discrimination tag $b"))
-        case Some(kase) => right(kase)
-      }
+      b => errOrCase(b, tbl.get(b))
     }
-    else // this could be a bit smarter, but we fall back to linear scan
-      b => cases.find(_.condition.fold(_ == b, _._2(b))) match {
-        case None => left(Err(s"unknown discrimination tag $b"))
-        case Some(kase) => right(kase)
-      }
+    else {
+      // this could be a bit smarter, but we fall back to linear scan
+      b => errOrCase(b, cases.find(_.condition.fold(_ == b, _._2(b))))
+    }
+  }
 
   def encode(a: A): Err \/ BitVector =
     cases.iterator.flatMap { k =>

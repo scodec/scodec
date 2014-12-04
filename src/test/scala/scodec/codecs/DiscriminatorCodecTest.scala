@@ -101,7 +101,6 @@ class DiscriminatorCodecTest extends CodecSuite {
       roundtrip(codec, left(Reserved(4)))
     }
 
-
     "support building a codec for an ADT" in {
       sealed trait Direction
       case object Stay extends Direction
