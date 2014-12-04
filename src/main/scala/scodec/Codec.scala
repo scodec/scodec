@@ -342,6 +342,42 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final override def compact: Codec[A] = Codec(super.compact, this)
 
   /**
+   * Safely lifts this codec to a codec of a supertype.
+   *
+   * When a subtype of `B` that is not a subtype of `A` is passed to encode,
+   * an encoding error is returned.
+   *
+   * @group combinators
+   */
+  final def upcast[B >: A](implicit m: Manifest[A]): Codec[B] = new Codec[B] {
+    def encode(b: B) = b match {
+      case a: A => self encode a
+      case _ => left(Err(s"${b.getClass.getSimpleName} is not a ${m.runtimeClass.getSimpleName}"))
+    }
+    def decode(bv: BitVector) = self decode bv
+    override def toString = self.toString
+  }
+
+  /**
+   * Safely lifts this codec to a codec of a subtype.
+   *
+   * When a supertype of `B` that is not a supertype of `A` is decoded,
+   * an decoding error is returned.
+   *
+   * @group combinators
+   */
+  final def downcast[B <: A : Manifest]: Codec[B] = new Codec[B] {
+    def encode(b: B) = self encode b
+    def decode(bv: BitVector) = self.decode(bv).flatMap { case (rem, a) =>
+      a match {
+        case b: B => right((rem, b))
+        case _ => left(Err(s"${a.getClass.getSimpleName} is not a ${implicitly[Manifest[B]].runtimeClass.getSimpleName}"))
+      }
+    }
+    override def toString = self.toString
+  }
+
+  /**
    * Creates a new codec that is functionally equivalent to this codec but pushes the specified
    * context string in to any errors returned from encode or decode.
    * @group combinators
@@ -383,7 +419,6 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   def toFieldWithContext[K <: Symbol](k: K): Codec[FieldType[K, A]] =
     toField[K].withContext(k.name)
-
 }
 
 /**
