@@ -1170,7 +1170,7 @@ package object codecs {
    * @param mappings mapping from tag values to/from enum values
    * @group combinators
    */
-  final def mappedEnum[A, B](discriminatorCodec: Codec[B], mappings: (A, B)*): Codec[A] =
+  final def mappedEnum[A, B](discriminatorCodec: Codec[B], mappings: (A, B)*): DiscriminatorCodec[A, B] =
     mappedEnum(discriminatorCodec, mappings.toMap)
 
   /**
@@ -1181,7 +1181,7 @@ package object codecs {
    * @param map mapping from tag values to/from enum values
    * @group combinators
    */
-  final def mappedEnum[A, B](discriminatorCodec: Codec[B], map: Map[A, B]): Codec[A] = {
+  final def mappedEnum[A, B](discriminatorCodec: Codec[B], map: Map[A, B]): DiscriminatorCodec[A, B] = {
     map.foldLeft(discriminated[A].by(discriminatorCodec)) { case (acc, (value, tag)) =>
       acc.subcaseO(tag)(a => if (a == value) Some(a) else None)(provide(value))
     }

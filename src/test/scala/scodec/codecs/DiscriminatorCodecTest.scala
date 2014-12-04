@@ -58,6 +58,50 @@ class DiscriminatorCodecTest extends CodecSuite {
       roundtrip(codec, West)
     }
 
+    "support building a codec for an enumeration with preserved reserved values" in {
+      trait Color
+      case object Red extends Color
+      case object Green extends Color
+      case object Blue extends Color
+      case class Reserved(value: Int) extends Color
+
+      val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
+      val reserved: Codec[Reserved] = uint8.pxmap(Reserved.apply, Reserved.unapply)
+      val codec: Codec[Color] = choice(nonReserved, reserved.upcast[Color])
+
+      roundtrip(codec, Red)
+      roundtrip(codec, Green)
+      roundtrip(codec, Blue)
+      roundtrip(codec, Reserved(255))
+      roundtrip(codec, Reserved(4))
+    }
+
+    "support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy" in {
+      import scalaz.{ \/, \/-, -\/ }
+      import \/.{ left, right }
+
+      trait Color
+      case object Red extends Color
+      case object Green extends Color
+      case object Blue extends Color
+
+      case class Reserved(value: Int)
+
+      val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
+      val reserved: Codec[Reserved] = uint8.pxmap(Reserved.apply, Reserved.unapply)
+      val codec: Codec[Reserved \/ Color] = choice(
+        nonReserved.xmap[\/-[Color]](c => \/-(c), _.b).upcast[Reserved \/ Color],
+        reserved.xmap[-\/[Reserved]](r => -\/(r), _.a).upcast[Reserved \/ Color]
+      )
+
+      roundtrip(codec, right(Red))
+      roundtrip(codec, right(Green))
+      roundtrip(codec, right(Blue))
+      roundtrip(codec, left(Reserved(255)))
+      roundtrip(codec, left(Reserved(4)))
+    }
+
+
     "support building a codec for an ADT" in {
       sealed trait Direction
       case object Stay extends Direction
