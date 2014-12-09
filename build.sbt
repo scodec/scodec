@@ -12,7 +12,7 @@ name := "scodec-core"
 
 scalaVersion := "2.10.4"
 
-crossScalaVersions := Seq(scalaVersion.value, "2.11.0")
+crossScalaVersions := Seq(scalaVersion.value, "2.11.4")
 
 scalacOptions ++= Seq(
   "-feature",
