@@ -22,5 +22,7 @@ private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Do
       case Left(e) => \/.left(Err.insufficientBits(64, buffer.size))
       case Right(b) => \/.right((buffer.drop(64), ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble))
     }
+
+  override def toString = "double"
 }
 

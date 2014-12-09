@@ -22,4 +22,6 @@ private[codecs] final class FloatCodec(ordering: ByteOrdering) extends Codec[Flo
       case Left(e) => \/.left(Err.insufficientBits(32, buffer.size))
       case Right(b) => \/.right((buffer.drop(32), ByteBuffer.wrap(b.toByteArray).order(byteOrder).getFloat))
     }
+
+  override def toString = "float"
 }
