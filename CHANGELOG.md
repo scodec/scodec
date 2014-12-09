@@ -1,3 +1,23 @@
+1.6.0
+=====
+ - `CoproductCodecBuilder` now supports arbitrary orderings of component types. This is especially useful
+   when creating a `CoproductCodecBuilder` for a sealed class, because the order of subtypes in the
+   coproduct representation is chosen by the compiler. See
+   [example](https://github.com/scodec/scodec/blob/17f03ffe26cf91880e07a26b4c1a684918ce203a/src/test/scala/scodec/examples/CoproductsExample.scala#L227-L230).
+ - Introduced the `Transform` typeclass, which abstracts the ability to `exmap` and provides derived
+   implementations for `xmap`, `pxmap`, `widen`, `narrow`, and `as`, including Shapeless integration with `as`.
+ - Provided instances of `Transform` for both `Codec` and  `CoproductCodecBuilder`.
+ - Added various combinators to `Codec`:
+   - `upcast`
+   - `downcast`
+   - `toFieldWithContext`
+ - Introduced `KnownDiscriminatorType[D]` mixin.
+ - Modified discriminated coproduct codecs and `DiscriminatorCodec` to raise
+   `KnownDiscriminatorType[D]#UnknownDiscriminator` errors.
+ - Added `scodec.codecs.hlist(l)` combinator for converting an `HList` of shape
+   `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` to `Codec[X0 :: X1 :: ... :: Xn :: HNil]`.
+   Also available via syntax enrichment, `toCodec`, on `HList`s of proper shape.
+
 1.5.0
 =====
  - Due to diverging implicit errors introduced by 1.4.0, the derived codec support was refactored.
@@ -78,7 +98,7 @@
  - Added `dropUnits` combinator for `HList` codecs, greatly simplifying creation of codecs that have unit values due to use of `constant` or `ignore`.
    For example, `(uint8 :: ignore(4) :: uint4 :: ignore(3) :: uint5).dropUnits` results in a `Codec[Int :: Int :: Int :: HNil]`
  - Added support for xmapping polymorphic functions via `polyxmap` and `polyxmap` combinators
-  - `polyxmap` takes 2 polymorphic functions, forward and reverse 
+  - `polyxmap` takes 2 polymorphic functions, forward and reverse
   - `polyxmap1` takes 1 polymorphic function that's used in both directions
   - both combinators work on `HList` codecs and value codecs
 
