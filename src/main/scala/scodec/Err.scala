@@ -44,6 +44,12 @@ object Err {
     def pushContext(ctx: String) = copy(context = ctx :: context)
   }
 
+  case class MatchingDiscriminatorNotFound[A](a: A, context: List[String]) extends Err {
+    def this(a: A) = this(a, Nil)
+    def message = s"could not find matching case for $a"
+    def pushContext(ctx: String) = copy(context = ctx :: context)
+  }
+
   def apply(message: String): Err = new General(message)
   def insufficientBits(needed: Long, have: Long): Err = new InsufficientBits(needed, have)
 }

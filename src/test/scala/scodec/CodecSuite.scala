@@ -3,7 +3,7 @@ package scodec
 import scala.collection.GenTraversable
 import scala.concurrent.duration._
 
-import scalaz.\/-
+import scalaz.{-\/, \/-}
 import scalaz.syntax.either._
 
 import org.scalacheck.Gen
@@ -28,6 +28,13 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
 
   protected def roundtripAll[A](codec: Codec[A], as: GenTraversable[A]) {
     as foreach { a => roundtrip(codec, a) }
+  }
+
+  protected def encodeError[A](codec: Codec[A], a: A, err: Err) {
+    val encoded = codec.encode(a)
+    encoded should be ('left)
+    val -\/(error) = encoded
+    error shouldBe err
   }
 
   protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A): Unit = {

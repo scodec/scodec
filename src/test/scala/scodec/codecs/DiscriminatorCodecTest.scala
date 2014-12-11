@@ -132,5 +132,17 @@ class DiscriminatorCodecTest extends CodecSuite {
       roundtrip(treeCodec, Leaf(42))
       roundtrip(treeCodec, Node(Leaf(42), Node(Leaf(1), Leaf(2))))
     }
+
+    "error when matching discriminator for encoding is not found" in {
+      val codec =
+        discriminated[AnyVal].by(uint8)
+        .typecase(0, bool)
+
+      roundtrip(codec, true)
+      roundtrip(codec, false)
+      encodeError(codec, 1, new Err.MatchingDiscriminatorNotFound(1))
+      encodeError(codec, Int.MaxValue, new Err.MatchingDiscriminatorNotFound(Int.MaxValue))
+    }
+
   }
 }
