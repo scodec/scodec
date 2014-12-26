@@ -1,11 +1,10 @@
 package scodec
 
-import scala.language.implicitConversions
-
 import scalaz.{ \/, InvariantFunctor, Monoid, StateT }
 import \/.{ left, right }
 import scalaz.syntax.std.option._
 import shapeless._
+import shapeless.labelled.FieldType
 import shapeless.record._
 import shapeless.ops.hlist._
 import shapeless.ops.record._
@@ -21,7 +20,7 @@ import scodec.bits.BitVector
  * remaining bits in the bit vector that it did not use in decoding.
  *
  * There are various ways to create instances of `Codec`. The trait can be implemented directly or one of the
- * constructor methods in the companion can be used (e.g., `apply`, `derive`). Most of the methods on `Codec`
+ * constructor methods in the companion can be used (e.g., `apply`). Most of the methods on `Codec`
  * create return a new codec that has been transformed in some way. For example, the [[xmap]] method
  * converts a `Codec[A]` to a `Codec[B]` given two functions, `A => B` and `B => A`.
  *
@@ -155,7 +154,7 @@ import scodec.bits.BitVector
  * In this example, no explicit codec was defined for `Point` yet `Codec[Point]` successfully created one.
  * It did this by "reflecting" over the structure of `Point` and looking up a codec for each component type
  * (note: no runtime reflection is performed - rather, this is implemented using macro-based compile time reflection).
- * In this case, there are three components, each of type `Int`, so it looked for an implicit `Codec[Int]`.
+ * In this case, there are three components, each of type `Int`, so the compiler first looked for an implicit `Codec[Int]`.
  * It then combined each `Codec[Int]` using an `HList` based codec and finally converted the `HList` codec
  * to a `Codec[Point]`. It found the implicit `Codec[Int]` instances due to the import of `scodec.codecs.implicits._`.
  * Furthermore, if there was an error encoding or decoding a field, the field name (i.e., x, y, or z) is included
@@ -170,26 +169,10 @@ import scodec.bits.BitVector
  *
  * Full examples are available in the test directory of this project.
  *
- * Note that both case class and sealed hierarchies require implicit component codecs in scope. In both cases,
- * those implicit codecs can themselves be automatically derived, although diverging implicit expansion
- * errors often occur when recursively deriving codecs. These errors can be avoided by lifting derived
- * codecs for the component types to implicit codecs like so: {{{
- case class Foo(x: Bar, y: Baz, ...)
- implicit val codecBar = Codec.derive[Bar]
- implicit val codecBaz = Codec.derive[Baz]
- Codec.derive[Foo] }}}
+ * == Implicit Codecs ==
  *
- * === Implicit Codecs ===
- *
- * Codecs derived automatically are not defined implicitly -- meaning that if `Codec.derive[Foo]` returns
- * a derived codec, that derived codec will not be available via `implicitly[Codec[Foo]]`. Instead,
- * derived codecs are provided implicitly via the [[DerivedCodec]] witness. In fact, `Codec.derive[A]`
- * is just an implicit summoning method for `DerivedCodec[A]`.
- *
- * When writing generic combinators that depend on implicitly available codecs, it is often useful
- * to allow for fallback to a derived codec if there is no explicitly defined implicit codec available.
- * This support is provided by the [[ImplicitCodec]] witness. Instead of requesting an implicit `Codec[A]`,
- * request an `ImplicitCodec[A]` to get the fallback to derived behavior.
+ * If authoring combinators that require implicit codec arguments, use `shapeless.Lazy[Codec[A]]` instead of
+ * `Codec[A]`. This prevents the occurrence of diverging implicit expansion errors.
  *
  * == Miscellaneous ==
  *
@@ -410,7 +393,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   def toField[K]: Codec[FieldType[K, A]] =
-    xmap[FieldType[K, A]](a => field[K](a), identity)
+    xmap[FieldType[K, A]](a => labelled.field[K](a), identity)
 
   /**
    * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
@@ -430,7 +413,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
  * @groupname conv Conveniences
  * @groupprio conv 2
  *
- * @groupname inst Typeclass Instances
+ * @groupname inst Supporting Instances
  * @groupprio inst 3
  */
 object Codec extends EncoderFunctions with DecoderFunctions {
@@ -454,21 +437,9 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   }
 
   /**
-   * Gets an implicitly available codec for type `A` -- either an explicitly defined implicit or a derived codec.
-   * See [[derive]] for more information on derived codecs.
-   * @group ctor
-   */
-  def apply[A](implicit c: ImplicitCodec[A]): Codec[A] = c.codec
-
-  /**
-   * Gets an implicitly available codec for type `A` -- the codec is guaranteed to not be derived.
-   * @group ctor
-   */
-  def nonDerived[A](implicit c: Codec[A]): Codec[A] = c
-
-  /**
-   * Derives a codec for the specified type.
+   * Gets an implicitly available codec for type `A`.
    *
+   * If an implicit `Codec[A]` is not available, one might be able to be derived automatically.
    * Codecs can be derived for:
    *  - case classes (and hlists and records), where each component type of the case class either has an
    *    implicitly available codec or one can be automatically derived
@@ -479,14 +450,53 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    *
    * @group ctor
    */
-  def derive[A](implicit d: DerivedCodec[A]): Codec[A] = d.codec
+  def apply[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
 
   /**
-   * Alias for [[derive]].
+   * Supports derived codecs.
    * @group ctor
    */
-  @deprecated("As of 1.5, this method is redundant with Codec.derive.", "1.5")
-  def product[A](implicit d: DerivedCodec[A]): Codec[A] = d.codec
+  implicit val deriveHNil: Codec[HNil] =
+    codecs.HListCodec.hnilCodec
+
+  /**
+   * Supports derived codecs.
+   * @group ctor
+   */
+  implicit def deriveProduct[H, T <: HList](implicit headCodec: Lazy[Codec[H]], tailAux: Lazy[Codec[T]]): Codec[H :: T] =
+    headCodec.value :: tailAux.value
+
+  /**
+   * Supports derived codecs.
+   * @group ctor
+   */
+  implicit def deriveRecord[KH <: Symbol, VH, TRec <: HList, KT <: HList](implicit
+    keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT],
+    headCodec: Lazy[Codec[VH]],
+    tailAux: Lazy[Codec[TRec]]
+  ): Codec[FieldType[KH, VH] :: TRec] = {
+    val headFieldCodec: Codec[FieldType[KH, VH]] = headCodec.value.toFieldWithContext(keys().head)
+    headFieldCodec :: tailAux.value
+  }
+
+  /**
+   * Supports derived codecs.
+   * @group ctor
+   */
+  implicit def deriveLabelledGeneric[A, Rec <: HList](implicit
+    lgen: LabelledGeneric.Aux[A, Rec],
+    auto: Lazy[Codec[Rec]]
+  ): Codec[A] = auto.value.xmap(lgen.from, lgen.to)
+
+  /**
+   * Supports derived codecs.
+   * @group ctor
+   */
+  implicit def deriveCoproduct[A, D, C0 <: Coproduct](implicit
+    discriminated: codecs.Discriminated[A, D],
+    auto: codecs.CoproductBuilderAuto[A] { type C = C0 },
+    auto2: codecs.CoproductBuilderAutoDiscriminators[A, C0, D]
+  ): Codec[A] = auto.apply.auto
 
   /**
    * Creates a coproduct codec builder for the specified type.

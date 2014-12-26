@@ -26,30 +26,25 @@ class DerivedCodecTest extends CodecSuite {
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.derive[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
+      Codec[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
     }
 
     "support automatic generation of case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.derive[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
+      Codec[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
     }
 
     "support automatic generation of nested case class codecs, where component codecs are derived as well" in {
       import implicits._
-      // This shouldn't be necessary but it is required to avoid diverging implicit expansion
-      implicit val bar = Codec.derive[Bar]
-      Codec.derive[Qux]
-      Codec.derive[Quy]
-      Codec.derive[Quz]
-      // Again, it shouldn't be necessary to put the Codec[Point] in to implicit scope, because derivation of Woz
-      // should be able to derive Point too -- but it is required
-      implicit val pt = Codec.derive[Point]
-      Codec.derive[Woz]
+      Codec[Qux]
+      Codec[Quy]
+      Codec[Quz]
+      Codec[Woz]
     }
 
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.derive[Foo].encode(Foo(1, 256, "Hello")) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
+      Codec[Foo].encode(Foo(1, 256, "Hello")) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
     }
 
     "support automatic generation of coproduct codec builders" in {
@@ -62,8 +57,7 @@ class DerivedCodecTest extends CodecSuite {
 
     "support automatic generation of coproduct codec builders from union types" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      val uSchema = RecordType.like('i ->> 24 :: 's ->> "foo" :: HNil)
-      type U = uSchema.Union
+      type U = Union.`'i -> Int, 's -> String`.T
       val codec = Codec.coproduct[U].discriminatedByIndex(uint8)
       codec.encodeValid(Coproduct[U]('s ->> "Hello")) shouldBe hex"01000548656c6c6f".bits
       codec.encode(Coproduct[U]('i ->> 256)) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("i"))
@@ -76,4 +70,5 @@ class DerivedCodecTest extends CodecSuite {
       codec.encodeValid(Bar(1, 2)) shouldBe hex"000102".bits
     }
   }
+
 }

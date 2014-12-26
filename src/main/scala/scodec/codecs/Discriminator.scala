@@ -22,7 +22,7 @@ case class Discriminator[X, Y, D](value: D)
  * For example, an implicit `Discriminated` value can be defined in the companion
  * of a sealed trait, along with implicit `Discriminator` values in each subtype
  * companion. Given such implicits, a codec for the trait can be automatically
- * created using `Codec.derive[X]`.
+ * derived using `Codec[X]`.
  *
  * @tparam X type that can be discriminated by discriminator values of type `D`
  * @tparam D value type that discriminates `Y` in context of `X` from other types

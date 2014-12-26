@@ -143,7 +143,7 @@ package object scodec {
     def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(implicit
       prepend: Prepend.Aux[K, L, KL],
       lengthK: Length.Aux[K, KLen],
-      split: Split.Aux[KL, KLen, (K, L)]
+      split: Split.Aux[KL, KLen, K, L]
     ): Codec[KL] = HListCodec.concat(k, self)
 
     /**
@@ -155,7 +155,7 @@ package object scodec {
     def flatConcat[M <: HList, LM <: HList, LLen <: Nat](f: L => Codec[M])(implicit
       prepend: Prepend.Aux[L, M, LM],
       lengthK: Length.Aux[L, LLen],
-      split: Split.Aux[LM, LLen, (L, M)]
+      split: Split.Aux[LM, LLen, L, M]
     ): Codec[LM] = HListCodec.flatConcat(self, f)
 
     /**
@@ -167,7 +167,7 @@ package object scodec {
     def flatAppend[A, LA <: HList, Len <: Nat](f: L => Codec[A])(implicit
       prepend: Prepend.Aux[L, A :: HNil, LA],
       length: Length.Aux[L, Len],
-      split: Split.Aux[LA, Len, (L, A :: HNil)]
+      split: Split.Aux[LA, Len, L, A :: HNil]
     ): Codec[LA] = HListCodec.flatAppend(self, f)
 
     /**

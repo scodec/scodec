@@ -1,3 +1,12 @@
+1.7.0
+=====
+ - Upgraded to Shapeless 2.1
+ - Removed `ImplicitCodec` and `DerivedCodec` in favor of `shapeless.Lazy[Codec[A]]`.
+   Similarly, `Codec.derive` and `Codec.nonDerived` were removed in favor of `Codec.apply`.
+   This new solution provides the benefits of automatically derived codecs without risk
+   of diverging implicit expansion. If authoring combinators that require implicit codecs,
+   use `Lazy[Codec[A]]` instead of `Codec[A]` or `ImplicitCodec[A]`.
+
 1.6.0
 =====
  - `CoproductCodecBuilder` now supports arbitrary orderings of component types. This is especially useful

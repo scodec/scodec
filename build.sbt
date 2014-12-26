@@ -10,9 +10,9 @@ organization := "org.typelevel"
 
 name := "scodec-core"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.4"
 
-crossScalaVersions := Seq(scalaVersion.value, "2.11.4")
+crossScalaVersions := Seq(scalaVersion.value, "2.10.4")
 
 scalacOptions ++= Seq(
   "-feature",
@@ -54,7 +54,7 @@ resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/publi
 libraryDependencies ++= Seq(
   "org.typelevel" %% "scodec-bits" % "1.0.4",
   "org.scalaz" %% "scalaz-core" % "7.1.0",
-  "com.chuusai" % "shapeless" % "2.0.0" cross CrossVersion.fullMapped {
+  "com.chuusai" % "shapeless" % "2.1.0-SNAPSHOT" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"
     case x if x startsWith "2.11." => "2.11"
   },

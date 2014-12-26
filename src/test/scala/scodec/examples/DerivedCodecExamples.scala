@@ -48,6 +48,11 @@ class DerivedCodecsExample extends CodecSuite {
     )
   }
 
+  case class Point(x: Int, y: Int, z: Int)
+  object Point {
+    implicit val codec: Codec[Point] = (uint8 :: uint8 :: uint8).as[Point]
+  }
+
   "derived codec examples" should {
 
     "demonstrate deriving a codec for a case class" in {
@@ -101,6 +106,7 @@ class DerivedCodecsExample extends CodecSuite {
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
       Codec[Color].encodeValid(Color.Green) shouldBe hex"02".bits
+      Codec[Point].encodeValid(Point(1, 2, 3)) should have size(24)
     }
   }
 }

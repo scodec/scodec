@@ -7,6 +7,7 @@ import scalaz.\/
 import scalaz.syntax.std.option._
 
 import shapeless._
+import labelled.FieldType
 import record._
 import ops.coproduct._
 import ops.hlist._
@@ -62,7 +63,7 @@ private[scodec] object CoproductCodec {
       value <- DecodingContext(decoder.decode)
     } yield value).run(buffer)
 
-    override def toString = codecs.toList.mkString("(", " :+: ", ")") + s" by $discriminatorCodec"
+    override def toString = liftedCodecs.mkString("(", " :+: ", ")") + s" by $discriminatorCodec"
   }
 
   /** Codec that encodes/decodes a coproduct `C`. */
@@ -77,7 +78,7 @@ private[scodec] object CoproductCodec {
 
     def decode(buffer: BitVector) = decoder.decode(buffer)
 
-    override def toString = codecs.toList.mkString("choice(", " :+: ", ")")
+    override def toString = liftedCodecs.mkString("choice(", " :+: ", ")")
   }
 }
 
@@ -205,14 +206,14 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
      *
      * The collection must list the discriminators in the order that the corresponding types appear in the coproduct.
      */
-    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.hlist.Length.Aux[L, N]): Codec[R] with KnownDiscriminatorType[A] =
+    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.coproduct.Length.Aux[C, N]): Codec[R] with KnownDiscriminatorType[A] =
       usingUnsafe(discriminators.seq)
 
     /**
      * Specifies the discriminator values for each of the union type members by providing the discriminators
      * as a record with the same keys as the union.
      */
-    def using[L <: HList](bindings: L)(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, L, A]): Codec[R] with KnownDiscriminatorType[A] =
+    def using[Rec <: HList](bindings: Rec)(implicit keyDiscriminators: CoproductBuilderKeyDiscriminators[C, Rec, A]): Codec[R] with KnownDiscriminatorType[A] =
       toRDiscriminated(new CoproductCodec.Discriminated(
         codecs,
         discriminatorCodec,
@@ -285,19 +286,19 @@ object CoproductBuilderAuto {
     }
 
   implicit def coproduct[H, T <: Coproduct, TL <: HList](implicit
-    headCodec: ImplicitCodec[H],
+    headCodec: Lazy[Codec[H]],
     tailAux: CoproductBuilderAuto.Aux[T, T, TL]
   ): CoproductBuilderAuto.Aux[H :+: T, H :+: T, Codec[H] :: TL] =
     new CoproductBuilderAuto[H :+: T] {
       type C = H :+: T
       type L = Codec[H] :: TL
-      def apply = headCodec :+: tailAux.apply
+      def apply = headCodec.value :+: tailAux.apply
     }
 
   import shapeless.ops.union.{ Keys => UnionKeys }
 
   implicit def union[KH <: Symbol, VH, T <: Coproduct, KT <: HList, TL <: HList](implicit
-    headCodec: ImplicitCodec[VH],
+    headCodec: Lazy[Codec[VH]],
     tailAux: CoproductBuilderAuto.Aux[T, T, TL],
     keys: UnionKeys.Aux[FieldType[KH, VH] :+: T, KH :: KT]
   ): CoproductBuilderAuto.Aux[FieldType[KH, VH] :+: T, FieldType[KH, VH] :+: T, Codec[FieldType[KH, VH]] :: TL] =
@@ -305,7 +306,7 @@ object CoproductBuilderAuto {
       type C = FieldType[KH, VH] :+: T
       type L = Codec[FieldType[KH, VH]] :: TL
       def apply = {
-        headCodec.toFieldWithContext(keys().head) :+: tailAux.apply
+        headCodec.value.toFieldWithContext(keys().head) :+: tailAux.apply
       }
     }
 

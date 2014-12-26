@@ -6,6 +6,8 @@ import scala.concurrent.duration._
 import scalaz.{-\/, \/-}
 import scalaz.syntax.either._
 
+import shapeless.Lazy
+
 import org.scalacheck.Gen
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
@@ -14,8 +16,8 @@ import scodec.bits.BitVector
 
 abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPropertyChecks {
 
-  protected def roundtrip[A: Codec](a: A) {
-    roundtrip(Codec[A], a)
+  protected def roundtrip[A](a: A)(implicit c: Lazy[Codec[A]]) {
+    roundtrip(c.value, a)
   }
 
   protected def roundtrip[A](codec: Codec[A], a: A) {
