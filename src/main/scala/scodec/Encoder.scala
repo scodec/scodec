@@ -191,13 +191,6 @@ object Encoder extends EncoderFunctions {
   }
 
   /**
-   * Creates an encoder from the specified function.
-   * @group ctor
-   */
-  @deprecated("Use apply instead", "1.5.0")
-  def instance[A](f: A => Err \/ BitVector): Encoder[A] = apply(f)
-
-  /**
    * Contravariant functor instance.
    * @group inst
    */

@@ -801,21 +801,6 @@ package object codecs {
     ).withToString(codecs.mkString("choice(", ", ", ")"))
 
   /**
-   * Codec that encodes/decodes an immutable `IndexedSeq[A]` from a `Codec[A]`.
-   *
-   * When encoding, each `A` in the sequence is encoded and all of the resulting vectors are concatenated.
-   *
-   * When decoding, `codec.decode` is called repeatedly until there are no more remaining bits and the value result
-   * of each `decode` is returned in the sequence.
-   *
-   * @param codec codec to encode/decode a single element of the sequence
-   * @group combinators
-   */
-  @deprecated("Use vector codec or list codec instead.", "1.2.1")
-  def repeated[A](codec: Codec[A]): Codec[collection.immutable.IndexedSeq[A]] =
-    new VectorCodec(codec).xmap[collection.immutable.IndexedSeq[A]](identity, _.toVector)
-
-  /**
    * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
    *
    * When encoding, each `A` in the vector is encoded and all of the resulting vectors are concatenated.
