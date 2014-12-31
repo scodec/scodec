@@ -453,6 +453,39 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   def apply[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
 
   /**
+   * Encodes the specified value to a bit vector using an implicitly available codec.
+   * @group conv
+   */
+  def encode[A](a: A)(implicit c: Lazy[Codec[A]]): Err \/ BitVector = c.value.encode(a)
+
+  /**
+   * Encodes the specified value to a bit vector using an implicitly available encoder or throws an `IllegalArgumentException` if encoding fails.
+   * @group conv
+   */
+  def encodeValid[A](a: A)(implicit c: Lazy[Codec[A]]): BitVector = c.value.encodeValid(a)
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
+   * @group conv
+   */
+  def decode[A](bits: BitVector)(implicit c: Lazy[Codec[A]]): Err \/ (BitVector, A) = c.value.decode(bits)
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
+   * codec and discards the remaining bits.
+   * @group conv
+   */
+  def decodeValue[A](bits: BitVector)(implicit c: Lazy[Codec[A]]): Err \/ A = c.value.decodeValue(bits)
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
+   * codec and discards the remaining bits or throws an `IllegalArgumentException` if decoding
+   * fails.
+   * @group conv
+   */
+  def decodeValidValue[A](bits: BitVector)(implicit c: Lazy[Codec[A]]): A = c.value.decodeValidValue(bits)
+
+  /**
    * Supports derived codecs.
    * @group ctor
    */

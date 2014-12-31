@@ -7,6 +7,8 @@ import \/.left
 
 import scodec.bits.BitVector
 
+import shapeless.Lazy
+
 /**
  * Supports encoding a value of type `A` to a `BitVector`.
  *
@@ -103,18 +105,6 @@ trait Encoder[-A] { self =>
 trait EncoderFunctions {
 
   /**
-   * Encodes the specified value to a bit vector using an implicitly available encoder.
-   * @group conv
-   */
-  final def encode[A: Encoder](a: A): Err \/ BitVector = Encoder[A].encode(a)
-
-  /**
-   * Encodes the specified value to a bit vector using an implicitly available encoder or throws an `IllegalArgumentException` if encoding fails.
-   * @group conv
-   */
-  final def encodeValid[A: Encoder](a: A): BitVector = Encoder[A].encodeValid(a)
-
-  /**
    * Encodes the specified values, one after the other, to a bit vector using the specified encoders.
    * @group conv
    */
@@ -180,7 +170,7 @@ object Encoder extends EncoderFunctions {
    * Provides syntax for summoning an `Encoder[A]` from implicit scope.
    * @group ctor
    */
-  def apply[A](implicit enc: Encoder[A]): Encoder[A] = enc
+  def apply[A](implicit enc: Lazy[Encoder[A]]): Encoder[A] = enc.value
 
   /**
    * Creates an encoder from the specified function.
@@ -189,6 +179,18 @@ object Encoder extends EncoderFunctions {
   def apply[A](f: A => Err \/ BitVector): Encoder[A] = new Encoder[A] {
     def encode(value: A) = f(value)
   }
+
+  /**
+   * Encodes the specified value to a bit vector using an implicitly available encoder.
+   * @group conv
+   */
+  def encode[A](a: A)(implicit e: Lazy[Encoder[A]]): Err \/ BitVector = e.value.encode(a)
+
+  /**
+   * Encodes the specified value to a bit vector using an implicitly available encoder or throws an `IllegalArgumentException` if encoding fails.
+   * @group conv
+   */
+  def encodeValid[A](a: A)(implicit e: Lazy[Encoder[A]]): BitVector = e.value.encodeValid(a)
 
   /**
    * Contravariant functor instance.

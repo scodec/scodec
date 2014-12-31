@@ -7,6 +7,8 @@ import scalaz.syntax.std.option._
 
 import scodec.bits.BitVector
 
+import shapeless.Lazy
+
 /**
  * Supports decoding a value of type `A` from a `BitVector`.
  *
@@ -120,27 +122,6 @@ trait Decoder[+A] { self =>
 trait DecoderFunctions {
 
   /**
-   * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
-   * @group conv
-   */
-  final def decode[A: Decoder](bits: BitVector): Err \/ (BitVector, A) = Decoder[A].decode(bits)
-
-  /**
-   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
-   * codec and discards the remaining bits.
-   * @group conv
-   */
-  final def decodeValue[A: Decoder](bits: BitVector): Err \/ A = Decoder[A].decodeValue(bits)
-
-  /**
-   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
-   * codec and discards the remaining bits or throws an `IllegalArgumentException` if decoding
-   * fails.
-   * @group conv
-   */
-  final def decodeValidValue[A: Decoder](bits: BitVector): A = Decoder[A].decodeValidValue(bits)
-
-  /**
    * Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`.
    * @group conv
    */
@@ -247,7 +228,7 @@ object Decoder extends DecoderFunctions {
    * Provides syntax for summoning a `Decoder[A]` from implicit scope.
    * @group ctor
    */
-  def apply[A](implicit dec: Decoder[A]): Decoder[A] = dec
+  def apply[A](implicit dec: Lazy[Decoder[A]]): Decoder[A] = dec.value
 
   /**
    * Creates a decoder from the specified function.
@@ -256,6 +237,29 @@ object Decoder extends DecoderFunctions {
   def apply[A](f: BitVector => Err \/ (BitVector, A)): Decoder[A] = new Decoder[A] {
     def decode(bits: BitVector) = f(bits)
   }
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
+   * @group conv
+   */
+  def decode[A](bits: BitVector)(implicit d: Lazy[Decoder[A]]): Err \/ (BitVector, A) = d.value.decode(bits)
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
+   * codec and discards the remaining bits.
+   * @group conv
+   */
+  def decodeValue[A](bits: BitVector)(implicit d: Lazy[Decoder[A]]): Err \/ A = d.value.decodeValue(bits)
+
+  /**
+   * Decodes the specified bit vector in to a value of type `A` using an implicitly available
+   * codec and discards the remaining bits or throws an `IllegalArgumentException` if decoding
+   * fails.
+   * @group conv
+   */
+  final def decodeValidValue[A](bits: BitVector)(implicit d: Lazy[Decoder[A]]): A = d.value.decodeValidValue(bits)
+
+
 
   /**
    * Creates a decoder that always decodes the specified value and returns the input bit vector unmodified.
