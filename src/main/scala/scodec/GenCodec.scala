@@ -4,6 +4,8 @@ import scalaz.{ \/, Profunctor }
 
 import scodec.bits.BitVector
 
+import shapeless.Lazy
+
 /** Generalized codec that allows the type to encode to vary from the type to decode. */
 trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
 
@@ -63,7 +65,7 @@ object GenCodec extends EncoderFunctions with DecoderFunctions {
    * Provides syntax for summoning a `GenCodec[A, B]` from implicit scope.
    * @group ctor
    */
-  def apply[A, B](implicit gc: GenCodec[A, B]): GenCodec[A, B] = gc
+  def apply[A, B](implicit gc: Lazy[GenCodec[A, B]]): GenCodec[A, B] = gc.value
 
   /**
    * Creates a generalized codec from an encoder and a decoder.
