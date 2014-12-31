@@ -140,6 +140,8 @@ site.settings
 
 site.includeScaladoc()
 
+site.sphinxSupport()
+
 ghpages.settings
 
 git.remoteRepo := "git@github.com:scodec/scodec.git"

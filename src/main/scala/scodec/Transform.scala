@@ -44,10 +44,18 @@ abstract class Transform[F[_]] { self =>
   /**
    * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => B` and `B => Option[A]`.
    *
+   * Particularly useful when combined with case class apply/unapply. E.g., `widenOpt(fa, Foo.apply, Foo.unapply)`.
+   */
+  def widenOpt[A, B](fa: F[A], f: A => B, g: B => Option[A]): F[B] =
+    exmap(fa, right compose f, b => g(b) \/> Err(s"widening failed: $b"))
+
+  /**
+   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => B` and `B => Option[A]`.
+   *
    * Particularly useful when combined with case class apply/unapply. E.g., `pxmap(fa, Foo.apply, Foo.unapply)`.
    */
-  def pxmap[A, B](fa: F[A], f: A => B, g: B => Option[A]): F[B] =
-    exmap(fa, right compose f, b => g(b) \/> Err(s"extraction failure: $b"))
+  @deprecated("Use widenOpt instead", "1.7.0")
+  def pxmap[A, B](fa: F[A], f: A => B, g: B => Option[A]): F[B] = widenOpt(fa, f, g)
 
   /**
    * Transforms supplied `F[A]` to an `F[B]` using implicitly available evidence that such a transformation

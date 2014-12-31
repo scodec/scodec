@@ -1131,8 +1131,8 @@ package object codecs {
 
    If you you already have a codec specific to the case, you can omit
    the 'injection' function. For instance: {{{
-     val leftCodec: Codec[Left[A,B]] = codecA.pxmap(Left.apply, Left.unapply)
-     val rightCodec: Codec[Right[A,B]] = codecB.pxmap(Left.apply, Left.unapply)
+     val leftCodec: Codec[Left[A,B]] = codecA.widenOpt(Left.apply, Left.unapply)
+     val rightCodec: Codec[Right[A,B]] = codecB.widenOpt(Left.apply, Left.unapply)
      val codecE: Codec[Either[A,B]] =
        discriminated[Either[A,B]].by(uint8)
        .\ (0) { case l@Left(_) => l } (leftCodec) // backslash instead of '|'

@@ -66,7 +66,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Reserved(value: Int) extends Color
 
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
-      val reserved: Codec[Reserved] = uint8.pxmap(Reserved.apply, Reserved.unapply)
+      val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
       val codec: Codec[Color] = choice(nonReserved, reserved.upcast[Color])
 
       roundtrip(codec, Red)
@@ -88,7 +88,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Reserved(value: Int)
 
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
-      val reserved: Codec[Reserved] = uint8.pxmap(Reserved.apply, Reserved.unapply)
+      val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
       val codec: Codec[Reserved \/ Color] = choice(
         nonReserved.xmap[\/-[Color]](c => \/-(c), _.b).upcast[Reserved \/ Color],
         reserved.xmap[-\/[Reserved]](r => -\/(r), _.a).upcast[Reserved \/ Color]
@@ -107,7 +107,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Go(units: Int) extends Direction
 
       val stayCodec = provide(Stay)
-      val goCodec = int32.pxmap[Go](Go.apply, Go.unapply)
+      val goCodec = int32.widenOpt[Go](Go.apply, Go.unapply)
 
       val codec =
         discriminated[Direction].by(uint8).

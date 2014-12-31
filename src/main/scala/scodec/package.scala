@@ -80,9 +80,17 @@ package object scodec {
     /**
      * Transforms using two functions, `A => B` and `B => Option[A]`.
      *
-     * Particularly useful when combined with case class apply/unapply. E.g., `pxmap(fa, Foo.apply, Foo.unappy)`.
+     * Particularly useful when combined with case class apply/unapply. E.g., `widenOpt(fa, Foo.apply, Foo.unapply)`.
      */
-    def pxmap[B](f: A => B, g: B => Option[A]): F[B] = t.pxmap(fa, f, g)
+    def widenOpt[B](f: A => B, g: B => Option[A]): F[B] = t.widenOpt(fa, f, g)
+
+    /**
+     * Transforms using two functions, `A => B` and `B => Option[A]`.
+     *
+     * Particularly useful when combined with case class apply/unapply. E.g., `pxmap(fa, Foo.apply, Foo.unapply)`.
+     */
+    @deprecated("Use widenOpt instead", "1.7.0")
+    def pxmap[B](f: A => B, g: B => Option[A]): F[B] = widenOpt(fa, f, g)
 
     /**
      * Transforms using implicitly available evidence that such a transformation is possible.
