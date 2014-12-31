@@ -60,7 +60,7 @@ trait Encoder[-A] { self =>
    */
   def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B] {
     def encode(b: B): Err \/ BitVector =
-      f(b).map(self.encode).getOrElse(left(Err(s"extraction failure: $b")))
+      f(b).map(self.encode).getOrElse(left(Err(s"widening failed: $b")))
   }
 
   /**
