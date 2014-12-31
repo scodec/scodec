@@ -122,7 +122,7 @@ trait EncoderFunctions {
     seq foreach { a =>
       enc.encode(a) match {
         case \/-(aa) => buf += aa
-        case e @ -\/(_) => return e
+        case -\/(err) => return left(err.pushContext(buf.size.toString))
       }
     }
     def merge(offset: Int, size: Int): BitVector = size match {

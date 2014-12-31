@@ -186,7 +186,7 @@ trait DecoderFunctions {
           count += 1
           remaining = rest
         case -\/(err) =>
-          error = Some(err)
+          error = Some(err.pushContext(count.toString))
           remaining = BitVector.empty
       }
     }

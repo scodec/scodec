@@ -4,6 +4,7 @@ package codecs
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
 import scalaz.{\/, \/-, -\/}
+import \/.{ left, right }
 import scodec.bits._
 import scodec.codecs._
 
@@ -28,6 +29,18 @@ class VectorCodecTest extends CodecSuite {
       val avgs = results.reduceLeft((x, y) => (x zip y) map { case (a, b) => a + b }).map { _ / results.size }
       info("Roundtrip averages:")
       (sizes zip avgs).foreach { case (size, avg) => info(s"  $size - $avg") }
+    }
+
+    "include index of problematic value when an error occurs during decoding" in {
+      val codec = vector(uint8.narrow[Int](x => if (x == 0) left(Err("zero disallowed")) else right(x), x => x)).complete
+      val result = codec.decode(hex"010200".bits)
+      result shouldBe left(Err("zero disallowed").pushContext("2"))
+    }
+
+    "include index of problematic value when an error occurs during encoding" in {
+      val codec = vector(uint8).complete
+      val result = codec.encode(Vector(0, 1, -1))
+      result shouldBe left(Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2"))
     }
   }
 
