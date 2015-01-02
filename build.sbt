@@ -63,6 +63,11 @@ libraryDependencies ++= Seq(
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
 )
 
+// Shapeless 2.1.0 on Scala 2.10 requires macro paradise
+libraryDependencies ++= {
+  if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
+}
+
 osgiSettings
 
 OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}")
