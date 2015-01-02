@@ -170,7 +170,7 @@ object Encoder extends EncoderFunctions {
    * Provides syntax for summoning an `Encoder[A]` from implicit scope.
    * @group ctor
    */
-  def apply[A](implicit enc: Lazy[Encoder[A]]): Encoder[A] = enc.value
+  def apply[A](implicit enc: Encoder[A]): Encoder[A] = enc
 
   /**
    * Creates an encoder from the specified function.

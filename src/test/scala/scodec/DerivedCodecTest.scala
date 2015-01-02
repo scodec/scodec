@@ -21,7 +21,10 @@ class DerivedCodecTest extends CodecSuite {
   case class Quz(x: Int, y: String, bars: Vector[Bar])
 
   case class Point(x: Int, y: Int, z: Int)
+  case class Line(start: Point, end: Point)
+  case class Arrangement(lines: Vector[Line])
   case class Woz(x: Int, y: String, pts: Vector[Point])
+
 
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
@@ -40,6 +43,14 @@ class DerivedCodecTest extends CodecSuite {
       Codec[Quy]
       Codec[Quz]
       Codec[Woz]
+
+      val arr = Arrangement(Vector(
+        Line(Point(0, 0, 0), Point(10, 10, 10)),
+        Line(Point(0, 10, 1), Point(10, 0, 10))))
+
+      val arrBinary = Codec.encodeValid(arr)
+      val decoded = Codec[Arrangement].decodeValidValue(arrBinary)
+      decoded shouldBe arr
     }
 
     "include field names in case class codecs" in {
