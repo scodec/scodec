@@ -5,6 +5,8 @@ import ReleaseKeys._
 import com.typesafe.tools.mima.core._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys._
+import com.typesafe.sbt.SbtGit._
+import GitKeys._
 
 organization := "org.typelevel"
 
@@ -67,6 +69,14 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= {
   if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
 }
+
+buildInfoSettings
+
+sourceGenerators in Compile <+= buildInfo
+
+buildInfoPackage := "scodec"
+
+buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit)
 
 osgiSettings
 
