@@ -35,7 +35,6 @@ scalacOptions in (Compile, doc) ++= {
     "-groups",
     "-implicits",
     "-implicits-show-all",
-    "-skip-packages", "scalaz",
     "-sourcepath", baseDirectory.value.getAbsolutePath,
     "-doc-source-url", "https:///github.com/scodec/scodec/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
   )
@@ -55,7 +54,6 @@ resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/publi
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "scodec-bits" % "1.0.4",
-  "org.scalaz" %% "scalaz-core" % "7.1.0",
   "com.chuusai" % "shapeless" % "2.1.0-SNAPSHOT" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"
     case x if x startsWith "2.11." => "2.11"
@@ -85,7 +83,6 @@ OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}")
 OsgiKeys.importPackage := Seq(
   """scodec.bits.*;version="$<range;[==,=+);$<@>>"""",
   """scala.*;version="$<range;[==,=+);$<@>>"""",
-  """scalaz.*;version="$<range;[==,=+);$<@>>"""",
   "*"
 )
 

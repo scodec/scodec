@@ -12,7 +12,7 @@ private[codecs] object UuidCodec extends Codec[UUID] {
     codec.encode((u.getMostSignificantBits, u.getLeastSignificantBits))
 
   override def decode(bits: BitVector) =
-    codec.decode(bits) map { case (remaining, (m, l)) => (remaining, new UUID(m, l)) }
+    codec.decode(bits) map { case (m, l) => new UUID(m, l) }
 
   override def toString = "uuid"
 }

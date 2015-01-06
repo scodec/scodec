@@ -1,7 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.{\/-, -\/}
 import java.io.ByteArrayInputStream
 import java.security.cert.{Certificate, CertificateException, CertificateFactory}
 
@@ -13,16 +12,16 @@ import scodec.bits.BitVector
 private[codecs] final class CertificateCodec(certType: String) extends Codec[Certificate] {
 
   def encode(cert: Certificate) =
-    \/-(BitVector(cert.getEncoded))
+    EncodeResult.successful(BitVector(cert.getEncoded))
 
   def decode(buffer: BitVector) = {
     try {
       val factory = CertificateFactory.getInstance(certType)
       val cert = factory.generateCertificate(new ByteArrayInputStream(buffer.toByteArray))
-      \/-((BitVector.empty, cert))
+      DecodeResult.successful(cert, BitVector.empty)
     } catch {
       case e: CertificateException =>
-        -\/(Err("Failed to decode certificate: " + e.getMessage))
+        DecodeResult.failure(Err("Failed to decode certificate: " + e.getMessage))
     }
   }
 

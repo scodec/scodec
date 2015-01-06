@@ -1,7 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.{\/-, -\/}
 import scodec.bits.BitVector
 import scodec.bits.HexStringSyntax
 
@@ -20,9 +19,9 @@ class FixedSizeCodecTest extends CodecSuite {
 
 
     "fail encoding when value is too large to be encoded by size codec" in {
-      val encoded = ascii.encode("test").toOption.get
-      fixedSizeBits(32, ascii).decode(encoded ++ BitVector.low(48)) shouldBe \/-((BitVector.low(48), "test"))
-      fixedSizeBits(24, ascii).encode("test") shouldBe -\/(Err("[test] requires 32 bits but field is fixed size of 24 bits"))
+      val encoded = ascii.encode("test").require
+      fixedSizeBits(32, ascii).decode(encoded ++ BitVector.low(48)) shouldBe DecodeResult.successful("test", BitVector.low(48))
+      fixedSizeBits(24, ascii).encode("test") shouldBe EncodeResult.failure(Err("[test] requires 32 bits but field is fixed size of 24 bits"))
     }
   }
 }

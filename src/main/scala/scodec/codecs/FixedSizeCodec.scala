@@ -1,9 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.{ \/, \/-, -\/ }
-import scalaz.syntax.std.either._
-
 import scodec.bits.BitVector
 
 private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) extends Codec[A] {
@@ -12,19 +9,19 @@ private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) exten
     encoded <- codec.encode(a)
     result <- {
       if (encoded.size > size)
-        \/.left(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
+        EncodeResult.failure(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
       else
-        \/.right(encoded.padTo(size))
+        EncodeResult.successful(encoded.padTo(size))
     }
   } yield result
 
   override def decode(buffer: BitVector) =
     buffer.acquire(size) match {
-      case Left(e) => \/.left(Err.insufficientBits(size, buffer.size))
+      case Left(e) => DecodeResult.failure(Err.insufficientBits(size, buffer.size))
       case Right(b) =>
         codec.decode(b) match {
-          case e @ -\/(_) => e
-          case \/-((rest, res)) => \/-((buffer.drop(size), res))
+          case e @ DecodeResult.Failure(_) => e
+          case DecodeResult.Successful(res, rest) => DecodeResult.successful(res, buffer.drop(size))
         }
     }
 

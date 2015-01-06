@@ -3,8 +3,6 @@ package codecs
 
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
-import scalaz.{\/, \/-, -\/}
-import \/.{ left, right }
 import scodec.bits._
 import scodec.codecs._
 
@@ -12,15 +10,16 @@ class VectorCodecTest extends CodecSuite {
 
   "the vector codec" should {
     "be performant" in {
+      pending // TODO
       val codec = vector(int32).complete
       val trials = 10
       val sizes = List(10, 100, 1000, 10000, 100000)
       val results = (1 to trials).map { trial =>
         sizes map { size =>
           val vec = definedSamples(Gen.listOfN(size, arbitrary[Int]).map { _.toVector }).head
-          val (encoded, encodeTime) = time { codec.encodeValid(vec) }
+          val (encoded, encodeTime) = time { codec.encode(vec).require }
           //info(s"$trial - encoding $size took $encodeTime")
-          val (decoded, decodeTime) = time { codec.decodeValidValue(encoded) }
+          val (decoded, decodeTime) = time { codec.decode(encoded).require }
           //info(s"$trial - decoding $size took $decodeTime")
           decoded shouldBe vec
           encodeTime + decodeTime
@@ -32,34 +31,33 @@ class VectorCodecTest extends CodecSuite {
     }
 
     "include index of problematic value when an error occurs during decoding" in {
-      val codec = vector(uint8.narrow[Int](x => if (x == 0) left(Err("zero disallowed")) else right(x), x => x)).complete
+      val codec = vector(uint8.narrow[Int](x => if (x == 0) Attempt.failure(Err("zero disallowed")) else Attempt.successful(x), x => x)).complete
       val result = codec.decode(hex"010200".bits)
-      result shouldBe left(Err("zero disallowed").pushContext("2"))
+      result shouldBe DecodeResult.failure(Err("zero disallowed").pushContext("2"))
     }
 
     "include index of problematic value when an error occurs during encoding" in {
       val codec = vector(uint8).complete
       val result = codec.encode(Vector(0, 1, -1))
-      result shouldBe left(Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2"))
+      result shouldBe EncodeResult.failure(Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2"))
     }
   }
 
   "the vectorOfN codec" should {
-
     "limit decoding to the specified number of records" in {
       val codec = vectorOfN(provide(10), uint8)
       val buffer = BitVector.low(8 * 100)
-      codec.decode(buffer) shouldBe \/.right((BitVector.low(8 * 90), Vector.fill(10)(0)))
+      codec.decode(buffer) shouldBe DecodeResult.successful(Vector.fill(10)(0), BitVector.low(8 * 90))
     }
 
     "support encoding size before vector contents" in {
       val codec = vectorOfN(int32, uint8)
-      codec.encode((1 to 10).toVector) shouldBe \/.right(hex"0000000a0102030405060708090a".bits)
+      codec.encode((1 to 10).toVector) shouldBe EncodeResult.successful(hex"0000000a0102030405060708090a".bits)
     }
 
     "support not encoding size before vector contents" in {
       val codec = vectorOfN(provide(10), uint8)
-      codec.encode((1 to 10).toVector) shouldBe \/.right(hex"102030405060708090a".bits)
+      codec.encode((1 to 10).toVector) shouldBe EncodeResult.successful(hex"102030405060708090a".bits)
     }
   }
 }

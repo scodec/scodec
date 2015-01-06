@@ -1,8 +1,6 @@
 package scodec
 package examples
 
-import scalaz.\/-
-import scalaz.std.anyVal.unitInstance
 import shapeless._
 
 import scodec.bits.{ BitVector, ByteVector }
@@ -93,8 +91,8 @@ class MpegPacketExample extends CodecSuite {
   "MpegPacket codec" should {
     "roundtrip" in {
       val pkt = MpegPacket(TransportStreamHeader(false, true, false, 0, 0, 1, 15), None, Some(BitVector.low(184 * 8).toByteVector))
-      val encoded = Codec.encodeValid(pkt)
-      val decoded = Codec.decodeValidValue[MpegPacket](encoded)
+      val encoded = Codec.encode(pkt).require
+      val decoded = Codec.decode[MpegPacket](encoded).require
       decoded shouldBe pkt
     }
   }

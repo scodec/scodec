@@ -1,8 +1,5 @@
 package scodec
 
-import scalaz.{\/, -\/, \/-}
-import \/.{ right, left }
-
 import scodec.bits._
 import scodec.codecs._
 import shapeless._
@@ -29,12 +26,12 @@ class DerivedCodecTest extends CodecSuite {
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Int :: Int :: String :: HNil].encodeValid(1 :: 2 :: "Hello" :: HNil) shouldBe hex"0102000548656c6c6f".bits
+      Codec[Int :: Int :: String :: HNil].encode(1 :: 2 :: "Hello" :: HNil).require shouldBe hex"0102000548656c6c6f".bits
     }
 
     "support automatic generation of case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Foo].encodeValid(Foo(1, 2, "Hello")) shouldBe hex"0102000548656c6c6f".bits
+      Codec[Foo].encode(Foo(1, 2, "Hello")).require shouldBe hex"0102000548656c6c6f".bits
     }
 
     "support automatic generation of nested case class codecs, where component codecs are derived as well" in {
@@ -48,37 +45,37 @@ class DerivedCodecTest extends CodecSuite {
         Line(Point(0, 0, 0), Point(10, 10, 10)),
         Line(Point(0, 10, 1), Point(10, 0, 10))))
 
-      val arrBinary = Codec.encodeValid(arr)
-      val decoded = Codec[Arrangement].decodeValidValue(arrBinary)
+      val arrBinary = Codec.encode(arr).require
+      val decoded = Codec[Arrangement].decode(arrBinary).require
       decoded shouldBe arr
     }
 
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Foo].encode(Foo(1, 256, "Hello")) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
+      Codec[Foo].encode(Foo(1, 256, "Hello")) shouldBe EncodeResult.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
     }
 
     "support automatic generation of coproduct codec builders" in {
       implicit val (u, s) = (constant(1), variableSizeBytes(uint16, utf8))
       type C = Unit :+: String :+: CNil
       val codec = Codec.coproduct[C].choice
-      codec.encodeValid(Coproduct[C]("Hello")) shouldBe hex"000548656c6c6f".bits
-      codec.encodeValid(Coproduct[C](())) shouldBe hex"01".bits
+      codec.encode(Coproduct[C]("Hello")).require shouldBe hex"000548656c6c6f".bits
+      codec.encode(Coproduct[C](())).require shouldBe hex"01".bits
     }
 
     "support automatic generation of coproduct codec builders from union types" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
       type U = Union.`'i -> Int, 's -> String`.T
       val codec = Codec.coproduct[U].discriminatedByIndex(uint8)
-      codec.encodeValid(Coproduct[U]('s ->> "Hello")) shouldBe hex"01000548656c6c6f".bits
-      codec.encode(Coproduct[U]('i ->> 256)) shouldBe left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("i"))
+      codec.encode(Coproduct[U]('s ->> "Hello")).require shouldBe hex"01000548656c6c6f".bits
+      codec.encode(Coproduct[U]('i ->> 256)) shouldBe EncodeResult.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("i"))
     }
 
     "support automatic generation of coproduct codec builders from sealed trait and subclasses" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
       val codec: Codec[Parent] = Codec.coproduct[Parent].discriminatedByIndex(uint8)
-      codec.encodeValid(Foo(1, 2, "Hello")) shouldBe hex"010102000548656c6c6f".bits
-      codec.encodeValid(Bar(1, 2)) shouldBe hex"000102".bits
+      codec.encode(Foo(1, 2, "Hello")).require shouldBe hex"010102000548656c6c6f".bits
+      codec.encode(Bar(1, 2)).require shouldBe hex"000102".bits
     }
   }
 

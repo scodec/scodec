@@ -1,7 +1,6 @@
 package scodec
 package examples
 
-import scalaz.\/
 import shapeless._
 
 import scodec.bits._
@@ -61,7 +60,7 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Woozle is a product of two integers, and scodec.codecs.implicits._
       // is imported in this file, resulting an an implicit Codec[Int] being available.
-      Codec[Woozle].encodeValid(Woozle(1, 2)) shouldBe hex"0000000100000002".bits
+      Codec[Woozle].encode(Woozle(1, 2)).require shouldBe hex"0000000100000002".bits
     }
 
     "demonstrate deriving a codec for a sealed class hierarchy" in {
@@ -73,7 +72,7 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Sprocket defines a Discriminated[Sprocket, Int] in its companion
       // and each subclass defines a Discriminator[Sprocket, X, Int] in their companions.
-      Codec[Sprocket].encodeValid(Wocket(3, true)) shouldBe hex"0200000003ff".bits
+      Codec[Sprocket].encode(Wocket(3, true)).require shouldBe hex"0200000003ff".bits
     }
 
     "demonstrate overriding arbitrary subtype codecs" in {
@@ -83,12 +82,12 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // For example, we can change the Wocket codec and derive a new Sprocket codec.
       implicit val codec: Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
-      Codec[Sprocket].encodeValid(Wocket(3, true)) shouldBe hex"020301".bits
+      Codec[Sprocket].encode(Wocket(3, true)).require shouldBe hex"020301".bits
     }
 
     "demonstrate subtype overrides in companion" in {
       // Alternatively, the overriden codec can be defined in the companion of the subtype.
-      Codec[Sprocket].encodeValid(Wootle(4, hex"deadbeef".bits)) shouldBe hex"0304deadbeef".bits
+      Codec[Sprocket].encode(Wootle(4, hex"deadbeef".bits)).require shouldBe hex"0304deadbeef".bits
     }
 
     "demonstrate nested derivations" in {
@@ -99,14 +98,14 @@ class DerivedCodecsExample extends CodecSuite {
       // Codec[A]. There's no manually defined `Codec[Sprocket]` but one is implicitly
       // derived.
       val ceil = Geiling("Ceil", Vector(Woozle(1, 2), Wocket(3, true)))
-      val encoded = Codec[Geiling].encodeValid(ceil)
+      val encoded = Codec[Geiling].encode(ceil).require
       encoded shouldBe hex"00000004 4365696c 00000002 010000000100000002 0200000003ff".bits
-      Codec[Geiling].decodeValidValue(encoded) shouldBe ceil
+      Codec[Geiling].decode(encoded).require shouldBe ceil
     }
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
-      Codec[Color].encodeValid(Color.Green) shouldBe hex"02".bits
-      Codec[Point].encodeValid(Point(1, 2, 3)) should have size(24)
+      Codec[Color].encode(Color.Green).require shouldBe hex"02".bits
+      Codec[Point].encode(Point(1, 2, 3)).require should have size(24)
     }
   }
 }

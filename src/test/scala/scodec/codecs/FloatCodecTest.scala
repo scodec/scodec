@@ -1,7 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/
 import scodec.bits.BitVector
 
 class FloatCodecTest extends CodecSuite {
@@ -13,13 +12,13 @@ class FloatCodecTest extends CodecSuite {
 
     "support endianness correctly" in {
       forAll { (n: Float) =>
-        floatL.decodeValidValue(float.encodeValid(n).reverseByteOrder) shouldBe n
-        float.decodeValidValue(floatL.encodeValid(n).reverseByteOrder) shouldBe n
+        floatL.decode(float.encodeValid(n).reverseByteOrder).require shouldBe n
+        float.decode(floatL.encodeValid(n).reverseByteOrder).require shouldBe n
       }
     }
 
     "return an error when decoding with too few bits" in {
-      float.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(32, 8))
+      float.decode(BitVector.low(8)) shouldBe DecodeResult.failure(Err.insufficientBits(32, 8))
     }
   }
 }

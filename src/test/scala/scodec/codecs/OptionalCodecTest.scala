@@ -1,7 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/-
 import scodec.bits.BitVector
 import scodec.codecs._
 
@@ -19,7 +18,7 @@ class OptionalCodecTest extends CodecSuite {
     "produce none on false" in {
       forAll { (n: Int) =>
         val codec = optional(provide(false), int32)
-        val \/-((rest, b)) = codec.decode(BitVector fromInt n)
+        val DecodeResult.Successful(b, rest) = codec.decode(BitVector fromInt n)
 
         rest shouldBe BitVector.fromInt(n)
         b shouldBe None

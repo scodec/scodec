@@ -1,10 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/
-import scalaz.syntax.std.either._
-import scalaz.syntax.std.option._
-
 import java.nio.{ ByteBuffer, ByteOrder }
 
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
@@ -20,18 +16,18 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
 
   override def encode(s: Short) = {
     if (s > MaxValue) {
-      \/.left(Err(s"$s is greater than maximum value $MaxValue for $description"))
+      EncodeResult.failure(Err(s"$s is greater than maximum value $MaxValue for $description"))
     } else if (s < MinValue) {
-      \/.left(Err(s"$s is less than minimum value $MinValue for $description"))
+      EncodeResult.failure(Err(s"$s is less than minimum value $MinValue for $description"))
     } else {
-      \/.right(BitVector.fromShort(s, bits, ordering))
+      EncodeResult.successful(BitVector.fromShort(s, bits, ordering))
     }
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => \/.left(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => \/.right((buffer.drop(bits), b.toShort(signed, ordering)))
+      case Left(e) => DecodeResult.failure(Err.insufficientBits(bits, buffer.size))
+      case Right(b) => DecodeResult.successful(b.toShort(signed, ordering), buffer.drop(bits))
     }
 
   override def toString = description

@@ -81,7 +81,7 @@ class HListCodecTest extends CodecSuite {
       val bits = codec.encodeValid(value)
       bits shouldBe hex"0200000004ff06".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require
       decoded shouldBe value
     }
 
@@ -103,7 +103,7 @@ class HListCodecTest extends CodecSuite {
       val bits = codec.encodeValid(value)
       bits shouldBe hex"02".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require
       decoded shouldBe value
     }
 
@@ -120,7 +120,7 @@ class HListCodecTest extends CodecSuite {
       val bits = codec.encodeValid(value)
       bits shouldBe hex"0100000002ff03".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require
       decoded shouldBe value
     }
 
@@ -136,7 +136,7 @@ class HListCodecTest extends CodecSuite {
       val bits = codec.encodeValid(value)
       bits shouldBe hex"01".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require
       decoded shouldBe value
     }
   }

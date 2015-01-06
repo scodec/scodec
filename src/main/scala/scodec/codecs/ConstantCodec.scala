@@ -1,24 +1,22 @@
 package scodec
 package codecs
 
-import scalaz.\/
-import scalaz.syntax.std.either._
-
 import scodec.bits.BitVector
 
 private[codecs] final class ConstantCodec(constant: BitVector, validate: Boolean = true) extends Codec[Unit] {
 
   override def encode(ignore: Unit) =
-    \/.right(constant)
+    EncodeResult.successful(constant)
 
   override def decode(buffer: BitVector) =
     if (validate) {
       buffer.acquire(constant.size) match {
-        case Left(e) => \/.left(Err.insufficientBits(constant.size, buffer.size))
+        case Left(e) => DecodeResult.failure(Err.insufficientBits(constant.size, buffer.size))
         case Right(b) =>
-          if (b == constant) \/.right((buffer.drop(constant.size), ())) else \/.left(Err(s"expected constant $constant but got $b"))
+          if (b == constant) DecodeResult.successful((), buffer.drop(constant.size)) 
+          else DecodeResult.failure(Err(s"expected constant $constant but got $b"))
       }
-    } else \/.right((buffer drop constant.size, ()))
+    } else DecodeResult.successful((), buffer drop constant.size)
 
   override def toString = s"constant($constant)"
 }

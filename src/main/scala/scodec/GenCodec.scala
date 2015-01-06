@@ -1,7 +1,5 @@
 package scodec
 
-import scalaz.{ \/, Profunctor }
-
 import scodec.bits.BitVector
 
 import shapeless.Lazy
@@ -12,8 +10,8 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
   /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => C`. */
   override def map[C](f: B => C): GenCodec[A, C] = GenCodec(this, super.map(f))
 
-  /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => Err \/ C`. */
-  override def emap[C](f: B => Err \/ C): GenCodec[A, C] = GenCodec(this, super.emap(f))
+  /** Converts this `GenCodec` to a `GenCodec[A, C]` using the supplied `B => Attempt[C]`. */
+  override def emap[C](f: B => Attempt[C]): GenCodec[A, C] = GenCodec(this, super.emap(f))
 
   /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => A`. */
   override def contramap[C](f: C => A): GenCodec[C, B] = GenCodec(super.contramap(f), this)
@@ -25,8 +23,8 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
    */
   override def pcontramap[C](f: C => Option[A]): GenCodec[C, B] = GenCodec(super.pcontramap(f), this)
 
-  /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => Err \/ A`. */
-  override def econtramap[C](f: C => Err \/ A): GenCodec[C, B] = GenCodec(super.econtramap(f), this)
+  /** Converts this `GenCodec` to a `GenCodec[C, B]` using the supplied `C => Attempt[A]`. */
+  override def econtramap[C](f: C => Attempt[A]): GenCodec[C, B] = GenCodec(super.econtramap(f), this)
 
   /**
    * Converts this generalized codec in to a non-generalized codec assuming `A` and `B` are the same type.
@@ -74,14 +72,5 @@ object GenCodec extends EncoderFunctions with DecoderFunctions {
   def apply[A, B](encoder: Encoder[A], decoder: Decoder[B]): GenCodec[A, B] = new GenCodec[A, B] {
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
-  }
-
-  /**
-   * Profunctor instance.
-   * @group inst
-   */
-  implicit val profunctorInstance: Profunctor[GenCodec] = new Profunctor[GenCodec] {
-    def mapfst[A, B, C](gc: GenCodec[A, B])(f: C => A) = gc contramap f
-    def mapsnd[A, B, C](gc: GenCodec[A, B])(f: B => C) = gc map f
   }
 }

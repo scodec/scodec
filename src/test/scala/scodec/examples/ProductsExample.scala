@@ -1,7 +1,6 @@
 package scodec
 package examples
 
-import scalaz.\/
 import shapeless._
 
 import scodec.bits._
@@ -20,7 +19,7 @@ class ProductsExample extends CodecSuite {
       implicit val i = uint8
       val codec = Codec[Woozle]
 
-      codec.encodeValid(Woozle(1, 2)) shouldBe hex"0102".bits
+      codec.encode(Woozle(1, 2)).require shouldBe hex"0102".bits
 
       // The following does not compile because there's no implicit
       // Codec[Boolean] in scope:
@@ -33,7 +32,7 @@ class ProductsExample extends CodecSuite {
       implicit val i = uint8
       val codec = Codec[Woozle]
 
-      codec.encode(Woozle(1, 256)) shouldBe \/.left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("strength"))
+      codec.encode(Woozle(1, 256)) shouldBe EncodeResult.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("strength"))
     }
 
     "demonstrate hlist generation" in {
@@ -41,7 +40,7 @@ class ProductsExample extends CodecSuite {
       implicit val (i, b) = (uint8, bool)
       val codec = Codec[Int :: Int :: Boolean :: HNil]
 
-      codec.encodeValid(1 :: 2 :: true :: HNil) shouldBe hex"0102ff".bits.dropRight(7)
+      codec.encode(1 :: 2 :: true :: HNil).require shouldBe hex"0102ff".bits.dropRight(7)
     }
   }
 }

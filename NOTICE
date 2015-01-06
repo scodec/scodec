@@ -6,9 +6,6 @@ The Scala library is distributed with the application.
 Copyright 2002-2012 EPFL, Lausanne
 Licensed under BSD-style license (see licenses/LICENSE_Scala)
 
-Portions of Scalaz are distributed with the application.
-Licensed under BSD-style license (see licenses/LICENSE_Scalaz)
-
 Portions of Shapeless are distributed with the application.
 Licensed under Apache License, Version 2.0 (see licenses/LICENSE_shapeless)
 Shapeless is not distributed with a NOTICE file so the NOTICE requirement
