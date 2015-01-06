@@ -12,8 +12,8 @@ class FloatCodecTest extends CodecSuite {
 
     "support endianness correctly" in {
       forAll { (n: Float) =>
-        floatL.decode(float.encodeValid(n).reverseByteOrder).require.value shouldBe n
-        float.decode(floatL.encodeValid(n).reverseByteOrder).require.value shouldBe n
+        floatL.decode(float.encode(n).require.reverseByteOrder).require.value shouldBe n
+        float.decode(floatL.encode(n).require.reverseByteOrder).require.value shouldBe n
       }
     }
 

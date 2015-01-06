@@ -30,18 +30,6 @@ trait Encoder[-A] { self =>
   def encode(value: A): Attempt[BitVector]
 
   /**
-   * Encodes the specified value in to a bit vector, throwing an
-   * `IllegalArgumentException` if encoding fails.
-   *
-   * @param value value to encode
-   * @param return error or binary encoding of the value
-   * @throws IllegalArgumentException upon encoding failure
-   * @group primary
-   */
-  final def encodeValid(value: A): BitVector =
-    encode(value).require
-
-  /**
    * Converts this encoder to an `Encoder[B]` using the supplied `B => A`.
    * @group combinators
    */
@@ -182,10 +170,4 @@ object Encoder extends EncoderFunctions {
    * @group conv
    */
   def encode[A](a: A)(implicit e: Lazy[Encoder[A]]): Attempt[BitVector] = e.value.encode(a)
-
-  /**
-   * Encodes the specified value to a bit vector using an implicitly available encoder or throws an `IllegalArgumentException` if encoding fails.
-   * @group conv
-   */
-  def encodeValid[A](a: A)(implicit e: Lazy[Encoder[A]]): BitVector = e.value.encodeValid(a)
 }

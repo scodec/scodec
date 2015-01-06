@@ -14,7 +14,7 @@ class FixedSizeCodecTest extends CodecSuite {
     }
 
      "pad appropriately" in {
-      fixedSizeBits(16, uint8).encodeValid(12) shouldBe BitVector(hex"0c00")
+      fixedSizeBits(16, uint8).encode(12).require shouldBe BitVector(hex"0c00")
     }
 
 
