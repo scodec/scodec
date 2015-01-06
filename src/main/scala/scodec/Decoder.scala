@@ -119,6 +119,28 @@ trait DecoderFunctions {
   }
 
   /**
+   * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type
+   * `B` using the supplied `zero` value and `append` function. Terminates when no more bits are available in the vector. Exits upon first decoding error.
+   *
+   * @return tuple consisting of the terminating error if any and the accumulated value
+   * @group conv
+   */
+  final def decodeAll[A, B](buffer: BitVector)(zero: B, append: (B, B) => B)(f: A => B)(implicit decoder: Lazy[Decoder[A]]): (Option[Err], B) = {
+    var remaining = buffer
+    var acc = zero
+    while (remaining.nonEmpty) {
+      decoder.value.decode(remaining) match {
+        case DecodeResult.Successful(a, newRemaining) =>
+          remaining = newRemaining
+          acc = append(acc, f(a))
+        case DecodeResult.Failure(cause) =>
+          return (Some(cause), acc)
+      }
+    }
+    (None, acc)
+  }
+
+  /**
    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
    * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
    * decoded. Exits upon first decoding error.
