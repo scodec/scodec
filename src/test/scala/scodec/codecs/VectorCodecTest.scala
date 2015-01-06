@@ -10,7 +10,6 @@ class VectorCodecTest extends CodecSuite {
 
   "the vector codec" should {
     "be performant" in {
-      pending // TODO
       val codec = vector(int32).complete
       val trials = 10
       val sizes = List(10, 100, 1000, 10000, 100000)
@@ -19,7 +18,7 @@ class VectorCodecTest extends CodecSuite {
           val vec = definedSamples(Gen.listOfN(size, arbitrary[Int]).map { _.toVector }).head
           val (encoded, encodeTime) = time { codec.encode(vec).require }
           //info(s"$trial - encoding $size took $encodeTime")
-          val (decoded, decodeTime) = time { codec.decode(encoded).require }
+          val (decoded, decodeTime) = time { codec.decode(encoded).require.value }
           //info(s"$trial - decoding $size took $decodeTime")
           decoded shouldBe vec
           encodeTime + decodeTime
