@@ -39,25 +39,25 @@ sealed abstract class DecodingContext[A] { self =>
 /** Provides constructors for `DecodingContext`. */
 object DecodingContext {
 
+  /** Lifts a decoder to a decoding context. */
+  def apply[A](decoder: Decoder[A]): DecodingContext[A] = fromFunction(decoder.decode _)
+
   /** Lifts a function of the shape `BitVector => DecodeResult[A]` to a decoding context. */
-  def apply[A](f: BitVector => DecodeResult[A]): DecodingContext[A] = new DecodingContext[A] {
+  def fromFunction[A](f: BitVector => DecodeResult[A]): DecodingContext[A] = new DecodingContext[A] {
     def decode(buffer: BitVector): DecodeResult[A] = f(buffer)
   }
 
-  /** Lifts a decoder to a decoding context. */
-  def apply[A](decoder: Decoder[A]): DecodingContext[A] = apply(decoder.decode _)
-
   /** Context that gets the current buffer. */
-  def get: DecodingContext[BitVector] = apply(b => DecodeResult.successful(b, b))
+  def get: DecodingContext[BitVector] = fromFunction(b => DecodeResult.successful(b, b))
 
   /** Context that sets the current buffer to the supplied value, ignoring the current buffer. */
-  def set(buffer: BitVector): DecodingContext[Unit] = apply(_ => DecodeResult.successful((), buffer))
+  def set(buffer: BitVector): DecodingContext[Unit] = fromFunction(_ => DecodeResult.successful((), buffer))
 
   /** Context that sets the current buffer to the the result of applying the supplied function to the current buffer. */
-  def modify(f: BitVector => BitVector): DecodingContext[Unit] = apply(b => DecodeResult.successful((), f(b)))
+  def modify(f: BitVector => BitVector): DecodingContext[Unit] = fromFunction(b => DecodeResult.successful((), f(b)))
 
   /** Lifts a value of `Attempt[A]` in to a decoding context. */
   def liftAttempt[A](res: Attempt[A]): DecodingContext[A] =
-    apply { bv => res.fold(a => DecodeResult.successful(a, bv), err => DecodeResult.failure(err)) }
+    fromFunction { bv => res.fold(a => DecodeResult.successful(a, bv), err => DecodeResult.failure(err)) }
 }
 
