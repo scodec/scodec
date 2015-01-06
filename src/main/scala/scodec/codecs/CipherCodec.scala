@@ -88,7 +88,7 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
   }
 
   override def decode(buffer: BitVector) =
-    (decrypt(buffer) flatMap { b => codec.decode(b) }) mapWithRemainder { case (a, _) => (a, BitVector.empty) }
+    (decrypt(buffer) flatMapWithRemainder { (b, rem) => codec.decode(b) }) mapWithRemainder { case (a, _) => (a, BitVector.empty) }
 
   private def decrypt(buffer: BitVector): DecodeResult[BitVector] = {
     val blocks = buffer.toByteArray

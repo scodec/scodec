@@ -32,13 +32,6 @@ sealed abstract class DecodeResult[+A] {
   /** Maps the supplied function over the failure error, if present. */
   def mapErr(f: Err => Err): DecodeResult[A]
 
-  /**
-   * Maps the supplied function over the successful value, if present.
-   * Caution: the remainder of this result is ignored and thrown away. If this is
-   * not desirable, use [[flatMapWithRemainder]] or [[DecodingContext]].
-   */
-  def flatMap[B](f: A => DecodeResult[B]): DecodeResult[B]
-
   /** Maps the supplied function over the successful value and remainder, if present. */
   def flatMapWithRemainder[B](f: (A, BitVector) => DecodeResult[B]): DecodeResult[B]
 
@@ -124,7 +117,6 @@ object DecodeResult {
       Successful(b, rem)
     }
     def mapErr(f: Err => Err): DecodeResult[A] = this
-    def flatMap[B](f: A => DecodeResult[B]): DecodeResult[B] = f(value)
     def flatMapWithRemainder[B](f: (A, BitVector) => DecodeResult[B]): DecodeResult[B] = f(value, remainder)
     def fold[B](ifSuccessful: A => B, ifFailure: Err => B): B = ifSuccessful(value)
     def foldWithRemainder[B](ifSuccessful: (A, BitVector) => B, ifFailure: Err => B): B = ifSuccessful(value, remainder)
@@ -143,7 +135,6 @@ object DecodeResult {
     def map[B](f: Nothing => B): DecodeResult[B] = this
     def mapWithRemainder[B](f: (Nothing, BitVector) => (B, BitVector)): DecodeResult[B] = this
     def mapErr(f: Err => Err): DecodeResult[Nothing] = Failure(f(cause))
-    def flatMap[B](f: Nothing => DecodeResult[B]): DecodeResult[B] = this
     def flatMapWithRemainder[B](f: (Nothing, BitVector) => DecodeResult[B]): DecodeResult[B] = this
     def fold[B](ifSuccessful: Nothing => B, ifFailure: Err => B): B = ifFailure(cause)
     def foldWithRemainder[B](ifSuccessful: (Nothing, BitVector) => B, ifFailure: Err => B): B = ifFailure(cause)
