@@ -174,7 +174,7 @@ import scodec.bits.BitVector
  * == Miscellaneous ==
  *
  * Note: [[DecodingContext]] allows multiple decoders/codecs to be sequenced one after the other, with the
- * remainder threaded from each decode operation fed in to the input of the next.
+ * remainder from each decode operation fed in to the input of the next.
  *
  * @groupname tuple Tuple Support
  * @groupprio tuple 11

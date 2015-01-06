@@ -34,6 +34,11 @@ sealed abstract class DecodingContext[A] { self =>
         f(a).decode(rem)
       }
   }
+
+  /** Converts this context to a decoder instance. */
+  def toDecoder: Decoder[A] = new Decoder[A] {
+    def decode(buffer: BitVector): DecodeResult[A] = self.decode(buffer)
+  }
 }
 
 /** Provides constructors for `DecodingContext`. */
