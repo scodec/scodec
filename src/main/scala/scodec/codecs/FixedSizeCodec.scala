@@ -9,19 +9,19 @@ private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) exten
     encoded <- codec.encode(a)
     result <- {
       if (encoded.size > size)
-        EncodeResult.failure(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
+        Attempt.failure(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
       else
-        EncodeResult.successful(encoded.padTo(size))
+        Attempt.successful(encoded.padTo(size))
     }
   } yield result
 
   override def decode(buffer: BitVector) =
     buffer.acquire(size) match {
-      case Left(e) => DecodeResult.failure(Err.insufficientBits(size, buffer.size))
+      case Left(e) => Attempt.failure(Err.insufficientBits(size, buffer.size))
       case Right(b) =>
         codec.decode(b) match {
-          case e @ DecodeResult.Failure(_) => e
-          case DecodeResult.Successful(res, rest) => DecodeResult.successful(res, buffer.drop(size))
+          case e @ Attempt.Failure(_) => e
+          case Attempt.Successful(DecodeResult(res, rest)) => Attempt.successful(DecodeResult(res, buffer.drop(size)))
         }
     }
 

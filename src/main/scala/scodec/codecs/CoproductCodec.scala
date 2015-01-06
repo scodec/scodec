@@ -22,10 +22,10 @@ private[scodec] object CoproductCodec {
     go(c, 0)
   }
 
-  private def encodeCoproduct[C <: Coproduct](codecs: List[Codec[C]], c: C): EncodeResult = {
+  private def encodeCoproduct[C <: Coproduct](codecs: List[Codec[C]], c: C): Attempt[BitVector] = {
     val index = indexOf(c)
     codecs.lift(index) match {
-      case None => EncodeResult.failure(Err(s"Not possible - index $index is out of bounds"))
+      case None => Attempt.failure(Err(s"Not possible - index $index is out of bounds"))
       case Some(codec) => codec.encode(c)
     }
   }
@@ -100,10 +100,10 @@ object ToCoproductCodecs {
         val codec: Codec[A] = l.head
         def encode(c: A :+: CT) = c match {
           case Inl(a) => codec.encode(a)
-          case Inr(ct) => EncodeResult.failure(Err(s"cannot encode $ct"))
+          case Inr(ct) => Attempt.failure(Err(s"cannot encode $ct"))
         }
         def decode(buffer: BitVector) =
-          codec.decode(buffer).map { a => Coproduct[A :+: CT](a) }
+          codec.decode(buffer).map { _ mapValue { a => Coproduct[A :+: CT](a) } }
         override def toString = codec.toString
       }
 
@@ -111,10 +111,10 @@ object ToCoproductCodecs {
         new Codec[A :+: CT] {
           def encode(c: A :+: CT) = c match {
             case Inr(a) => d.encode(a)
-            case Inl(ch) => EncodeResult.failure(Err(s"cannot encode $c"))
+            case Inl(ch) => Attempt.failure(Err(s"cannot encode $c"))
           }
           def decode(buffer: BitVector) =
-            d.decode(buffer).map { a => Inr(a): A :+: CT }
+            d.decode(buffer).map { _ mapValue { a => Inr(a): A :+: CT } }
           override def toString = d.toString
         }
       }

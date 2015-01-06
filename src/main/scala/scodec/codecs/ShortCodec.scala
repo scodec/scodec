@@ -16,18 +16,18 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
 
   override def encode(s: Short) = {
     if (s > MaxValue) {
-      EncodeResult.failure(Err(s"$s is greater than maximum value $MaxValue for $description"))
+      Attempt.failure(Err(s"$s is greater than maximum value $MaxValue for $description"))
     } else if (s < MinValue) {
-      EncodeResult.failure(Err(s"$s is less than minimum value $MinValue for $description"))
+      Attempt.failure(Err(s"$s is less than minimum value $MinValue for $description"))
     } else {
-      EncodeResult.successful(BitVector.fromShort(s, bits, ordering))
+      Attempt.successful(BitVector.fromShort(s, bits, ordering))
     }
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => DecodeResult.failure(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => DecodeResult.successful(b.toShort(signed, ordering), buffer.drop(bits))
+      case Left(e) => Attempt.failure(Err.insufficientBits(bits, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(b.toShort(signed, ordering), buffer.drop(bits)))
     }
 
   override def toString = description

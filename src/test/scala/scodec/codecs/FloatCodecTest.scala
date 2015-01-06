@@ -12,13 +12,13 @@ class FloatCodecTest extends CodecSuite {
 
     "support endianness correctly" in {
       forAll { (n: Float) =>
-        floatL.decode(float.encodeValid(n).reverseByteOrder).require shouldBe n
-        float.decode(floatL.encodeValid(n).reverseByteOrder).require shouldBe n
+        floatL.decode(float.encodeValid(n).reverseByteOrder).require.value shouldBe n
+        float.decode(floatL.encodeValid(n).reverseByteOrder).require.value shouldBe n
       }
     }
 
     "return an error when decoding with too few bits" in {
-      float.decode(BitVector.low(8)) shouldBe DecodeResult.failure(Err.insufficientBits(32, 8))
+      float.decode(BitVector.low(8)) shouldBe Attempt.failure(Err.insufficientBits(32, 8))
     }
   }
 }

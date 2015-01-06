@@ -27,14 +27,14 @@ trait Decoder[+A] { self =>
    * @return error if value could not be decoded or the remaining bits and the decoded value
    * @group primary
    */
-  def decode(bits: BitVector): DecodeResult[A]
+  def decode(bits: BitVector): Attempt[DecodeResult[A]]
 
   /**
    * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
    * @group combinators
    */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
-    def decode(bits: BitVector) = self.decode(bits) map { a => f(a) }
+    def decode(bits: BitVector) = self.decode(bits) map { _ mapValue f }
   }
 
   /**
@@ -42,7 +42,7 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
-    def decode(bits: BitVector) = self.decode(bits) flatMapWithRemainder { (a, rem) => f(a).decode(rem) }
+    def decode(bits: BitVector) = self.decode(bits) flatMap { result => f(result.value).decode(result.remainder) }
   }
 
   /**
@@ -50,7 +50,7 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def emap[B](f: A => Attempt[B]): Decoder[B] = new Decoder[B] {
-    def decode(bits: BitVector) = self.decode(bits) flatMapWithRemainder { (a, rem) => DecodeResult.fromAttempt(f(a), rem) }
+    def decode(bits: BitVector) = self.decode(bits) flatMap { result => f(result.value) map { b => DecodeResult(b, result.remainder) } }
   }
 
   /**
@@ -58,9 +58,10 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def complete: Decoder[A] = new Decoder[A] {
-    def decode(bits: BitVector) = self.decode(bits) flatMapWithRemainder { (a, rem) =>
-      if (rem.isEmpty) DecodeResult.successful(a, rem) else {
-        DecodeResult.failure {
+    def decode(bits: BitVector) = self.decode(bits) flatMap { result =>
+      if (result.remainder.isEmpty) Attempt.successful(result) else {
+        val rem = result.remainder
+        Attempt.failure {
           val max = 512
           if (rem.sizeLessThan(max + 1)) {
             val preview = rem.take(max)
@@ -82,7 +83,7 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def decodeOnly[AA >: A]: Codec[AA] = new Codec[AA] {
-    def encode(a: AA) = EncodeResult.failure(Err("encoding not supported"))
+    def encode(a: AA) = Attempt.failure(Err("encoding not supported"))
     def decode(bits: BitVector) = self.decode(bits)
   }
 }
@@ -99,23 +100,18 @@ trait DecoderFunctions {
    * Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`.
    * @group conv
    */
-  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): DecodeResult[(A, B)] =
+  final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector): Attempt[DecodeResult[(A, B)]] =
     decodeBothCombine(decA, decB)(buffer) { (a, b) => (a, b) }
 
   /**
    * Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`.
    * @group conv
    */
-  final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): DecodeResult[C] = {
+  final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): Attempt[DecodeResult[C]] = {
     // Note: this could be written using DecodingContext but this function is called *a lot* and needs to be very fast
-    decA.decode(buffer) match {
-      case e @ DecodeResult.Failure(_) => e
-      case DecodeResult.Successful(a, postA) =>
-        decB.decode(postA) match {
-          case e @ DecodeResult.Failure(_) => e
-          case DecodeResult.Successful(b, rest) => DecodeResult.successful(f(a, b), rest)
-        }
-      }
+    decA.decode(buffer) flatMap { aResult =>
+      decB.decode(aResult.remainder) map { bResult => bResult mapValue { b => f(aResult.value, b) } }
+    }
   }
 
   /**
@@ -130,10 +126,10 @@ trait DecoderFunctions {
     var acc = zero
     while (remaining.nonEmpty) {
       decoder.value.decode(remaining) match {
-        case DecodeResult.Successful(a, newRemaining) =>
+        case Attempt.Successful(DecodeResult(a, newRemaining)) =>
           remaining = newRemaining
           acc = append(acc, f(a))
-        case DecodeResult.Failure(cause) =>
+        case Attempt.Failure(cause) =>
           return (Some(cause), acc)
       }
     }
@@ -146,7 +142,7 @@ trait DecoderFunctions {
    * decoded. Exits upon first decoding error.
    * @group conv
    */
-  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): DecodeResult[F[A]] = {
+  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): Attempt[DecodeResult[F[A]]] = {
     val bldr = cbf()
     var remaining = buffer
     var count = 0
@@ -154,16 +150,16 @@ trait DecoderFunctions {
     var error: Option[Err] = None
     while (count < maxCount && remaining.nonEmpty) {
       dec.decode(remaining) match {
-        case DecodeResult.Successful(value, rest) =>
+        case Attempt.Successful(DecodeResult(value, rest)) =>
           bldr += value
           count += 1
           remaining = rest
-        case DecodeResult.Failure(err) =>
+        case Attempt.Failure(err) =>
           error = Some(err.pushContext(count.toString))
           remaining = BitVector.empty
       }
     }
-    DecodeResult.fromErrOption(error, (bldr.result, remaining))
+    Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
   }
 
   /**
@@ -172,13 +168,13 @@ trait DecoderFunctions {
    * @group conv
    */
   final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
-    def decode(buffer: BitVector): DecodeResult[A] = {
-      @annotation.tailrec def go(rem: List[Decoder[A]], lastErr: Err): DecodeResult[A] = rem match {
-        case Nil => DecodeResult.failure(lastErr)
+    def decode(buffer: BitVector) = {
+      @annotation.tailrec def go(rem: List[Decoder[A]], lastErr: Err): Attempt[DecodeResult[A]] = rem match {
+        case Nil => Attempt.failure(lastErr)
         case hd :: tl =>
           hd.decode(buffer) match {
-            case res: DecodeResult.Successful[A] => res
-            case DecodeResult.Failure(err) => go(tl, err)
+            case res @ Attempt.Successful(_) => res
+            case Attempt.Failure(err) => go(tl, err)
           }
       }
       go(decoders.toList, Err("no decoders provided"))
@@ -207,7 +203,7 @@ object Decoder extends DecoderFunctions {
    * Creates a decoder from the specified function.
    * @group ctor
    */
-  def apply[A](f: BitVector => DecodeResult[A]): Decoder[A] = new Decoder[A] {
+  def apply[A](f: BitVector => Attempt[DecodeResult[A]]): Decoder[A] = new Decoder[A] {
     def decode(bits: BitVector) = f(bits)
   }
 
@@ -215,7 +211,7 @@ object Decoder extends DecoderFunctions {
    * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
    * @group conv
    */
-  def decode[A](bits: BitVector)(implicit d: Lazy[Decoder[A]]): DecodeResult[A] = d.value.decode(bits)
+  def decode[A](bits: BitVector)(implicit d: Lazy[Decoder[A]]): Attempt[DecodeResult[A]] = d.value.decode(bits)
 
   /**
    * Creates a decoder that always decodes the specified value and returns the input bit vector unmodified.
@@ -223,7 +219,7 @@ object Decoder extends DecoderFunctions {
    */
   def point[A](a: => A): Decoder[A] = new Decoder[A] {
     private lazy val value = a
-    def decode(bits: BitVector) = DecodeResult.successful(value, bits)
+    def decode(bits: BitVector) = Attempt.successful(DecodeResult(value, bits))
     override def toString = s"const($value)"
   }
 }

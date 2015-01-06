@@ -330,7 +330,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
           .flatMap { bits => k.prism.repCodec.encode(r).map(bits ++ _) }
       }.map(List(_)).getOrElse(List())
     }.toStream.headOption match {
-      case None => EncodeResult.failure(new Err.MatchingDiscriminatorNotFound(a))
+      case None => Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
       case Some(r) => r
     }
 

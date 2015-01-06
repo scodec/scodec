@@ -28,7 +28,7 @@ class WithDefaultTest extends CodecSuite {
     "return the default value when the opt codec returns none" in {
       forAll { (n: Int) =>
         val codec = withDefaultValue(conditional(false, int8), n)
-        val DecodeResult.Successful(b, rest) = codec.decode(BitVector fromInt n)
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector fromInt n)
         rest shouldBe (BitVector fromInt n)
         b shouldBe n
       }

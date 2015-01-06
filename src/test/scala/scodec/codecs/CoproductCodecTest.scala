@@ -22,7 +22,7 @@ class CoproductCodecTest extends CodecSuite {
       forAll { (s: String) =>
         if (s.size < 256) {
           codec.encode(Coproduct[IBS](s)).toOption.foreach { bits =>
-            codec.complete.decode(bits).require shouldBe Coproduct[IBS](s)
+            codec.complete.decode(bits).require.value shouldBe Coproduct[IBS](s)
           }
         }
       }
@@ -44,7 +44,7 @@ class CoproductCodecTest extends CodecSuite {
       forAll { (s: String) =>
         if (s.size < 256) {
           codec.encode(Coproduct[IBS](s)).toOption.foreach { bits =>
-            codec.complete.decode(bits).require shouldBe Coproduct[IBS](s)
+            codec.complete.decode(bits).require.value shouldBe Coproduct[IBS](s)
           }
         }
       }
@@ -56,10 +56,10 @@ class CoproductCodecTest extends CodecSuite {
         (constant(1) :+: variableSizeBytes(uint8, ascii)).choice
 
       codec.encode(Coproduct[US](())).require shouldBe hex"01".bits
-      codec.complete.decode(hex"01".bits).require shouldBe Coproduct[US](())
+      codec.complete.decode(hex"01".bits).require.value shouldBe Coproduct[US](())
 
       codec.encode(Coproduct[US]("Hello")).require shouldBe hex"0548656c6c6f".bits
-      codec.complete.decode(hex"0548656c6c6f".bits).require shouldBe Coproduct[US]("Hello")
+      codec.complete.decode(hex"0548656c6c6f".bits).require.value shouldBe Coproduct[US]("Hello")
     }
   }
 }

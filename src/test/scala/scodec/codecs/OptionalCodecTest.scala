@@ -18,7 +18,7 @@ class OptionalCodecTest extends CodecSuite {
     "produce none on false" in {
       forAll { (n: Int) =>
         val codec = optional(provide(false), int32)
-        val DecodeResult.Successful(b, rest) = codec.decode(BitVector fromInt n)
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector fromInt n)
 
         rest shouldBe BitVector.fromInt(n)
         b shouldBe None

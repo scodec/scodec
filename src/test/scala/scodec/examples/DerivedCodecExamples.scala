@@ -100,7 +100,7 @@ class DerivedCodecsExample extends CodecSuite {
       val ceil = Geiling("Ceil", Vector(Woozle(1, 2), Wocket(3, true)))
       val encoded = Codec[Geiling].encode(ceil).require
       encoded shouldBe hex"00000004 4365696c 00000002 010000000100000002 0200000003ff".bits
-      Codec[Geiling].decode(encoded).require shouldBe ceil
+      Codec[Geiling].decode(encoded).require.value shouldBe ceil
     }
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {

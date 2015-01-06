@@ -11,8 +11,8 @@ class IgnoreCodecTest extends CodecSuite {
   "the ignore codec" should {
     "roundtrip" in {
       val codec = ign(2) ~> uint4 <~ ign(2)
-      codec.decode(BitVector(0xff)) shouldBe DecodeResult.successful(15, BitVector.empty)
-      codec.encode(15) shouldBe EncodeResult.successful(BitVector(0x3c))
+      codec.decode(BitVector(0xff)) shouldBe Attempt.successful(DecodeResult(15, BitVector.empty))
+      codec.encode(15) shouldBe Attempt.successful(BitVector(0x3c))
     }
   }
 }

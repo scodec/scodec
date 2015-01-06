@@ -16,7 +16,7 @@ private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Long], valueCo
     Err(s"[$a] is too long to be encoded: $msg")
 
   override def decode(buffer: BitVector) =
-    decoder.decode(buffer).map { case (sz, value) => value }
+    decoder.decode(buffer).map { _ mapValue { case (sz, value) => value } }
 
   override def toString = s"variableSizeBits($sizeCodec, $valueCodec)"
 }

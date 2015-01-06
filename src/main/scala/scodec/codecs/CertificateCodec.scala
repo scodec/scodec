@@ -12,16 +12,16 @@ import scodec.bits.BitVector
 private[codecs] final class CertificateCodec(certType: String) extends Codec[Certificate] {
 
   def encode(cert: Certificate) =
-    EncodeResult.successful(BitVector(cert.getEncoded))
+    Attempt.successful(BitVector(cert.getEncoded))
 
   def decode(buffer: BitVector) = {
     try {
       val factory = CertificateFactory.getInstance(certType)
       val cert = factory.generateCertificate(new ByteArrayInputStream(buffer.toByteArray))
-      DecodeResult.successful(cert, BitVector.empty)
+      Attempt.successful(DecodeResult(cert, BitVector.empty))
     } catch {
       case e: CertificateException =>
-        DecodeResult.failure(Err("Failed to decode certificate: " + e.getMessage))
+        Attempt.failure(Err("Failed to decode certificate: " + e.getMessage))
     }
   }
 

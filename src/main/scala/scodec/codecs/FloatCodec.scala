@@ -12,13 +12,13 @@ private[codecs] final class FloatCodec(ordering: ByteOrdering) extends Codec[Flo
   override def encode(value: Float) = {
     val buffer = ByteBuffer.allocate(4).order(ordering.toJava).putFloat(value)
     buffer.flip()
-    EncodeResult.successful(BitVector.view(buffer))
+    Attempt.successful(BitVector.view(buffer))
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(32) match {
-      case Left(e) => DecodeResult.failure(Err.insufficientBits(32, buffer.size))
-      case Right(b) => DecodeResult.successful(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getFloat, buffer.drop(32))
+      case Left(e) => Attempt.failure(Err.insufficientBits(32, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getFloat, buffer.drop(32)))
     }
 
   override def toString = "float"

@@ -11,8 +11,8 @@ import scodec.HListOps._
 private[scodec] object HListCodec {
 
   val hnilCodec: Codec[HNil] = new Codec[HNil] {
-    override def encode(hn: HNil) = EncodeResult.successful(BitVector.empty)
-    override def decode(buffer: BitVector) = DecodeResult.successful(HNil, buffer)
+    override def encode(hn: HNil) = Attempt.successful(BitVector.empty)
+    override def decode(buffer: BitVector) = Attempt.successful(DecodeResult(HNil, buffer))
     override def toString = s"HNil"
   }
 

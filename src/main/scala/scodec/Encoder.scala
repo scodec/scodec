@@ -27,7 +27,7 @@ trait Encoder[-A] { self =>
    * @param return error or binary encoding of the value
    * @group primary
    */
-  def encode(value: A): EncodeResult
+  def encode(value: A): Attempt[BitVector]
 
   /**
    * Encodes the specified value in to a bit vector, throwing an
@@ -56,8 +56,8 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B] {
-    def encode(b: B): EncodeResult =
-      f(b).map(self.encode).getOrElse(EncodeResult.failure(Err(s"widening failed: $b")))
+    def encode(b: B): Attempt[BitVector] =
+      f(b).map(self.encode).getOrElse(Attempt.failure(Err(s"widening failed: $b")))
   }
 
   /**
@@ -65,10 +65,7 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def econtramap[B](f: B => Attempt[A]): Encoder[B] = new Encoder[B] {
-    def encode(b: B) = f(b) match {
-      case Attempt.Successful(a) => self.encode(a)
-      case f: Attempt.Failure => EncodeResult.fromAttempt(f)
-    }
+    def encode(b: B) = f(b) flatMap self.encode
   }
 
   /**
@@ -91,7 +88,7 @@ trait Encoder[-A] { self =>
    */
   def encodeOnly: Codec[A @uncheckedVariance] = new Codec[A] {
     def encode(a: A) = self.encode(a)
-    def decode(bits: BitVector) = DecodeResult.failure(Err("decoding not supported"))
+    def decode(bits: BitVector) = Attempt.failure(Err("decoding not supported"))
   }
 }
 
@@ -108,7 +105,7 @@ trait EncoderFunctions {
    * Encodes the specified values, one after the other, to a bit vector using the specified encoders.
    * @group conv
    */
-  final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): EncodeResult = for {
+  final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): Attempt[BitVector] = for {
     encodedA <- encA.encode(a)
     encodedB <- encB.encode(b)
   } yield encodedA ++ encodedB
@@ -117,12 +114,12 @@ trait EncoderFunctions {
    * Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.
    * @group conv
    */
-  final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): EncodeResult = {
+  final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): Attempt[BitVector] = {
     val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
     seq foreach { a =>
       enc.encode(a) match {
-        case EncodeResult.Successful(aa) => buf += aa
-        case EncodeResult.Failure(err) => return EncodeResult.failure(err.pushContext(buf.size.toString))
+        case Attempt.Successful(aa) => buf += aa
+        case Attempt.Failure(err) => return Attempt.failure(err.pushContext(buf.size.toString))
       }
     }
     def merge(offset: Int, size: Int): BitVector = size match {
@@ -132,7 +129,7 @@ trait EncoderFunctions {
         val half = size / 2
         merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
     }
-    EncodeResult.successful(merge(0, buf.size))
+    Attempt.successful(merge(0, buf.size))
   }
 
   /**
@@ -142,12 +139,12 @@ trait EncoderFunctions {
    */
   final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A] {
     def encode(a: A) = {
-      @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: Err): EncodeResult = rem match {
-        case Nil => EncodeResult.failure(lastErr)
+      @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: Err): Attempt[BitVector] = rem match {
+        case Nil => Attempt.failure(lastErr)
         case hd :: tl =>
           hd.encode(a) match {
-            case res @ EncodeResult.Successful(_) => res
-            case EncodeResult.Failure(err) => go(tl, err)
+            case res @ Attempt.Successful(_) => res
+            case Attempt.Failure(err) => go(tl, err)
           }
       }
       go(encoders.toList, Err("no encoders provided"))
@@ -176,7 +173,7 @@ object Encoder extends EncoderFunctions {
    * Creates an encoder from the specified function.
    * @group ctor
    */
-  def apply[A](f: A => EncodeResult): Encoder[A] = new Encoder[A] {
+  def apply[A](f: A => Attempt[BitVector]): Encoder[A] = new Encoder[A] {
     def encode(value: A) = f(value)
   }
 
@@ -184,7 +181,7 @@ object Encoder extends EncoderFunctions {
    * Encodes the specified value to a bit vector using an implicitly available encoder.
    * @group conv
    */
-  def encode[A](a: A)(implicit e: Lazy[Encoder[A]]): EncodeResult = e.value.encode(a)
+  def encode[A](a: A)(implicit e: Lazy[Encoder[A]]): Attempt[BitVector] = e.value.encode(a)
 
   /**
    * Encodes the specified value to a bit vector using an implicitly available encoder or throws an `IllegalArgumentException` if encoding fails.

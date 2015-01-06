@@ -21,9 +21,9 @@ class CodecTest extends CodecSuite {
 
     "support complete combinator" in {
       val codec = codecs.bits(8)
-      codec.decode(hex"00112233".toBitVector) shouldBe DecodeResult.successful(hex"00".bits, hex"112233".bits)
-      codec.complete.decode(hex"00112233".toBitVector) shouldBe DecodeResult.failure(Err("24 bits remaining: 0x112233"))
-      codec.complete.decode(BitVector.fill(2000)(false)) shouldBe DecodeResult.failure(Err("more than 512 bits remaining"))
+      codec.decode(hex"00112233".toBitVector) shouldBe Attempt.successful(DecodeResult(hex"00".bits, hex"112233".bits))
+      codec.complete.decode(hex"00112233".toBitVector) shouldBe Attempt.failure(Err("24 bits remaining: 0x112233"))
+      codec.complete.decode(BitVector.fill(2000)(false)) shouldBe Attempt.failure(Err("more than 512 bits remaining"))
     }
 
     "support as method for converting to a new codec using implicit isomorphism," which {
@@ -59,25 +59,25 @@ class CodecTest extends CodecSuite {
 
     "support the unit combinator" in {
       val codec = uint8.unit(0)
-      codec.encode(()) shouldBe EncodeResult.successful(BitVector(0))
-      codec.decode(BitVector(1)) shouldBe DecodeResult.successful((), BitVector.empty)
-      codec.decode(BitVector.empty) shouldBe DecodeResult.failure(Err.InsufficientBits(8, 0, Nil))
-      uint8.unit(255).encode(()) shouldBe EncodeResult.successful(BitVector(0xff))
+      codec.encode(()) shouldBe Attempt.successful(BitVector(0))
+      codec.decode(BitVector(1)) shouldBe Attempt.successful(DecodeResult((), BitVector.empty))
+      codec.decode(BitVector.empty) shouldBe Attempt.failure(Err.InsufficientBits(8, 0, Nil))
+      uint8.unit(255).encode(()) shouldBe Attempt.successful(BitVector(0xff))
     }
 
     "support dropRight combinator" in {
       val codec = uint8 <~ uint8.unit(0)
-      codec.encode(0xff) shouldBe EncodeResult.successful(hex"ff00".bits)
+      codec.encode(0xff) shouldBe Attempt.successful(hex"ff00".bits)
     }
   }
 
   "literal values" should {
     "be usable as constant codecs" in {
       import scodec.codecs.literals._
-      (1 ~> uint8).encode(2) shouldBe EncodeResult.successful(hex"0102".bits)
-      (1.toByte ~> uint8).encode(2) shouldBe EncodeResult.successful(hex"0102".bits)
-      (hex"11223344" ~> uint8).encode(2) shouldBe EncodeResult.successful(hex"1122334402".bits)
-      (hex"11223344".bits ~> uint8).encode(2) shouldBe EncodeResult.successful(hex"1122334402".bits)
+      (1 ~> uint8).encode(2) shouldBe Attempt.successful(hex"0102".bits)
+      (1.toByte ~> uint8).encode(2) shouldBe Attempt.successful(hex"0102".bits)
+      (hex"11223344" ~> uint8).encode(2) shouldBe Attempt.successful(hex"1122334402".bits)
+      (hex"11223344".bits ~> uint8).encode(2) shouldBe Attempt.successful(hex"1122334402".bits)
     }
   }
 
@@ -88,11 +88,11 @@ class CodecTest extends CodecSuite {
         v => if (v > 9) Attempt.failure(Err("badv")) else Attempt.successful(v),
         d => if (d > 9) Attempt.failure(Err("badd")) else Attempt.successful(d))
 
-      oneDigit.encode(3) shouldBe EncodeResult.successful(BitVector(0x03))
-      oneDigit.encode(10) shouldBe EncodeResult.failure(Err("badd"))
-      oneDigit.encode(30000000) shouldBe EncodeResult.failure(Err("badd"))
-      oneDigit.decode(BitVector(0x05)) shouldBe DecodeResult.successful(5, BitVector.empty)
-      oneDigit.decode(BitVector(0xff)) shouldBe DecodeResult.failure(Err("badv"))
+      oneDigit.encode(3) shouldBe Attempt.successful(BitVector(0x03))
+      oneDigit.encode(10) shouldBe Attempt.failure(Err("badd"))
+      oneDigit.encode(30000000) shouldBe Attempt.failure(Err("badd"))
+      oneDigit.decode(BitVector(0x05)) shouldBe Attempt.successful(DecodeResult(5, BitVector.empty))
+      oneDigit.decode(BitVector(0xff)) shouldBe Attempt.failure(Err("badv"))
       oneDigit.decode(BitVector.empty) shouldBe uint8.decode(BitVector.empty)
     }
 
@@ -121,7 +121,7 @@ class CodecTest extends CodecSuite {
         if (n >= Int.MinValue && n <= Int.MaxValue)
           narrowed.encode(n) shouldBe int32.encode(n.toInt)
         else
-          narrowed.encode(n) shouldBe EncodeResult.failure(Err("out of range"))
+          narrowed.encode(n) shouldBe Attempt.failure(Err("out of range"))
       }
     }
   }
@@ -129,20 +129,20 @@ class CodecTest extends CodecSuite {
   "encodeOnly" should {
     val char8: Codec[Char] = uint8.contramap[Char](_.toInt).encodeOnly
     "encode successfully" in {
-      char8.encode('a') shouldBe EncodeResult.successful(BitVector(0x61))
+      char8.encode('a') shouldBe Attempt.successful(BitVector(0x61))
     }
     "fail to decode" in {
-      char8.decode(hex"61".bits) shouldBe DecodeResult.failure(Err("decoding not supported"))
+      char8.decode(hex"61".bits) shouldBe Attempt.failure(Err("decoding not supported"))
     }
   }
 
   "decodeOnly" should {
     val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
     "decode successfully" in {
-      char8.decode(BitVector(0x61)) shouldBe DecodeResult.successful('a', BitVector.empty)
+      char8.decode(BitVector(0x61)) shouldBe Attempt.successful(DecodeResult('a', BitVector.empty))
     }
     "fail to encode" in {
-      char8.encode('a') shouldBe EncodeResult.failure(Err("encoding not supported"))
+      char8.encode('a') shouldBe Attempt.failure(Err("encoding not supported"))
     }
   }
 

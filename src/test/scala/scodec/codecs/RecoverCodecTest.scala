@@ -10,9 +10,9 @@ class RecoverCodecTest extends CodecSuite {
     "always code a value" in {
       forAll { (i: Int, b: Boolean) =>
         val codec = recover(constant(BitVector fromInt i))
-        val Attempt.Successful((b2, rest)) = for {
-          bits <- codec.encode(b).toAttempt
-          result <- codec.decode(bits).toAttemptWithRemainder
+        val Attempt.Successful(DecodeResult(b2, rest)) = for {
+          bits <- codec.encode(b)
+          result <- codec.decode(bits)
         } yield result
         rest shouldBe 'empty
         b2 shouldBe true
@@ -22,7 +22,7 @@ class RecoverCodecTest extends CodecSuite {
     "decode a false when target codec fails to decode" in {
       forAll { (i: Int) =>
         val codec = recover(constant(BitVector fromInt i))
-        val DecodeResult.Successful(b, rest) = codec.decode(BitVector.empty)
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty)
         rest shouldBe 'empty
         b shouldBe false
       }
@@ -32,7 +32,7 @@ class RecoverCodecTest extends CodecSuite {
       forAll { (i1: Int, i2: Int) =>
         if (i1 != i2 && i1 >= 0 && i2 >= 0) {
           val codec = recover(constant(BitVector fromInt i1))
-          val DecodeResult.Successful(b, rest) = codec.decode(BitVector fromInt i2)
+          val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector fromInt i2)
           rest shouldBe (BitVector fromInt i2)
           b shouldBe false
         }
@@ -44,9 +44,9 @@ class RecoverCodecTest extends CodecSuite {
     "always code a value" in {
       forAll { (i: Int, b: Boolean) =>
         val codec = lookahead(constant(BitVector fromInt i))
-        val Attempt.Successful((encoded, (b2, rest))) = for {
-          bits <- codec.encode(b).toAttempt
-          result <- codec.decode(bits).toAttemptWithRemainder
+        val Attempt.Successful((encoded, DecodeResult(b2, rest))) = for {
+          bits <- codec.encode(b)
+          result <- codec.decode(bits)
         } yield (bits, result)
         rest shouldBe encoded
         b2 shouldBe true
@@ -56,7 +56,7 @@ class RecoverCodecTest extends CodecSuite {
     "decode a false when target codec fails to decode" in {
       forAll { (i: Int) =>
         val codec = lookahead(constant(BitVector fromInt i))
-        val DecodeResult.Successful(b, rest) = codec.decode(BitVector.empty)
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty)
         rest shouldBe 'empty
         b shouldBe false
       }
@@ -66,7 +66,7 @@ class RecoverCodecTest extends CodecSuite {
       forAll { (i1: Int, i2: Int) =>
         if (i1 != i2 && i1 >= 0 && i2 >= 0) {
           val codec = lookahead(constant(BitVector fromInt i1))
-          val DecodeResult.Successful(b, rest) = codec.decode(BitVector fromInt i2)
+          val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector fromInt i2)
           rest shouldBe (BitVector fromInt i2)
           b shouldBe false
         }

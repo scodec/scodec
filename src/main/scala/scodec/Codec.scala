@@ -204,7 +204,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B) = self.encode(g(b))
-    def decode(buffer: BitVector) = self.decode(buffer).map { a => f(a) }
+    def decode(buffer: BitVector) = self.decode(buffer).map { _ mapValue f }
   }
 
   /**
@@ -323,7 +323,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final def upcast[B >: A](implicit m: Manifest[A]): Codec[B] = new Codec[B] {
     def encode(b: B) = b match {
       case a: A => self encode a
-      case _ => EncodeResult.failure(Err(s"${b.getClass.getSimpleName} is not a ${m.runtimeClass.getSimpleName}"))
+      case _ => Attempt.failure(Err(s"${b.getClass.getSimpleName} is not a ${m.runtimeClass.getSimpleName}"))
     }
     def decode(bv: BitVector) = self decode bv
     override def toString = self.toString
@@ -339,10 +339,10 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   final def downcast[B <: A : Manifest]: Codec[B] = new Codec[B] {
     def encode(b: B) = self encode b
-    def decode(bv: BitVector) = self.decode(bv).flatMapWithRemainder { (a, rem) =>
-      a match {
-        case b: B => DecodeResult.successful(b, rem)
-        case _ => DecodeResult.failure(Err(s"${a.getClass.getSimpleName} is not a ${implicitly[Manifest[B]].runtimeClass.getSimpleName}"))
+    def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
+      result.value match {
+        case b: B => Attempt.successful(DecodeResult(b, result.remainder))
+        case other => Attempt.failure(Err(s"${other.getClass.getSimpleName} is not a ${implicitly[Manifest[B]].runtimeClass.getSimpleName}"))
       }
     }
     override def toString = self.toString
@@ -410,7 +410,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * Creates a codec from encoder and decoder functions.
    * @group ctor
    */
-  def apply[A](encoder: A => EncodeResult, decoder: BitVector => DecodeResult[A]): Codec[A] = new Codec[A] {
+  def apply[A](encoder: A => Attempt[BitVector], decoder: BitVector => Attempt[DecodeResult[A]]): Codec[A] = new Codec[A] {
     override def encode(a: A) = encoder(a)
     override def decode(bits: BitVector) = decoder(bits)
   }
@@ -444,13 +444,13 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * Encodes the specified value to a bit vector using an implicitly available codec.
    * @group conv
    */
-  def encode[A](a: A)(implicit c: Lazy[Codec[A]]): EncodeResult = c.value.encode(a)
+  def encode[A](a: A)(implicit c: Lazy[Codec[A]]): Attempt[BitVector] = c.value.encode(a)
 
   /**
    * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
    * @group conv
    */
-  def decode[A](bits: BitVector)(implicit c: Lazy[Codec[A]]): DecodeResult[A] = c.value.decode(bits)
+  def decode[A](bits: BitVector)(implicit c: Lazy[Codec[A]]): Attempt[DecodeResult[A]] = c.value.decode(bits)
 
   /**
    * Supports derived codecs.

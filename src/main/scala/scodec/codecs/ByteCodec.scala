@@ -16,18 +16,18 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
 
   override def encode(b: Byte) = {
     if (b > MaxValue) {
-      EncodeResult.failure(Err(s"$b is greater than maximum value $MaxValue for $description"))
+      Attempt.failure(Err(s"$b is greater than maximum value $MaxValue for $description"))
     } else if (b < MinValue) {
-      EncodeResult.failure(Err(s"$b is less than minimum value $MinValue for $description"))
+      Attempt.failure(Err(s"$b is less than minimum value $MinValue for $description"))
     } else {
-      EncodeResult.successful(BitVector.fromByte(b, bits))
+      Attempt.successful(BitVector.fromByte(b, bits))
     }
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => DecodeResult.failure(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => DecodeResult.successful(b.toByte(signed), buffer.drop(bits))
+      case Left(e) => Attempt.failure(Err.insufficientBits(bits, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(b.toByte(signed), buffer.drop(bits)))
     }
 
   override def toString = description

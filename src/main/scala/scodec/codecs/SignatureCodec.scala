@@ -122,7 +122,7 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
 
   override def encode(a: A) = for {
     encoded <- codec.encode(a)
-    sig <- EncodeResult.fromAttempt(sign(encoded))
+    sig <- sign(encoded)
     encodedSig <- signatureCodec.encode(sig)
   } yield encoded ++ encodedSig
 

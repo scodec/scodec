@@ -20,11 +20,11 @@ class IntCodecTest extends CodecSuite {
   "the uint4 codec" should { "roundtrip" in { check(0, 1 << 3) { (n: Int) => roundtrip(uint4, n) } } }
   "the uint4L codec" should { "roundtrip" in { check(0, (1 << 4) - 1) { (n: Int) => roundtrip(uint4L, n) } } }
   "the uint(n) codec" should { "roundtrip" in {
-    uint(13).encode(1) shouldBe EncodeResult.successful(BitVector.low(13).set(12))
+    uint(13).encode(1) shouldBe Attempt.successful(BitVector.low(13).set(12))
     check(0, 32767) { (n: Int) => roundtrip(uint(15), n) }
   }}
   "the uintL(n) codec" should { "roundtrip" in {
-    uintL(13).encode(1) shouldBe EncodeResult.successful(BitVector.low(13).set(7))
+    uintL(13).encode(1) shouldBe Attempt.successful(BitVector.low(13).set(7))
     check(0, 32767) { (n: Int) => roundtrip(uintL(15), n) }
   }}
 
@@ -56,13 +56,13 @@ class IntCodecTest extends CodecSuite {
     }
 
     "return an error when value to encode is out of legal range" in {
-      int16.encode(65536) shouldBe EncodeResult.failure(Err("65536 is greater than maximum value 32767 for 16-bit signed integer"))
-      int16.encode(-32769) shouldBe EncodeResult.failure(Err("-32769 is less than minimum value -32768 for 16-bit signed integer"))
-      uint16.encode(-1) shouldBe EncodeResult.failure(Err("-1 is less than minimum value 0 for 16-bit unsigned integer"))
+      int16.encode(65536) shouldBe Attempt.failure(Err("65536 is greater than maximum value 32767 for 16-bit signed integer"))
+      int16.encode(-32769) shouldBe Attempt.failure(Err("-32769 is less than minimum value -32768 for 16-bit signed integer"))
+      uint16.encode(-1) shouldBe Attempt.failure(Err("-1 is less than minimum value 0 for 16-bit unsigned integer"))
     }
 
     "return an error when decoding with too few bits" in {
-      int16.decode(BitVector.low(8)) shouldBe DecodeResult.failure(Err.insufficientBits(16, 8))
+      int16.decode(BitVector.low(8)) shouldBe Attempt.failure(Err.insufficientBits(16, 8))
     }
   }
 }

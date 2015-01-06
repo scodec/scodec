@@ -46,13 +46,13 @@ class DerivedCodecTest extends CodecSuite {
         Line(Point(0, 10, 1), Point(10, 0, 10))))
 
       val arrBinary = Codec.encode(arr).require
-      val decoded = Codec[Arrangement].decode(arrBinary).require
+      val decoded = Codec[Arrangement].decode(arrBinary).require.value
       decoded shouldBe arr
     }
 
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Foo].encode(Foo(1, 256, "Hello")) shouldBe EncodeResult.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
+      Codec[Foo].encode(Foo(1, 256, "Hello")) shouldBe Attempt.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y"))
     }
 
     "support automatic generation of coproduct codec builders" in {
@@ -68,7 +68,7 @@ class DerivedCodecTest extends CodecSuite {
       type U = Union.`'i -> Int, 's -> String`.T
       val codec = Codec.coproduct[U].discriminatedByIndex(uint8)
       codec.encode(Coproduct[U]('s ->> "Hello")).require shouldBe hex"01000548656c6c6f".bits
-      codec.encode(Coproduct[U]('i ->> 256)) shouldBe EncodeResult.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("i"))
+      codec.encode(Coproduct[U]('i ->> 256)) shouldBe Attempt.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("i"))
     }
 
     "support automatic generation of coproduct codec builders from sealed trait and subclasses" in {

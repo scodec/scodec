@@ -7,16 +7,16 @@ private[codecs] final class ConditionalCodec[A](included: Boolean, codec: Codec[
 
   override def encode(a: Option[A]) = {
     a.filter { _ => included } match {
-      case None => EncodeResult.successful(BitVector.empty)
+      case None => Attempt.successful(BitVector.empty)
       case Some(a) => codec.encode(a)
     }
   }
 
   override def decode(buffer: BitVector) = {
     if (included)
-      codec.decode(buffer).map { result => Some(result) }
+      codec.decode(buffer).map { _ mapValue { result => Some(result) } }
     else
-      DecodeResult.successful(None, buffer)
+      Attempt.successful(DecodeResult(None, buffer))
   }
 
   override def toString = s"conditional($included, $codec)"

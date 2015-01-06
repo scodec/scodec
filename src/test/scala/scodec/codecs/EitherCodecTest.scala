@@ -20,8 +20,8 @@ class EitherCodecTest extends CodecSuite {
 
     "encode correctly" in {
       val c = either(bool(8), uint8, ascii)
-      c.encode(Left(255)) shouldBe EncodeResult.successful(bin"00000000 11111111")
-      c.encode(Right("hi")) shouldBe EncodeResult.successful(hex"ff 68 69".toBitVector)
+      c.encode(Left(255)) shouldBe Attempt.successful(bin"00000000 11111111")
+      c.encode(Right("hi")) shouldBe Attempt.successful(hex"ff 68 69".toBitVector)
     }
   }
 }

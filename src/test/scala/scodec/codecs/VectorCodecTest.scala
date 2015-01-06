@@ -33,13 +33,13 @@ class VectorCodecTest extends CodecSuite {
     "include index of problematic value when an error occurs during decoding" in {
       val codec = vector(uint8.narrow[Int](x => if (x == 0) Attempt.failure(Err("zero disallowed")) else Attempt.successful(x), x => x)).complete
       val result = codec.decode(hex"010200".bits)
-      result shouldBe DecodeResult.failure(Err("zero disallowed").pushContext("2"))
+      result shouldBe Attempt.failure(Err("zero disallowed").pushContext("2"))
     }
 
     "include index of problematic value when an error occurs during encoding" in {
       val codec = vector(uint8).complete
       val result = codec.encode(Vector(0, 1, -1))
-      result shouldBe EncodeResult.failure(Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2"))
+      result shouldBe Attempt.failure(Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2"))
     }
   }
 
@@ -47,17 +47,17 @@ class VectorCodecTest extends CodecSuite {
     "limit decoding to the specified number of records" in {
       val codec = vectorOfN(provide(10), uint8)
       val buffer = BitVector.low(8 * 100)
-      codec.decode(buffer) shouldBe DecodeResult.successful(Vector.fill(10)(0), BitVector.low(8 * 90))
+      codec.decode(buffer) shouldBe Attempt.successful(DecodeResult(Vector.fill(10)(0), BitVector.low(8 * 90)))
     }
 
     "support encoding size before vector contents" in {
       val codec = vectorOfN(int32, uint8)
-      codec.encode((1 to 10).toVector) shouldBe EncodeResult.successful(hex"0000000a0102030405060708090a".bits)
+      codec.encode((1 to 10).toVector) shouldBe Attempt.successful(hex"0000000a0102030405060708090a".bits)
     }
 
     "support not encoding size before vector contents" in {
       val codec = vectorOfN(provide(10), uint8)
-      codec.encode((1 to 10).toVector) shouldBe EncodeResult.successful(hex"102030405060708090a".bits)
+      codec.encode((1 to 10).toVector) shouldBe Attempt.successful(hex"102030405060708090a".bits)
     }
   }
 }

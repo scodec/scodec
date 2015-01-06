@@ -21,9 +21,7 @@ object PcapCodec {
   private val magicNumber = 0x000000a1b2c3d4L
   val byteOrdering = "magic_number" | Codec[ByteOrdering](
     (bo: ByteOrdering) => if (bo == BigEndian) uint32.encode(magicNumber) else uint32L.encode(magicNumber),
-    (buf: BitVector) => uint32.decode(buf).map { mn =>
-      if (mn == magicNumber) BigEndian else LittleEndian
-    }
+    (buf: BitVector) => uint32.decode(buf).map { _ mapValue { mn => if (mn == magicNumber) BigEndian else LittleEndian } }
   )
 
   def gint16(implicit ordering: ByteOrdering): Codec[Int] = if (ordering == BigEndian) int16 else int16L
@@ -83,16 +81,14 @@ class PcapExample extends CodecSuite {
 
     "support reading the file header and then decoding each record, combining results via a monoid" in {
       pending
-      val fileHeader = Codec.decode[PcapHeader](bits.take(28 * 8)).require
+      val fileHeader = Codec.decode[PcapHeader](bits.take(28 * 8)).require.value
       implicit val ordering = fileHeader.ordering
 
       // Monoid that counts records
-      // TODO
-      //val (_, recordCount) = Codec.decodeAll[PcapRecord, Int](bits.drop(28 * 8)) { _ => 1 }
+      val (_, recordCount) = Codec.decodeAll[PcapRecord, Int](bits.drop(28 * 8))(0, _ + _) { _ => 1 }
 
       // Monoid that accumulates records
-      // TODO
-      //val (_, records) = Codec.decodeAll[PcapRecord, Vector[PcapRecord]](bits.drop(28 * 8)) { r => Vector(r) }
+      val (_, records) = Codec.decodeAll[PcapRecord, Vector[PcapRecord]](bits.drop(28 * 8))(Vector.empty, _ ++ _) { r => Vector(r) }
     }
 
     // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes

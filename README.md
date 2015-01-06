@@ -68,11 +68,11 @@ Automatic case class binding is supported via Shapeless HLists:
 
     val pointCodec = (int8 :: int8 :: int8).as[Point]
 
-    val encoded: EncodeResult = pointCodec.encode(Point(-5, 10, 1))
+    val encoded: Attempt[BitVector] = pointCodec.encode(Point(-5, 10, 1))
     // Successful(BitVector(24 bits, 0xfb0a01))
 
-    val decoded: DecodeResult[Point] = pointCodec.decode(hex"0xfb0a01".bits)
-    // Successful(Point(-5,10,1),BitVector(empty))
+    val decoded: Attempt[DecodeResult[Point]] = pointCodec.decode(hex"0xfb0a01".bits)
+    // Successful(DecodeResult(Point(-5,10,1),BitVector(empty)))
 ```
 
 Codecs can also be implicitly resolved, resulting in usage like:
@@ -80,11 +80,11 @@ Codecs can also be implicitly resolved, resulting in usage like:
 ```scala
     // Assuming Codec[Point] is in implicit scope
 
-    val encoded: EncodeResult = Codec.encode(Point(-5, 10, 1))
+    val encoded: Attempt[BitVector] = Codec.encode(Point(-5, 10, 1))
     // Successful(BitVector(24 bits, 0xfb0a01))
 
-    val decoded: DecodeResult[Point] = Codec.decode[Point](hex"0xfb0a01".bits)
-    // Successful(BitVector(24 bits, 0xfb0a01))
+    val decoded: Attempt[DecodeResult[Point]] = Codec.decode[Point](hex"0xfb0a01".bits)
+    // Successful(DecodeResult(Point(-5,10,1),BitVector(empty)))
 ```
 
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.

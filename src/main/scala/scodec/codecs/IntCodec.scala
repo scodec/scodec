@@ -16,18 +16,18 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteO
 
   override def encode(i: Int) = {
     if (i > MaxValue) {
-      EncodeResult.failure(Err(s"$i is greater than maximum value $MaxValue for $description"))
+      Attempt.failure(Err(s"$i is greater than maximum value $MaxValue for $description"))
     } else if (i < MinValue) {
-      EncodeResult.failure(Err(s"$i is less than minimum value $MinValue for $description"))
+      Attempt.failure(Err(s"$i is less than minimum value $MinValue for $description"))
     } else {
-      EncodeResult.successful(BitVector.fromInt(i, bits, ordering))
+      Attempt.successful(BitVector.fromInt(i, bits, ordering))
     }
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => DecodeResult.failure(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => DecodeResult.successful(b.toInt(signed, ordering), buffer.drop(bits))
+      case Left(e) => Attempt.failure(Err.insufficientBits(bits, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(b.toInt(signed, ordering), buffer.drop(bits)))
     }
 
   override def toString = description

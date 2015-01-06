@@ -12,13 +12,13 @@ private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Do
   override def encode(value: Double) = {
     val buffer = ByteBuffer.allocate(8).order(byteOrder).putDouble(value)
     buffer.flip()
-    EncodeResult.successful(BitVector.view(buffer))
+    Attempt.successful(BitVector.view(buffer))
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(64) match {
-      case Left(e) => DecodeResult.failure(Err.insufficientBits(64, buffer.size))
-      case Right(b) => DecodeResult.successful(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble, buffer.drop(64))
+      case Left(e) => Attempt.failure(Err.insufficientBits(64, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble, buffer.drop(64)))
     }
 
   override def toString = "double"
