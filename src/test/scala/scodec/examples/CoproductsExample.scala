@@ -1,7 +1,6 @@
 package scodec
 package examples
 
-import scalaz.\/
 import shapeless._
 
 import scodec.bits._
@@ -42,13 +41,13 @@ class CoproductsExample extends CodecSuite {
       // successful response is used.
       val choiceCodec: Codec[Sprocket] = Codec.coproduct[Sprocket].choice
 
-      val encodedWoozle = choiceCodec.encodeValid(Woozle(3, 10))
-      val encodedWocket = choiceCodec.encode(Wocket(1, true))
+      val encodedWoozle = choiceCodec.encode(Woozle(3, 10)).require
+      val encodedWocket = choiceCodec.encode(Wocket(1, true)).require
 
       // Care must be taken when using choice codecs -- specifically,
       // if a specific bit pattern can be successfully decoded by multiple
       // component codecs, decoding results may be unexpected.
-      choiceCodec.decodeValidValue(encodedWoozle) shouldBe Wocket(3, false)
+      choiceCodec.decode(encodedWoozle).require.value shouldBe Wocket(3, false)
 
       // In the previous example, the encoded woozle bits decode to a `Wocket`
       // because of the order that Shapeless enumerates the subtypes of `Sprocket`
@@ -74,13 +73,13 @@ class CoproductsExample extends CodecSuite {
       // `discriminatedByIndex` method.
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedByIndex(uint8)
 
-      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
-      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      val encodedWocket = codec.encode(Wocket(1, true)).require
       encodedWocket shouldBe hex"000101".bits
 
-      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
-      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
+      codec.decode(encodedWoozle).require.value shouldBe Woozle(3, 10)
+      codec.decode(encodedWocket).require.value shouldBe Wocket(1, true)
     }
 
     "demonstrate errors" in {
@@ -89,7 +88,7 @@ class CoproductsExample extends CodecSuite {
       // sealed type hierarchies, the field name is the subtype name.
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedByIndex(uint8)
 
-      codec.encode(Woozle(256, 0)) shouldBe \/.left(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("Woozle"))
+      codec.encode(Woozle(256, 0)) shouldBe Attempt.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("Woozle"))
     }
 
     "demonstrate arbitrary discriminators" in {
@@ -103,13 +102,13 @@ class CoproductsExample extends CodecSuite {
 
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).using(Sized(2, 1))
 
-      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
-      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      val encodedWocket = codec.encode(Wocket(1, true)).require
       encodedWocket shouldBe hex"020101".bits
 
-      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
-      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
+      codec.decode(encodedWoozle).require.value shouldBe Woozle(3, 10)
+      codec.decode(encodedWocket).require.value shouldBe Wocket(1, true)
 
       // Notice that the following do not compile because the sized collection has the wrong size:
       """Codec.coproduct[Sprocket].discriminatedBy(uint8).using(Sized(2, 1, 3))""" shouldNot compile
@@ -126,13 +125,13 @@ class CoproductsExample extends CodecSuite {
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).using(
         'Wocket ->> 2 :: 'Woozle ->> 1 :: HNil)
 
-      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
-      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      val encodedWocket = codec.encode(Wocket(1, true)).require
       encodedWocket shouldBe hex"020101".bits
 
-      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
-      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
+      codec.decode(encodedWoozle).require.value shouldBe Woozle(3, 10)
+      codec.decode(encodedWocket).require.value shouldBe Wocket(1, true)
 
       // The discriminator records do not need to be aligned with the coproduct types.
       Codec.coproduct[Sprocket].discriminatedBy(uint8).using('Woozle ->> 1 :: 'Wocket ->> 2 :: HNil)
@@ -154,13 +153,13 @@ class CoproductsExample extends CodecSuite {
       // as long as there's a `Discriminator[Sprocket, X, Int]` in scope for each subtype of `Sprocket` `X`.
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).auto
 
-      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
-      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      val encodedWocket = codec.encode(Wocket(1, true)).require
       encodedWocket shouldBe hex"020101".bits
 
-      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
-      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
+      codec.decode(encodedWoozle).require.value shouldBe Woozle(3, 10)
+      codec.decode(encodedWocket).require.value shouldBe Wocket(1, true)
     }
 
     "demonstrate automatic coproduct codec creation" in {
@@ -177,13 +176,13 @@ class CoproductsExample extends CodecSuite {
       // instead of explicitly.
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].auto
 
-      val encodedWoozle = codec.encodeValid(Woozle(3, 10))
+      val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
-      val encodedWocket = codec.encodeValid(Wocket(1, true))
+      val encodedWocket = codec.encode(Wocket(1, true)).require
       encodedWocket shouldBe hex"020101".bits
 
-      codec.decodeValidValue(encodedWoozle) shouldBe Woozle(3, 10)
-      codec.decodeValidValue(encodedWocket) shouldBe Wocket(1, true)
+      codec.decode(encodedWoozle).require.value shouldBe Woozle(3, 10)
+      codec.decode(encodedWocket).require.value shouldBe Wocket(1, true)
     }
 
     "demonstrate fixing the codec to a known subtype" in {
@@ -194,13 +193,13 @@ class CoproductsExample extends CodecSuite {
       // This can be accomplished by using the `provide` codec as the discriminator codec.
       def codec(d: Int): Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(provide(d)).auto
 
-      codec(1).decodeValidValue(hex"030a".bits) shouldBe Woozle(3, 10)
-      codec(2).decodeValidValue(hex"0101".bits) shouldBe Wocket(1, true)
+      codec(1).decode(hex"030a".bits).require.value shouldBe Woozle(3, 10)
+      codec(2).decode(hex"0101".bits).require.value shouldBe Wocket(1, true)
 
       val hlistCodec: Codec[Int :: Long :: Sprocket :: Int :: HNil] =
         (uint8 :: uint32) flatConcat { case d :: _ :: HNil => codec(d) :: uint16 }
 
-      hlistCodec.encodeValid(1 :: 0L :: Woozle(3, 10) :: 0 :: HNil) shouldBe hex"0100000000030a0000".bits
+      hlistCodec.encode(1 :: 0L :: Woozle(3, 10) :: 0 :: HNil).require shouldBe hex"0100000000030a0000".bits
     }
 
     "demonstrate defining dependent subtype codecs" in {

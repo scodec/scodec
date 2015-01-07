@@ -2,44 +2,40 @@ package scodec
 
 import language.higherKinds
 
-import scalaz.\/
-import \/.right
-import scalaz.syntax.std.option._
-
 import shapeless._
 
 /** Typeclass that describes type constructors that support the `exmap` operation. */
 abstract class Transform[F[_]] { self =>
 
   /**
-   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => Err \/ B` and `B => Err \/ A`.
+   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
    */
-  def exmap[A, B](fa: F[A], f: A => Err \/ B, g: B => Err \/ A): F[B]
+  def exmap[A, B](fa: F[A], f: A => Attempt[B], g: B => Attempt[A]): F[B]
 
   /**
    * Transforms supplied `F[A]` to an `F[B]` using the isomorphism described by two functions,
    * `A => B` and `B => A`.
    */
   def xmap[A, B](fa: F[A], f: A => B, g: B => A): F[B] =
-    exmap(fa, right compose f, right compose g)
+    exmap[A, B](fa, a => Attempt.successful(f(a)), b => Attempt.successful(g(b)))
 
   /**
-   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => Err \/ B` and `B => A`.
+   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => Attempt[B]` and `B => A`.
    *
    * The supplied functions form an injection from `B` to `A`. Hence, converting a `F[A]` to a `F[B]` converts from
    * a larger to a smaller type. Hence, the name `narrow`.
    */
-  def narrow[A, B](fa: F[A], f: A => Err \/ B, g: B => A): F[B] =
-    exmap(fa, f, right compose g)
+  def narrow[A, B](fa: F[A], f: A => Attempt[B], g: B => A): F[B] =
+    exmap(fa, f, b => Attempt.successful(g(b)))
 
   /**
-   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => B` and `B => Err \/ A`.
+   * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => B` and `B => Attempt[A]`.
    *
    * The supplied functions form an injection from `A` to `B`. Hence, converting a `F[A]` to a `F[B]` converts from
    * a smaller to a larger type. Hence, the name `widen`.
    */
-  def widen[A, B](fa: F[A], f: A => B, g: B => Err \/ A): F[B] =
-    exmap(fa, right compose f, g)
+  def widen[A, B](fa: F[A], f: A => B, g: B => Attempt[A]): F[B] =
+    exmap[A, B](fa, a => Attempt.successful(f(a)), g)
 
   /**
    * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => B` and `B => Option[A]`.
@@ -47,7 +43,7 @@ abstract class Transform[F[_]] { self =>
    * Particularly useful when combined with case class apply/unapply. E.g., `widenOpt(fa, Foo.apply, Foo.unapply)`.
    */
   def widenOpt[A, B](fa: F[A], f: A => B, g: B => Option[A]): F[B] =
-    exmap(fa, right compose f, b => g(b) \/> Err(s"widening failed: $b"))
+    exmap[A, B](fa, a => Attempt.successful(f(a)), b => Attempt.fromOption(g(b), Err(s"widening failed: $b")))
 
   /**
    * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => B` and `B => Option[A]`.

@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.syntax.either._
-
 class DiscriminatorCodecTest extends CodecSuite {
 
   "the discriminator combinators" should {
@@ -77,9 +75,6 @@ class DiscriminatorCodecTest extends CodecSuite {
     }
 
     "support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy" in {
-      import scalaz.{ \/, \/-, -\/ }
-      import \/.{ left, right }
-
       trait Color
       case object Red extends Color
       case object Green extends Color
@@ -89,16 +84,16 @@ class DiscriminatorCodecTest extends CodecSuite {
 
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
       val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
-      val codec: Codec[Reserved \/ Color] = choice(
-        nonReserved.xmap[\/-[Color]](c => \/-(c), _.b).upcast[Reserved \/ Color],
-        reserved.xmap[-\/[Reserved]](r => -\/(r), _.a).upcast[Reserved \/ Color]
+      val codec: Codec[Either[Reserved, Color]] = choice(
+        nonReserved.xmap[Right[Reserved, Color]](c => Right(c), _.b).upcast[Either[Reserved, Color]],
+        reserved.xmap[Left[Reserved, Color]](r => Left(r), _.a).upcast[Either[Reserved, Color]]
       )
 
-      roundtrip(codec, right(Red))
-      roundtrip(codec, right(Green))
-      roundtrip(codec, right(Blue))
-      roundtrip(codec, left(Reserved(255)))
-      roundtrip(codec, left(Reserved(4)))
+      roundtrip(codec, Right(Red))
+      roundtrip(codec, Right(Green))
+      roundtrip(codec, Right(Blue))
+      roundtrip(codec, Left(Reserved(255)))
+      roundtrip(codec, Left(Reserved(4)))
     }
 
     "support building a codec for an ADT" in {
@@ -143,6 +138,5 @@ class DiscriminatorCodecTest extends CodecSuite {
       encodeError(codec, 1, new Err.MatchingDiscriminatorNotFound(1))
       encodeError(codec, Int.MaxValue, new Err.MatchingDiscriminatorNotFound(Int.MaxValue))
     }
-
   }
 }

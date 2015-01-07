@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/
-import scalaz.syntax.std.option._
 import org.scalacheck.Gen
 import scodec.bits.BitVector
 
@@ -21,14 +19,14 @@ class ShortCodecTest extends CodecSuite {
   "the short codecs" should {
     "support endianess correctly" in {
       forAll { (n: Short) =>
-        val bigEndian = short16.encode(n).toOption.err("big").toByteVector
-        val littleEndian = short16L.encode(n).toOption.err("little").toByteVector
+        val bigEndian = short16.encode(n).require.toByteVector
+        val littleEndian = short16L.encode(n).require.toByteVector
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 8191) { (n: Short) =>
         whenever(n >= 0 && n <= 8191) {
-          val bigEndian = ushort(13).encodeValid(n)
-          val littleEndian = ushortL(13).encodeValid(n).toByteVector
+          val bigEndian = ushort(13).encode(n).require
+          val littleEndian = ushortL(13).encode(n).require.toByteVector
           val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
           flipped shouldBe bigEndian
         }
@@ -36,13 +34,13 @@ class ShortCodecTest extends CodecSuite {
     }
 
     "return an error when value to encode is out of legal range" in {
-      short(15).encode(Short.MaxValue) shouldBe \/.left(Err("32767 is greater than maximum value 16383 for 15-bit signed short"))
-      short(15).encode(Short.MinValue) shouldBe \/.left(Err("-32768 is less than minimum value -16384 for 15-bit signed short"))
-      ushort(15).encode(-1) shouldBe \/.left(Err("-1 is less than minimum value 0 for 15-bit unsigned short"))
+      short(15).encode(Short.MaxValue) shouldBe Attempt.failure(Err("32767 is greater than maximum value 16383 for 15-bit signed short"))
+      short(15).encode(Short.MinValue) shouldBe Attempt.failure(Err("-32768 is less than minimum value -16384 for 15-bit signed short"))
+      ushort(15).encode(-1) shouldBe Attempt.failure(Err("-1 is less than minimum value 0 for 15-bit unsigned short"))
     }
 
     "return an error when decoding with too few bits" in {
-      short16.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(16, 8))
+      short16.decode(BitVector.low(8)) shouldBe Attempt.failure(Err.insufficientBits(16, 8))
     }
   }
 }

@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.{ \/-, -\/ }
-
 import shapeless._
 import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot}
 import UnaryTCConstraint._
@@ -13,8 +11,8 @@ import scodec.HListOps._
 private[scodec] object HListCodec {
 
   val hnilCodec: Codec[HNil] = new Codec[HNil] {
-    override def encode(hn: HNil) = \/-(BitVector.empty)
-    override def decode(buffer: BitVector) = \/-((buffer, HNil))
+    override def encode(hn: HNil) = Attempt.successful(BitVector.empty)
+    override def decode(buffer: BitVector) = Attempt.successful(DecodeResult(HNil, buffer))
     override def toString = s"HNil"
   }
 
@@ -54,9 +52,9 @@ private[scodec] object HListCodec {
   def flatPrepend[A, L <: HList](codecA: Codec[A], f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
     override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
     override def decode(buffer: BitVector) = (for {
-      a <- DecodingContext(codecA.decode)
-      l <- DecodingContext(f(a).decode)
-    } yield a :: l).run(buffer)
+      a <- DecodingContext(codecA)
+      l <- DecodingContext(f(a))
+    } yield a :: l).decode(buffer)
     override def toString = s"flatPrepend($codecA, $f)"
   }
 
@@ -70,9 +68,9 @@ private[scodec] object HListCodec {
       Codec.encodeBoth(codecK, f(k))(k, l)
     }
     override def decode(buffer: BitVector) = (for {
-      k <- DecodingContext(codecK.decode)
-      l <- DecodingContext(f(k).decode)
-    } yield k ::: l).run(buffer)
+      k <- DecodingContext(codecK)
+      l <- DecodingContext(f(k))
+    } yield k ::: l).decode(buffer)
     override def toString = s"flatConcat($codecK, $f)"
   }
 
@@ -86,9 +84,9 @@ private[scodec] object HListCodec {
       Codec.encodeBoth(codecL, f(l))(l, rest.head)
     }
     override def decode(buffer: BitVector) = (for {
-      l <- DecodingContext(codecL.decode)
-      a <- DecodingContext(f(l).decode)
-    } yield l :+ a).run(buffer)
+      l <- DecodingContext(codecL)
+      a <- DecodingContext(f(l))
+    } yield l :+ a).decode(buffer)
     override def toString = s"flatConcat($codecL, $f)"
   }
 

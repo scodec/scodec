@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/
-import scalaz.syntax.std.option._
 import org.scalacheck.Gen
 import scodec.bits.BitVector
 
@@ -22,35 +20,35 @@ class IntCodecTest extends CodecSuite {
   "the uint4 codec" should { "roundtrip" in { check(0, 1 << 3) { (n: Int) => roundtrip(uint4, n) } } }
   "the uint4L codec" should { "roundtrip" in { check(0, (1 << 4) - 1) { (n: Int) => roundtrip(uint4L, n) } } }
   "the uint(n) codec" should { "roundtrip" in {
-    uint(13).encode(1) shouldBe \/.right(BitVector.low(13).set(12))
+    uint(13).encode(1) shouldBe Attempt.successful(BitVector.low(13).set(12))
     check(0, 32767) { (n: Int) => roundtrip(uint(15), n) }
   }}
   "the uintL(n) codec" should { "roundtrip" in {
-    uintL(13).encode(1) shouldBe \/.right(BitVector.low(13).set(7))
+    uintL(13).encode(1) shouldBe Attempt.successful(BitVector.low(13).set(7))
     check(0, 32767) { (n: Int) => roundtrip(uintL(15), n) }
   }}
 
   "the int codecs" should {
     "support endianess correctly" in {
       forAll { (n: Int) =>
-        val bigEndian = int32.encode(n).toOption.err("big").toByteVector
-        val littleEndian = int32L.encode(n).toOption.err("little").toByteVector
+        val bigEndian = int32.encode(n).require.toByteVector
+        val littleEndian = int32L.encode(n).require.toByteVector
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 15) { (n: Int) =>
-        val bigEndian = uint4.encodeValid(n).toByteVector
-        val littleEndian = uint4L.encodeValid(n).toByteVector
+        val bigEndian = uint4.encode(n).require.toByteVector
+        val littleEndian = uint4L.encode(n).require.toByteVector
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, (1 << 24) - 1) { (n: Int) =>
-        val bigEndian = uint24.encodeValid(n).toByteVector
-        val littleEndian = uint24L.encodeValid(n).toByteVector
+        val bigEndian = uint24.encode(n).require.toByteVector
+        val littleEndian = uint24L.encode(n).require.toByteVector
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 8191) { (n: Int) =>
         whenever(n >= 0 && n <= 8191) {
-          val bigEndian = uint(13).encodeValid(n)
-          val littleEndian = uintL(13).encodeValid(n).toByteVector
+          val bigEndian = uint(13).encode(n).require
+          val littleEndian = uintL(13).encode(n).require.toByteVector
           val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
           flipped shouldBe bigEndian
         }
@@ -58,13 +56,13 @@ class IntCodecTest extends CodecSuite {
     }
 
     "return an error when value to encode is out of legal range" in {
-      int16.encode(65536) shouldBe \/.left(Err("65536 is greater than maximum value 32767 for 16-bit signed integer"))
-      int16.encode(-32769) shouldBe \/.left(Err("-32769 is less than minimum value -32768 for 16-bit signed integer"))
-      uint16.encode(-1) shouldBe \/.left(Err("-1 is less than minimum value 0 for 16-bit unsigned integer"))
+      int16.encode(65536) shouldBe Attempt.failure(Err("65536 is greater than maximum value 32767 for 16-bit signed integer"))
+      int16.encode(-32769) shouldBe Attempt.failure(Err("-32769 is less than minimum value -32768 for 16-bit signed integer"))
+      uint16.encode(-1) shouldBe Attempt.failure(Err("-1 is less than minimum value 0 for 16-bit unsigned integer"))
     }
 
     "return an error when decoding with too few bits" in {
-      int16.decode(BitVector.low(8)) shouldBe \/.left(Err.insufficientBits(16, 8))
+      int16.decode(BitVector.low(8)) shouldBe Attempt.failure(Err.insufficientBits(16, 8))
     }
   }
 }

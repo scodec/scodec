@@ -1,10 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/
-import \/.{ left, right }
-import scalaz.syntax.std.option._
-
 import scodec.bits.BitVector
 import DiscriminatorCodec.{ Case, Prism }
 
@@ -68,7 +64,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
    * @group discriminator
    */
   def caseO[R](tag: B)(toRep: A => Option[R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(left(tag), Prism(toRep, fromRep, cr)))
+    appendCase(Case(Left(tag), Prism(toRep, fromRep, cr)))
 
   /**
    * $methodCaseCombinator
@@ -82,7 +78,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
    * @group discriminator
    */
   def caseO[R](encodeTag: B, decodeTag: B => Boolean)(toRep: A => Option[R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(right(encodeTag -> decodeTag), Prism(toRep, fromRep, cr)))
+    appendCase(Case(Right(encodeTag -> decodeTag), Prism(toRep, fromRep, cr)))
 
   /**
    * $methodCaseCombinator
@@ -124,7 +120,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
    * @group discriminator
    */
   def caseP[R](tag: B)(toRep: PartialFunction[A,R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(left(tag), Prism(toRep.lift, fromRep, cr)))
+    appendCase(Case(Left(tag), Prism(toRep.lift, fromRep, cr)))
 
   /**
    * $methodCaseCombinator
@@ -138,7 +134,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
    * @group discriminator
    */
   def caseP[R](encodeTag: B, decodeTag: B => Boolean)(toRep: PartialFunction[A,R])(fromRep: R => A)(cr: Codec[R]): DiscriminatorCodec[A, B] =
-    appendCase(Case(right(encodeTag -> decodeTag), Prism(toRep.lift, fromRep, cr)))
+    appendCase(Case(Right(encodeTag -> decodeTag), Prism(toRep.lift, fromRep, cr)))
 
   /**
    * $methodCaseCombinator
@@ -314,11 +310,11 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
   private def appendCase[R](c: Case[A, B, R]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]])
 
-  private val matcher: B => (Err \/ Case[A, B, Any]) = {
-    def errOrCase(b: B, opt: Option[Case[A, B, Any]]) = opt \/> new UnknownDiscriminator(b)
+  private val matcher: B => Attempt[Case[A, B, Any]] = {
+    def errOrCase(b: B, opt: Option[Case[A, B, Any]]) = Attempt.fromOption(opt, new UnknownDiscriminator(b))
     if (cases.forall(_.condition.isLeft)) {
       // we reverse the cases so earlier cases 'win' in event of overlap
-      val tbl = cases.reverse.map(kase => kase.condition.swap.toOption.get -> kase).toMap
+      val tbl = cases.reverse.map(kase => kase.condition.left.toOption.get -> kase).toMap
       b => errOrCase(b, tbl.get(b))
     }
     else {
@@ -327,24 +323,23 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     }
   }
 
-  def encode(a: A): Err \/ BitVector =
+  def encode(a: A) =
     cases.iterator.flatMap { k =>
       k.prism.preview(a).map { r =>
         by.encode(k.representative)
           .flatMap { bits => k.prism.repCodec.encode(r).map(bits ++ _) }
       }.map(List(_)).getOrElse(List())
     }.toStream.headOption match {
-      case None => left(new Err.MatchingDiscriminatorNotFound(a))
+      case None => Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
       case Some(r) => r
     }
 
-  def decode(bits: BitVector): Err \/ (BitVector, A) = for {
-    remb <- by.decode(bits)
-    (rem, b) = remb
-    k <- matcher(b)
-    remr <- k.prism.repCodec.decode(rem)
-    (rem2,r) = remr
-  } yield (rem2, k.prism.review(r))
+  def decode(bits: BitVector) = (for {
+    b <- DecodingContext(by)
+    k <- DecodingContext.liftAttempt(matcher(b))
+    r <- DecodingContext(k.prism.repCodec)
+  } yield k.prism.review(r)).decode(bits)
+
 
   override def toString = s"discriminated($by)"
 }
@@ -371,7 +366,7 @@ private[codecs] object DiscriminatorCodec {
    * == Encoding ==
    * When encoding a value of type `A`, this case applies if the `prism` returns a `Some` from
    * `prism.preview(value)`. Upon receiving a `Some`, the `condition` is used to generate a
-   * discrimination tag. There are two cases to consider -- when the `conditional` is a left
+   * discrimination tag. There are two cases to consider -- when the `conditional` is a Left
    * and a right. In the case of a left, the left value is used as the discrimination tag.
    * In the case of a right, the first element of the right tuple is used as the discrimination tag.
    *
@@ -390,13 +385,13 @@ private[codecs] object DiscriminatorCodec {
    * then converted to a value of type `A` via `prism.review`.
    */
   private[codecs] case class Case[A, B, R](
-    condition: B \/ (B, B => Boolean), // either a literal `B`, or a `B` predicate
+    condition: Either[B, (B, B => Boolean)], // either a literal `B`, or a `B` predicate
     prism: Prism[A, R]
   ) {
     // make sure that if condition is (x: X, f: X => Boolean), that
     // `f(x)` is true, otherwise this case will fail to match itself
     // on decoding!
-    condition.toOption.foreach { case (representative, matches) =>
+    condition.right.toOption.foreach { case (representative, matches) =>
       matches(representative) ||
       sys.error(s"representative failed predicate: $representative")
     }

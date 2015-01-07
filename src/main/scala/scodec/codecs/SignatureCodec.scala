@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.{\/, \/-, -\/}
-
 import java.security.{KeyPair, PrivateKey, PublicKey, Signature, SignatureException}
 import java.security.cert.Certificate
 
@@ -128,38 +126,38 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
     encodedSig <- signatureCodec.encode(sig)
   } yield encoded ++ encodedSig
 
-  private def sign(bits: BitVector): Err \/ BitVector = {
+  private def sign(bits: BitVector): Attempt[BitVector] = {
     try {
       val signature = signerFactory.newSigner
       signature.update(bits.toByteArray)
-      \/-(BitVector(signature.sign))
+      Attempt.successful(BitVector(signature.sign))
     } catch {
       case e: SignatureException =>
-        -\/(Err("Failed to sign: " + e.getMessage))
+        Attempt.failure(Err("Failed to sign: " + e.getMessage))
     }
   }
 
   override def decode(buffer: BitVector) = (for {
-    initialBits <- DecodingContext.monadState.get
-    value <- DecodingContext(codec.decode)
-    bitsAfterValueDecoding <- DecodingContext.monadState.get
+    initialBits <- DecodingContext.get
+    value <- DecodingContext(codec)
+    bitsAfterValueDecoding <- DecodingContext.get
     valueBits = initialBits take (initialBits.size - bitsAfterValueDecoding.size)
-    decodedSig <- DecodingContext(signatureCodec.decode)
-    _ <- DecodingContext liftE verify(valueBits.toByteVector, decodedSig.toByteVector)
-  } yield value).run(buffer)
+    decodedSig <- DecodingContext(signatureCodec)
+    _ <- DecodingContext liftAttempt verify(valueBits.toByteVector, decodedSig.toByteVector)
+  } yield value).decode(buffer)
 
-  private def verify(data: ByteVector, signatureBytes: ByteVector): Err \/ Unit = {
+  private def verify(data: ByteVector, signatureBytes: ByteVector): Attempt[Unit] = {
     val verifier = signerFactory.newVerifier
     verifier.update(data.toArray)
     try {
       if (verifier.verify(signatureBytes.toArray)) {
-        \/-(())
+        Attempt.successful(())
       } else {
-        -\/(Err("Signature verification failed"))
+        Attempt.failure(Err("Signature verification failed"))
       }
     } catch {
       case e: SignatureException =>
-        -\/(Err("Signature verification failed: " + e))
+        Attempt.failure(Err("Signature verification failed: " + e))
     }
   }
 

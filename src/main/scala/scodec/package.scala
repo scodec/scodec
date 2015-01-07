@@ -1,6 +1,5 @@
 import language.higherKinds
 
-import scalaz.{ \/, Monoid, StateT }
 import shapeless._
 import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot, Mapper}
 import poly._
@@ -30,64 +29,61 @@ import scodec.bits._
  *  - `Encoder` is a contravariant functor
  *  - `GenCodec` is a profunctor
  *  - `Codec` is an invariant functor
- *
- * Each type has the corresponding Scalaz typeclass defined in its companion object.
  */
 package object scodec {
 
-  /** Alias for state/either transformer that simplifies calling decode on a series of codecs, wiring the remaining bit vector of each in to the next entry. */
-  type DecodingContext[A] = StateT[({type λ[a] = Err \/ a})#λ, BitVector, A]
-
-  implicit val bitVectorMonoidInstance: Monoid[BitVector] = Monoid.instance(_ ++ _, BitVector.empty)
-
-  implicit val byteVectorMonoidInstance: Monoid[ByteVector] = Monoid.instance(_ ++ _, ByteVector.empty)
-
   /**
    * Provides method syntax for working with a type constructor that has a [[Transform]] typeclass instance.
+   *
+   * @param self Supports [[TransformSyntax]].
    */
-  implicit class TransformSyntax[F[_], A](val fa: F[A])(implicit t: Transform[F]) {
+  implicit class TransformSyntax[F[_], A](val self: F[A])(implicit t: Transform[F]) {
 
     /**
-     * Transforms using two functions, `A => Err \/ B` and `B => Err \/ A`.
+     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
      * @group combinators
      */
-    def exmap[B](f: A => Err \/ B, g: B => Err \/ A): F[B] = t.exmap(fa, f, g)
+    def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): F[B] = t.exmap(self, f, g)
 
     /**
      * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
      * @group combinators
      */
-    def xmap[B](f: A => B, g: B => A): F[B] = t.xmap(fa, f, g)
+    def xmap[B](f: A => B, g: B => A): F[B] = t.xmap(self, f, g)
 
     /**
-     * Transforms using two functions, `A => Err \/ B` and `B => A`.
+     * Transforms using two functions, `A => Attempt[B]` and `B => A`.
      *
      * The supplied functions form an injection from `B` to `A`. Hence, this method converts from
      * a larger to a smaller type. Hence, the name `narrow`.
      * @group combinators
      */
-    def narrow[B](f: A => Err \/ B, g: B => A): F[B] = t.narrow(fa, f, g)
+    def narrow[B](f: A => Attempt[B], g: B => A): F[B] = t.narrow(self, f, g)
 
     /**
-     * Transforms using two functions, `A => B` and `B => Err \/ A`.
+     * Transforms using two functions, `A => B` and `B => Attempt[A]`.
      *
      * The supplied functions form an injection from `A` to `B`. Hence, this method converts from
      * a smaller to a larger type. Hence, the name `widen`.
      * @group combinators
      */
-    def widen[B](f: A => B, g: B => Err \/ A): F[B] = t.widen(fa, f, g)
+    def widen[B](f: A => B, g: B => Attempt[A]): F[B] = t.widen(self, f, g)
 
     /**
      * Transforms using two functions, `A => B` and `B => Option[A]`.
      *
      * Particularly useful when combined with case class apply/unapply. E.g., `widenOpt(fa, Foo.apply, Foo.unapply)`.
+     *
+     * @group combinators
      */
-    def widenOpt[B](f: A => B, g: B => Option[A]): F[B] = t.widenOpt(fa, f, g)
+    def widenOpt[B](f: A => B, g: B => Option[A]): F[B] = t.widenOpt(self, f, g)
 
     /**
      * Transforms using two functions, `A => B` and `B => Option[A]`.
      *
      * Particularly useful when combined with case class apply/unapply. E.g., `pxmap(fa, Foo.apply, Foo.unapply)`.
+     *
+     * @group combinators
      */
     @deprecated("Use widenOpt instead", "1.7.0")
     def pxmap[B](f: A => B, g: B => Option[A]): F[B] = widenOpt(f, g)
@@ -102,7 +98,7 @@ package object scodec {
      *    the coproduct are the leaf subtypes of the sealed class.
      * @group combinators
      */
-    def as[B](implicit as: Transformer[A, B]): F[B] = as(fa)
+    def as[B](implicit as: Transformer[A, B]): F[B] = as(self)
   }
 
   /** Provides common operations on a `Codec[HList]`. */

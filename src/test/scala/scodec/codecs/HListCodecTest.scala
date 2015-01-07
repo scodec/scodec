@@ -50,7 +50,7 @@ class HListCodecTest extends CodecSuite {
     "support HList equivalent of Codec#dropLeft" in {
       val codec = (uint8.unit(0) :~>: uint8.hlist).as[Bar]
       roundtrip(codec, Bar(1))
-      codec.encodeValid(Bar(1)) should have size(16)
+      codec.encode(Bar(1)).require should have size(16)
     }
 
     "support HList equivalent of Codec#dropLeft on a non-HList codec" in {
@@ -78,10 +78,10 @@ class HListCodecTest extends CodecSuite {
 
       val value = 1 :: 2L :: true :: 3 :: HNil
 
-      val bits = codec.encodeValid(value)
+      val bits = codec.encode(value).require
       bits shouldBe hex"0200000004ff06".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require.value
       decoded shouldBe value
     }
 
@@ -100,10 +100,10 @@ class HListCodecTest extends CodecSuite {
 
       val value = 1
 
-      val bits = codec.encodeValid(value)
+      val bits = codec.encode(value).require
       bits shouldBe hex"02".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require.value
       decoded shouldBe value
     }
 
@@ -117,10 +117,10 @@ class HListCodecTest extends CodecSuite {
 
       val value = -1 :: -2L :: true :: -3 :: HNil
 
-      val bits = codec.encodeValid(value)
+      val bits = codec.encode(value).require
       bits shouldBe hex"0100000002ff03".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require.value
       decoded shouldBe value
     }
 
@@ -133,10 +133,10 @@ class HListCodecTest extends CodecSuite {
 
       val value = 1.0d
 
-      val bits = codec.encodeValid(value)
+      val bits = codec.encode(value).require
       bits shouldBe hex"01".bits
 
-      val decoded = codec.compact.decodeValidValue(bits)
+      val decoded = codec.compact.decode(bits).require.value
       decoded shouldBe value
     }
   }

@@ -1,10 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/
-import scalaz.syntax.std.either._
-import scalaz.syntax.std.option._
-
 import java.nio.{ ByteBuffer, ByteOrder }
 
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
@@ -20,18 +16,18 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
 
   override def encode(b: Byte) = {
     if (b > MaxValue) {
-      \/.left(Err(s"$b is greater than maximum value $MaxValue for $description"))
+      Attempt.failure(Err(s"$b is greater than maximum value $MaxValue for $description"))
     } else if (b < MinValue) {
-      \/.left(Err(s"$b is less than minimum value $MinValue for $description"))
+      Attempt.failure(Err(s"$b is less than minimum value $MinValue for $description"))
     } else {
-      \/.right(BitVector.fromByte(b, bits))
+      Attempt.successful(BitVector.fromByte(b, bits))
     }
   }
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e) => \/.left(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => \/.right((buffer.drop(bits), b.toByte(signed)))
+      case Left(e) => Attempt.failure(Err.insufficientBits(bits, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(b.toByte(signed), buffer.drop(bits)))
     }
 
   override def toString = description

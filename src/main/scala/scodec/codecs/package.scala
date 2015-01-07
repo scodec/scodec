@@ -6,8 +6,6 @@ import java.nio.charset.Charset
 import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 
-import scalaz.{ \/, -\/, \/- }
-import scalaz.syntax.std.option._
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
 
 import shapeless.HList
@@ -666,7 +664,7 @@ package object codecs {
     variableSizeBytesLong(widenIntToLong(size), value, sizePadding)
 
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
-    c.widen(i => i, l => if (l > Int.MaxValue && l < Int.MinValue) \/.left(Err(s"$l cannot be converted to an integer")) else \/.right(l.toInt))
+    c.widen(i => i, l => if (l > Int.MaxValue && l < Int.MinValue) Attempt.failure(Err(s"$l cannot be converted to an integer")) else Attempt.successful(l.toInt))
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
@@ -729,7 +727,7 @@ package object codecs {
    */
   def optional[A](guard: Codec[Boolean], target: Codec[A]): Codec[Option[A]] =
     either(guard, provide(()), target).
-      xmap[Option[A]](_.toOption, _.toRightDisjunction(())).
+      xmap[Option[A]](_.right.toOption, _.toRight(())).
       withToString(s"optional($guard, $target)")
 
   /**
@@ -879,7 +877,7 @@ package object codecs {
     }
 
   /**
-   * Disjunction codec that supports vectors of form `indicator ++ (left or right)` where a
+   * Either codec that supports vectors of form `indicator ++ (left or right)` where a
    * value of `false` for the indicator indicates it is followed by a left value and a value
    * of `true` indicates it is followed by a right value.
    * @param indicator codec that encodes/decodes false for left and true for right
@@ -887,19 +885,7 @@ package object codecs {
    * @param right codec the encodes a right value
    * @group combinators
    */
-  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[L \/ R] =
-    discriminated[L \/ R].by(indicator)
-    .| (false) { case -\/(l) => l } (\/.left) (left)
-    .| (true)  { case \/-(r) => r } (\/.right) (right)
-
-  /**
-   * Like [[either]], but encodes the standard library `Either` type.
-   * @param indicator codec that encodes/decodes false for left and true for right
-   * @param left codec the encodes a left value
-   * @param right codec the encodes a right value
-   * @group combinators
-   */
-  def stdEither[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[Either[L,R]] =
+  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[Either[L,R]] =
     discriminated[Either[L,R]].by(indicator)
     .| (false) { case Left(l)  => l } (Left.apply) (left)
     .| (true)  { case Right(r) => r } (Right.apply) (right)

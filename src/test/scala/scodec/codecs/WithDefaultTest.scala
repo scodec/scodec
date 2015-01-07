@@ -1,7 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.\/-
 import scodec.bits.BitVector
 import scodec.codecs._
 
@@ -29,7 +28,7 @@ class WithDefaultTest extends CodecSuite {
     "return the default value when the opt codec returns none" in {
       forAll { (n: Int) =>
         val codec = withDefaultValue(conditional(false, int8), n)
-        val \/-((rest, b)) = codec.decode(BitVector fromInt n)
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector fromInt n)
         rest shouldBe (BitVector fromInt n)
         b shouldBe n
       }

@@ -3,9 +3,6 @@ package scodec
 import scala.collection.GenTraversable
 import scala.concurrent.duration._
 
-import scalaz.{-\/, \/-}
-import scalaz.syntax.either._
-
 import shapeless.Lazy
 
 import org.scalacheck.Gen
@@ -20,12 +17,12 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
     roundtrip(c.value, a)
   }
 
-  protected def roundtrip[A](codec: Codec[A], a: A) {
-    val encoded = codec.encode(a)
-    encoded should be ('right)
-    val \/-((remainder, decoded)) = codec.decode(encoded.toOption.get)
+  protected def roundtrip[A](codec: Codec[A], value: A) {
+    val encoded = codec.encode(value)
+    encoded shouldBe 'successful
+    val Attempt.Successful(DecodeResult(decoded, remainder)) = codec.decode(encoded.require)
     remainder shouldEqual BitVector.empty
-    decoded shouldEqual a
+    decoded shouldEqual value
   }
 
   protected def roundtripAll[A](codec: Codec[A], as: GenTraversable[A]) {
@@ -34,13 +31,11 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
 
   protected def encodeError[A](codec: Codec[A], a: A, err: Err) {
     val encoded = codec.encode(a)
-    encoded should be ('left)
-    val -\/(error) = encoded
-    error shouldBe err
+    encoded shouldBe Attempt.Failure(err)
   }
 
   protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A): Unit = {
-    val \/-((rest, actual)) = codec decode buf
+    val Attempt.Successful(DecodeResult(actual, rest)) = codec decode buf
     rest shouldBe BitVector.empty
     actual shouldBe expected
   }

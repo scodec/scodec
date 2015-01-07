@@ -1,9 +1,6 @@
 package scodec
 package codecs
 
-import scalaz.{\/, \/-, -\/}
-import scalaz.syntax.monad._
-
 import java.security.Key
 import java.security.spec.AlgorithmParameterSpec
 import javax.crypto.{Cipher, IllegalBlockSizeException, BadPaddingException}
@@ -78,29 +75,29 @@ object CipherFactory {
 private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) extends Codec[A] {
 
   override def encode(a: A) =
-    codec.encode(a) >>= encrypt
+    codec.encode(a) flatMap { b => encrypt(b) }
 
-  private def encrypt(bits: BitVector): Err \/ BitVector = {
+  private def encrypt(bits: BitVector) = {
     val blocks = bits.toByteArray
     try {
       val encrypted = cipherFactory.newEncryptCipher.doFinal(blocks)
-      \/-(BitVector(encrypted))
+      Attempt.successful(BitVector(encrypted))
     } catch {
-      case e: IllegalBlockSizeException => -\/(Err(s"Failed to encrypt: invalid block size ${blocks.size}"))
+      case e: IllegalBlockSizeException => Attempt.failure(Err(s"Failed to encrypt: invalid block size ${blocks.size}"))
     }
   }
 
   override def decode(buffer: BitVector) =
-    (decrypt(buffer) >>= codec.decode) map { case (remaining, a) => (BitVector.empty, a) }
+    decrypt(buffer) flatMap { result => codec.decode(result) map { _ mapRemainder { _ => BitVector.empty } } }
 
-  private def decrypt(buffer: BitVector): Err \/ BitVector = {
+  private def decrypt(buffer: BitVector): Attempt[BitVector] = {
     val blocks = buffer.toByteArray
     try {
       val decrypted = cipherFactory.newDecryptCipher.doFinal(blocks)
-      \/-(BitVector(decrypted))
+      Attempt.successful(BitVector(decrypted))
     } catch {
       case e @ (_: IllegalBlockSizeException | _: BadPaddingException) =>
-        -\/(Err("Failed to decrypt: " + e.getMessage))
+        Attempt.failure(Err("Failed to decrypt: " + e.getMessage))
     }
   }
 
