@@ -63,6 +63,6 @@ object DecodingContext {
 
   /** Lifts a value of `Attempt[A]` in to a decoding context. */
   def liftAttempt[A](res: Attempt[A]): DecodingContext[A] =
-    fromFunction { bv => res.fold(a => Attempt.successful(DecodeResult(a, bv)), err => Attempt.failure(err)) }
+    fromFunction { bv => res.fold(err => Attempt.failure(err), a => Attempt.successful(DecodeResult(a, bv))) }
 }
 

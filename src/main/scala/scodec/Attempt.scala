@@ -25,7 +25,7 @@ sealed abstract class Attempt[+A] {
   def flatMap[B](f: A => Attempt[B]): Attempt[B]
 
   /** Transforms this attempt to a value of type `B` using the supplied functions. */
-  def fold[B](ifSuccessful: A => B, ifFailure: Err => B): B
+  def fold[B](ifFailure: Err => B, ifSuccessful: A => B): B
 
   /** Returns the successful value if present; otherwise throws an `IllegalArgumentException`. */
   def require: A
@@ -69,7 +69,7 @@ object Attempt {
     def map[B](f: A => B): Attempt[B] = Successful(f(value))
     def mapErr(f: Err => Err): Attempt[A] = this
     def flatMap[B](f: A => Attempt[B]): Attempt[B] = f(value)
-    def fold[B](ifSuccessful: A => B, ifFailure: Err => B): B = ifSuccessful(value)
+    def fold[B](ifFailure: Err => B, ifSuccessful: A => B): B = ifSuccessful(value)
     def require: A = value
     def isSuccessful: Boolean = true
     def toOption: Some[A] = Some(value)
@@ -81,7 +81,7 @@ object Attempt {
     def map[B](f: Nothing => B): Attempt[B] = this
     def mapErr(f: Err => Err): Attempt[Nothing] = Failure(f(cause))
     def flatMap[B](f: Nothing => Attempt[B]): Attempt[B] = this
-    def fold[B](ifSuccessful: Nothing => B, ifFailure: Err => B): B = ifFailure(cause)
+    def fold[B](ifFailure: Err => B, ifSuccessful: Nothing => B): B = ifFailure(cause)
     def require: Nothing = throw new IllegalArgumentException(cause.messageWithContext)
     def isSuccessful: Boolean = false
     def toOption: None.type = None
