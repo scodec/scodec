@@ -348,7 +348,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
 private[codecs] object DiscriminatorCodec {
 
   /** Provides an injection between `A` and `R` and a `Codec[R]`. */
-  private[codecs] case class Prism[A, R](
+  private[codecs] final case class Prism[A, R](
     preview: A => Option[R],
     review: R => A,
     repCodec: Codec[R]
@@ -384,7 +384,7 @@ private[codecs] object DiscriminatorCodec {
    * If this case applies, then the `prism.repCodec` is used used to decode a value of some type `R`, which is
    * then converted to a value of type `A` via `prism.review`.
    */
-  private[codecs] case class Case[A, B, R](
+  private[codecs] final case class Case[A, B, R](
     condition: Either[B, (B, B => Boolean)], // either a literal `B`, or a `B` predicate
     prism: Prism[A, R]
   ) {

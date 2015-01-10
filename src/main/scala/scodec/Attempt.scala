@@ -88,7 +88,7 @@ object Attempt {
     e.fold(failure, successful)
 
   /** Successful attempt. */
-  case class Successful[A](value: A) extends Attempt[A] {
+  final case class Successful[A](value: A) extends Attempt[A] {
     def map[B](f: A => B): Attempt[B] = Successful(f(value))
     def mapErr(f: Err => Err): Attempt[A] = this
     def flatMap[B](f: A => Attempt[B]): Attempt[B] = f(value)
@@ -105,7 +105,7 @@ object Attempt {
   }
 
   /** Failed attempt. */
-  case class Failure(cause: Err) extends Attempt[Nothing] {
+  final case class Failure(cause: Err) extends Attempt[Nothing] {
     def map[B](f: Nothing => B): Attempt[B] = this
     def mapErr(f: Err => Err): Attempt[Nothing] = Failure(f(cause))
     def flatMap[B](f: Nothing => Attempt[B]): Attempt[B] = this

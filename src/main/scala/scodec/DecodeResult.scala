@@ -11,7 +11,7 @@ import scodec.bits.BitVector
  * @groupname combinators Basic Combinators
  * @groupprio combinators 0
  */
-case class DecodeResult[+A](value: A, remainder: BitVector) {
+final case class DecodeResult[+A](value: A, remainder: BitVector) {
 
   /** Maps the supplied function over the decoded value. */
   def mapValue[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)

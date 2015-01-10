@@ -13,7 +13,7 @@ package codecs
  * @tparam Y type that is differentiated from other types by values of `D`
  * @tparam D value type that discriminates values of `Y` from other types in context of `X`
  */
-case class Discriminator[X, Y, D](value: D)
+final case class Discriminator[X, Y, D](value: D)
 
 /**
  * Wrapper class that indicates subtypes of `X` are discriminated by type `D`
@@ -28,4 +28,4 @@ case class Discriminator[X, Y, D](value: D)
  * @tparam D value type that discriminates `Y` in context of `X` from other types
  *           using discriminators of `D` for some type `Y`
  */
-case class Discriminated[X, D](codec: Codec[D])
+final case class Discriminated[X, D](codec: Codec[D])
