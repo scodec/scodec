@@ -204,7 +204,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def encode(b: B) = self.encode(g(b))
-    def decode(buffer: BitVector) = self.decode(buffer).map { _ mapValue f }
+    def decode(buffer: BitVector) = self.decode(buffer).map { _ map f }
   }
 
   /**

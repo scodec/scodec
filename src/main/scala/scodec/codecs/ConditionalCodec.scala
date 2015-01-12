@@ -14,7 +14,7 @@ private[codecs] final class ConditionalCodec[A](included: Boolean, codec: Codec[
 
   override def decode(buffer: BitVector) = {
     if (included)
-      codec.decode(buffer).map { _ mapValue { result => Some(result) } }
+      codec.decode(buffer).map { _ map { result => Some(result) } }
     else
       Attempt.successful(DecodeResult(None, buffer))
   }

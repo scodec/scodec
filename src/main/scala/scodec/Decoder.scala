@@ -34,7 +34,7 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
-    def decode(bits: BitVector) = self.decode(bits) map { _ mapValue f }
+    def decode(bits: BitVector) = self.decode(bits) map { _ map f }
   }
 
   /**
@@ -110,7 +110,7 @@ trait DecoderFunctions {
   final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): Attempt[DecodeResult[C]] = {
     // Note: this could be written using DecodingContext but this function is called *a lot* and needs to be very fast
     decA.decode(buffer) flatMap { aResult =>
-      decB.decode(aResult.remainder) map { bResult => bResult mapValue { b => f(aResult.value, b) } }
+      decB.decode(aResult.remainder) map { bResult => bResult map { b => f(aResult.value, b) } }
     }
   }
 

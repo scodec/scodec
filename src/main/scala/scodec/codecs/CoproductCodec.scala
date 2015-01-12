@@ -103,7 +103,7 @@ object ToCoproductCodecs {
           case Inr(ct) => Attempt.failure(Err(s"cannot encode $ct"))
         }
         def decode(buffer: BitVector) =
-          codec.decode(buffer).map { _ mapValue { a => Coproduct[A :+: CT](a) } }
+          codec.decode(buffer).map { _ map { a => Coproduct[A :+: CT](a) } }
         override def toString = codec.toString
       }
 
@@ -114,7 +114,7 @@ object ToCoproductCodecs {
             case Inl(ch) => Attempt.failure(Err(s"cannot encode $c"))
           }
           def decode(buffer: BitVector) =
-            d.decode(buffer).map { _ mapValue { a => Inr(a): A :+: CT } }
+            d.decode(buffer).map { _ map { a => Inr(a): A :+: CT } }
           override def toString = d.toString
         }
       }

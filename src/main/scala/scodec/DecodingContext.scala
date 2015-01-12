@@ -15,7 +15,7 @@ sealed abstract class DecodingContext[A] { self =>
 
   /** Transforms the decoded value using the supplied function. */
   final def map[B](f: A => B): DecodingContext[B] = new DecodingContext[B] {
-    def decode(buffer: BitVector) = self.decode(buffer).map { _ mapValue f }
+    def decode(buffer: BitVector) = self.decode(buffer).map { _ map f }
   }
 
   /** Transforms the decoding error using the supplied function. */

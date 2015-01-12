@@ -14,7 +14,7 @@ import scodec.bits.BitVector
 final case class DecodeResult[+A](value: A, remainder: BitVector) {
 
   /** Maps the supplied function over the decoded value. */
-  def mapValue[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
 
   /** Maps the supplied function over the remainder. */
   def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
