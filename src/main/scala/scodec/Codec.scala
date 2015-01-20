@@ -438,7 +438,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    *
    * @group ctor
    */
-  def apply[A](implicit c: Codec[A]): Codec[A] = c
+  def apply[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
 
   /**
    * Encodes the specified value to a bit vector using an implicitly available codec.

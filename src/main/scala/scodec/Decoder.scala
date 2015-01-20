@@ -197,7 +197,7 @@ object Decoder extends DecoderFunctions {
    * Provides syntax for summoning a `Decoder[A]` from implicit scope.
    * @group ctor
    */
-  def apply[A](implicit dec: Decoder[A]): Decoder[A] = dec
+  def apply[A](implicit dec: Lazy[Decoder[A]]): Decoder[A] = dec.value
 
   /**
    * Creates a decoder from the specified function.
