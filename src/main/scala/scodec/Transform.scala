@@ -3,6 +3,7 @@ package scodec
 import language.higherKinds
 
 import shapeless._
+import shapeless.ops.coproduct.Align
 
 /** Typeclass that describes type constructors that support the `exmap` operation. */
 abstract class Transform[F[_]] { self =>
@@ -88,8 +89,8 @@ sealed abstract class TransformerLowPriority {
     gen: Generic.Aux[B, Repr],
     aToAligned: A =:= AlignedRepr,
     alignedToA: AlignedRepr =:= A,
-    toAligned: CoproductOps.Align[Repr, AlignedRepr],
-    fromAligned: CoproductOps.Align[AlignedRepr, Repr]
+    toAligned: Align[Repr, AlignedRepr],
+    fromAligned: Align[AlignedRepr, Repr]
   ): Transformer[A, B] = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] =
       fa.xmap(a => gen.from(fromAligned(aToAligned(a))), b => alignedToA(toAligned(gen.to(b))))
