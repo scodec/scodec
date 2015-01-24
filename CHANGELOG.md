@@ -1,11 +1,44 @@
 1.7.0
 =====
- - Upgraded to Shapeless 2.1
- - Removed `ImplicitCodec` and `DerivedCodec` in favor of `shapeless.Lazy[Codec[A]]`.
-   Similarly, `Codec.derive` and `Codec.nonDerived` were removed in favor of `Codec.apply`.
-   This new solution provides the benefits of automatically derived codecs without risk
-   of diverging implicit expansion. If authoring combinators that require implicit codecs,
-   use `Lazy[Codec[A]]` instead of `Codec[A]` or `ImplicitCodec[A]`.
+ - Group id (ivy organization) changed from `org.typelevel` to `org.scodec`.
+ - Upgraded to Shapeless 2.1 and removed the dependency on Scalaz. Users must use Shapeless 2.1.x,
+   as the 2.1 series is not binary compatible with the 2.0 series.
+ - As a result of the Shapeless 2.1 upgrade, Scala 2.10 users are required to use the Macro Paradise compiler
+   plugin. Scala 2.11 users do not need Macro Paradise. For cross builds, the following SBT setting will add
+   the plugin to only your 2.10 build:
+
+```scala
+   // Shapeless 2.1.0 on Scala 2.10 requires macro paradise
+   libraryDependencies ++= {
+     if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
+   }
+```
+
+ - Derived codecs now work for arbitrarily complex structures. In previous versions, deriving
+   codecs for some complex types would result in implicit divergence, requiring, for instance,
+   users to manually define implicit codecs for each component type before deriving a product
+   codec. These limitations have been removed.
+ - Related to the fixes for derivation of complex structures, the `ImplicitCodec` and `DerivedCodec`
+   types have been removed in favor of `shapeless.Lazy[Codec[A]]`. If authoring combinators that
+   require implicit codecs, use `Lazy[Codec[A]]` instead of `Codec[A]` or `ImplicitCodec[A]`.
+   The same advice holds for implicit encoders and decoders -- use `Lazy[Encoder[A]]` and `Lazy[Decoder[A]]`.
+ - All uses of `scalaz.\/` were replaced with `scodec.Attempt`, which is isomorphic to
+   `Err \/ ?`. See the ScalaDoc for `Attempt` for combinators. Some specific notes:
+   - The return type of `encode` has changed from `Err \/ BitVector` to `Attempt[BitVector]`.
+   - The return type of `decode` has changed from `Err \/ (BitVector, A)` to `Attempt[DecodeResult[A]]`.
+     `DecodeResult` is a case class that contains both the `A` value as well as the remainder `BitVector`.
+     It contains two useful methods, `map` and `mapRemainder`, which makes it nicer to work with than `Tuple2`.
+   - Replace `codec.encodeValid(a)` with `codec.encode(a).require`
+   - Replace `codec.decodeValid(a)` with `codec.decode(a).require`
+   - Replace `codec.decodeValidValue(a)` with `codec.decode(a).require.value`
+  - Scalaz type class instances moved to the `scodec.interop.scalaz` package, in the
+    [scodec-scalaz](http://github.com/scodec/scodec-scalaz) library. This library contains additional
+    conveniences for Scalaz users, like syntax for converting between `Attempt[A]` and `Err \/ A`.
+    In general, you should import `scodec.interop.scalaz._`.
+  - Another new interop library is available as of scodec-core 1.7 -- [scodec-spire](http://github.com/scodec/scodec-spire),
+    which provides codecs for unsigned numeric types.
+  - `scodec.DecodingContext` is *significantly* faster. If you previously avoided using it due to performance overhead,
+    retest the new implementation.
 
 1.6.0
 =====

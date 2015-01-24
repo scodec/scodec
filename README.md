@@ -1,6 +1,8 @@
 scodec
 ======
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scodec/scodec?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Scala combinator library for working with binary data.
 
 Design Constraints
