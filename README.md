@@ -114,4 +114,4 @@ codecs for [MessagePack](http://msgpack.org/).
 Getting Binaries
 ----------------
 
-See the [releases page on the wiki](https://github.com/scodec/scodec/wiki/Releases).
+See the [releases page on the website](https://scodec.org/releases/).
