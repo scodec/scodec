@@ -1,7 +1,7 @@
 import language.higherKinds
 
 import shapeless._
-import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot, Mapper}
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, Mapper}
 import poly._
 import scodec.bits._
 
@@ -124,7 +124,7 @@ package object scodec {
      * Creates a new codec with all unit values filtered out.
      * @group hlist
      */
-    def dropUnits[M <: HList](implicit fltr: FilterNot.Aux[L, Unit, M], ru: HListOps.ReUnit[M, L]): Codec[M] =
+    def dropUnits[M <: HList](implicit du: codecs.DropUnits[L, M]): Codec[M] =
       HListCodec.dropUnits[L, M](self)
 
     /**

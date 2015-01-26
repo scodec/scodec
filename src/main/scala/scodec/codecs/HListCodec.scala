@@ -2,11 +2,10 @@ package scodec
 package codecs
 
 import shapeless._
-import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, FilterNot}
+import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split}
 import UnaryTCConstraint._
 
 import scodec.bits.BitVector
-import scodec.HListOps._
 
 private[scodec] object HListCodec {
 
@@ -94,8 +93,8 @@ private[scodec] object HListCodec {
     l.foldRight(hnilCodec)(PrependCodec)
   }
 
-  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit filterNonUnits: FilterNot.Aux[K, Unit, L], ru: ReUnit[L, K]) =
-    codec.xmap[L](k => filterNonUnits(k), _.reUnit[K])
+  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit du: DropUnits[K, L]) =
+    codec.xmap[L](du.removeUnits, du.addUnits)
 }
 
 /**
