@@ -39,6 +39,8 @@
     which provides codecs for unsigned numeric types.
   - `scodec.DecodingContext` is *significantly* faster. If you previously avoided using it due to performance overhead,
     retest the new implementation.
+  - Dramatically improved compile time of `dropUnits`
+  - Introduced new `codec.flattenLeftPairs` combinator, which converts a `Codec[(((A, B), C, ...)]` to a `Codec[A :: B :: C :: ... :: HNil]`
 
 1.6.0
 =====
