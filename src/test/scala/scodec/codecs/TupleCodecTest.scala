@@ -71,5 +71,20 @@ class TupleCodecTest extends CodecSuite {
       val add8 = (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int)
       (uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8).decode(bytes).map(_ map add8).require.value shouldBe 8
     }
+
+    "round trip a tuple codecs generated with ~~" in {
+      val codec12 = uint4 ~~ int64 ~~ bool ~~ double ~~ uint4 ~~ int64 ~~ bool ~~ double ~~ uint4 ~~ int64 ~~ bool ~~ double
+
+      roundtrip(codec12, (1,2L,true,4D,5,6L,false,8D,9,10L,true,12d))
+    }
+
+    "alllow convenient encoding/decoding of case classes using codecs generated with ~~" in {
+      case class Color(r: Byte, g: Byte, b: Byte)
+      case class Point(x: Float, y: Float, z: Float, color: Color)
+      val color: Codec[Color] = (byte ~~ byte ~~ byte).widenOpt(Color.apply, Color.unapply)
+      val point: Codec[Point] = (float ~~ float ~~ float ~~ color).widenOpt(Point.apply, Point.unapply)
+
+      roundtrip(point, Point(1F,2F,3F,Color(0x4,0x5,0x6)))
+    }
   }
 }

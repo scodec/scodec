@@ -301,4 +301,8 @@ package object scodec {
      */
     def selectDecoder[A](implicit sel: ops.coproduct.Selector[C, A]): Decoder[Option[A]] = self.map { c => c.select[A] }
   }
+
+  final implicit class Tuple2CodecSupport[A](val self: Codec[A]) extends AnyVal {
+    def ~~[B](B: Codec[B]): codecs.TupleCodec[A,B] = new codecs.TupleCodec[A,B](self, B)
+  }
 }
