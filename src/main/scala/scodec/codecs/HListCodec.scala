@@ -93,7 +93,7 @@ private[scodec] object HListCodec {
     l.foldRight(hnilCodec)(PrependCodec)
   }
 
-  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit du: DropUnits[K, L]) =
+  def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit du: DropUnits.Aux[K, L]) =
     codec.xmap[L](du.removeUnits, du.addUnits)
 }
 
