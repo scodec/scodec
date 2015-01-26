@@ -5,7 +5,8 @@ import scala.concurrent.duration._
 
 import shapeless.Lazy
 
-import org.scalacheck.Gen
+import org.scalacheck.{ Gen, Arbitrary }
+import Arbitrary.arbitrary
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
@@ -52,4 +53,6 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
 
   protected def definedSamples[A](gen: Gen[A]): Stream[A] =
     samples(gen).flatMap { x => x }
+
+  implicit def arbBitVector: Arbitrary[BitVector] = Arbitrary(arbitrary[Array[Byte]].map(BitVector.apply))
 }

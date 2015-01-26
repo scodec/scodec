@@ -2,6 +2,7 @@ package scodec
 package codecs
 
 import scodec.bits.{ BitVector, ByteVector }
+import shapeless._
 
 class TupleCodecTest extends CodecSuite {
 
@@ -18,6 +19,21 @@ class TupleCodecTest extends CodecSuite {
       roundtripAll(uint16 ~ uint16, Seq((0, 0), (0, 1), (65535, 42)))
       roundtripAll(uint16 ~ uint16 ~ uint32, Seq(((0, 0), 1L << 32 - 1), ((0, 1), 20L), ((65535, 42), 5L)))
       roundtripAll(uint(2) ~ uint4 ~ uint(2), Seq(((0, 15), 0)))
+    }
+
+    "allow conversion to an hlist" in {
+      val fromTuple = (uint8 ~ bool ~ uint8).flattenLeftPairs
+      val hlist = (uint8 :: bool :: uint8)
+
+      forAll { (a: Int, b: Boolean, c: Int) =>
+        fromTuple.encode(a :: b :: c :: HNil) shouldBe hlist.encode(a :: b :: c :: HNil)
+      }
+
+      forAll { (bv: BitVector) =>
+        fromTuple.decode(bv) shouldBe hlist.decode(bv)
+      }
+
+      (int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8).flattenLeftPairs
     }
 
     "allow extraction via ~ operator" in {

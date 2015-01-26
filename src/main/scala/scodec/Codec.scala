@@ -282,6 +282,17 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final def <~[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] = dropRight(codecB)
 
   /**
+   * Converts this codec to an `HList` based codec by flattening all left nested pairs.
+   * For example, `flattenLeftPairs` on a `Codec[(((A, B), C), D)]` results in a
+   * `Codec[A :: B :: C :: D :: HNil]`. This is particularly useful when combined
+   * with `~`, `~>`, and `<~`.
+   *
+   * @group tuple
+   */
+  final def flattenLeftPairs(implicit f: codecs.FlattenLeftPairs[A]): Codec[f.Out] =
+    xmap(a => f.flatten(a), l => f.unflatten(l))
+
+  /**
    * Converts this to a `Codec[Unit]` that encodes using the specified zero value and
    * decodes a unit value when this codec decodes an `A` successfully.
    *
