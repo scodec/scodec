@@ -124,7 +124,7 @@ package object scodec {
      * Creates a new codec with all unit values filtered out.
      * @group hlist
      */
-    def dropUnits[M <: HList](implicit du: codecs.DropUnits[L, M]): Codec[M] =
+    def dropUnits[M <: HList](implicit du: codecs.DropUnits.Aux[L, M]): Codec[M] =
       HListCodec.dropUnits[L, M](self)
 
     /**
