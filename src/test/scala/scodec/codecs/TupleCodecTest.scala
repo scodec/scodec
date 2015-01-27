@@ -81,8 +81,8 @@ class TupleCodecTest extends CodecSuite {
     "alllow convenient encoding/decoding of case classes using codecs generated with ~~" in {
       case class Color(r: Byte, g: Byte, b: Byte)
       case class Point(x: Float, y: Float, z: Float, color: Color)
-      val color: Codec[Color] = (byte ~~ byte ~~ byte).widenOpt(Color.apply, Color.unapply)
-      val point: Codec[Point] = (float ~~ float ~~ float ~~ color).widenOpt(Point.apply, Point.unapply)
+      val color: Codec[Color] = (byte ~~ byte ~~ byte).widenAs(Color.apply, Color.unapply)
+      val point: Codec[Point] = (float ~~ float ~~ float ~~ color).widenAs(Point.apply, Point.unapply)
 
       roundtrip(point, Point(1F,2F,3F,Color(0x4,0x5,0x6)))
     }

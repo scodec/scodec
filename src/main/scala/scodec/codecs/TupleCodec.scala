@@ -3,7 +3,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class TupleCodec[A, B](A: Codec[A], B: Codec[B]) extends Codec[(A, B)] {
+final class TupleCodec[A, B](A: Codec[A], B: Codec[B]) extends Codec[(A, B)] {
 
   override def encode(t: (A, B)) =
     Codec.encodeBoth(A, B)(t._1, t._2)
@@ -13,12 +13,15 @@ private[scodec] final class TupleCodec[A, B](A: Codec[A], B: Codec[B]) extends C
 
   def ~~[C](C: Codec[C]): Tuple3Codec[A,B,C] = new Tuple3Codec(A,B,C)
 
+  def widenAs[X](to: (A,B) => X, from: X => Option[(A,B)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
+
   override def toString = s"($A, $B)"
 }
 
-private[scodec] class Tuple3Codec[A,B,C](A: Codec[A],
-                                         B: Codec[B],
-                                         C: Codec[C]) extends Codec[(A,B,C)] {
+class Tuple3Codec[A,B,C](A: Codec[A],
+                         B: Codec[B],
+                         C: Codec[C]) extends Codec[(A,B,C)] {
   def ~~[D](D: Codec[D]) = new Tuple4Codec(A,B,C,D)
 
   override def decode(bits: BitVector) = {
@@ -36,19 +39,19 @@ private[scodec] class Tuple3Codec[A,B,C](A: Codec[A],
       bits3 <- C.encode(abc._3)
     } yield bits ++ bits2 ++ bits3
 
-  def widenOpt[X](to: (A,B,C) => X, from: X => Option[(A,B,C)]): Codec[X] = 
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C) => X, from: X => Option[(A,B,C)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C)"
 }
 
-private[scodec] class Tuple4Codec[A,B,C,D](A: Codec[A],
-                                           B: Codec[B],
-                                           C: Codec[C],
-                                           D: Codec[D]) extends Codec[(A,B,C,D)] {
+class Tuple4Codec[A,B,C,D](A: Codec[A],
+                           B: Codec[B],
+                           C: Codec[C],
+                           D: Codec[D]) extends Codec[(A,B,C,D)] {
   def ~~[E](E: Codec[E]) = new Tuple5Codec(A,B,C,D,E)
 
-  override def decode(bits: BitVector) = 
+  override def decode(bits: BitVector) =
     for {
       a <- A.decode(bits)
       b <- B.decode(a.remainder)
@@ -65,20 +68,19 @@ private[scodec] class Tuple4Codec[A,B,C,D](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4
 
 
-  def widenOpt[X](to: (A,B,C,D) => X, from: X => Option[(A,B,C,D)]): Codec[X] = 
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D) => X, from: X => Option[(A,B,C,D)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
-  override def toString = s"($A, $B, $C, $D)"
 }
 
-private[scodec] class Tuple5Codec[A,B,C,D,E](A: Codec[A],
-                                             B: Codec[B],
-                                             C: Codec[C],
-                                             D: Codec[D],
-                                             E: Codec[E]) extends Codec[(A,B,C,D,E)] {
+class Tuple5Codec[A,B,C,D,E](A: Codec[A],
+                             B: Codec[B],
+                             C: Codec[C],
+                             D: Codec[D],
+                             E: Codec[E]) extends Codec[(A,B,C,D,E)] {
   def ~~[F](F: Codec[F]) = new Tuple6Codec(A,B,C,D,E,F)
 
-  override def decode(bits: BitVector) = 
+  override def decode(bits: BitVector) =
     for {
       a <- A.decode(bits)
       b <- B.decode(a.remainder)
@@ -96,21 +98,21 @@ private[scodec] class Tuple5Codec[A,B,C,D,E](A: Codec[A],
       bits5 <- E.encode(abcde._5)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5
 
-  def widenOpt[X](to: (A,B,C,D,E) => X, from: X => Option[(A,B,C,D,E)]): Codec[X] = 
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E) => X, from: X => Option[(A,B,C,D,E)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E)"
 }
 
-private[scodec] class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
-                                               B: Codec[B],
-                                               C: Codec[C],
-                                               D: Codec[D],
-                                               E: Codec[E],
-                                               F: Codec[F]) extends Codec[(A,B,C,D,E,F)] {
+class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
+                               B: Codec[B],
+                               C: Codec[C],
+                               D: Codec[D],
+                               E: Codec[E],
+                               F: Codec[F]) extends Codec[(A,B,C,D,E,F)] {
   def ~~[G](G: Codec[G]) = new Tuple7Codec(A,B,C,D,E,F,G)
 
-  override def decode(bits: BitVector) = 
+  override def decode(bits: BitVector) =
     for {
       a <- A.decode(bits)
       b <- B.decode(a.remainder)
@@ -120,7 +122,7 @@ private[scodec] class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
       f <- F.decode(e.remainder)
     } yield DecodeResult((a.value,b.value,c.value,d.value,e.value,f.value),f.remainder)
 
-  override def encode(abcdef: (A,B,C,D,E,F)) = 
+  override def encode(abcdef: (A,B,C,D,E,F)) =
     for {
       bits <- A.encode(abcdef._1)
       bits2 <- B.encode(abcdef._2)
@@ -131,19 +133,19 @@ private[scodec] class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6
 
 
-  def widenOpt[X](to: (A,B,C,D,E,F) => X, from: X => Option[(A,B,C,D,E,F)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
-    
+  def widenAs[X](to: (A,B,C,D,E,F) => X, from: X => Option[(A,B,C,D,E,F)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
+  
   override def toString = s"($A, $B, $C, $D, $E, $F)"
 }
 
-private[scodec] class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
-                                                 B: Codec[B],
-                                                 C: Codec[C],
-                                                 D: Codec[D],
-                                                 E: Codec[E],
-                                                 F: Codec[F],
-                                                 G: Codec[G]) extends Codec[(A,B,C,D,E,F,G)] {
+class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
+                                 B: Codec[B],
+                                 C: Codec[C],
+                                 D: Codec[D],
+                                 E: Codec[E],
+                                 F: Codec[F],
+                                 G: Codec[G]) extends Codec[(A,B,C,D,E,F,G)] {
   def ~~[H](H: Codec[H]) = new Tuple8Codec(A,B,C,D,E,F,G,H)
 
   override def decode(bits: BitVector) =
@@ -168,20 +170,20 @@ private[scodec] class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
       bits7 <- G.encode(abcdefg._7)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7
 
-  def widenOpt[X](to: (A,B,C,D,E,F,G) => X, from: X => Option[(A,B,C,D,E,F,G)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E,F,G) => X, from: X => Option[(A,B,C,D,E,F,G)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G)"
 }
 
-private[scodec] class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
-                                                   B: Codec[B],
-                                                   C: Codec[C],
-                                                   D: Codec[D],
-                                                   E: Codec[E],
-                                                   F: Codec[F],
-                                                   G: Codec[G],
-                                                   H: Codec[H]) extends Codec[(A,B,C,D,E,F,G,H)] {
+class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
+                                   B: Codec[B],
+                                   C: Codec[C],
+                                   D: Codec[D],
+                                   E: Codec[E],
+                                   F: Codec[F],
+                                   G: Codec[G],
+                                   H: Codec[H]) extends Codec[(A,B,C,D,E,F,G,H)] {
   def ~~[I](I: Codec[I]) = new Tuple9Codec(A,B,C,D,E,F,G,H,I)
 
   override def decode(bits: BitVector) =
@@ -208,21 +210,21 @@ private[scodec] class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
       bits8 <- H.encode(abcdefgh._8)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8
 
-  def widenOpt[X](to: (A,B,C,D,E,F,G,H) => X, from: X => Option[(A,B,C,D,E,F,G,H)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E,F,G,H) => X, from: X => Option[(A,B,C,D,E,F,G,H)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H)"
 }
 
-private[scodec] class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
-                                                   B: Codec[B],
-                                                   C: Codec[C],
-                                                   D: Codec[D],
-                                                   E: Codec[E],
-                                                   F: Codec[F],
-                                                   G: Codec[G],
-                                                   H: Codec[H],
-                                                   I: Codec[I]) extends Codec[(A,B,C,D,E,F,G,H,I)] {
+class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
+                                     B: Codec[B],
+                                     C: Codec[C],
+                                     D: Codec[D],
+                                     E: Codec[E],
+                                     F: Codec[F],
+                                     G: Codec[G],
+                                     H: Codec[H],
+                                     I: Codec[I]) extends Codec[(A,B,C,D,E,F,G,H,I)] {
   def ~~[J](J: Codec[J]) = new Tuple10Codec(A,B,C,D,E,F,G,H,I,J)
 
   override def decode(bits: BitVector) =
@@ -251,22 +253,22 @@ private[scodec] class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
       bits9 <- I.encode(abcdefghi._9)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9
 
-  def widenOpt[X](to: (A,B,C,D,E,F,G,H,I) => X, from: X => Option[(A,B,C,D,E,F,G,H,I)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E,F,G,H,I) => X, from: X => Option[(A,B,C,D,E,F,G,H,I)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I)"
 }
 
-private[scodec] class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
-                                                        B: Codec[B],
-                                                        C: Codec[C],
-                                                        D: Codec[D],
-                                                        E: Codec[E],
-                                                        F: Codec[F],
-                                                        G: Codec[G],
-                                                        H: Codec[H],
-                                                        I: Codec[I],
-                                                        J: Codec[J]) extends Codec[(A,B,C,D,E,F,G,H,I,J)] {
+class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
+                                        B: Codec[B],
+                                        C: Codec[C],
+                                        D: Codec[D],
+                                        E: Codec[E],
+                                        F: Codec[F],
+                                        G: Codec[G],
+                                        H: Codec[H],
+                                        I: Codec[I],
+                                        J: Codec[J]) extends Codec[(A,B,C,D,E,F,G,H,I,J)] {
   def ~~[K](K: Codec[K]) = new Tuple11Codec(A,B,C,D,E,F,G,H,I,J,K)
 
   override def decode(bits: BitVector) =
@@ -297,23 +299,23 @@ private[scodec] class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
       bits10 <- J.encode(abcdefghij._10)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9 ++ bits10
 
-  def widenOpt[X](to: (A,B,C,D,E,F,G,H,I,J) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E,F,G,H,I,J) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J)"
 }
 
-private[scodec] class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
-                                                          B: Codec[B],
-                                                          C: Codec[C],
-                                                          D: Codec[D],
-                                                          E: Codec[E],
-                                                          F: Codec[F],
-                                                          G: Codec[G],
-                                                          H: Codec[H],
-                                                          I: Codec[I],
-                                                          J: Codec[J],
-                                                          K: Codec[K]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K)] {
+class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
+                                          B: Codec[B],
+                                          C: Codec[C],
+                                          D: Codec[D],
+                                          E: Codec[E],
+                                          F: Codec[F],
+                                          G: Codec[G],
+                                          H: Codec[H],
+                                          I: Codec[I],
+                                          J: Codec[J],
+                                          K: Codec[K]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K)] {
   def ~~[L](L: Codec[L]) = new Tuple12Codec(A,B,C,D,E,F,G,H,I,J,K,L)
 
   override def decode(bits: BitVector) =
@@ -346,24 +348,24 @@ private[scodec] class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
       bits11 <- K.encode(abcdefghijk._11)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9 ++ bits10 ++ bits11
 
-  def widenOpt[X](to: (A,B,C,D,E,F,G,H,I,J,K) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J,K)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E,F,G,H,I,J,K) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J,K)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J, $K)"
 }
 
-private[scodec] class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
-                                                          B: Codec[B],
-                                                          C: Codec[C],
-                                                          D: Codec[D],
-                                                          E: Codec[E],
-                                                          F: Codec[F],
-                                                          G: Codec[G],
-                                                          H: Codec[H],
-                                                          I: Codec[I],
-                                                          J: Codec[J],
-                                                          K: Codec[K],
-                                                          L: Codec[L]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K,L)] {
+class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
+                                            B: Codec[B],
+                                            C: Codec[C],
+                                            D: Codec[D],
+                                            E: Codec[E],
+                                            F: Codec[F],
+                                            G: Codec[G],
+                                            H: Codec[H],
+                                            I: Codec[I],
+                                            J: Codec[J],
+                                            K: Codec[K],
+                                            L: Codec[L]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K,L)] {
   override def decode(bits: BitVector) =
     for {
       a <- A.decode(bits)
@@ -396,8 +398,8 @@ private[scodec] class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
       bits12 <- L.encode(abcdefghijkl._12)
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9 ++ bits10 ++ bits11 ++ bits12
 
-  def widenOpt[X](to: (A,B,C,D,E,F,G,H,I,J,K,L) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J,K,L)]): Codec[X] =
-    this.exmap(to.tupled andThen Attempt.successful, {x => Attempt.fromOption(from(x), Err(s"could not extract a tuple from: $x"))})
+  def widenAs[X](to: (A,B,C,D,E,F,G,H,I,J,K,L) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J,K,L)]): Codec[X] =
+    this.widenOpt(to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J, $K, $L)"
 }
