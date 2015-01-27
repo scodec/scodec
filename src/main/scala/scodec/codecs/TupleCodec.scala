@@ -19,9 +19,9 @@ final class TupleCodec[A, B](A: Codec[A], B: Codec[B]) extends Codec[(A, B)] {
   override def toString = s"($A, $B)"
 }
 
-class Tuple3Codec[A,B,C](A: Codec[A],
-                         B: Codec[B],
-                         C: Codec[C]) extends Codec[(A,B,C)] {
+final class Tuple3Codec[A,B,C](A: Codec[A],
+                               B: Codec[B],
+                               C: Codec[C]) extends Codec[(A,B,C)] {
   def ~~[D](D: Codec[D]) = new Tuple4Codec(A,B,C,D)
 
   override def decode(bits: BitVector) = {
@@ -45,10 +45,10 @@ class Tuple3Codec[A,B,C](A: Codec[A],
   override def toString = s"($A, $B, $C)"
 }
 
-class Tuple4Codec[A,B,C,D](A: Codec[A],
-                           B: Codec[B],
-                           C: Codec[C],
-                           D: Codec[D]) extends Codec[(A,B,C,D)] {
+final class Tuple4Codec[A,B,C,D](A: Codec[A],
+                                 B: Codec[B],
+                                 C: Codec[C],
+                                 D: Codec[D]) extends Codec[(A,B,C,D)] {
   def ~~[E](E: Codec[E]) = new Tuple5Codec(A,B,C,D,E)
 
   override def decode(bits: BitVector) =
@@ -73,11 +73,11 @@ class Tuple4Codec[A,B,C,D](A: Codec[A],
 
 }
 
-class Tuple5Codec[A,B,C,D,E](A: Codec[A],
-                             B: Codec[B],
-                             C: Codec[C],
-                             D: Codec[D],
-                             E: Codec[E]) extends Codec[(A,B,C,D,E)] {
+final class Tuple5Codec[A,B,C,D,E](A: Codec[A],
+                                   B: Codec[B],
+                                   C: Codec[C],
+                                   D: Codec[D],
+                                   E: Codec[E]) extends Codec[(A,B,C,D,E)] {
   def ~~[F](F: Codec[F]) = new Tuple6Codec(A,B,C,D,E,F)
 
   override def decode(bits: BitVector) =
@@ -104,12 +104,12 @@ class Tuple5Codec[A,B,C,D,E](A: Codec[A],
   override def toString = s"($A, $B, $C, $D, $E)"
 }
 
-class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
-                               B: Codec[B],
-                               C: Codec[C],
-                               D: Codec[D],
-                               E: Codec[E],
-                               F: Codec[F]) extends Codec[(A,B,C,D,E,F)] {
+final class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
+                                     B: Codec[B],
+                                     C: Codec[C],
+                                     D: Codec[D],
+                                     E: Codec[E],
+                                     F: Codec[F]) extends Codec[(A,B,C,D,E,F)] {
   def ~~[G](G: Codec[G]) = new Tuple7Codec(A,B,C,D,E,F,G)
 
   override def decode(bits: BitVector) =
@@ -135,17 +135,17 @@ class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
 
   def widenAs[X](to: (A,B,C,D,E,F) => X, from: X => Option[(A,B,C,D,E,F)]): Codec[X] =
     this.widenOpt(to.tupled, from)
-  
+
   override def toString = s"($A, $B, $C, $D, $E, $F)"
 }
 
-class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
-                                 B: Codec[B],
-                                 C: Codec[C],
-                                 D: Codec[D],
-                                 E: Codec[E],
-                                 F: Codec[F],
-                                 G: Codec[G]) extends Codec[(A,B,C,D,E,F,G)] {
+final class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
+                                       B: Codec[B],
+                                       C: Codec[C],
+                                       D: Codec[D],
+                                       E: Codec[E],
+                                       F: Codec[F],
+                                       G: Codec[G]) extends Codec[(A,B,C,D,E,F,G)] {
   def ~~[H](H: Codec[H]) = new Tuple8Codec(A,B,C,D,E,F,G,H)
 
   override def decode(bits: BitVector) =
@@ -176,14 +176,14 @@ class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
   override def toString = s"($A, $B, $C, $D, $E, $F, $G)"
 }
 
-class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
-                                   B: Codec[B],
-                                   C: Codec[C],
-                                   D: Codec[D],
-                                   E: Codec[E],
-                                   F: Codec[F],
-                                   G: Codec[G],
-                                   H: Codec[H]) extends Codec[(A,B,C,D,E,F,G,H)] {
+final class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
+                                         B: Codec[B],
+                                         C: Codec[C],
+                                         D: Codec[D],
+                                         E: Codec[E],
+                                         F: Codec[F],
+                                         G: Codec[G],
+                                         H: Codec[H]) extends Codec[(A,B,C,D,E,F,G,H)] {
   def ~~[I](I: Codec[I]) = new Tuple9Codec(A,B,C,D,E,F,G,H,I)
 
   override def decode(bits: BitVector) =
@@ -216,15 +216,15 @@ class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H)"
 }
 
-class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
-                                     B: Codec[B],
-                                     C: Codec[C],
-                                     D: Codec[D],
-                                     E: Codec[E],
-                                     F: Codec[F],
-                                     G: Codec[G],
-                                     H: Codec[H],
-                                     I: Codec[I]) extends Codec[(A,B,C,D,E,F,G,H,I)] {
+final class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
+                                           B: Codec[B],
+                                           C: Codec[C],
+                                           D: Codec[D],
+                                           E: Codec[E],
+                                           F: Codec[F],
+                                           G: Codec[G],
+                                           H: Codec[H],
+                                           I: Codec[I]) extends Codec[(A,B,C,D,E,F,G,H,I)] {
   def ~~[J](J: Codec[J]) = new Tuple10Codec(A,B,C,D,E,F,G,H,I,J)
 
   override def decode(bits: BitVector) =
@@ -259,16 +259,16 @@ class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I)"
 }
 
-class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
-                                        B: Codec[B],
-                                        C: Codec[C],
-                                        D: Codec[D],
-                                        E: Codec[E],
-                                        F: Codec[F],
-                                        G: Codec[G],
-                                        H: Codec[H],
-                                        I: Codec[I],
-                                        J: Codec[J]) extends Codec[(A,B,C,D,E,F,G,H,I,J)] {
+final class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
+                                              B: Codec[B],
+                                              C: Codec[C],
+                                              D: Codec[D],
+                                              E: Codec[E],
+                                              F: Codec[F],
+                                              G: Codec[G],
+                                              H: Codec[H],
+                                              I: Codec[I],
+                                              J: Codec[J]) extends Codec[(A,B,C,D,E,F,G,H,I,J)] {
   def ~~[K](K: Codec[K]) = new Tuple11Codec(A,B,C,D,E,F,G,H,I,J,K)
 
   override def decode(bits: BitVector) =
@@ -305,17 +305,17 @@ class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J)"
 }
 
-class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
-                                          B: Codec[B],
-                                          C: Codec[C],
-                                          D: Codec[D],
-                                          E: Codec[E],
-                                          F: Codec[F],
-                                          G: Codec[G],
-                                          H: Codec[H],
-                                          I: Codec[I],
-                                          J: Codec[J],
-                                          K: Codec[K]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K)] {
+final class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
+                                                B: Codec[B],
+                                                C: Codec[C],
+                                                D: Codec[D],
+                                                E: Codec[E],
+                                                F: Codec[F],
+                                                G: Codec[G],
+                                                H: Codec[H],
+                                                I: Codec[I],
+                                                J: Codec[J],
+                                                K: Codec[K]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K)] {
   def ~~[L](L: Codec[L]) = new Tuple12Codec(A,B,C,D,E,F,G,H,I,J,K,L)
 
   override def decode(bits: BitVector) =
@@ -354,18 +354,18 @@ class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J, $K)"
 }
 
-class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
-                                            B: Codec[B],
-                                            C: Codec[C],
-                                            D: Codec[D],
-                                            E: Codec[E],
-                                            F: Codec[F],
-                                            G: Codec[G],
-                                            H: Codec[H],
-                                            I: Codec[I],
-                                            J: Codec[J],
-                                            K: Codec[K],
-                                            L: Codec[L]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K,L)] {
+final class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
+                                                  B: Codec[B],
+                                                  C: Codec[C],
+                                                  D: Codec[D],
+                                                  E: Codec[E],
+                                                  F: Codec[F],
+                                                  G: Codec[G],
+                                                  H: Codec[H],
+                                                  I: Codec[I],
+                                                  J: Codec[J],
+                                                  K: Codec[K],
+                                                  L: Codec[L]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K,L)] {
   override def decode(bits: BitVector) =
     for {
       a <- A.decode(bits)
