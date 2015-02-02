@@ -798,14 +798,11 @@ package object codecs {
    *
    * @group combinators
    */
-  def choice[A](codecs: Codec[A]*): Codec[A] = new Codec[A] {
-    private val encoder = Encoder.choiceEncoder(codecs: _*)
-    private val decoder = Decoder.choiceDecoder(codecs: _*)
-    override def sizeBound = encoder.sizeBound
-    override def encode(a: A) = encoder.encode(a)
-    override def decode(b: BitVector) = decoder.decode(b)
-    override def toString = codecs.mkString("choice(", ", ", ")")
-  }
+  def choice[A](codecs: Codec[A]*): Codec[A] =
+    Codec(
+      Encoder.choiceEncoder(codecs: _*),
+      Decoder.choiceDecoder(codecs: _*)
+    ).withToString(codecs.mkString("choice(", ", ", ")"))
 
   /**
    * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
