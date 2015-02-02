@@ -13,7 +13,7 @@ package scodec
  * @groupname combinators Basic Combinators
  * @groupprio combinators 0
  */
-sealed abstract class Attempt[+A] {
+sealed abstract class Attempt[+A] extends Product with Serializable {
 
   /** Maps the supplied function over the successful value, if present. */
   def map[B](f: A => B): Attempt[B]
