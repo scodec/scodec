@@ -30,10 +30,19 @@ trait Encoder[-A] { self =>
   def encode(value: A): Attempt[BitVector]
 
   /**
+   * Provides a bound on the size of successfully encoded values.
+   *
+   * @group primary
+   */
+  def sizeBound: SizeBound
+
+
+  /**
    * Converts this encoder to an `Encoder[B]` using the supplied `B => A`.
    * @group combinators
    */
   def contramap[B](f: B => A): Encoder[B] = new Encoder[B] {
+    def sizeBound = self.sizeBound
     def encode(b: B) = self.encode(f(b))
   }
 
@@ -44,6 +53,7 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B] {
+    def sizeBound = self.sizeBound
     def encode(b: B): Attempt[BitVector] =
       f(b).map(self.encode).getOrElse(Attempt.failure(Err(s"widening failed: $b")))
   }
@@ -53,6 +63,7 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def econtramap[B](f: B => Attempt[A]): Encoder[B] = new Encoder[B] {
+    def sizeBound = self.sizeBound
     def encode(b: B) = f(b) flatMap self.encode
   }
 
@@ -61,6 +72,7 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def compact: Encoder[A] = new Encoder[A] {
+    def sizeBound = self.sizeBound
     def encode(a: A) = self.encode(a).map { _.compact }
   }
 
@@ -75,6 +87,7 @@ trait Encoder[-A] { self =>
    * @group combinators
    */
   def encodeOnly: Codec[A @uncheckedVariance] = new Codec[A] {
+    def sizeBound = self.sizeBound
     def encode(a: A) = self.encode(a)
     def decode(bits: BitVector) = Attempt.failure(Err("decoding not supported"))
   }
@@ -126,6 +139,7 @@ trait EncoderFunctions {
    * @group conv
    */
   final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A] {
+    def sizeBound = SizeBound.choice(encoders.map { _.sizeBound })
     def encode(a: A) = {
       @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: Err): Attempt[BitVector] = rem match {
         case Nil => Attempt.failure(lastErr)
@@ -162,6 +176,7 @@ object Encoder extends EncoderFunctions {
    * @group ctor
    */
   def apply[A](f: A => Attempt[BitVector]): Encoder[A] = new Encoder[A] {
+    def sizeBound = SizeBound.unknown
     def encode(value: A) = f(value)
   }
 

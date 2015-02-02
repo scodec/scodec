@@ -5,6 +5,8 @@ import scodec.bits.BitVector
 
 private[codecs] final class IgnoreCodec(bits: Long) extends Codec[Unit] {
 
+  override def sizeBound = SizeBound.exact(bits)
+
   override def encode(unit: Unit) =
     Attempt.successful(BitVector.low(bits))
 

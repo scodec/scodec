@@ -7,6 +7,8 @@ private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Long], valueCo
 
   private val decoder = sizeCodec flatZip { sz => fixedSizeBits(sz - sizePadding, valueCodec) }
 
+  def sizeBound = sizeCodec.sizeBound.atLeast
+
   override def encode(a: A) = for {
     encA <- valueCodec.encode(a)
     encSize <- sizeCodec.encode(encA.size + sizePadding).mapErr { e => fail(a, e.messageWithContext) }

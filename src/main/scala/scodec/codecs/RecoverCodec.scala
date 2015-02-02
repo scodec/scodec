@@ -5,6 +5,8 @@ import scodec.bits.BitVector
 
 private[codecs] final class RecoverCodec(target: Codec[Unit], lookahead: Boolean) extends Codec[Boolean] {
 
+  def sizeBound = target.sizeBound
+
   def encode(a: Boolean) = target.encode(())
 
   def decode(buffer: BitVector) =

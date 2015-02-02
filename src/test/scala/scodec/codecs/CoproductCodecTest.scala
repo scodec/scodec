@@ -16,6 +16,7 @@ class CoproductCodecTest extends CodecSuite {
       codec.encode(Coproduct[IBS](1)).require shouldBe hex"0000000001".bits
       codec.encode(Coproduct[IBS](true)).require shouldBe hex"01ff".bits
       codec.encode(Coproduct[IBS]("Hello")).require shouldBe hex"020548656c6c6f".bits
+      codec.sizeBound shouldBe SizeBound.atLeast(16)
 
       forAll { (i: Int) => roundtrip(codec, Coproduct[IBS](i)) }
       forAll { (b: Boolean) => roundtrip(codec, Coproduct[IBS](b)) }

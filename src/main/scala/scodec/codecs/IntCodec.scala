@@ -14,6 +14,8 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteO
 
   private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} integer"
 
+  override def sizeBound = SizeBound.exact(bits)
+
   override def encode(i: Int) = {
     if (i > MaxValue) {
       Attempt.failure(Err(s"$i is greater than maximum value $MaxValue for $description"))

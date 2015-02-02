@@ -14,6 +14,8 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
 
   private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} short"
 
+  override def sizeBound = SizeBound.exact(bits)
+
   override def encode(s: Short) = {
     if (s > MaxValue) {
       Attempt.failure(Err(s"$s is greater than maximum value $MaxValue for $description"))

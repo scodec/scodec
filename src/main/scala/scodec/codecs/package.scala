@@ -101,6 +101,7 @@ package object codecs {
    */
   def bits(size: Long): Codec[BitVector] = new Codec[BitVector] {
     private val codec = fixedSizeBits(size, BitVectorCodec)
+    def sizeBound = SizeBound.exact(size)
     def encode(b: BitVector) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"bits($size)"
@@ -121,6 +122,7 @@ package object codecs {
    */
   def bytes(size: Int): Codec[ByteVector] = new Codec[ByteVector] {
     private val codec = fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector)
+    def sizeBound = SizeBound.exact(size * 8)
     def encode(b: ByteVector) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"bytes($size)"
@@ -418,6 +420,7 @@ package object codecs {
     private val zeros = BitVector.low(n)
     private val ones = BitVector.high(n)
     private val codec = bits(n).xmap[Boolean](bits => !(bits == zeros), b => if (b) ones else zeros)
+    def sizeBound = SizeBound.exact(n)
     def encode(b: Boolean) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = "bool($n)"
@@ -559,6 +562,7 @@ package object codecs {
    */
   def fixedSizeBytes[A](size: Long, codec: Codec[A]): Codec[A] = new Codec[A] {
     private val fcodec = fixedSizeBits(size * 8, codec)
+    def sizeBound = fcodec.sizeBound
     def encode(a: A) = fcodec.encode(a)
     def decode(b: BitVector) = fcodec.decode(b)
     override def toString = s"fixedSizeBytes($size, $codec)"
@@ -628,6 +632,7 @@ package object codecs {
    */
    def paddedFixedSizeBytesDependent[A](size: Long, codec: Codec[A], padCodec: Long => Codec[Unit]): Codec[A] = new Codec[A] {
      private val fcodec = paddedFixedSizeBitsDependent(size * 8, codec, padCodec)
+     def sizeBound = SizeBound.exact(size * 8)
      def encode(a: A) = fcodec.encode(a)
      def decode(b: BitVector) = fcodec.decode(b)
      override def toString = s"paddedFixedSizeBytes($size, $codec)"
@@ -695,6 +700,7 @@ package object codecs {
    */
   def variableSizeBytesLong[A](size: Codec[Long], value: Codec[A], sizePadding: Long = 0): Codec[A] = new Codec[A] {
     private val codec = variableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), value, sizePadding * 8)
+    def sizeBound = size.sizeBound + value.sizeBound
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"variableSizeBytes($size, $value)"
@@ -792,11 +798,14 @@ package object codecs {
    *
    * @group combinators
    */
-  def choice[A](codecs: Codec[A]*): Codec[A] =
-    Codec(
-      Encoder.choiceEncoder(codecs: _*),
-      Decoder.choiceDecoder(codecs: _*)
-    ).withToString(codecs.mkString("choice(", ", ", ")"))
+  def choice[A](codecs: Codec[A]*): Codec[A] = new Codec[A] {
+    private val encoder = Encoder.choiceEncoder(codecs: _*)
+    private val decoder = Decoder.choiceDecoder(codecs: _*)
+    override def sizeBound = encoder.sizeBound
+    override def encode(a: A) = encoder.encode(a)
+    override def decode(b: BitVector) = decoder.decode(b)
+    override def toString = codecs.mkString("choice(", ", ", ")")
+  }
 
   /**
    * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
@@ -897,6 +906,7 @@ package object codecs {
    */
   def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
     private lazy val c = codec
+    def sizeBound = c.sizeBound
     def encode(a: A) = c.encode(a)
     def decode(b: BitVector) = c.decode(b)
     override def toString = s"lazily($c)"

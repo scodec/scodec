@@ -83,6 +83,7 @@ trait Decoder[+A] { self =>
    * @group combinators
    */
   def decodeOnly[AA >: A]: Codec[AA] = new Codec[AA] {
+    def sizeBound = SizeBound.unknown
     def encode(a: AA) = Attempt.failure(Err("encoding not supported"))
     def decode(bits: BitVector) = self.decode(bits)
   }

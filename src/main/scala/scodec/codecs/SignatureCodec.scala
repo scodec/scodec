@@ -120,6 +120,8 @@ object SignatureFactory {
 private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(implicit signerFactory: SignerFactory) extends Codec[A] {
   import Codec._
 
+  override def sizeBound = codec.sizeBound + signatureCodec.sizeBound
+
   override def encode(a: A) = for {
     encoded <- codec.encode(a)
     sig <- sign(encoded)
