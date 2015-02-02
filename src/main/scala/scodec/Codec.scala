@@ -448,7 +448,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * @group ctor
    */
   def apply[A](encoder: Encoder[A], decoder: Decoder[A]): Codec[A] = new Codec[A] {
-    override def sizeBound: SizeBound = SizeBound.unknown
+    override def sizeBound: SizeBound = encoder.sizeBound
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
   }
