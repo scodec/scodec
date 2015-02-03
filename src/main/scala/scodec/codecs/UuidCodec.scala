@@ -8,6 +8,8 @@ private[codecs] object UuidCodec extends Codec[UUID] {
 
   val codec = int64 ~ int64
 
+  override def sizeBound = codec.sizeBound
+
   override def encode(u: UUID) =
     codec.encode((u.getMostSignificantBits, u.getLeastSignificantBits))
 

@@ -5,6 +5,9 @@ import scodec.bits.BitVector
 
 final class TupleCodec[A, B](A: Codec[A], B: Codec[B]) extends Codec[(A, B)] {
 
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound
+
   override def encode(t: (A, B)) =
     Codec.encodeBoth(A, B)(t._1, t._2)
 
@@ -23,6 +26,9 @@ final class Tuple3Codec[A,B,C](A: Codec[A],
                                B: Codec[B],
                                C: Codec[C]) extends Codec[(A,B,C)] {
   def ~~[D](D: Codec[D]) = new Tuple4Codec(A,B,C,D)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound
 
   override def decode(bits: BitVector) = {
     for {
@@ -50,6 +56,9 @@ final class Tuple4Codec[A,B,C,D](A: Codec[A],
                                  C: Codec[C],
                                  D: Codec[D]) extends Codec[(A,B,C,D)] {
   def ~~[E](E: Codec[E]) = new Tuple5Codec(A,B,C,D,E)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -79,6 +88,9 @@ final class Tuple5Codec[A,B,C,D,E](A: Codec[A],
                                    D: Codec[D],
                                    E: Codec[E]) extends Codec[(A,B,C,D,E)] {
   def ~~[F](F: Codec[F]) = new Tuple6Codec(A,B,C,D,E,F)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -111,6 +123,9 @@ final class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
                                      E: Codec[E],
                                      F: Codec[F]) extends Codec[(A,B,C,D,E,F)] {
   def ~~[G](G: Codec[G]) = new Tuple7Codec(A,B,C,D,E,F,G)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -147,6 +162,9 @@ final class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
                                        F: Codec[F],
                                        G: Codec[G]) extends Codec[(A,B,C,D,E,F,G)] {
   def ~~[H](H: Codec[H]) = new Tuple8Codec(A,B,C,D,E,F,G,H)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound + G.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -185,6 +203,9 @@ final class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
                                          G: Codec[G],
                                          H: Codec[H]) extends Codec[(A,B,C,D,E,F,G,H)] {
   def ~~[I](I: Codec[I]) = new Tuple9Codec(A,B,C,D,E,F,G,H,I)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound + G.sizeBound + H.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -226,6 +247,9 @@ final class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
                                            H: Codec[H],
                                            I: Codec[I]) extends Codec[(A,B,C,D,E,F,G,H,I)] {
   def ~~[J](J: Codec[J]) = new Tuple10Codec(A,B,C,D,E,F,G,H,I,J)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound + G.sizeBound + H.sizeBound + I.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -270,6 +294,9 @@ final class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
                                               I: Codec[I],
                                               J: Codec[J]) extends Codec[(A,B,C,D,E,F,G,H,I,J)] {
   def ~~[K](K: Codec[K]) = new Tuple11Codec(A,B,C,D,E,F,G,H,I,J,K)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound + G.sizeBound + H.sizeBound + I.sizeBound + J.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -317,6 +344,9 @@ final class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
                                                 J: Codec[J],
                                                 K: Codec[K]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K)] {
   def ~~[L](L: Codec[L]) = new Tuple12Codec(A,B,C,D,E,F,G,H,I,J,K,L)
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound + G.sizeBound + H.sizeBound + I.sizeBound + J.sizeBound + K.sizeBound
 
   override def decode(bits: BitVector) =
     for {
@@ -366,6 +396,10 @@ final class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
                                                   J: Codec[J],
                                                   K: Codec[K],
                                                   L: Codec[L]) extends Codec[(A,B,C,D,E,F,G,H,I,J,K,L)] {
+
+  override def sizeBound: SizeBound =
+    A.sizeBound + B.sizeBound + C.sizeBound + D.sizeBound + E.sizeBound + F.sizeBound + G.sizeBound + H.sizeBound + I.sizeBound + J.sizeBound + K.sizeBound + L.sizeBound
+
   override def decode(bits: BitVector) =
     for {
       a <- A.decode(bits)

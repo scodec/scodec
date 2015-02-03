@@ -5,6 +5,8 @@ import scodec.bits.BitVector
 
 private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) extends Codec[A] {
 
+  override def sizeBound = SizeBound.exact(size)
+
   override def encode(a: A) = for {
     encoded <- codec.encode(a)
     result <- {

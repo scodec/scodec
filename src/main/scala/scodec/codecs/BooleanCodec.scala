@@ -5,6 +5,8 @@ import scodec.bits.BitVector
 
 private[codecs] object BooleanCodec extends Codec[Boolean] {
 
+  override def sizeBound = SizeBound.exact(1)
+
   override def encode(b: Boolean) =
     Attempt.successful(if (b) BitVector.high(1) else BitVector.low(1))
 

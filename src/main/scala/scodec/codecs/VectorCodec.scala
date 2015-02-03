@@ -5,6 +5,11 @@ import scodec.bits.BitVector
 
 private[codecs] final class VectorCodec[A](codec: Codec[A], limit: Option[Int] = None) extends Codec[Vector[A]] {
 
+  def sizeBound = limit match {
+    case None => SizeBound.unknown
+    case Some(lim) => codec.sizeBound * lim
+  }
+
   def encode(vector: Vector[A]) = Encoder.encodeSeq(codec)(vector)
 
   def decode(buffer: BitVector) =

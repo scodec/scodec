@@ -323,6 +323,8 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     }
   }
 
+  def sizeBound = by.sizeBound + SizeBound.choice(cases.iterator.map { _.prism.repCodec.sizeBound })
+
   def encode(a: A) =
     cases.iterator.flatMap { k =>
       k.prism.preview(a).map { r =>

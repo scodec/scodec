@@ -10,12 +10,14 @@ import scodec.bits.BitVector
 private[scodec] object HListCodec {
 
   val hnilCodec: Codec[HNil] = new Codec[HNil] {
+    override def sizeBound = SizeBound.exact(0)
     override def encode(hn: HNil) = Attempt.successful(BitVector.empty)
     override def decode(buffer: BitVector) = Attempt.successful(DecodeResult(HNil, buffer))
     override def toString = s"HNil"
   }
 
   def prepend[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
+    override def sizeBound = a.sizeBound + l.sizeBound
     override def encode(xs: A :: L) = Codec.encodeBoth(a, l)(xs.head, xs.tail)
     override def decode(buffer: BitVector) = Codec.decodeBothCombine(a, l)(buffer) { _ :: _ }
     override def toString = s"$a :: $l"
@@ -30,6 +32,7 @@ private[scodec] object HListCodec {
     init: Init.Aux[LA, L],
     last: Last.Aux[LA, A]
   ): Codec[LA] = new Codec[LA] {
+    override def sizeBound = l.sizeBound + a.sizeBound
     override def encode(xs: LA) = Codec.encodeBoth(l, a)(xs.init, xs.last)
     override def decode(buffer: BitVector) = Codec.decodeBothCombine(l, a)(buffer) { _ :+ _ }
     override def toString = s"append($l, $a)"
@@ -40,6 +43,7 @@ private[scodec] object HListCodec {
     lengthK: Length.Aux[K, KLen],
     split: Split.Aux[KL, KLen, K, L]
   ): Codec[KL] = new Codec[KL] {
+    override def sizeBound = ck.sizeBound + cl.sizeBound
     override def encode(xs: KL) = {
       val (k, l) = xs.split[KLen]
       Codec.encodeBoth(ck, cl)(k, l)
@@ -49,6 +53,7 @@ private[scodec] object HListCodec {
   }
 
   def flatPrepend[A, L <: HList](codecA: Codec[A], f: A => Codec[L]): Codec[A :: L] = new Codec[A :: L] {
+    override def sizeBound = codecA.sizeBound.atLeast
     override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
     override def decode(buffer: BitVector) = (for {
       a <- DecodingContext(codecA)
@@ -62,6 +67,7 @@ private[scodec] object HListCodec {
     lengthK: Length.Aux[K, KLen],
     split: Split.Aux[KL, KLen, K, L]
   ): Codec[KL] = new Codec[KL] {
+    override def sizeBound = codecK.sizeBound.atLeast
     override def encode(xs: KL) = {
       val (k, l) = xs.split[KLen]
       Codec.encodeBoth(codecK, f(k))(k, l)
@@ -78,6 +84,7 @@ private[scodec] object HListCodec {
     length: Length.Aux[L, Len],
     split: Split.Aux[LA, Len, L, A :: HNil]
   ): Codec[LA] = new Codec[LA] {
+    override def sizeBound = codecL.sizeBound.atLeast
     override def encode(xs: LA) = {
       val (l, rest) = xs.split[Len]
       Codec.encodeBoth(codecL, f(l))(l, rest.head)

@@ -15,6 +15,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       roundtrip(codec, false)
       roundtrip(codec, 1)
       roundtrip(codec, Int.MaxValue)
+      codec.sizeBound shouldBe SizeBound.bounded(9, 40)
     }
 
     "support building a codec using partial functions and subtyping" in {

@@ -5,6 +5,8 @@ import scodec.bits.BitVector
 
 private[codecs] final class ConstantCodec(constant: BitVector, validate: Boolean = true) extends Codec[Unit] {
 
+  override def sizeBound = SizeBound.exact(constant.size)
+
   override def encode(ignore: Unit) =
     Attempt.successful(constant)
 

@@ -1,6 +1,8 @@
 scodec
 ======
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scodec/scodec?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Scala combinator library for working with binary data.
 
 Design Constraints
@@ -114,4 +116,4 @@ codecs for [MessagePack](http://msgpack.org/).
 Getting Binaries
 ----------------
 
-See the [releases page on the wiki](https://github.com/scodec/scodec/wiki/Releases).
+See the [releases page on the website](https://scodec.org/releases/).
