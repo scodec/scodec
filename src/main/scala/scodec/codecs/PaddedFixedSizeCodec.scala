@@ -5,6 +5,8 @@ import scodec.bits.BitVector
 import scala.annotation.tailrec
 
 private[codecs] final class PaddedFixedSizeCodec[A](size: Long, codec: Codec[A], padCodec: Long => Codec[Unit]) extends Codec[A] {
+  override def sizeBound = SizeBound.exact(size)
+
   override def encode(a: A) = for {
     encoded <- codec.encode(a)
     result <- {

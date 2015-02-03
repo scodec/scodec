@@ -9,6 +9,8 @@ private[codecs] final class FloatCodec(ordering: ByteOrdering) extends Codec[Flo
 
   private val byteOrder = ordering.toJava
 
+  override def sizeBound = SizeBound.exact(32)
+
   override def encode(value: Float) = {
     val buffer = ByteBuffer.allocate(4).order(ordering.toJava).putFloat(value)
     buffer.flip()

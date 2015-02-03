@@ -45,6 +45,8 @@ private[scodec] object CoproductCodec {
 
     private val liftedCodecs: List[Codec[C]] = aux(codecs)
 
+    def sizeBound = discriminatorCodec.sizeBound + SizeBound.choice(liftedCodecs.map { _.sizeBound })
+
     def encode(c: C) = {
       val discriminator = coproductToDiscriminator(c)
       for {
@@ -70,6 +72,8 @@ private[scodec] object CoproductCodec {
 
     private val liftedCodecs: List[Codec[C]] = aux(codecs)
     private val decoder: Decoder[C] = Decoder.choiceDecoder(liftedCodecs: _*)
+
+    def sizeBound = SizeBound.choice(liftedCodecs.map { _.sizeBound })
 
     def encode(c: C) = encodeCoproduct(liftedCodecs, c)
 
@@ -98,6 +102,7 @@ object ToCoproductCodecs {
 
       val headCodec: Codec[A :+: CT] = new Codec[A :+: CT] {
         val codec: Codec[A] = l.head
+        def sizeBound = codec.sizeBound
         def encode(c: A :+: CT) = c match {
           case Inl(a) => codec.encode(a)
           case Inr(ct) => Attempt.failure(Err(s"cannot encode $ct"))
@@ -109,6 +114,7 @@ object ToCoproductCodecs {
 
       val tailCodecs: List[Codec[A :+: CT]] = tailAux(l.tail).map { d: Codec[CT] =>
         new Codec[A :+: CT] {
+          def sizeBound = d.sizeBound
           def encode(c: A :+: CT) = c match {
             case Inr(a) => d.encode(a)
             case Inl(ch) => Attempt.failure(Err(s"cannot encode $c"))

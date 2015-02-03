@@ -194,8 +194,9 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B] {
-     def encode(b: B) = self.econtramap(g).encode(b)
-     def decode(buffer: BitVector) = self.emap(f).decode(buffer)
+    def sizeBound: SizeBound = self.sizeBound
+    def encode(b: B) = self.econtramap(g).encode(b)
+    def decode(buffer: BitVector) = self.emap(f).decode(buffer)
   }
 
   /**
@@ -203,6 +204,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
+    def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(g(b))
     def decode(buffer: BitVector) = self.decode(buffer).map { _ map f }
   }
@@ -305,6 +307,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group tuple
    */
   final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)] {
+    def sizeBound: SizeBound = self.sizeBound.atLeast
     override def encode(t: (A, B)) = Codec.encodeBoth(self, f(t._1))(t._1, t._2)
     override def decode(buffer: BitVector) = (for {
       a <- DecodingContext(self)
@@ -332,6 +335,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def upcast[B >: A](implicit m: Manifest[A]): Codec[B] = new Codec[B] {
+    def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = b match {
       case a: A => self encode a
       case _ => Attempt.failure(Err(s"${b.getClass.getSimpleName} is not a ${m.runtimeClass.getSimpleName}"))
@@ -349,6 +353,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def downcast[B <: A : Manifest]: Codec[B] = new Codec[B] {
+    def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self encode b
     def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
       result.value match {
@@ -365,6 +370,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def withContext(context: String): Codec[A] = new Codec[A] {
+    def sizeBound: SizeBound = self.sizeBound
     override def encode(a: A) = self.encode(a).mapErr { _ pushContext context }
     override def decode(buffer: BitVector) = self.decode(buffer).mapErr { _ pushContext context }
     override def toString = s"$context($self)"
@@ -375,6 +381,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group combinators
    */
   final def withToString(str: String): Codec[A] = new Codec[A] {
+    override def sizeBound: SizeBound = self.sizeBound
     override def encode(a: A) = self.encode(a)
     override def decode(buffer: BitVector) = self.decode(buffer)
     override def toString = str
@@ -401,6 +408,15 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   def toFieldWithContext[K <: Symbol](k: K): Codec[FieldType[K, A]] =
     toField[K].withContext(k.name)
+
+  override def decodeOnly[AA >: A]: Codec[AA] = {
+    val sup = super.decodeOnly[AA]
+    new Codec[AA] {
+      def sizeBound = self.sizeBound
+      def encode(a: AA) = sup.encode(a)
+      def decode(bits: BitVector) = sup.decode(bits)
+    }
+  }
 }
 
 /**
@@ -422,6 +438,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * @group ctor
    */
   def apply[A](encoder: A => Attempt[BitVector], decoder: BitVector => Attempt[DecodeResult[A]]): Codec[A] = new Codec[A] {
+    override def sizeBound: SizeBound = SizeBound.unknown
     override def encode(a: A) = encoder(a)
     override def decode(bits: BitVector) = decoder(bits)
   }
@@ -431,6 +448,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    * @group ctor
    */
   def apply[A](encoder: Encoder[A], decoder: Decoder[A]): Codec[A] = new Codec[A] {
+    override def sizeBound: SizeBound = encoder.sizeBound
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
   }

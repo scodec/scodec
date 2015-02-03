@@ -31,6 +31,7 @@ trait GenCodec[-A, +B] extends Encoder[A] with Decoder[B] { self =>
    * @group combinators
    */
   final def fuse[AA <: A, BB >: B](implicit ev: BB =:= AA): Codec[BB] = new Codec[BB] {
+    def sizeBound = self.sizeBound
     def encode(c: BB) = self.encode(ev(c))
     def decode(bits: BitVector) = self.decode(bits)
   }
@@ -70,6 +71,7 @@ object GenCodec extends EncoderFunctions with DecoderFunctions {
    * @group ctor
    */
   def apply[A, B](encoder: Encoder[A], decoder: Decoder[B]): GenCodec[A, B] = new GenCodec[A, B] {
+    override def sizeBound = encoder.sizeBound
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
   }

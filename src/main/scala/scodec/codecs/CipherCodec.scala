@@ -74,6 +74,8 @@ object CipherFactory {
 /** @see [[encrypted]] */
 private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory) extends Codec[A] {
 
+  override def sizeBound = SizeBound.unknown
+
   override def encode(a: A) =
     codec.encode(a) flatMap { b => encrypt(b) }
 

@@ -9,6 +9,8 @@ private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Do
 
   private val byteOrder = ordering.toJava
 
+  override def sizeBound = SizeBound.exact(64)
+
   override def encode(value: Double) = {
     val buffer = ByteBuffer.allocate(8).order(byteOrder).putDouble(value)
     buffer.flip()

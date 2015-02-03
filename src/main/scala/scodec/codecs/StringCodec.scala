@@ -9,6 +9,8 @@ import scodec.bits.BitVector
 
 private[codecs] final class StringCodec(charset: Charset) extends Codec[String] {
 
+  override def sizeBound = SizeBound.unknown
+
   override def encode(str: String) = {
     val encoder = charset.newEncoder
     val buffer = CharBuffer.wrap(str)

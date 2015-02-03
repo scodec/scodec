@@ -11,6 +11,8 @@ import scodec.bits.BitVector
  */
 private[codecs] final class CertificateCodec(certType: String) extends Codec[Certificate] {
 
+  def sizeBound = SizeBound.unknown
+
   def encode(cert: Certificate) =
     Attempt.successful(BitVector(cert.getEncoded))
 
