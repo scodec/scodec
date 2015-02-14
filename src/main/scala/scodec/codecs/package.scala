@@ -427,14 +427,14 @@ package object codecs {
   }
 
   /**
-   * String codec that utilizes the implicit `Charset` to perform encoding/decoding.
+   * String codec that uses the implicit `Charset` to perform encoding/decoding.
    *
    * This codec does not encode the size of the string in to the output. Hence, decoding
    * a vector that has additional data after the encoded string will result in
    * unexpected output. Instead, it is common to use this codec along with either
    * [[fixedSizeBits]] or [[variableSizeBits]]. For example, a common encoding
    * is a size field, say 2 bytes, followed by the encoded string. This can be
-   * accomplished with: {{{variableSizeBits(uint8, string)}}}
+   * accomplished with: {{{variableSizeBits(uint16, string)}}}
    *
    * @param charset charset to use to convert strings to/from binary
    * @group values
@@ -452,6 +452,29 @@ package object codecs {
    * @group values
    */
   val utf8 = string(Charset.forName("UTF-8"))
+
+  /**
+   * String codec that uses the implicit `Charset` and prefixes the encoded string by the byte size
+   * in a 32-bit 2s complement big endian field.
+   *
+   * @param charset charset to use to convert strings to/from binary
+   * @group values
+   */
+  def string32(implicit charset: Charset): Codec[String] = variableSizeBytes(int32, string(charset))
+
+  /**
+   * String codec that uses the `US-ASCII` charset and prefixes the encoded string by the byte size
+   * in a 32-bit 2s complement big endian field.
+   * @group values
+   */
+  val ascii32 = variableSizeBytes(int32, ascii)
+
+  /**
+   * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
+   * in a 32-bit 2s complement big endian field.
+   * @group values
+   */
+  val utf8_32 = variableSizeBytes(int32, utf8)
 
   /**
    * Encodes/decodes `UUID`s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.
