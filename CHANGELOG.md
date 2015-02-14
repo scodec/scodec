@@ -1,3 +1,7 @@
+1.7.1
+=====
+ - Added `string32`, `ascii32`, and `utf8_32` codecs, which encode a 32-bit 2s complement big endian size field before the string encoding.
+
 1.7.0
 =====
  - Group id (ivy organization) changed from `org.typelevel` to `org.scodec`.

@@ -14,7 +14,7 @@ trait ImplicitValues {
   implicit val implicitLongCodec: Codec[Long] = int64
   implicit val implicitFloatCodec: Codec[Float] = float
   implicit val implicitDoubleCodec: Codec[Double] = double
-  implicit val implicitStringCodec: Codec[String] = variableSizeBytes(int32, utf8)
+  implicit val implicitStringCodec: Codec[String] = utf8_32
   implicit val implicitBooleanCodec: Codec[Boolean] = bool(8)
   implicit val implicitBitVectorCodec: Codec[BitVector] = variableSizeBitsLong(int64, bits)
   implicit val implicitByteVectorCodec: Codec[ByteVector] = variableSizeBytesLong(int64, bytes)
