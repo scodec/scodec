@@ -1,6 +1,7 @@
 1.7.1
 =====
  - Added `string32`, `ascii32`, and `utf8_32` codecs, which encode a 32-bit 2s complement big endian size field before the string encoding.
+ - Added various combinators for logging results of encoding/decoding -- `logBuilder`, `logFailuresBuilder`, `logSuccessesBuilder`, `logToStdOut`, and `logFailuresToStdOut`.
 
 1.7.0
 =====
