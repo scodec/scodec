@@ -79,10 +79,13 @@ import shapeless.HList
  * @groupprio combinators 3
  *
  * @groupname tuples Tuple Support
- * @groupprio tuples 3
+ * @groupprio tuples 4
+ *
+ * @groupname logging Logging
+ * @groupprio logging 5
  *
  * @groupname crypto Cryptography
- * @groupprio crypto 4
+ * @groupprio crypto 6
  */
 package object codecs {
 
@@ -1195,6 +1198,75 @@ package object codecs {
    * @group combinators
    */
   final def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out = toHListCodec(l)
+
+  /**
+   * Wraps a codec and adds logging of each encoding and decoding operation.
+   *
+   * The `logEncode` and `logDecode` functions are called with the result of each encoding and decoding
+   * operation.
+   *
+   * This method is intended to be used to build a domain specific logging combinator. For example: {{{
+   * def log[A] = logBuilder[A]((a, r) => myLogger.debug(s"..."), (b, r) => myLogger.debug(s"...")) _
+   * ...
+   * log(myCodec)
+   * }}}
+   *
+   * For quick logging to standard out, consider using [[logFailuresToStdOut]].
+   *
+   * @group logging
+   */
+  final def logBuilder[A](logEncode: (A, Attempt[BitVector]) => Unit, logDecode: (BitVector, Attempt[DecodeResult[A]]) => Unit)(codec: Codec[A]): Codec[A] = new Codec[A] {
+    override def sizeBound = codec.sizeBound
+    override def encode(a: A) = {
+      val res = codec.encode(a)
+      logEncode(a, res)
+      res
+    }
+    override def decode(b: BitVector) = {
+      val res = codec.decode(b)
+      logDecode(b, res)
+      res
+    }
+    override def toString = codec.toString
+  }
+
+  private val constUnit: Any => Unit = _ => ()
+
+  /**
+   * Variant of [[logBuilder]] that only logs successful results.
+   * @group logging
+   */
+  final def logSuccessesBuilder[A](logEncode: (A, BitVector) => Unit, logDecode: (BitVector, DecodeResult[A]) => Unit)(codec: Codec[A]): Codec[A] =
+    logBuilder[A]((a, r) => r.fold(constUnit, logEncode(a, _)), (b, r) => r.fold(constUnit, logDecode(b, _)))(codec)
+
+  /**
+   * Variant of [[logBuilder]] that only logs failed results.
+   * @group logging
+   */
+  final def logFailuresBuilder[A](logEncode: (A, Err) => Unit, logDecode: (BitVector, Err) => Unit)(codec: Codec[A]): Codec[A] =
+    logBuilder[A]((a, r) => r.fold(logEncode(a, _), constUnit), (b, r) => r.fold(logDecode(b, _), constUnit))(codec)
+
+  /**
+   * Combinator intended for use in debugging that logs all encoded values and decoded values to standard out.
+   *
+   * @param prefix prefix string to include in each log statement
+   * @group logging
+   */
+  final def logToStdOut[A](codec: Codec[A], prefix: String = ""): Codec[A] = {
+    val pfx = if (prefix.isEmpty) "" else s"$prefix: "
+    logBuilder[A]((a, r) => println(s"${pfx}encoded $a to $r"), (b, r) => println(s"${pfx}decoded $b to $r"))(codec)
+  }
+
+  /**
+   * Combinator intended for use in debugging that logs all failures while encoding or decoding to standard out.
+   *
+   * @param prefix prefix string to include in each log statement
+   * @group logging
+   */
+  final def logFailuresToStdOut[A](codec: Codec[A], prefix: String = ""): Codec[A] = {
+    val pfx = if (prefix.isEmpty) "" else s"$prefix: "
+    logFailuresBuilder[A]((a, e) => println(s"${pfx}failed to encode $a: $e"), (b, e) => println(s"${pfx}failed to decode $b: $e"))(codec)
+  }
 
   /** Provides common implicit codecs. */
   object implicits extends ImplicitCodecs

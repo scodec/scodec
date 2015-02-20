@@ -8,7 +8,6 @@ import scodec.bits.ByteVector
 
 /**
  * Creates checksum implementations of [[SignerFactory]].
- * @group checksum
  */
 object ChecksumFactory {
 
