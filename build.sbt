@@ -25,5 +25,7 @@ libraryDependencies ++= {
   if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil
 }
 
+OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}")
+
 binaryIssueFilters ++= Seq(
 )
