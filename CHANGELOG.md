@@ -2,6 +2,8 @@
 =====
  - Added `string32`, `ascii32`, and `utf8_32` codecs, which encode a 32-bit 2s complement big endian size field before the string encoding.
  - Added various combinators for logging results of encoding/decoding -- `logBuilder`, `logFailuresBuilder`, `logSuccessesBuilder`, `logToStdOut`, and `logFailuresToStdOut`.
+ - Added `zlib` combinator, which compresses the results of another codec.
+ - Fixed bug where the contents of the scodec-bits jar was included in the scodec-core jar.
 
 1.7.0
 =====
