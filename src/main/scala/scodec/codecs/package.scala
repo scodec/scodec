@@ -464,21 +464,22 @@ package object codecs {
    * @param charset charset to use to convert strings to/from binary
    * @group values
    */
-  def string32(implicit charset: Charset): Codec[String] = variableSizeBytes(int32, string(charset))
+  def string32(implicit charset: Charset): Codec[String] =
+    variableSizeBytes(int32, string(charset)).withToString(s"string32(${charset.displayName})")
 
   /**
    * String codec that uses the `US-ASCII` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
-  val ascii32 = variableSizeBytes(int32, ascii)
+  val ascii32 = string32(Charset.forName("US-ASCII"))
 
   /**
    * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
-  val utf8_32 = variableSizeBytes(int32, utf8)
+  val utf8_32 = string32(Charset.forName("UTF-8"))
 
   /**
    * Encodes/decodes `UUID`s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.
@@ -696,7 +697,7 @@ package object codecs {
     variableSizeBytesLong(widenIntToLong(size), value, sizePadding)
 
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
-    c.widen(i => i, l => if (l > Int.MaxValue || l < Int.MinValue) Attempt.failure(Err(s"$l cannot be converted to an integer")) else Attempt.successful(l.toInt))
+    c.widen[Long](i => i, l => if (l > Int.MaxValue || l < Int.MinValue) Attempt.failure(Err(s"$l cannot be converted to an integer")) else Attempt.successful(l.toInt)).withToString(c.toString)
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
