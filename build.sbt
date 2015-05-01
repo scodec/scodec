@@ -28,5 +28,4 @@ libraryDependencies ++= {
 OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}")
 
 binaryIssueFilters ++= Seq(
-  ProblemFilters.exclude[MissingMethodProblem]("scodec.Decoder.decodeValue")
 )
