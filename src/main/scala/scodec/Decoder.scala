@@ -30,6 +30,15 @@ trait Decoder[+A] { self =>
   def decode(bits: BitVector): Attempt[DecodeResult[A]]
 
   /**
+   * Attempts to decode a value of type `A` from the specified bit vector and discards the remaining bits.
+   *
+   * @param bits bits to decode
+   * @return error if value could not be decoded or the decoded value
+   * @group primary
+   */
+  final def decodeValue(bits: BitVector): Attempt[A] = decode(bits).map { _.value }
+
+  /**
    * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
    * @group combinators
    */

@@ -1,6 +1,7 @@
 1.7.2
 =====
  - Added `byteAligned` combinator, which right pads a `Codec[A]` such that the binary size is always evenly divisible by 8.
+ - Added `decodeValue` back to `Decoder`, `Codec`, and `GenCodec`.
 
 1.7.1
 =====
