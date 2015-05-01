@@ -1,3 +1,8 @@
+1.7.2
+=====
+ - Added `byteAligned` combinator, which right pads a `Codec[A]` such that the binary size is always evenly divisible by 8.
+ - Added `decodeValue` back to `Decoder`, `Codec`, and `GenCodec`.
+
 1.7.1
 =====
  - Added `string32`, `ascii32`, and `utf8_32` codecs, which encode a 32-bit 2s complement big endian size field before the string encoding.

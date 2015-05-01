@@ -7,7 +7,7 @@ package scodec
  * @param lowerBound Minimum number of bits
  * @param upperBound Maximum number of bits
  */
-final case class SizeBound private (lowerBound: Long, upperBound: Option[Long]) {
+final case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
   require(lowerBound >= 0)
   require(upperBound.getOrElse(0L) >= 0)
 
