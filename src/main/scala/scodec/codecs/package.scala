@@ -746,6 +746,9 @@ package object codecs {
    *
    * Note that aligning large structures on byte boundaries can provide significant performance improvements when
    * converting to/from data structures that are based on bytes -- e.g., `Array[Byte]` or `ByteBuffer`.
+   *
+   * @param codec codec to align to next larger byte boundary
+   * @group combinators
    */
   def byteAligned[A](codec: Codec[A]): Codec[A] = new ByteAlignedCodec(codec)
 
