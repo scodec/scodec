@@ -735,6 +735,21 @@ package object codecs {
   }
 
   /**
+   * Codec that:
+   *  - encodes using the specified codec but right-pads with 0 bits to the next largest byte when the size of the
+   *    encoded bit vector is not divisible by 8
+   *  - decodes using the specified codec but drops any leading bits of the remainder when the number of bytes
+   *    consumed by the specified codec is not divisible by 8
+   *
+   * This combinator allows byte alignment without manually specifying ignore bits. For example, instead of writing
+   * `(bool(1) :: bool(1) :: ignore(6)).dropUnits`, this combinator allows `byteAligned(bool(1) :: bool(1))`.
+   *
+   * Note that aligning large structures on byte boundaries can provide significant performance improvements when
+   * converting to/from data structures that are based on bytes -- e.g., `Array[Byte]` or `ByteBuffer`.
+   */
+  def byteAligned[A](codec: Codec[A]): Codec[A] = new ByteAlignedCodec(codec)
+
+  /**
    * Codec of `Option[A]` that delegates to a `Codec[A]` when the `included` parameter is true.
    *
    * When encoding, if `included` is true and the value to encode is a `Some`, the specified codec is used to encode the inner value.
