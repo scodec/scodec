@@ -394,8 +394,7 @@ private[codecs] object DiscriminatorCodec {
     // `f(x)` is true, otherwise this case will fail to match itself
     // on decoding!
     condition.right.toOption.foreach { case (representative, matches) =>
-      matches(representative) ||
-      sys.error(s"representative failed predicate: $representative")
+      if (matches(representative)) true else sys.error(s"representative failed predicate: $representative")
     }
 
     def representative: B = condition.fold(identity, _._1)

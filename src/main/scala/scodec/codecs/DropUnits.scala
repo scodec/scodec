@@ -2,7 +2,6 @@ package scodec
 package codecs
 
 import shapeless._
-import shapeless.ops.hlist._
 
 /**
  * Describes an isomorphism between two `HList`s, `K` and `L`, where `L` has the same shape as `K` except unit

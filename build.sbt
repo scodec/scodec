@@ -10,7 +10,7 @@ contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("
 rootPackage := "scodec"
 
 libraryDependencies ++= Seq(
-  "org.scodec" %% "scodec-bits" % "1.0.6",
+  "org.scodec" %% "scodec-bits" % "1.0.7-SNAPSHOT",
   "com.chuusai" % "shapeless" % "2.1.0" cross CrossVersion.fullMapped {
     case "2.10.4" => "2.10.4"
     case x if x startsWith "2.11." => "2.11"

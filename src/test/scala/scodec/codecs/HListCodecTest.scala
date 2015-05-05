@@ -4,7 +4,6 @@ package codecs
 import scodec.bits._
 
 import shapeless._
-import nat._
 
 class HListCodecTest extends CodecSuite {
 
@@ -32,11 +31,13 @@ class HListCodecTest extends CodecSuite {
     }
 
     "provide a flatPrepend method" in {
-      uint8 flatPrepend { n => bits(n).hlist }
+      uint8 flatPrepend { n => bits(n.toLong).hlist }
+      ()
     }
 
     "provide a flatZipHList method" in {
-      uint8 flatZipHList { n => bits(n) }
+      uint8 flatZipHList { n => bits(n.toLong) }
+      ()
     }
 
     "provide ability to append via :+ operator" in {
@@ -55,10 +56,11 @@ class HListCodecTest extends CodecSuite {
 
     "support HList equivalent of Codec#dropLeft on a non-HList codec" in {
       uint8.unit(0) :~>: uint8
+      ()
     }
 
     "support dropping all Unit values out of an HList codec" in {
-      def ign(size: Int) = scodec.codecs.ignore(size)
+      def ign(size: Int) = scodec.codecs.ignore(size.toLong)
       val codec = (uint8 :: ign(8) :: uint8 :: ign(8) :: ascii).dropUnits.as[Foo]
       roundtrip(codec, Foo(1, 2, "test"))
     }

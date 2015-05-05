@@ -3,7 +3,6 @@ import language.higherKinds
 import shapeless._
 import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, Mapper}
 import poly._
-import scodec.bits._
 
 /**
  * Combinator library for working with binary data.

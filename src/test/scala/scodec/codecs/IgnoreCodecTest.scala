@@ -6,7 +6,7 @@ import scodec.bits.BitVector
 class IgnoreCodecTest extends CodecSuite {
 
   // The scalatest ignore method shadows this
-  def ign(size: Int) = scodec.codecs.ignore(size)
+  def ign(size: Int) = scodec.codecs.ignore(size.toLong)
 
   "the ignore codec" should {
     "roundtrip" in {

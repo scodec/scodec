@@ -71,7 +71,7 @@ trait Decoder[+A] { self =>
       if (result.remainder.isEmpty) Attempt.successful(result) else {
         val rem = result.remainder
         Attempt.failure {
-          val max = 512
+          val max = 512L
           if (rem.sizeLessThan(max + 1)) {
             val preview = rem.take(max)
             Err(s"${preview.size} bits remaining: 0x${preview.toHex}")

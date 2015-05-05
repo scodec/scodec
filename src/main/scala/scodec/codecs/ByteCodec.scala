@@ -14,7 +14,7 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
 
   private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} byte"
 
-  override def sizeBound = SizeBound.exact(bits)
+  override def sizeBound = SizeBound.exact(bits.toLong)
 
   override def encode(b: Byte) = {
     if (b > MaxValue) {
@@ -27,9 +27,9 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
   }
 
   override def decode(buffer: BitVector) =
-    buffer.acquire(bits) match {
-      case Left(e) => Attempt.failure(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => Attempt.successful(DecodeResult(b.toByte(signed), buffer.drop(bits)))
+    buffer.acquire(bits.toLong) match {
+      case Left(e) => Attempt.failure(Err.insufficientBits(bits.toLong, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(b.toByte(signed), buffer.drop(bits.toLong)))
     }
 
   override def toString = description

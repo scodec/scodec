@@ -5,7 +5,7 @@ import org.scalacheck.Gen
 import scodec.bits.BitVector
 
 class LongCodecTest extends CodecSuite {
-  def check(low: Long, high: Long)(f: (Long) => Unit) {
+  def check(low: Long, high: Long)(f: (Long) => Unit): Unit = {
     forAll(Gen.choose(low, high)) { n =>
       whenever(n >= low) { f(n) }
     }

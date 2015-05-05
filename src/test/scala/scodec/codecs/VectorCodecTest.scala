@@ -4,7 +4,6 @@ package codecs
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
 import scodec.bits._
-import scodec.codecs._
 
 class VectorCodecTest extends CodecSuite {
 
@@ -24,7 +23,7 @@ class VectorCodecTest extends CodecSuite {
           encodeTime + decodeTime
         }
       }.drop(1) // drop first iteration to allow for JIT
-      val avgs = results.reduceLeft((x, y) => (x zip y) map { case (a, b) => a + b }).map { _ / results.size }
+      val avgs = results.reduceLeft((x, y) => (x zip y) map { case (a, b) => a + b }).map { _ / results.size.toLong }
       info("Roundtrip averages:")
       (sizes zip avgs).foreach { case (size, avg) => info(s"  $size - $avg") }
     }

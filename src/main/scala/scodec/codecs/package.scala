@@ -125,8 +125,8 @@ package object codecs {
    * @group bits
    */
   def bytes(size: Int): Codec[ByteVector] = new Codec[ByteVector] {
-    private val codec = fixedSizeBytes(size, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector)
-    def sizeBound = SizeBound.exact(size * 8)
+    private val codec = fixedSizeBytes(size.toLong, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector)
+    def sizeBound = SizeBound.exact(size * 8L)
     def encode(b: ByteVector) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"bytes($size)"
@@ -715,7 +715,7 @@ package object codecs {
    * @group combinators
    */
   def variableSizeBits[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
-    variableSizeBitsLong(widenIntToLong(size), value, sizePadding)
+    variableSizeBitsLong(widenIntToLong(size), value, sizePadding.toLong)
 
   /**
    * Byte equivalent of [[variableSizeBits]].
@@ -725,10 +725,10 @@ package object codecs {
    * @group combinators
    */
   def variableSizeBytes[A](size: Codec[Int], value: Codec[A], sizePadding: Int = 0): Codec[A] =
-    variableSizeBytesLong(widenIntToLong(size), value, sizePadding)
+    variableSizeBytesLong(widenIntToLong(size), value, sizePadding.toLong)
 
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
-    c.widen[Long](i => i, l => if (l > Int.MaxValue || l < Int.MinValue) Attempt.failure(Err(s"$l cannot be converted to an integer")) else Attempt.successful(l.toInt)).withToString(c.toString)
+    c.widen[Long](i => i.toLong, l => if (l > Int.MaxValue || l < Int.MinValue) Attempt.failure(Err(s"$l cannot be converted to an integer")) else Attempt.successful(l.toInt)).withToString(c.toString)
 
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
@@ -1053,7 +1053,7 @@ package object codecs {
    * @group crypto
    */
   def fixedSizeSignature[A](size: Int)(codec: Codec[A])(implicit signerFactory: SignerFactory): Codec[A] =
-    new SignatureCodec(codec, fixedSizeBytes(size, BitVectorCodec))(signerFactory)
+    new SignatureCodec(codec, fixedSizeBytes(size.toLong, BitVectorCodec))(signerFactory)
 
   /**
    * Codec that includes a signature of the encoded bits.

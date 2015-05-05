@@ -13,6 +13,7 @@ class TupleCodecTest extends CodecSuite {
 
     "provide a type alias for left nested tuples" in {
       (uint8 ~ uint8 ~ ascii): Codec[Int ~ Int ~ String]
+      ()
     }
 
     "roundtrip" in {
@@ -34,6 +35,7 @@ class TupleCodecTest extends CodecSuite {
       }
 
       (int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8).flattenLeftPairs
+      ()
     }
 
     "allow extraction via ~ operator" in {

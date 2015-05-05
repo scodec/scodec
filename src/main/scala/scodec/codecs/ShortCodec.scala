@@ -14,7 +14,7 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
 
   private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} short"
 
-  override def sizeBound = SizeBound.exact(bits)
+  override def sizeBound = SizeBound.exact(bits.toLong)
 
   override def encode(s: Short) = {
     if (s > MaxValue) {
@@ -27,9 +27,9 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
   }
 
   override def decode(buffer: BitVector) =
-    buffer.acquire(bits) match {
-      case Left(e) => Attempt.failure(Err.insufficientBits(bits, buffer.size))
-      case Right(b) => Attempt.successful(DecodeResult(b.toShort(signed, ordering), buffer.drop(bits)))
+    buffer.acquire(bits.toLong) match {
+      case Left(e) => Attempt.failure(Err.insufficientBits(bits.toLong, buffer.size))
+      case Right(b) => Attempt.successful(DecodeResult(b.toShort(signed, ordering), buffer.drop(bits.toLong)))
     }
 
   override def toString = description

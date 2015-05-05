@@ -3,9 +3,6 @@ package scodec
 import scodec.bits._
 import scodec.codecs._
 import shapeless._
-import shapeless.record._
-import shapeless.union._
-import shapeless.syntax.singleton._
 
 class CodecTest extends CodecSuite {
   sealed trait Parent
@@ -15,7 +12,7 @@ class CodecTest extends CodecSuite {
   "all codecs" should {
 
     "support flatZip" in {
-      val codec = uint8 flatZip { n => fixedSizeBits(n, ascii) }
+      val codec = uint8 flatZip { n => fixedSizeBits(n.toLong, ascii) }
       roundtripAll(codec, Seq((0, ""), (8, "a"), (32, "test")))
     }
 
@@ -39,11 +36,12 @@ class CodecTest extends CodecSuite {
       "supports destructuring case classes in to HLists" in {
         import shapeless._
         uint8.hlist.as[Bar].as[Int :: HNil]
+        ()
       }
 
       "supports destructuring singleton case classes in to values" in {
-        import shapeless._
         uint8.hlist.as[Bar].as[Int]
+        ()
       }
 
       "supports converting from a coproduct to a sealed class hierarchy, regardless of order in which types appear" in {
@@ -75,7 +73,6 @@ class CodecTest extends CodecSuite {
     "be usable as constant codecs" in {
       import scodec.codecs.literals._
       (1 ~> uint8).encode(2) shouldBe Attempt.successful(hex"0102".bits)
-      (1.toByte ~> uint8).encode(2) shouldBe Attempt.successful(hex"0102".bits)
       (hex"11223344" ~> uint8).encode(2) shouldBe Attempt.successful(hex"1122334402".bits)
       (hex"11223344".bits ~> uint8).encode(2) shouldBe Attempt.successful(hex"1122334402".bits)
     }
@@ -105,12 +102,12 @@ class CodecTest extends CodecSuite {
   }
 
   def i2l(i: Int): Long = i.toLong
-  def l2i(l: Long): Attempt[Int] = if (l >= Int.MinValue && l <= Int.MaxValue) Attempt.successful(l.toShort) else Attempt.failure(Err("out of range"))
+  def l2i(l: Long): Attempt[Int] = if (l >= Int.MinValue && l <= Int.MaxValue) Attempt.successful(l.toInt) else Attempt.failure(Err("out of range"))
 
   "narrow" should {
     "support converting to a smaller type" in {
       val narrowed: Codec[Int] = uint32.narrow(l2i, i2l)
-      forAll { (n: Int) => narrowed.encode(n) shouldBe uint32.encode(n) }
+      forAll { (n: Int) => narrowed.encode(n) shouldBe uint32.encode(n.toLong) }
     }
   }
 

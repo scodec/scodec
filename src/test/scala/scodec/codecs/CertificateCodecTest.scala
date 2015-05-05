@@ -6,7 +6,6 @@ import java.security.KeyPairGenerator
 import java.security.cert.{ Certificate, CertificateFactory, X509Certificate }
 import java.util.Date
 import org.bouncycastle.asn1.x500.X500Name
-import org.bouncycastle.cert._
 import org.bouncycastle.cert.jcajce._
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 
