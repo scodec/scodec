@@ -17,7 +17,7 @@ import shapeless.HList
  * === Bits and Bytes Codecs ===
  *
  * The simplest of the provided codecs are those that encode/decode `BitVector`s and `ByteVectors` directly.
- * These are provided by [[bits]] and [[bytes]] methods. These codecs encode all of the bits/bytes directly
+ * These are provided by `bits` and `bytes` methods. These codecs encode all of the bits/bytes directly
  * in to the result and decode *all* of the remaining bits/bytes in to the result value. That is, the result
  * of `decode` always returns a empty bit vector for the remaining bits.
  *
@@ -25,7 +25,7 @@ import shapeless.HList
  * encode a fixed number of bits/bytes (or error if not provided the correct size) and decoded a fixed number
  * of bits/bytes (or error if that many bits/bytes are not available).
  *
- * There are more specialized codecs for working with bits, including [[ignore]] and [[constant]].
+ * There are more specialized codecs for working with bits, including `ignore` and `constant`.
  *
  *
  * === Numeric Codecs ===
@@ -33,7 +33,7 @@ import shapeless.HList
  * There are built-in codecs for `Int`, `Long`, `Float`, and `Double`.
  *
  * There are a number of predefined integral codecs named using the form: {{{
- [u]int${size}[L]
+ [u]int$${size}[L]
  }}}
  * where `u` stands for unsigned, `size` is replaced by one of `8, 16, 24, 32, 64`, and `L` stands for little-endian.
  * For each codec of that form, the type is `Codec[Int]` or `Codec[Long]` depending on the specified size.
@@ -51,7 +51,7 @@ import shapeless.HList
  *
  * In addition to the numeric codecs, there are built-in codecs for `Boolean`, `String`, and `UUID`.
  *
- * Boolean values are supported by the [[bool]] codecs.
+ * Boolean values are supported by the `bool` codecs.
  *
  *
  * === Combinators ===
