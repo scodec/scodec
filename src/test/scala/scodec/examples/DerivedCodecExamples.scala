@@ -1,8 +1,6 @@
 package scodec
 package examples
 
-import shapeless._
-
 import scodec.bits._
 import codecs._
 import implicits._

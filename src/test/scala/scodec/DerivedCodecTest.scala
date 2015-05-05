@@ -3,7 +3,6 @@ package scodec
 import scodec.bits._
 import scodec.codecs._
 import shapeless._
-import shapeless.record._
 import shapeless.union._
 import shapeless.syntax.singleton._
 

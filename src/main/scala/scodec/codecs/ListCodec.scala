@@ -7,7 +7,7 @@ private[codecs] final class ListCodec[A](codec: Codec[A], limit: Option[Int] = N
 
   def sizeBound = limit match {
     case None => SizeBound.unknown
-    case Some(lim) => codec.sizeBound * lim
+    case Some(lim) => codec.sizeBound * lim.toLong
   }
 
   def encode(list: List[A]) = Encoder.encodeSeq(codec)(list)

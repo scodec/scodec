@@ -5,9 +5,6 @@ import language.implicitConversions
 
 import shapeless._
 import labelled.FieldType
-import record._
-import ops.coproduct._
-import ops.hlist._
 
 import scodec.bits._
 

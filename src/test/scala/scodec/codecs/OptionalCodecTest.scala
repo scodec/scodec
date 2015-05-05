@@ -2,7 +2,6 @@ package scodec
 package codecs
 
 import scodec.bits.BitVector
-import scodec.codecs._
 
 class OptionalCodecTest extends CodecSuite {
 

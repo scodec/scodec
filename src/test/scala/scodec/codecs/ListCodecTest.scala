@@ -2,7 +2,6 @@ package scodec
 package codecs
 
 import scodec.bits._
-import scodec.codecs._
 
 class ListCodecTest extends CodecSuite {
 

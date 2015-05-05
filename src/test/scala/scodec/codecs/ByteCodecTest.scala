@@ -5,7 +5,7 @@ import org.scalacheck.Gen
 import scodec.bits.BitVector
 
 class ByteCodecTest extends CodecSuite {
-  def check(low: Byte, high: Byte)(f: (Byte) => Unit) {
+  def check(low: Byte, high: Byte)(f: (Byte) => Unit): Unit = {
     forAll(Gen.choose(low, high)) { n =>
       whenever(n >= low) { f(n) }
     }

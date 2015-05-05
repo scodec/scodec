@@ -2,10 +2,7 @@ package scodec
 
 import shapeless._
 import shapeless.labelled.FieldType
-import shapeless.record._
-import shapeless.ops.hlist._
 import shapeless.ops.record._
-import shapeless.syntax._
 
 import scodec.bits.BitVector
 

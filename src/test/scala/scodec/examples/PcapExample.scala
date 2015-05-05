@@ -2,7 +2,6 @@ package scodec
 package examples
 
 import scala.concurrent.duration._
-import shapeless._
 
 import scodec.bits.BitVector
 
@@ -57,7 +56,7 @@ object PcapCodec {
 
   implicit def pcapRecord(implicit ordering: ByteOrdering) = {
     ("record_header"    | pcapRecordHeader                   ) >>:~ { hdr =>
-    ("record_data"      | bits(hdr.includedLength.toInt * 8) ).hlist
+    ("record_data"      | bits(hdr.includedLength * 8) ).hlist
   }}.as[PcapRecord]
 
   case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
@@ -77,6 +76,7 @@ class PcapExample extends CodecSuite {
     "support reading an entire file and then decoding it all" in {
       pending
       Codec.decode[PcapFile](bits)
+      ()
     }
 
     "support reading the file header and then decoding each record, combining results via a monoid" in {
