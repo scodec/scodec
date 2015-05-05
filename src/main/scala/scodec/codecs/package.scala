@@ -667,6 +667,37 @@ package object codecs {
    }
 
   /**
+   * Codec that limits the number of bits the specified codec works with.
+   *
+   * When encoding, if encoding with the specified codec
+   * results in less than the specified size, the vector is returned with no padding. If the result is larger than the specified
+   * size, an encoding error is returned. This differs from `fixedSizeBits` by not padding encoded vectors less than the specified
+   * size.
+   *
+   * When decoding, the specified codec is only given `size` bits. If the specified codec does not consume all the bits it was
+   * given, any remaining bits are returned with the overall remainder.
+   *
+   * @param size number of bits
+   * @param codec codec to limit
+   * @group combinators
+   */
+  def limitedSizeBits[A](limit: Long, codec: Codec[A]): Codec[A] = new LimitedSizeCodec(limit, codec)
+
+  /**
+   * Byte equivalent of [[limitedSizeBits]].
+   * @param size number of bytes
+   * @param codec codec to limit
+   * @group combinators
+   */
+  def limitedSizeBytes[A](limit: Long, codec: Codec[A]): Codec[A] = new Codec[A] {
+    private val fcodec = limitedSizeBits(limit * 8, codec)
+    def sizeBound = fcodec.sizeBound
+    def encode(a: A) = fcodec.encode(a)
+    def decode(b: BitVector) = fcodec.decode(b)
+    override def toString = s"limitedSizeBytes($limit, $codec)"
+  }
+
+  /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
    * For example, encoding the string `"hello"` with `variableSizeBits(uint8, ascii)` yields a vector of 6 bytes -- the first byte being
