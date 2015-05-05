@@ -18,13 +18,12 @@ private[codecs] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) exten
   } yield result
 
   override def decode(buffer: BitVector) = {
-    val limited = buffer.take(size)
-    codec.decode(limited) match {
-      case s: Attempt.Successful[DecodeResult[A]] =>
-        Attempt.successful(DecodeResult(s.value.value, buffer.drop(size)))
-      case f: Attempt.Failure =>
-        if (limited.size < size) Attempt.failure(Err.insufficientBits(size, buffer.size))
-        else f
+    if (buffer.sizeGreaterThanOrEqual(size)) {
+      codec.decode(buffer.take(size)) map { res =>
+        DecodeResult(res.value, buffer.drop(size))
+      }
+    } else {
+      Attempt.failure(Err.insufficientBits(size, buffer.size))
     }
   }
 
