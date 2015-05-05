@@ -12,9 +12,11 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteO
   val MaxValue = (1 << (if (signed) (bits - 1) else bits)) - 1
   val MinValue = if (signed) -(1 << (bits - 1)) else 0
 
+  private val bitsL = bits.toLong
+
   private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} integer"
 
-  override def sizeBound = SizeBound.exact(bits.toLong)
+  override def sizeBound = SizeBound.exact(bitsL)
 
   override def encode(i: Int) = {
     if (i > MaxValue) {
@@ -26,11 +28,12 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteO
     }
   }
 
-  override def decode(buffer: BitVector) =
-    buffer.acquire(bits.toLong) match {
-      case Left(e) => Attempt.failure(Err.insufficientBits(bits.toLong, buffer.size))
-      case Right(b) => Attempt.successful(DecodeResult(b.toInt(signed, ordering), buffer.drop(bits.toLong)))
-    }
+  override def decode(buffer: BitVector) = {
+    if (buffer.sizeGreaterThanOrEqual(bitsL))
+      Attempt.successful(DecodeResult(buffer.take(bitsL).toInt(signed, ordering), buffer.drop(bitsL)))
+    else
+      Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
+  }
 
   override def toString = description
 }

@@ -427,7 +427,7 @@ package object codecs {
     def sizeBound = SizeBound.exact(n)
     def encode(b: Boolean) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
-    override def toString = "bool($n)"
+    override def toString = s"bool($n)"
   }
 
   /**
