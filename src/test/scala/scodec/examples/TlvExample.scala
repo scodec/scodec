@@ -60,10 +60,7 @@ class TlvExample extends CodecSuite {
       implicit val leftDiscriminator: Discriminator[Command, TurnLeft, Int] = Discriminator(2)
       implicit val rightDiscriminator: Discriminator[Command, TurnRight, Int] = Discriminator(3)
 
-      val codec: Codec[Either[UnrecognizedCommand, Command]] = choice(
-        Codec[Command].xmap[Right[UnrecognizedCommand, Command]](c => Right(c), _.b).upcast,
-        unrecognizedCodec.xmap[Left[UnrecognizedCommand, Command]](r => Left(r), _.a).upcast
-      )
+      val codec: Codec[Either[UnrecognizedCommand, Command]] = discriminatorFallback(unrecognizedCodec, Codec[Command])
 
       roundtrip(codec, Right(Go))
       roundtrip(codec, Right(Stop))
