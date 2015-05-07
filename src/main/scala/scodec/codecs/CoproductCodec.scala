@@ -4,6 +4,7 @@ package codecs
 import language.implicitConversions
 
 import shapeless._
+import shapeless.poly.~>
 import labelled.FieldType
 
 import scodec.bits._
@@ -181,8 +182,15 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
    * Automatically generates a `Codec[R]` given an implicit `Discriminated[R, A]` and an implicit
    * `Discriminator[R, X, A]` for each `X` that is a member of the coproduct type that represents `R`.
    */
-  def auto[A](implicit discriminated: Discriminated[R, A], auto: CoproductBuilderAutoDiscriminators[R, C, A]): Codec[R] =
-    discriminatedBy(discriminated.codec).auto
+  def auto[A](implicit discriminated: Discriminated[R, A], auto: CoproductBuilderAutoDiscriminators[R, C, A]): Codec[R] = {
+    val framing = discriminated.framing
+    def frame[LL <: HList](rest: LL): LL = rest match {
+      case HNil => HNil
+      case h :: t => (framing(h.asInstanceOf[Codec[_]]) :: frame(t)).asInstanceOf[LL]
+      // Casts are completely safe - mapping a codec transformation cannot change the shape of an HList of codecs
+    }
+    new CoproductCodecBuilder[C, L, R](frame(codecs), cToR, rToC).discriminatedBy(discriminated.codec).auto
+  }
 
   /**
    * Creates the coproduct codec using the specified integer codec as the discriminator codec

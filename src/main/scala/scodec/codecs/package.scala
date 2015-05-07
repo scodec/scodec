@@ -1228,7 +1228,7 @@ package object codecs {
    */
   final def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
     final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
-      new DiscriminatorCodec[A, B](discriminatorCodec, Vector())
+      new DiscriminatorCodec[A, B](discriminatorCodec, Vector(), CodecTransformation.Id)
   }
 
   /**
