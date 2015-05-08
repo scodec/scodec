@@ -139,5 +139,27 @@ class DiscriminatorCodecTest extends CodecSuite {
       encodeError(codec, 1, new Err.MatchingDiscriminatorNotFound(1))
       encodeError(codec, Int.MaxValue, new Err.MatchingDiscriminatorNotFound(Int.MaxValue))
     }
+
+    "support framing value codecs" in {
+      sealed trait Direction
+      case object Stay extends Direction
+      case class Go(units: Int) extends Direction
+      case class Annotate(message: String) extends Direction
+
+      val stayCodec = provide(Stay)
+      val goCodec = int32.widenOpt[Go](Go.apply, Go.unapply)
+      val annotateCodec = ascii.widenOpt[Annotate](Annotate.apply, Annotate.unapply)
+
+      val codec =
+        discriminated[Direction].by(uint8).
+          typecase(0, stayCodec).
+          typecase(1, goCodec).
+          typecase(2, annotateCodec).
+          framing(new CodecTransformation {
+            def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c)
+          })
+
+      roundtrip(list(codec), List(Stay, Go(1), Annotate("Hello"), Go(2), Stay))
+    }
   }
 }
