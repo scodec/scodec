@@ -304,4 +304,14 @@ package object scodec {
   final implicit class Tuple2CodecSupport[A](val self: Codec[A]) extends AnyVal {
     def ~~[B](B: Codec[B]): codecs.TupleCodec[A,B] = new codecs.TupleCodec[A,B](self, B)
   }
+
+  /** Universally quantified transformation of a `Codec` to a `Codec`. */
+  type CodecTransformation = Codec ~> Codec
+
+  /** Companion for [[CodecTransformation]]. */
+  object CodecTransformation {
+    object Id extends CodecTransformation {
+      def apply[X](c: Codec[X]): Codec[X] = c
+    }
+  }
 }

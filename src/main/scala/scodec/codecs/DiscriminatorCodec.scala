@@ -32,6 +32,10 @@ import DiscriminatorCodec.{ Case, Prism }
    discriminated[AnyVal].by(uint8).typecase(0, bool).typecase(1, int32)
  }}}
  *
+ * Often, the values are size-delimited -- that is, there is a `size` field after the `tag` field and before`
+ * the `value` field. To support this, use the `framing` method to provide a transformation to each
+ * value codec. For example, `framing(new CodecTransformation { def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c) })`.
+ *
  * @see [[discriminated]]
  * @group combinators
  *
@@ -51,7 +55,7 @@ import DiscriminatorCodec.{ Case, Prism }
  * @define paramFromRep function used during decoding that converts an `R` to an `A`
  * @define paramCr codec that encodes/decodes `R`s
  */
-final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B, Any]]) extends Codec[A] with KnownDiscriminatorType[B] {
+final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vector[Case[A, B, Any]], framing: CodecTransformation) extends Codec[A] with KnownDiscriminatorType[B] {
 
   /**
    * $methodCaseCombinator
@@ -308,7 +312,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
   }
 
   private def appendCase[R](c: Case[A, B, R]): DiscriminatorCodec[A, B] =
-    new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]])
+    new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]], framing)
 
   private val matcher: B => Attempt[Case[A, B, Any]] = {
     def errOrCase(b: B, opt: Option[Case[A, B, Any]]) = Attempt.fromOption(opt, new UnknownDiscriminator(b))
@@ -323,13 +327,24 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     }
   }
 
-  def sizeBound = by.sizeBound + SizeBound.choice(cases.iterator.map { _.prism.repCodec.sizeBound })
+  /**
+   * Replaces the current framing logic with the specified codec transformation.
+   *
+   * Every representative codec is wrapped with the framing logic when encoding/decoding.
+   *
+   * @param framing new framing logic
+   * @group discriminator
+   */
+  def framing(framing: CodecTransformation): DiscriminatorCodec[A, B] =
+    new DiscriminatorCodec[A, B](by, cases, framing)
+
+  def sizeBound = by.sizeBound + SizeBound.choice(cases.iterator.map { c => framing(c.prism.repCodec).sizeBound })
 
   def encode(a: A) =
     cases.iterator.flatMap { k =>
       k.prism.preview(a).map { r =>
         by.encode(k.representative)
-          .flatMap { bits => k.prism.repCodec.encode(r).map(bits ++ _) }
+          .flatMap { bits => framing(k.prism.repCodec).encode(r).map(bits ++ _) }
       }.map(List(_)).getOrElse(List())
     }.toStream.headOption match {
       case None => Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
@@ -339,9 +354,8 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
   def decode(bits: BitVector) = (for {
     b <- DecodingContext(by)
     k <- DecodingContext.liftAttempt(matcher(b))
-    r <- DecodingContext(k.prism.repCodec)
+    r <- DecodingContext(framing(k.prism.repCodec))
   } yield k.prism.review(r)).decode(bits)
-
 
   override def toString = s"discriminated($by)"
 }

@@ -427,7 +427,7 @@ package object codecs {
     def sizeBound = SizeBound.exact(n)
     def encode(b: Boolean) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
-    override def toString = "bool($n)"
+    override def toString = s"bool($n)"
   }
 
   /**
@@ -701,13 +701,13 @@ package object codecs {
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
    * For example, encoding the string `"hello"` with `variableSizeBits(uint8, ascii)` yields a vector of 6 bytes -- the first byte being
-   * 0x05 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x28 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * The `size` field can be any `Int` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
    * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
    *
    * For example, encoding `"hello"` with `variableSizeBits(uint8, ascii, 1)` yields a vector of 6 bytes -- the first byte being
-   * 0x06 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x29 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * @param size codec that encodes/decodes the size in bits
    * @param value codec the encodes/decodes the value
@@ -734,13 +734,13 @@ package object codecs {
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
    * For example, encoding the string `"hello"` with `variableSizeBitsLong(uint32, ascii)` yields a vector of 9 bytes -- the first four bytes being
-   * 0x00000005 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x00000028 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * The `size` field can be any `Long` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
    * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
    *
    * For example, encoding `"hello"` with `variableSizeBitsLong(uint32, ascii, 1)` yields a vector of 9 bytes -- the first 4 bytes being
-   * 0x00000006 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x00000029 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * @param size codec that encodes/decodes the size in bits
    * @param value codec the encodes/decodes the value
@@ -763,6 +763,75 @@ package object codecs {
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"variableSizeBytes($size, $value)"
+  }
+
+  /**
+   * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
+   *
+   * For example, encoding `(3, "hello")` with `variableSizePrefixedBits(uint8, int32, ascii)` yields a vector of 10 bytes -- the first byte being
+   * 0x28, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * The `size` field can be any `Int` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
+   * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
+   *
+   * For example, encoding `(3, "hello")` with `variableSizePrefixedBits(uint8, int32, ascii, 1)` yields a vector of 10 bytes -- the first byte being
+   * 0x29, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bits to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBits[A, B](size: Codec[Int], prefix: Codec[A], value: Codec[B], sizePadding: Int = 0): Codec[(A, B)] =
+    variableSizePrefixedBitsLong(widenIntToLong(size), prefix, value, sizePadding.toLong)
+
+  /**
+   * Byte equivalent of [[variableSizePrefixedBits]].
+   * @param size codec that encodes/decodes the size in bytes
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBytes[A, B](size: Codec[Int], prefix: Codec[A], value: Codec[B], sizePadding: Int = 0): Codec[(A, B)] =
+    variableSizePrefixedBytesLong(widenIntToLong(size), prefix, value, sizePadding.toLong)
+
+  /**
+   * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
+   *
+   * For example, encoding the string `(3, "hello")` with `variableSizePrefixedBitsLong(uint32, int32, ascii)` yields a vector of 13 bytes -- the
+   * first four bytes being 0x00000028, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * The `size` field can be any `Long` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
+   * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
+   *
+   * For example, encoding `(3, "hello")` with `variableSizePrefixedBitsLong(uint32, int32, ascii, 1)` yields a vector of 13 bytes -- the first
+   * 4 bytes being 0x00000029, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bits to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBitsLong[A, B](size: Codec[Long], prefix: Codec[A], value: Codec[B], sizePadding: Long = 0): Codec[(A, B)] =
+    new VariableSizePrefixedCodec(size, prefix, value, sizePadding)
+
+  /**
+   * Byte equivalent of [[variableSizePrefixedBitsLong]].
+   * @param size codec that encodes/decodes the size in bytes
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBytesLong[A, B](size: Codec[Long], prefix: Codec[A], value: Codec[B], sizePadding: Long = 0): Codec[(A, B)] = new Codec[(A, B)] {
+    private val codec = variableSizePrefixedBitsLong(size.xmap[Long](_ * 8, _ / 8), prefix, value, sizePadding * 8)
+    def sizeBound = size.sizeBound + value.sizeBound
+    def encode(ab: (A, B)) = codec.encode(ab)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"variableSizePrefixedBytes($size, $prefix, $value)"
   }
 
   /**
@@ -960,19 +1029,36 @@ package object codecs {
     }
 
   /**
-   * Either codec that supports vectors of form `indicator ++ (left or right)` where a
+   * Either codec that supports bit vectors of form `indicator ++ (left or right)` where a
    * value of `false` for the indicator indicates it is followed by a left value and a value
    * of `true` indicates it is followed by a right value.
+   *
    * @param indicator codec that encodes/decodes false for left and true for right
    * @param left codec the encodes a left value
    * @param right codec the encodes a right value
    * @group combinators
    */
-  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[Either[L,R]] =
-    discriminated[Either[L,R]].by(indicator)
+  def either[L, R](indicator: Codec[Boolean], left: Codec[L], right: Codec[R]): Codec[Either[L, R]] =
+    discriminated[Either[L, R]].by(indicator)
     .| (false) { case Left(l)  => l } (Left.apply) (left)
     .| (true)  { case Right(r) => r } (Right.apply) (right)
 
+  /**
+   * Either codec that supports bit vectors of form `left or right` where the right codec
+   * is consulted first when decoding. If the right codec fails to decode, the left codec
+   * is used.
+   *
+   * @param left codec the encodes a left value
+   * @param right codec the encodes a right value
+   * @group combinators
+   */
+  def fallback[L, R](left: Codec[L], right: Codec[R]): Codec[Either[L, R]] = new Codec[Either[L, R]] {
+    def sizeBound = left.sizeBound | right.sizeBound
+    def encode(e: Either[L, R]) = e.fold(left.encode, right.encode)
+    def decode(b: BitVector) = right.decode(b).map(_.map(Right(_))).recoverWith {
+      case _ => left.decode(b).map(_.map(Left(_)))
+    }
+  }
 
   /**
    * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
@@ -1196,39 +1282,26 @@ package object codecs {
      .build
    }}}
 
-   This encodes an `Either[A,B]` by checking the given patterns
-   in sequence from top to bottom. For the first pattern that matches,
-   it emits the corresponding discriminator value: `0` for `Left`
-   and `1` for `Right`, encoded via the `uint8` codec. It then emits
-   either an encoded `A`, encoded using `codecA`, or an encoded `B`,
-   using `codecB`.
-
-   Decoding is the mirror of this; the returned `codecE` will first
-   read an `Int`, using the `uint8` codec. If it is a `0`, it then
-   runs `codecA`, and injects the result into `Either` via `Left.apply`.
-   If it is a `1`, it runs `codecB` and injects the result into `Either`
-   via `Right.apply`.
-
-   There are a few variations on this syntax, depending on whether you
-   have a `PartialFunction` from the base type or an `B => Option[S]`
-   function from the base type to the subcase.
-
-   If you you already have a codec specific to the case, you can omit
-   the 'injection' function. For instance: {{{
-     val leftCodec: Codec[Left[A,B]] = codecA.widenOpt(Left.apply, Left.unapply)
-     val rightCodec: Codec[Right[A,B]] = codecB.widenOpt(Left.apply, Left.unapply)
-     val codecE: Codec[Either[A,B]] =
-       discriminated[Either[A,B]].by(uint8)
-       .\ (0) { case l@Left(_) => l } (leftCodec) // backslash instead of '|'
-       .\ (1) { case r@Right(_) => r } (rightCodec)
-   }}}
-
-   The actual formatted bits are identical with either formulation.
+   * This encodes an `Either[A,B]` by checking the given patterns
+   * in sequence from top to bottom. For the first pattern that matches,
+   * it emits the corresponding discriminator value: `0` for `Left`
+   * and `1` for `Right`, encoded via the `uint8` codec. It then emits
+   * either an encoded `A`, encoded using `codecA`, or an encoded `B`,
+   * using `codecB`.
+   *
+   * Decoding is the mirror of this; the returned `codecE` will first
+   * read an `Int`, using the `uint8` codec. If it is a `0`, it then
+   * runs `codecA`, and injects the result into `Either` via `Left.apply`.
+   * If it is a `1`, it runs `codecB` and injects the result into `Either`
+   * via `Right.apply`.
+   *
+   * There are a few variations on this syntax. See [[DiscriminatorCodec]] for details.
+   *
    * @group combinators
    */
-  final def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
+  def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
     final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
-      new DiscriminatorCodec[A, B](discriminatorCodec, Vector())
+      new DiscriminatorCodec[A, B](discriminatorCodec, Vector(), CodecTransformation.Id)
   }
 
   /**
@@ -1239,7 +1312,7 @@ package object codecs {
    * @param mappings mapping from tag values to/from enum values
    * @group combinators
    */
-  final def mappedEnum[A, B](discriminatorCodec: Codec[B], mappings: (A, B)*): DiscriminatorCodec[A, B] =
+  def mappedEnum[A, B](discriminatorCodec: Codec[B], mappings: (A, B)*): DiscriminatorCodec[A, B] =
     mappedEnum(discriminatorCodec, mappings.toMap)
 
   /**
@@ -1250,9 +1323,25 @@ package object codecs {
    * @param map mapping from tag values to/from enum values
    * @group combinators
    */
-  final def mappedEnum[A, B](discriminatorCodec: Codec[B], map: Map[A, B]): DiscriminatorCodec[A, B] = {
+  def mappedEnum[A, B](discriminatorCodec: Codec[B], map: Map[A, B]): DiscriminatorCodec[A, B] = {
     map.foldLeft(discriminated[A].by(discriminatorCodec)) { case (acc, (value, tag)) =>
       acc.subcaseO(tag)(a => if (a == value) Some(a) else None)(provide(value))
+    }
+  }
+
+  /**
+   * Alternative to [[fallback]] that only falls back to left codec when the right codec fails to decode
+   * due to an unknown discriminator (i.e., `KnownDiscriminatorType[_]#UnknownDiscriminator`).
+   *
+   * @param left codec to use when the right codec fails due to an unknown discriminator error
+   * @param right codec to use by default when decoding
+   * @group combinators
+   */
+  def discriminatorFallback[L, R](left: Codec[L], right: Codec[R]): Codec[Either[L, R]] = new Codec[Either[L, R]] {
+    def sizeBound = left.sizeBound | right.sizeBound
+    def encode(e: Either[L, R]) = e.fold(left.encode, right.encode)
+    def decode(b: BitVector) = right.decode(b).map(_.map(Right(_))).recoverWith {
+      case _: KnownDiscriminatorType[_]#UnknownDiscriminator => left.decode(b).map(_.map(Left(_)))
     }
   }
 
@@ -1262,7 +1351,7 @@ package object codecs {
    * `Codec[X0 :: X1 :: ... :: Xn :: HNil].
    * @group combinators
    */
-  final def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out = toHListCodec(l)
+  def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out = toHListCodec(l)
 
   /**
    * Wraps a codec and adds logging of each encoding and decoding operation.
@@ -1280,7 +1369,7 @@ package object codecs {
    *
    * @group logging
    */
-  final def logBuilder[A](logEncode: (A, Attempt[BitVector]) => Unit, logDecode: (BitVector, Attempt[DecodeResult[A]]) => Unit)(codec: Codec[A]): Codec[A] = new Codec[A] {
+  def logBuilder[A](logEncode: (A, Attempt[BitVector]) => Unit, logDecode: (BitVector, Attempt[DecodeResult[A]]) => Unit)(codec: Codec[A]): Codec[A] = new Codec[A] {
     override def sizeBound = codec.sizeBound
     override def encode(a: A) = {
       val res = codec.encode(a)
@@ -1301,14 +1390,14 @@ package object codecs {
    * Variant of [[logBuilder]] that only logs successful results.
    * @group logging
    */
-  final def logSuccessesBuilder[A](logEncode: (A, BitVector) => Unit, logDecode: (BitVector, DecodeResult[A]) => Unit)(codec: Codec[A]): Codec[A] =
+  def logSuccessesBuilder[A](logEncode: (A, BitVector) => Unit, logDecode: (BitVector, DecodeResult[A]) => Unit)(codec: Codec[A]): Codec[A] =
     logBuilder[A]((a, r) => r.fold(constUnit, logEncode(a, _)), (b, r) => r.fold(constUnit, logDecode(b, _)))(codec)
 
   /**
    * Variant of [[logBuilder]] that only logs failed results.
    * @group logging
    */
-  final def logFailuresBuilder[A](logEncode: (A, Err) => Unit, logDecode: (BitVector, Err) => Unit)(codec: Codec[A]): Codec[A] =
+  def logFailuresBuilder[A](logEncode: (A, Err) => Unit, logDecode: (BitVector, Err) => Unit)(codec: Codec[A]): Codec[A] =
     logBuilder[A]((a, r) => r.fold(logEncode(a, _), constUnit), (b, r) => r.fold(logDecode(b, _), constUnit))(codec)
 
   /**
@@ -1317,7 +1406,7 @@ package object codecs {
    * @param prefix prefix string to include in each log statement
    * @group logging
    */
-  final def logToStdOut[A](codec: Codec[A], prefix: String = ""): Codec[A] = {
+  def logToStdOut[A](codec: Codec[A], prefix: String = ""): Codec[A] = {
     val pfx = if (prefix.isEmpty) "" else s"$prefix: "
     logBuilder[A]((a, r) => println(s"${pfx}encoded $a to $r"), (b, r) => println(s"${pfx}decoded $b to $r"))(codec)
   }
@@ -1328,7 +1417,7 @@ package object codecs {
    * @param prefix prefix string to include in each log statement
    * @group logging
    */
-  final def logFailuresToStdOut[A](codec: Codec[A], prefix: String = ""): Codec[A] = {
+  def logFailuresToStdOut[A](codec: Codec[A], prefix: String = ""): Codec[A] = {
     val pfx = if (prefix.isEmpty) "" else s"$prefix: "
     logFailuresBuilder[A]((a, e) => println(s"${pfx}failed to encode $a: $e"), (b, e) => println(s"${pfx}failed to decode $b: $e"))(codec)
   }
