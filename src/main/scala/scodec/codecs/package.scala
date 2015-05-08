@@ -701,13 +701,13 @@ package object codecs {
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
    * For example, encoding the string `"hello"` with `variableSizeBits(uint8, ascii)` yields a vector of 6 bytes -- the first byte being
-   * 0x05 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x28 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * The `size` field can be any `Int` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
    * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
    *
    * For example, encoding `"hello"` with `variableSizeBits(uint8, ascii, 1)` yields a vector of 6 bytes -- the first byte being
-   * 0x06 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x29 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * @param size codec that encodes/decodes the size in bits
    * @param value codec the encodes/decodes the value
@@ -734,13 +734,13 @@ package object codecs {
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
    * For example, encoding the string `"hello"` with `variableSizeBitsLong(uint32, ascii)` yields a vector of 9 bytes -- the first four bytes being
-   * 0x00000005 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x00000028 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * The `size` field can be any `Long` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
    * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
    *
    * For example, encoding `"hello"` with `variableSizeBitsLong(uint32, ascii, 1)` yields a vector of 9 bytes -- the first 4 bytes being
-   * 0x00000006 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
+   * 0x00000029 and the next 5 bytes being the US-ASCII encoding of `"hello"`.
    *
    * @param size codec that encodes/decodes the size in bits
    * @param value codec the encodes/decodes the value
@@ -763,6 +763,75 @@ package object codecs {
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"variableSizeBytes($size, $value)"
+  }
+
+  /**
+   * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
+   *
+   * For example, encoding `(3, "hello")` with `variableSizePrefixedBits(uint8, int32, ascii)` yields a vector of 10 bytes -- the first byte being
+   * 0x28, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * The `size` field can be any `Int` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
+   * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
+   *
+   * For example, encoding `(3, "hello")` with `variableSizePrefixedBits(uint8, int32, ascii, 1)` yields a vector of 10 bytes -- the first byte being
+   * 0x29, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bits to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBits[A, B](size: Codec[Int], prefix: Codec[A], value: Codec[B], sizePadding: Int = 0): Codec[(A, B)] =
+    variableSizePrefixedBitsLong(widenIntToLong(size), prefix, value, sizePadding.toLong)
+
+  /**
+   * Byte equivalent of [[variableSizePrefixedBits]].
+   * @param size codec that encodes/decodes the size in bytes
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBytes[A, B](size: Codec[Int], prefix: Codec[A], value: Codec[B], sizePadding: Int = 0): Codec[(A, B)] =
+    variableSizePrefixedBytesLong(widenIntToLong(size), prefix, value, sizePadding.toLong)
+
+  /**
+   * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
+   *
+   * For example, encoding the string `(3, "hello")` with `variableSizePrefixedBitsLong(uint32, int32, ascii)` yields a vector of 13 bytes -- the
+   * first four bytes being 0x00000028, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * The `size` field can be any `Long` codec. An optional padding can be applied to the size field. The `sizePadding` is added to
+   * the calculated size before encoding, and subtracted from the decoded size before decoding the value.
+   *
+   * For example, encoding `(3, "hello")` with `variableSizePrefixedBitsLong(uint32, int32, ascii, 1)` yields a vector of 13 bytes -- the first
+   * 4 bytes being 0x00000029, the next 4 bytes being 0x00000003, and the last 5 bytes being the US-ASCII encoding of `"hello"`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bits to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBitsLong[A, B](size: Codec[Long], prefix: Codec[A], value: Codec[B], sizePadding: Long = 0): Codec[(A, B)] =
+    new VariableSizePrefixedCodec(size, prefix, value, sizePadding)
+
+  /**
+   * Byte equivalent of [[variableSizePrefixedBitsLong]].
+   * @param size codec that encodes/decodes the size in bytes
+   * @param prefix codec that encodes/decodes the prefix
+   * @param value codec the encodes/decodes the value
+   * @param sizePadding number of bytes to add to the size before encoding (and subtract from the size before decoding)
+   * @group combinators
+   */
+  def variableSizePrefixedBytesLong[A, B](size: Codec[Long], prefix: Codec[A], value: Codec[B], sizePadding: Long = 0): Codec[(A, B)] = new Codec[(A, B)] {
+    private val codec = variableSizePrefixedBitsLong(size.xmap[Long](_ * 8, _ / 8), prefix, value, sizePadding * 8)
+    def sizeBound = size.sizeBound + value.sizeBound
+    def encode(ab: (A, B)) = codec.encode(ab)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"variableSizePrefixedBytes($size, $prefix, $value)"
   }
 
   /**

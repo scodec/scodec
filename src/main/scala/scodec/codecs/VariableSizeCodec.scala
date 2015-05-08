@@ -5,7 +5,7 @@ import scodec.bits.BitVector
 
 private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Long], valueCodec: Codec[A], sizePadding: Long) extends Codec[A] {
 
-  private val decoder = sizeCodec flatZip { sz => fixedSizeBits(sz - sizePadding, valueCodec) }
+  private val decoder = sizeCodec flatMap { sz => fixedSizeBits(sz - sizePadding, valueCodec) }
 
   def sizeBound = sizeCodec.sizeBound.atLeast
 
@@ -18,7 +18,7 @@ private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Long], valueCo
     Err(s"[$a] is too long to be encoded: $msg")
 
   override def decode(buffer: BitVector) =
-    decoder.decode(buffer).map { _ map { case (sz, value) => value } }
+    decoder.decode(buffer)
 
   override def toString = s"variableSizeBits($sizeCodec, $valueCodec)"
 }
