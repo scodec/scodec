@@ -4,7 +4,6 @@ package codecs
 import language.implicitConversions
 
 import shapeless._
-import shapeless.poly.~>
 import labelled.FieldType
 
 import scodec.bits._
