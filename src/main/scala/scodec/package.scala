@@ -139,7 +139,7 @@ package object scodec {
     ): Codec[LB] = HListCodec.append(self, codec)
 
     /**
-     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec the encodes/decodes
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
      * the `HList K` followed by the `HList L`.
      * @group hlist
      */
@@ -150,7 +150,7 @@ package object scodec {
     ): Codec[KL] = HListCodec.concat(k, self)
 
     /**
-     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec the encodes/decodes
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
      * the `HList L` followed by the `HList M`, where the latter is encoded/decoded with the codec
      * returned from applying `L` to `f`.
      * @group hlist
@@ -162,7 +162,7 @@ package object scodec {
     ): Codec[LM] = HListCodec.flatConcat(self, f)
 
     /**
-     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec the encodes/decodes
+     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
      * the `HList L` followed by the value `A`, where the latter is encoded/decoded with the codec
      * returned from applying `L` to `f`.
      * @group hlist
