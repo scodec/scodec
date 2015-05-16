@@ -5,6 +5,8 @@ import language.higherKinds
 import shapeless._
 import shapeless.ops.coproduct.Align
 
+import scodec.codecs.DropUnits
+
 /** Typeclass that describes type constructors that support the `exmap` operation. */
 abstract class Transform[F[_]] { self =>
 
@@ -113,6 +115,16 @@ object Transformer extends TransformerLowPriority {
   /** Builds a `Transformer[A, B]` from a Shapeless `Generic`. */
   implicit def fromGenericReverse[A, Repr, B](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): Transformer[A, B]  = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.from(a), b => gen.to(b))
+  }
+
+  /** Builds a `Transformer[A, B]` from a Shapeless `Generic` for `A` where the representation is an `HList` which is compatible with the `HList B` with units removed. */
+  implicit def fromHListWithUnits[A, Repr <: HList, B <: HList](implicit gen: Generic.Aux[A, Repr], du: DropUnits.Aux[B, Repr]): Transformer[A, B] = new Transformer[A, B] {
+    def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => du.addUnits(gen.to(a)), b => gen.from(du.removeUnits(b)))
+  }
+
+  /** Builds a `Transformer[A, B]` from a Shapeless `Generic` for `B` where the representation is an `HList` which is compatible with the `HList A` with units removed. */
+  implicit def fromHListWithUnitsReverse[A <: HList, Repr <: HList, B](implicit gen: Generic.Aux[B, Repr], du: DropUnits.Aux[A, Repr]): Transformer[A, B]  = new Transformer[A, B] {
+    def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.from(du.removeUnits(a)), b => du.addUnits(gen.to(b)))
   }
 
   /** Builds a `Transformer[A, B]` for value `A` and singleton case class `B`. */
