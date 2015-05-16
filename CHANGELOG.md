@@ -6,6 +6,7 @@
  - Added support for value codec framing to `DiscriminatorCodec` and auto-generated coproduct codecs. See `TlvExample` for usage.
  - Added `fallback` and `discriminatorFallback` combinators.
  - Added `variableSizePrefixed{Bits,Bytes}` and `variableSizePrefixed{Bits,Bytes}Long` combinators for working with binary shapes like `size ++ prefix ++ value` where `size` encodes the length of `value`.
+ - The `.as[CaseClass]` syntax now automatically drops unit values from the `HList` representation.
 
 1.7.1
 =====

@@ -23,7 +23,7 @@ class CodecTest extends CodecSuite {
       codec.complete.decode(BitVector.fill(2000)(false)) shouldBe Attempt.failure(Err("more than 512 bits remaining"))
     }
 
-    "support as method for converting to a new codec using implicit isomorphism," which {
+    "support as method for converting to a new codec using implicit transform," which {
 
       "works with HList codecs of 1 element" in {
         roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
@@ -52,6 +52,11 @@ class CodecTest extends CodecSuite {
 
         val outOfOrder = (foo :+: bar).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]
         roundtripAll(outOfOrder, Seq(Foo(1, 2, "Hi"), Bar(1)))
+      }
+
+      "supports implicitly dropping unit values from an HList" in {
+        val c = (uint2 :: uint2 :: ignore(4) :: utf8_32).as[Foo]
+        roundtrip(c, Foo(1, 2, "Hi"))
       }
     }
 
