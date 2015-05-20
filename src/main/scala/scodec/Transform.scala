@@ -83,57 +83,51 @@ abstract class Transformer[A, B] {
   def apply[F[_]: Transform](fa: F[A]): F[B]
 }
 
-/** Low priority `Transformer` builders. */
-sealed abstract class TransformerLowPriority {
-
-  /** Builds a `Transformer[A, B]` where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
-  implicit def alignCoproduct[B, Repr <: Coproduct, AlignedRepr <: Coproduct, A](implicit
-    gen: Generic.Aux[B, Repr],
-    aToAligned: A =:= AlignedRepr,
-    alignedToA: AlignedRepr =:= A,
-    toAligned: Align[Repr, AlignedRepr],
-    fromAligned: Align[AlignedRepr, Repr]
-  ): Transformer[A, B] = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] =
-      fa.xmap(a => gen.from(fromAligned(aToAligned(a))), b => alignedToA(toAligned(gen.to(b))))
-  }
-}
-
 /** Companion for [[Transformer]]. */
-object Transformer extends TransformerLowPriority {
+object Transformer {
 
   /** Identity transformer. */
   implicit def id[A]: Transformer[A, A] = new Transformer[A, A] {
     def apply[F[_]: Transform](fa: F[A]): F[A] = fa
   }
 
-  /** Builds a `Transformer[A, B]` from a Shapeless `Generic`. */
-  implicit def fromGeneric[A, Repr, B](implicit gen: Generic.Aux[A, Repr], bToR: B =:= Repr, rToB: Repr =:= B): Transformer[A, B] = new Transformer[A, B] {
+  /** Builds a `Transformer[A, B]` from a Shapeless `Generic.Aux[A, B]`. */
+  implicit def fromGeneric[A, B](implicit gen: Generic.Aux[A, B]): Transformer[A, B] = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.to(a), b => gen.from(b))
   }
 
-  /** Builds a `Transformer[A, B]` from a Shapeless `Generic`. */
-  implicit def fromGenericReverse[A, Repr, B](implicit gen: Generic.Aux[B, Repr], aToR: A =:= Repr, rToA: Repr =:= A): Transformer[A, B]  = new Transformer[A, B] {
+  /** Builds a `Transformer[A, B]` from a Shapeless `Generic.Aux[B, A]`. */
+  implicit def fromGenericReverse[A, B](implicit gen: Generic.Aux[B, A]): Transformer[A, B]  = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.from(a), b => gen.to(b))
   }
 
   /** Builds a `Transformer[A, B]` from a Shapeless `Generic` for `A` where the representation is an `HList` which is compatible with the `HList B` with units removed. */
-  implicit def fromHListWithUnits[A, Repr <: HList, B <: HList](implicit gen: Generic.Aux[A, Repr], du: DropUnits.Aux[B, Repr]): Transformer[A, B] = new Transformer[A, B] {
+  implicit def fromGenericWithUnitsHList[A, Repr <: HList, B <: HList](implicit gen: Generic.Aux[A, Repr], du: DropUnits.Aux[B, Repr]): Transformer[A, B] = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => du.addUnits(gen.to(a)), b => gen.from(du.removeUnits(b)))
   }
 
   /** Builds a `Transformer[A, B]` from a Shapeless `Generic` for `B` where the representation is an `HList` which is compatible with the `HList A` with units removed. */
-  implicit def fromHListWithUnitsReverse[A <: HList, Repr <: HList, B](implicit gen: Generic.Aux[B, Repr], du: DropUnits.Aux[A, Repr]): Transformer[A, B]  = new Transformer[A, B] {
+  implicit def fromGenericWithUnitsHListReverse[A <: HList, Repr <: HList, B](implicit gen: Generic.Aux[B, Repr], du: DropUnits.Aux[A, Repr]): Transformer[A, B]  = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.from(du.removeUnits(a)), b => du.addUnits(gen.to(b)))
   }
 
+  /** Builds a `Transformer[A, B]` for singleton case class `A` and value `B`. */
+  implicit def fromGenericSingleton[A, B](implicit gen: Generic.Aux[A, B :: HNil]): Transformer[A, B]  = new Transformer[A, B] {
+    def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.to(a).head, b => gen.from(b :: HNil))
+  }
+
   /** Builds a `Transformer[A, B]` for value `A` and singleton case class `B`. */
-  implicit def forSingletonReverse[A, Repr, B](implicit gen: Generic.Aux[B, Repr], aToR: (A :: HNil) =:= Repr, rToA: Repr =:= (A :: HNil)): Transformer[A, B]  = new Transformer[A, B] {
+  implicit def fromGenericSingletonReverse[A, B](implicit gen: Generic.Aux[B, A :: HNil]): Transformer[A, B]  = new Transformer[A, B] {
     def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.from(a :: HNil), b => gen.to(b).head)
   }
 
-  /** Builds a `Transformer[A, B]` for singleton case class `A` and value `B`. */
-  implicit def mkAsSingletonReverse[A, Repr, B](implicit gen: Generic.Aux[A, Repr], bToR: (B :: HNil) =:= Repr, rToB: Repr =:= (B :: HNil)): Transformer[A, B]  = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.to(a).head, b => gen.from(b :: HNil))
+  /** Builds a `Transformer[A, B]` where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
+  implicit def fromGenericWithUnalignedCoproductReverse[B, Repr <: Coproduct, A <: Coproduct](implicit
+    gen: Generic.Aux[B, Repr],
+    toAligned: Align[Repr, A],
+    fromAligned: Align[A, Repr]
+  ): Transformer[A, B] = new Transformer[A, B] {
+    def apply[F[_]: Transform](fa: F[A]): F[B] =
+      fa.xmap(a => gen.from(fromAligned(a)), b => toAligned(gen.to(b)))
   }
 }
