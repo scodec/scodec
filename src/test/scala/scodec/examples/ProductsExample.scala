@@ -47,8 +47,8 @@ class ProductsExample extends CodecSuite {
     "demonstrate use of flatPrepend to encode a dependency on a field" in {
       // Let's build a codec for the binary form:
       //  x_included              bool(1)
-      //  y_included              bool(2)
-      //  z_included              bool(3)
+      //  y_included              bool(1)
+      //  z_included              bool(1)
       //                          ignore(5)
       //  if (x_included) {
       //    x                     uint8
