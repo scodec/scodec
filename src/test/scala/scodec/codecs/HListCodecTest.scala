@@ -10,6 +10,7 @@ class HListCodecTest extends CodecSuite {
   case class Foo(x: Int, y: Int, s: String)
   case class Bar(x: Int)
   case class Baz(a: Int, b: Int, c: Int, d: Int)
+  case class Flags(x: Boolean, y: Boolean, z: Boolean)
 
   "HList codec support" should {
 
@@ -63,6 +64,33 @@ class HListCodecTest extends CodecSuite {
       def ign(size: Int) = scodec.codecs.ignore(size.toLong)
       val codec = (uint8 :: ign(8) :: uint8 :: ign(8) :: ascii).dropUnits.as[Foo]
       roundtrip(codec, Foo(1, 2, "test"))
+    }
+
+    "support removing an element of an HList codec by type" in {
+      val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
+      val valuesWithFlags = flagsCodec flatPrepend { flgs =>
+        conditional(flgs.x, uint8) ::
+        conditional(flgs.y, uint8) ::
+        conditional(flgs.z, uint8)
+      }
+      val values = valuesWithFlags.derive[Flags].from { case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+      values.encode(None :: None :: None :: HNil) shouldBe Attempt.successful(bin"00000000")
+      values.encode(Some(1) :: Some(2) :: Some(3) :: HNil) shouldBe Attempt.successful(bin"11100000 00000001 00000010 00000011")
+      values.encode(Some(1) :: None :: Some(3) :: HNil) shouldBe Attempt.successful(bin"10100000 00000001 00000011")
+      roundtrip(values, Some(1) :: Some(2) :: None :: HNil)
+    }
+
+    "support alternative to flatPrepend+derive pattern that avoids intermediate codec shape" in {
+      val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
+      val values = flagsCodec.consume {
+        flgs => conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+      } {
+        case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined)
+      }
+      values.encode(None :: None :: None :: HNil) shouldBe Attempt.successful(bin"00000000")
+      values.encode(Some(1) :: Some(2) :: Some(3) :: HNil) shouldBe Attempt.successful(bin"11100000 00000001 00000010 00000011")
+      values.encode(Some(1) :: None :: Some(3) :: HNil) shouldBe Attempt.successful(bin"10100000 00000001 00000011")
+      roundtrip(values, Some(1) :: Some(2) :: None :: HNil)
     }
 
     "support mapping a pair of polymorphic functions over an HList codec" in {
