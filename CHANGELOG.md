@@ -7,6 +7,10 @@
  - Added `fallback` and `discriminatorFallback` combinators.
  - Added `variableSizePrefixed{Bits,Bytes}` and `variableSizePrefixed{Bits,Bytes}Long` combinators for working with binary shapes like `size ++ prefix ++ value` where `size` encodes the length of `value`.
  - The `.as[CaseClass]` syntax now automatically drops unit values from the `HList` representation.
+ - Improved support for derived fields in `HList` codecs -- fields which appear in the binary format but should not appear in the `HList` type. See [ProductExamples](src/test/scala/scodec/examples/ProductsExample).
+   - Added `derive[A].from(f)` syntax on `Codec[L]` for some `L <: HList` to simplify working with fields whose value are derived from other fields.
+   - Added `consume(f)(g)` syntax on `Codec[A]` as an alias for the pattern `flatPrepend(f).derive[A].from(g)`.
+
 
 1.7.1
 =====

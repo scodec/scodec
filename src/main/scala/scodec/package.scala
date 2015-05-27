@@ -198,6 +198,33 @@ package object scodec {
      */
     def polyxmap1[M <: HList](p: Poly)(implicit m: Mapper.Aux[p.type, L, M], m2: Mapper.Aux[p.type, M, L]): Codec[M] =
       polyxmap(p, p)
+
+    /**
+     * Supports building a `Codec[M]` for some `HList M` where `M` is the `HList` that results in removing
+     * the first `A` from `L`.
+     *
+     * Example usage: {{{
+       case class Flags(x: Boolean, y: Boolean, z: Boolean)
+       val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
+         conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+       }
+       c.derive[Flags].from { case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+     }}}
+     *
+     * This codec, the `Codec[L]`, is used for encoding/decoding. When decoding, the first value of type
+     * `A` is removed from the `HList`.
+     *
+     * When encoding, the returned codec computes an `A` value using the supplied
+     * function and inserts the computed `A` in to the `HList M`, yielding an `HList L`. That `HList L`
+     * is then encoded using the original codec.
+     *
+     * This method is called `derive` because the value of type `A` is derived from the other fields
+     * in the `HList L`.
+     *
+     * @tparam A type to remove from `L` and derive from the resulting list
+     * @group hlist
+     */
+    def derive[A]: codecs.DeriveHListElementAux[L, A] = new codecs.DeriveHListElementAux[L, A](self)
   }
 
   /** Provides `HList` related syntax for codecs of any type. */
@@ -242,6 +269,26 @@ package object scodec {
      * @group hlist
      */
     def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
+
+    /**
+     * Similar to `flatPrepend` except the `A` type is not visible in the resulting `HList` -- the binary
+     * effects of the `Codec[A]` still occur though.
+     *
+     * Example usage: {{{
+       case class Flags(x: Boolean, y: Boolean, z: Boolean)
+       (bool :: bool :: bool :: ignore(5)).consume { flgs =>
+         conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+       } {
+         case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+       }
+     }}}
+     *
+     * Note that this method is equivalent to using `flatPrepend` and `derive`. That is,
+     * `a.consume(f)(g) === a.flatPrepend(f).derive[A].from(g)`.
+     *
+     * @group hlist
+     */
+    def consume[L <: HList](f: A => Codec[L])(g: L => A): Codec[L] = HListCodec.consume(self, f, g)
   }
 
   /** Provides syntax related to generic programming for codecs of any type. */
