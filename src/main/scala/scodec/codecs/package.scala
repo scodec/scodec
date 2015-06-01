@@ -1101,6 +1101,35 @@ package object codecs {
     new ZlibCodec(codec, level, strategy, nowrap, chunkSize)
 
   /**
+   * Codec that appends/verifies a checksum.
+   *
+   * Encoding a value of type `A` is delegated to the specified codec and the resulting bit vector is appended with it's checksum.
+   *
+   * Decoding uses `rangeSize` and `rangePadding` to calculate the bit-range for which the checksum is to be verified.
+   * The delegate codec is invoked only if the computed (actual) checksum matches the expected checksum (assumed to be at the end of the bit-range).
+   *
+   * @param target the delegate codec
+   * @param checksum an encoder, like [[ChecksumCodec.Xor]], that computes a checksum for a BitVector
+   * @param rangeSize a decoder that decodes the size of the the bit-range to be verified
+   * @param rangePadding size padding for the bit-range
+   * @tparam A the target result type
+   * @return
+   */
+  def checksummed[A](target: Codec[A], checksum: Encoder[BitVector], rangeSize: Decoder[Long], rangePadding: Long): Codec[A] =
+    new ChecksumCodec(target, checksum, rangeSize, rangePadding)
+
+  /**
+   * Byte equivalent of [[checksummed]]
+   * @param checksum an encoder that computes a checksum for a ByteVector
+   * @param rangeSize a decoder that decodes the size of the the byte-range to be verified
+   * @param rangePadding size padding for the byte-range
+   * @tparam A
+   * @return
+   */
+  def checksummed[A](target: Codec[A], checksum: Encoder[ByteVector], rangeSize: Decoder[Int], rangePadding: Int): Codec[A] =
+    checksummed(target, checksum.contramap[BitVector](_.bytes), rangeSize.map(_ * 8L), rangePadding * 8L)
+
+  /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
    *
    * Encoding a value of type `A` is delegated to the specified codec and the resulting bit vector is encrypted
