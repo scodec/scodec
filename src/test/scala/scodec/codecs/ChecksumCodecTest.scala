@@ -6,7 +6,7 @@ import scodec.{Attempt, CodecSuite}
 class ChecksumCodecTest extends CodecSuite {
 
   "checksummed codec" should {
-    val codec = checksummed(
+    val codec = checksummedBytes(
       target = variableSizeBytes(int32, utf8),
       checksum = ChecksumCodec.xor(1),
       rangeSize = int32, rangePadding = 4)

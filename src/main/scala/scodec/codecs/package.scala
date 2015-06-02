@@ -1115,19 +1115,19 @@ package object codecs {
    * @tparam A the target result type
    * @return
    */
-  def checksummed[A](target: Codec[A], checksum: Encoder[BitVector], rangeSize: Decoder[Long], rangePadding: Long): Codec[A] =
+  def checksummedBits[A](target: Codec[A], checksum: Encoder[BitVector], rangeSize: Decoder[Long], rangePadding: Long): Codec[A] =
     new ChecksumCodec(target, checksum, rangeSize, rangePadding)
 
   /**
-   * Byte equivalent of [[checksummed]]
+   * Byte equivalent of [[checksummed]].
    * @param checksum an encoder that computes a checksum for a ByteVector
    * @param rangeSize a decoder that decodes the size of the the byte-range to be verified
    * @param rangePadding size padding for the byte-range
    * @tparam A
    * @return
    */
-  def checksummed[A](target: Codec[A], checksum: Encoder[ByteVector], rangeSize: Decoder[Int], rangePadding: Int): Codec[A] =
-    checksummed(target, checksum.contramap[BitVector](_.bytes), rangeSize.map(_ * 8L), rangePadding * 8L)
+  def checksummedBytes[A](target: Codec[A], checksum: Encoder[ByteVector], rangeSize: Decoder[Int], rangePadding: Int): Codec[A] =
+    checksummedBits(target, checksum.contramap[BitVector](_.bytes), rangeSize.map(_ * 8L), rangePadding * 8L)
 
   /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
