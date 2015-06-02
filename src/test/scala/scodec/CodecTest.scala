@@ -159,6 +159,12 @@ class CodecTest extends CodecSuite {
     "return an error from encode if passed a different subtype of target type" in {
       codec.encode(C(0)) shouldBe 'failure
     }
+    "work in presence of nested objects/classes" in {
+      object X { object Y }
+      val c = provide(X).upcast[Any]
+      c.encode(X) shouldBe Attempt.successful(BitVector.empty)
+      c.encode(X.Y) shouldBe Attempt.failure(Err("not a value of type X.type"))
+    }
   }
 
   "downcast" should {
@@ -171,6 +177,13 @@ class CodecTest extends CodecSuite {
     }
     "return an error from decode if decoded value is a supertype of a different type" in {
       codec.decode(hex"02".bits) shouldBe 'failure
+    }
+    "work in presence of nested objects/classes" in {
+      trait P
+      object X extends P { object Y extends P }
+      val c = discriminated[P].by(uint8).typecase(0, provide(X)).typecase(1, provide(X.Y)).downcast[X.type]
+      c.decodeValue(hex"00".bits) shouldBe Attempt.successful(X)
+      c.decodeValue(hex"01".bits) shouldBe Attempt.failure(Err("not a value of type X.type"))
     }
   }
 }

@@ -1,3 +1,7 @@
+1.8.0
+=====
+ - Changed `Codec#{upcast,downcast}` to take a `Typeable` instance instead of a `Manifest`, in order to avoid Java reflection.
+
 1.7.2
 =====
  - Added `byteAligned` combinator, which right pads a `Codec[A]` such that the binary size is always evenly divisible by 8.

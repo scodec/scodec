@@ -331,11 +331,11 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    *
    * @group combinators
    */
-  final def upcast[B >: A](implicit m: Manifest[A]): Codec[B] = new Codec[B] {
+  final def upcast[B >: A](implicit ta: Typeable[A]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
-    def encode(b: B) = b match {
-      case a: A => self encode a
-      case _ => Attempt.failure(Err(s"${b.getClass.getSimpleName} is not a ${m.runtimeClass.getSimpleName}"))
+    def encode(b: B) = ta.cast(b) match {
+      case Some(a) => self encode a
+      case None => Attempt.failure(Err(s"not a value of type ${ta.describe}"))
     }
     def decode(bv: BitVector) = self decode bv
     override def toString = self.toString
@@ -349,13 +349,13 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    *
    * @group combinators
    */
-  final def downcast[B <: A : Manifest]: Codec[B] = new Codec[B] {
+  final def downcast[B <: A](implicit tb: Typeable[B]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self encode b
     def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
-      result.value match {
-        case b: B => Attempt.successful(DecodeResult(b, result.remainder))
-        case other => Attempt.failure(Err(s"${other.getClass.getSimpleName} is not a ${implicitly[Manifest[B]].runtimeClass.getSimpleName}"))
+      tb.cast(result.value) match {
+        case Some(b) => Attempt.successful(DecodeResult(b, result.remainder))
+        case None => Attempt.failure(Err(s"not a value of type ${tb.describe}"))
       }
     }
     override def toString = self.toString
