@@ -1375,6 +1375,16 @@ package object codecs {
   }
 
   /**
+   * Codec for an [[Enumeration]] that encodes/decodes using [[Enumeration.Value.id]] values.
+   *
+   * @param discriminator the codec for [[Enumeration.Value.id]] values
+   * @param enumeration the target [[Enumeration]]
+   * @return
+   */
+  def enumerated(discriminator: Codec[Int], enumeration: Enumeration) =
+    scodec.codecs.mappedEnum(discriminator, enumeration.values.map(e => e -> e.id).toMap)
+
+  /**
    * Converts an `HList` of codecs in to a single codec.
    * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a
    * `Codec[X0 :: X1 :: ... :: Xn :: HNil].
