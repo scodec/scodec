@@ -1,48 +1,97 @@
-package scodec
-package codecs
+package scodec.codecs
 
-import scodec.bits.{BitVector, ByteVector}
+import scodec._
+import scodec.bits.{ByteVector, BitVector}
 
 /**
- * Codec that appends/verifies a checksum.
+ * Provides methods to create a "checksum codec" (encodes a bit-range to a bit-checksum and decodes bits to a bit-range).
  */
-private[codecs] final class ChecksumCodec[A](target: Codec[A], checksum: Encoder[BitVector], rangeSize: Decoder[Long], rangePadding: Long) extends Codec[A] {
-
-  def decode(bits: BitVector): Attempt[DecodeResult[A]] =
-    computeThen(bits)(
-      (range, expected, remainder) => remainder.consumeThen(expected.size)(
-        _ => Attempt.failure(Err.insufficientBits(expected.size, remainder.size)),
-        (actual, rest) =>
-          if (actual == expected) target.decode(range ++ rest)
-          else Attempt.failure(ChecksumCodec.Mismatch(range, expected, actual))))
-
-  def encode(value: A): Attempt[BitVector] =
-    target.encode(value) flatMap (
-      bits => computeThen(bits)((range, sum, remainder) => Attempt.successful(range ++ sum ++ remainder)))
-
-  private def computeThen[B](bits: BitVector)(f: (BitVector, BitVector, BitVector) => Attempt[B]) =
-    rangeSize.decode(bits) flatMap (
-      size => bits.consumeThen(size.value + rangePadding)(
-        _ => Attempt.failure(Err.insufficientBits(size.value + rangePadding, bits.size)),
-        (range, remainder) => checksum.encode(range) flatMap (sum => f(range, sum, remainder))))
-
-  def sizeBound: SizeBound = target.sizeBound + checksum.sizeBound
-}
-
 object ChecksumCodec {
 
-  def xorBits(length: Long) = Xor(length)
+  /**
+   * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+   *
+   * @param encoder encodes a bit-range to a bit-checksum
+   * @param range decodes the size of a bit-range
+   * @return
+   */
+  def apply(encoder: Encoder[BitVector], range: Decoder[Long]): Codec[BitVector] =
+    Codec(encoder, Decoder(
+      bits => range.decode(bits).flatMap(
+        size => bits.consumeThen(size.value)(
+          e => Attempt.failure(Err.InsufficientBits(size.value, bits.size, List(e))),
+          (range, remainder) => Attempt.successful(DecodeResult(range, remainder))))))
 
-  def xor(length: Int) = Xor(8L * length).contramap[ByteVector](_.bits)
+  /**
+   * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+   *
+   * @param encoder encodes a bit-range to a bit-checksum
+   * @param range decodes the (un-padded) size of a bit-range
+   * @param padding size padding for the bit-range
+   * @return
+   */
+  def apply(encoder: Encoder[BitVector], range: Decoder[Long], padding: Long): Codec[BitVector] =
+    apply(encoder, range map (_ + padding))
 
-  case class Xor(length: Long) extends Encoder[BitVector] {
-    val init = BitVector.fill(length)(high = false)
+  /**
+   * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+   *
+   * @param encoder encodes a byte-range to a byte-checksum
+   * @param range decodes the (un-padded) size of a byte-range
+   * @param padding size padding for the byte-range
+   * @return
+   */
+  def apply(encoder: Encoder[ByteVector], range: Decoder[Int], padding: Int): Codec[BitVector] =
+    apply(encoder.contramap[BitVector](_.bytes), range.map(8L * _), 8l * padding)
 
-    def encode(value: BitVector): Attempt[BitVector] =
-      Attempt.successful(value.grouped(length).fold(init)(_ xor _))
+  /**
+   * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+   *
+   * @param length the bit-length of the checksum
+   * @param f computes bit-checksum
+   * @param range decodes the (un-padded) size of a bit-range
+   * @param padding size padding for the bit-range
+   * @return
+   */
+  def apply(length: Long, f: BitVector => BitVector, range: Decoder[Long], padding: Long): Codec[BitVector] =
+    apply(new Encoder[BitVector] {
+      def encode(value: BitVector): Attempt[BitVector] = Attempt.successful(f(value))
+      def sizeBound: SizeBound = SizeBound.exact(length)
+    }, range, padding)
 
-    def sizeBound: SizeBound = SizeBound.exact(length)
-  }
+  /**
+   * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+   *
+   * @param length the byte-length of the checksum
+   * @param f computes byte-checksum
+   * @param range decodes the (un-padded) size of a byte-range
+   * @param padding size padding for the byte-range
+   * @return
+   */
+  def apply(length: Int, f: ByteVector => ByteVector, range: Decoder[Int], padding: Int): Codec[BitVector] =
+    apply(8L * length, (bits: BitVector) => f(bits.bytes).bits, range.map(8L + _), 8L * padding)
+
+  /**
+   * Returns a codec that encodes a bit-range to an XORed bit-checksum and decodes bits to a bit-range.
+   *
+   * @param length the bit-length of the checksum
+   * @param range decodes the (un-padded) size of a bit-range
+   * @param padding size padding for the bit-range
+   * @return
+   */
+  def xor(length: Long, range: Decoder[Long], padding: Long): Codec[BitVector] =
+    apply(length, (bits: BitVector) => bits.grouped(length).foldLeft(BitVector.low(length))(_ xor _), range, padding)
+
+  /**
+   * Returns a codec that encodes a bit-range to an XORed bit-checksum and decodes bits to a bit-range.
+   *
+   * @param length the byte-length of the checksum
+   * @param range decodes the (un-padded) size of a byte-range
+   * @param padding size padding for the byte-range
+   * @return
+   */
+  def xor(length: Int, range: Decoder[Int], padding: Int): Codec[BitVector] =
+    xor(8L * length, range.map(8L * _), 8L * padding)
 
   case class Mismatch(bits: BitVector, expected: BitVector, actual: BitVector, context: List[String] = Nil) extends Err {
 
