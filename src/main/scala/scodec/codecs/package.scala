@@ -1101,33 +1101,43 @@ package object codecs {
     new ZlibCodec(codec, level, strategy, nowrap, chunkSize)
 
   /**
-   * Codec that appends/verifies a checksum.
+   * Codec that filters bits before/after decoding/encoding.
    *
-   * Encoding a value of type `A` is delegated to the specified codec and the resulting bit vector is appended with it's checksum.
-   *
-   * Decoding uses `rangeSize` and `rangePadding` to calculate the bit-range for which the checksum is to be verified.
-   * The delegate codec is invoked only if the computed (actual) checksum matches the expected checksum (assumed to be at the end of the bit-range).
-   *
-   * @param target the delegate codec
-   * @param checksum an encoder, like [[ChecksumCodec.Xor]], that computes a checksum for a BitVector
-   * @param rangeSize a decoder that decodes the size of the the bit-range to be verified
-   * @param rangePadding size padding for the bit-range
-   * @tparam A the target result type
+   * @param filter a codec that represents pre/post-processing stages for input/output bits
+   * @param codec the target codec
+   * @tparam A the result type
    * @return
    */
-  def checksummed[A](target: Codec[A], checksum: Encoder[BitVector], rangeSize: Decoder[Long], rangePadding: Long): Codec[A] =
-    new ChecksumCodec(target, checksum, rangeSize, rangePadding)
+  def filtered[A](filter: Codec[BitVector], codec: Codec[A]): Codec[A] = new Codec[A] {
+      def encode(value: A): Attempt[BitVector] = codec.encode(value) flatMap filter.encode
+      def sizeBound: SizeBound = filter.sizeBound
+      def decode(bits: BitVector): Attempt[DecodeResult[A]] =
+        filter.decode(bits)
+          .fold(e => Attempt.failure(e), r => codec.decode(r.value)
+            .fold(e => Attempt.failure(e), a => Attempt.successful(a.mapRemainder(_ ++ r.remainder))))
+    }
 
   /**
-   * Byte equivalent of [[checksummed]]
-   * @param checksum an encoder that computes a checksum for a ByteVector
-   * @param rangeSize a decoder that decodes the size of the the byte-range to be verified
-   * @param rangePadding size padding for the byte-range
-   * @tparam A
+   * Codec that filters a checksum.
+   *
+   * @param checksum a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range
+   * @param codec the target codec
+   * @tparam A the result type
    * @return
+   * @see [[ChecksumCodec]]
    */
-  def checksummed[A](target: Codec[A], checksum: Encoder[ByteVector], rangeSize: Decoder[Int], rangePadding: Int): Codec[A] =
-    checksummed(target, checksum.contramap[BitVector](_.bytes), rangeSize.map(_ * 8L), rangePadding * 8L)
+  def checksummed[A](checksum: Codec[BitVector], codec: Codec[A]): Codec[A] = filtered(new Codec[BitVector] {
+      def encode(value: BitVector): Attempt[BitVector] = checksum.encode(value).map(value ++ _)
+      def sizeBound: SizeBound = checksum.sizeBound
+      def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] =
+        checksum.decode(bits).flatMap(
+          r => checksum.encode(r.value).flatMap(
+            expected => r.remainder.consumeThen(expected.size)(
+              e => Attempt.failure(Err.InsufficientBits(expected.size, r.remainder.size, List(e))),
+              (actual, remainder) =>
+                if (expected == actual) Attempt.successful(DecodeResult(r.value, remainder))
+                else Attempt.failure(ChecksumCodec.Mismatch(r.value, expected, actual)))))
+    }, codec)
 
   /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
