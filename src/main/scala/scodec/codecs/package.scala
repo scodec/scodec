@@ -1113,8 +1113,8 @@ package object codecs {
       def sizeBound: SizeBound = filter.sizeBound
       def decode(bits: BitVector): Attempt[DecodeResult[A]] =
         filter.decode(bits)
-          .fold(e => Attempt.failure(e), r => codec.decode(r.value)
-            .fold(e => Attempt.failure(e), a => Attempt.successful(a.mapRemainder(_ ++ r.remainder))))
+          .flatMap(r => codec.decode(r.value)
+            .flatMap(a => Attempt.successful(a.mapRemainder(_ ++ r.remainder))))
     }
 
   /**
