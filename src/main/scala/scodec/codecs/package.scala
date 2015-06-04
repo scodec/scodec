@@ -1112,9 +1112,8 @@ package object codecs {
       def encode(value: A): Attempt[BitVector] = codec.encode(value) flatMap filter.encode
       def sizeBound: SizeBound = filter.sizeBound
       def decode(bits: BitVector): Attempt[DecodeResult[A]] =
-        filter.decode(bits)
-          .flatMap(r => codec.decode(r.value)
-            .flatMap(a => Attempt.successful(a.mapRemainder(_ ++ r.remainder))))
+        filter.decode(bits).flatMap(
+          r => codec.decode(r.value).map(_.mapRemainder(_ ++ r.remainder)))
     }
 
   /**
