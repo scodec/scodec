@@ -1192,10 +1192,10 @@ package object codecs {
      val crc32 = scodec.bits.crc(hex"04c11db7".bits, hex"ffffffff".bits, true, true, hex"ffffffff".bits)
 
      // Size of the string is not included in the checksum -- the `framing` codec handles adding the size *after* checksum computation
-     val c = checksummed(utf8, crc32, variableSizeBytes(int32, bits) ~ fixedSizeBytes(4, bits))
+     val c = checksummed(utf8, crc32, variableSizeBytes(int32, bits) ~ bits(32))
 
      // Size of the string is included in the checksum
-     val d = checksummed(utf8_32, crc32, peekVariableSizeBytes(int32) ~ fixedSizeBytes(4, bits))
+     val d = checksummed(utf8_32, crc32, peekVariableSizeBytes(int32) ~ bits(32))
    }}}
    *
    * @param target codec used for encoding/decoding values of type `A`
