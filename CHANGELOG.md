@@ -14,6 +14,8 @@
  - Improved support for derived fields in `HList` codecs -- fields which appear in the binary format but should not appear in the `HList` type. See [ProductExamples](src/test/scala/scodec/examples/ProductsExample).
    - Added `derive[A].from(f)` syntax on `Codec[L]` for some `L <: HList` to simplify working with fields whose value are derived from other fields.
    - Added `consume(f)(g)` syntax on `Codec[A]` as an alias for the pattern `flatPrepend(f).derive[A].from(g)`.
+ - Added `filtered` combinator, which allows post-processing of encoded binary and pre-processing of to-be-decoded binary.
+ - Added `checksummed` combinator, which allows simpler checksumming than working with signature codecs.
 
 
 1.7.1

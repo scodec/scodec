@@ -835,6 +835,66 @@ package object codecs {
   }
 
   /**
+   * Decodes using the specified codec but resets the remainder to the original vector.
+   * Encodes with the specified codec.
+   * @param target codec that encodes/decodes the value
+   * @return codec that behaves the same as `target` but resets remainder to the input vector after decoding
+   * @group combinators
+   */
+  def peek[A](target: Codec[A]): Codec[A] = new Codec[A] {
+    def sizeBound = target.sizeBound
+    def encode(a: A) = target.encode(a)
+    def decode(b: BitVector) = target.decode(b).map { _.mapRemainder(_ => b) }
+  }
+
+  /**
+   * Codec that decodes vectors of the form `size ++ rest` as a `BitVector`, where the returned vector includes the size bits.
+   *
+   * This differs from `variableSizeBits(size, bits, sizePadding)` in that the encoded size is expected to be encoded before
+   * calling encode and the encoded size is returned as part of the vector.
+   *
+   * @param size size codec -- must have an exact size
+   * @param sizePadding number of bits to subtract from the size before decoding
+   */
+  def peekVariableSizeBits(size: Codec[Int], sizePadding: Int = 0): Codec[BitVector] = peekVariableSizeBitsLong(widenIntToLong(size), sizePadding.toLong)
+
+  /**
+   * `Long` equivalent of [[peekVariableSizeBits]].
+   * @param size size codec -- must have an exact size
+   * @param sizePadding number of bits to subtract from the size before decoding
+   */
+  def peekVariableSizeBitsLong(size: Codec[Long], sizePadding: Long = 0L): Codec[BitVector] = new Codec[BitVector] {
+    private val sizeInBits = size.sizeBound.exact.getOrElse(throw new IllegalArgumentException(s"must be used with a size field of an exactly known size but $size has size bound ${size.sizeBound}"))
+    private val decoder = (peek(bits(sizeInBits)) ~ variableSizeBitsLong(size, bits, sizePadding)).map { case (sz, b) => sz ++ b }
+    def sizeBound = size.sizeBound.atLeast
+    def encode(b: BitVector) = Attempt.successful(b)
+    def decode(b: BitVector) = decoder.decode(b)
+    override def toString = s"peekVariableSizeBits($size)"
+  }
+
+  /**
+   * Equivalent to [[peekVariableSizeBits]] where the size units are in bytes instead of bits.
+   *
+   * @param size size codec -- must have an exact size
+   * @param sizePadding number of bytes to subtract from the size before decoding
+   */
+  def peekVariableSizeBytes(size: Codec[Int], sizePadding: Int = 0): Codec[BitVector] =
+    peekVariableSizeBytesLong(widenIntToLong(size), sizePadding.toLong)
+
+  /**
+   * `Long` equivalent of [[peekVariableSizeBytes]].
+   * @param size size codec -- must have an exact size
+   * @param sizePadding number of bits to subtract from the size before decoding
+   */
+  def peekVariableSizeBytesLong(size: Codec[Long], sizePadding: Long = 0L): Codec[BitVector] = new Codec[BitVector] {
+    private val codec = peekVariableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), sizePadding * 8)
+    def sizeBound = codec.sizeBound
+    def encode(a: BitVector) = codec.encode(a)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"peekVariableSizeBytes($size)"
+  }
+
+  /**
    * Codec that:
    *  - encodes using the specified codec but right-pads with 0 bits to the next largest byte when the size of the
    *    encoded bit vector is not divisible by 8
@@ -1103,40 +1163,67 @@ package object codecs {
   /**
    * Codec that filters bits before/after decoding/encoding.
    *
-   * @param filter a codec that represents pre/post-processing stages for input/output bits
+   * Note: the remainder returned from `filter.decode` is appended to the remainder of `codec.decode`.
+   *
    * @param codec the target codec
-   * @tparam A the result type
+   * @param filter a codec that represents pre/post-processing stages for input/output bits
    * @group combinators
    */
-  def filtered[A](filter: Codec[BitVector], codec: Codec[A]): Codec[A] = new Codec[A] {
-      def encode(value: A): Attempt[BitVector] = codec.encode(value) flatMap filter.encode
-      def sizeBound: SizeBound = filter.sizeBound
-      def decode(bits: BitVector): Attempt[DecodeResult[A]] =
-        filter.decode(bits).flatMap(
-          r => codec.decode(r.value).map(_.mapRemainder(_ ++ r.remainder)))
-    }
+  def filtered[A](codec: Codec[A], filter: Codec[BitVector]): Codec[A] = new Codec[A] {
+    def sizeBound: SizeBound = filter.sizeBound
+    def encode(value: A): Attempt[BitVector] = codec.encode(value) flatMap filter.encode
+    def decode(bits: BitVector): Attempt[DecodeResult[A]] =
+      filter.decode(bits).flatMap(r => codec.decode(r.value).map(_.mapRemainder(_ ++ r.remainder)))
+    override def toString = s"filtered($codec, $filter)"
+  }
 
   /**
-   * Codec that filters a checksum.
+   * Codec that supports a checksum.
    *
-   * @param checksum a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range
-   * @param codec the target codec
-   * @tparam A the result type
+   * When encoding, first the value is encoded using `target`, then a checksum is computed over the result the encoded value using `checksum`,
+   * and finally, the encoded value and the checksum are converted to a single vector using `framing.encode(value -> chk)`.
+   *
+   * When decoding, the input vector is split in to an encoded value, a checksum value, and a remainder using `framing.decode`.
+   * If `validate` is true, a checksum is computed over the encoded value and compared with the decoded checksum value. If the checksums
+   * match, the encoded value is decoded with `target` and the result is returned, with its remainder concatenated with the remainder of
+   * deframing. If the checksums do not match, a `ChecksumMismatch` error is raised.
+   *
+   * For example: {{{
+     val crc32 = scodec.bits.crc(hex"04c11db7".bits, hex"ffffffff".bits, true, true, hex"ffffffff".bits)
+
+     // Size of the string is not included in the checksum -- the `framing` codec handles adding the size *after* checksum computation
+     val c = checksummed(utf8, crc32, variableSizeBytes(int32, bits) ~ fixedSizeBytes(4, bits))
+
+     // Size of the string is included in the checksum
+     val d = checksummed(utf8_32, crc32, peekVariableSizeBytes(int32) ~ fixedSizeBytes(4, bits))
+   }}}
+   *
+   * @param target codec used for encoding/decoding values of type `A`
+   * @param checksum computes a checksum of the input
+   * @param framing codec used to convert the encoded value and computed checksum in to a single vector
    * @group combinators
-   * @see [[ChecksumCodec]]
    */
-  def checksummed[A](checksum: Codec[BitVector], codec: Codec[A]): Codec[A] = filtered(new Codec[BitVector] {
-      def encode(value: BitVector): Attempt[BitVector] = checksum.encode(value).map(value ++ _)
-      def sizeBound: SizeBound = checksum.sizeBound
-      def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] =
-        checksum.decode(bits).flatMap(
-          r => checksum.encode(r.value).flatMap(
-            expected => r.remainder.consumeThen(expected.size)(
-              e => Attempt.failure(Err.InsufficientBits(expected.size, r.remainder.size, List(e))),
-              (actual, remainder) =>
-                if (expected == actual) Attempt.successful(DecodeResult(r.value, remainder))
-                else Attempt.failure(ChecksumCodec.Mismatch(r.value, expected, actual)))))
-    }, codec)
+  def checksummed[A](target: Codec[A], checksum: BitVector => BitVector, framing: Codec[(BitVector, BitVector)], validate: Boolean = true): Codec[A] = new Codec[A] {
+    def sizeBound: SizeBound = target.sizeBound.atLeast
+    def encode(a: A) = for {
+      value <- target.encode(a)
+      result <- framing.encode(value -> checksum(value))
+    } yield result
+    def decode(bits: BitVector) = for {
+      r <- framing.decode(bits)
+      (value, actual) = r.value
+      result <- {
+        if (validate) {
+          val expected = checksum(value)
+          if (expected == actual) target.decode(value)
+          else Attempt.failure(ChecksumMismatch(value, expected, actual))
+        } else {
+          target.decode(value)
+        }
+      }
+    } yield result.mapRemainder { _ ++ r.remainder }
+    override def toString = s"checksummed($target, $framing)"
+  }
 
   /**
    * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
