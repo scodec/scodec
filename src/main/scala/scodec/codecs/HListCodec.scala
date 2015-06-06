@@ -102,21 +102,6 @@ private[scodec] object HListCodec {
 
   def dropUnits[K <: HList, L <: HList](codec: Codec[K])(implicit du: DropUnits.Aux[K, L]) =
     codec.xmap[L](du.removeUnits, du.addUnits)
-
-  def consume[A, L <: HList](codec: Codec[A], f: A => Codec[L], g: L => A): Codec[L] = new Codec[L] {
-    def sizeBound = codec.sizeBound.atLeast
-    def encode(l: L) = {
-      val a = g(l)
-      for {
-        encA <- codec.encode(a)
-        encL <- f(a).encode(l)
-      } yield encA ++ encL
-    }
-    def decode(b: BitVector) = (for {
-      a <- DecodingContext(codec)
-      l <- DecodingContext(f(a))
-    } yield l).decode(b)
-  }
 }
 
 /**

@@ -319,6 +319,40 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    */
   final def >>~[B](f: A => Codec[B]): Codec[(A, B)] = flatZip(f)
 
+  /**
+   * Similar to `flatZip` except the `A` type is not visible in the resulting type -- the binary
+   * effects of the `Codec[A]` still occur though.
+   *
+   * Example usage: {{{
+     case class Flags(x: Boolean, y: Boolean, z: Boolean)
+     (bool :: bool :: bool :: ignore(5)).consume { flgs =>
+       conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+     } {
+       case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+     }
+   }}}
+   *
+   * Note that when `B` is an `HList`, this method is equivalent to using `flatPrepend` and
+   * `derive`. That is,
+   * `a.consume(f)(g) === a.flatPrepend(f).derive[A].from(g)`.
+   *
+   * @group combinators
+   */
+  final def consume[B](f: A => Codec[B])(g: B => A): Codec[B] = new Codec[B] {
+    def sizeBound = self.sizeBound.atLeast
+    def encode(b: B) = {
+      val a = g(b)
+      for {
+        encA <- self.encode(a)
+        encB <- f(a).encode(b)
+      } yield encA ++ encB
+    }
+    def decode(bv: BitVector) = (for {
+      a <- DecodingContext(self)
+      b <- DecodingContext(f(a))
+    } yield b).decode(bv)
+  }
+
   final override def complete: Codec[A] = Codec(this, super.complete)
 
   final override def compact: Codec[A] = Codec(super.compact, this)
