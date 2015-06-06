@@ -1,17 +1,21 @@
 package scodec.codecs
 
+import scodec._
 import scodec.bits._
-import scodec.{Attempt, CodecSuite}
 
+/**
+ * ChecksumCodecTest
+ */
 class ChecksumCodecTest extends CodecSuite {
 
   "checksummed codec" should {
-    val codec = checksummedBytes(
-      target = variableSizeBytes(int32, utf8),
-      checksum = ChecksumCodec.xor(1),
-      rangeSize = int32, rangePadding = 4)
+    val codec = checksummed(ChecksumCodec.xor(1, int32, 4), variableSizeBytes(int32, utf8))
 
-    "roundtrip using ChecksumCodec.xor" in {
+    "roundtrip" in {
+      forAll { (s: String) => roundtrip(codec, s) }
+    }
+
+    "roundtrip using combinators" in {
       forAll { (n: Int, s: String) => roundtrip(int32 ~ codec, n ~ s) }
     }
 
