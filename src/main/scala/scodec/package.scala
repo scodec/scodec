@@ -269,26 +269,6 @@ package object scodec {
      * @group hlist
      */
     def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f andThen (_.hlist))
-
-    /**
-     * Similar to `flatPrepend` except the `A` type is not visible in the resulting `HList` -- the binary
-     * effects of the `Codec[A]` still occur though.
-     *
-     * Example usage: {{{
-       case class Flags(x: Boolean, y: Boolean, z: Boolean)
-       (bool :: bool :: bool :: ignore(5)).consume { flgs =>
-         conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
-       } {
-         case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
-       }
-     }}}
-     *
-     * Note that this method is equivalent to using `flatPrepend` and `derive`. That is,
-     * `a.consume(f)(g) === a.flatPrepend(f).derive[A].from(g)`.
-     *
-     * @group hlist
-     */
-    def consume[L <: HList](f: A => Codec[L])(g: L => A): Codec[L] = HListCodec.consume(self, f, g)
   }
 
   /** Provides syntax related to generic programming for codecs of any type. */
