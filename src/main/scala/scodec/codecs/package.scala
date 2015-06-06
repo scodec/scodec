@@ -1105,8 +1105,7 @@ package object codecs {
    *
    * @param filter a codec that represents pre/post-processing stages for input/output bits
    * @param codec the target codec
-   * @tparam A the result type
-   * @return
+   * @group combinators
    */
   def filtered[A](filter: Codec[BitVector], codec: Codec[A]): Codec[A] = new Codec[A] {
       def encode(value: A): Attempt[BitVector] = codec.encode(value) flatMap filter.encode
@@ -1121,8 +1120,7 @@ package object codecs {
    *
    * @param checksum a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range
    * @param codec the target codec
-   * @tparam A the result type
-   * @return
+   * @group combinators
    * @see [[ChecksumCodec]]
    */
   def checksummed[A](checksum: Codec[BitVector], codec: Codec[A]): Codec[A] = filtered(new Codec[BitVector] {
