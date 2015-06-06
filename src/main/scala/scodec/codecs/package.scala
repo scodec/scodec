@@ -1384,10 +1384,10 @@ package object codecs {
   }
 
   /**
-   * Codec for an [[Enumeration]] that encodes/decodes using [[Enumeration.Value.id]] values.
+   * Codec for an `Enumeration` that encodes/decodes using `Enumeration.Value.id` values.
    *
-   * @param discriminator the codec for [[Enumeration.Value.id]] values
-   * @param enumeration the target [[Enumeration]]
+   * @param discriminator the codec for `Enumeration.Value.id` values
+   * @param enumeration the target `Enumeration`
    * @return
    */
   def enumerated(discriminator: Codec[Int], enumeration: Enumeration) =
