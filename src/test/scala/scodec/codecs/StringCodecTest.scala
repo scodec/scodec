@@ -11,9 +11,33 @@ class StringCodecTest extends CodecSuite {
     }
   }
 
+  "ascii32 codec" should {
+    "roundtrip" in {
+      roundtripAll(ascii32, Seq("test", "", "with\ttabs"))
+    }
+  }
+
+  "ascii32L codec" should {
+    "roundtrip" in {
+      roundtripAll(ascii32L, Seq("test", "", "with\ttabs"))
+    }
+  }
+
   "utf8 codec" should {
     "roundtrip" in {
       roundtripAll(utf8, Seq("test", "", "with\ttabs", "withλ"))
+    }
+  }
+
+  "utf8_32 codec" should {
+    "roundtrip" in {
+      roundtripAll(utf8_32, Seq("test", "", "with\ttabs", "withλ"))
+    }
+  }
+
+  "utf8_32L codec" should {
+    "roundtrip" in {
+      roundtripAll(utf8_32L, Seq("test", "", "with\ttabs", "withλ"))
     }
   }
 

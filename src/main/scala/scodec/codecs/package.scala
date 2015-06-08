@@ -468,6 +468,16 @@ package object codecs {
     variableSizeBytes(int32, string(charset)).withToString(s"string32(${charset.displayName})")
 
   /**
+   * String codec that uses the implicit `Charset` and prefixes the encoded string by the byte size
+   * in a 32-bit 2s complement little endian field.
+   *
+   * @param charset charset to use to convert strings to/from binary
+   * @group values
+   */
+  def string32L(implicit charset: Charset): Codec[String] =
+    variableSizeBytes(int32L, string(charset)).withToString(s"string32(${charset.displayName})")
+
+  /**
    * String codec that uses the `US-ASCII` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement big endian field.
    * @group values
@@ -475,11 +485,25 @@ package object codecs {
   val ascii32 = string32(Charset.forName("US-ASCII"))
 
   /**
+   * String codec that uses the `US-ASCII` charset and prefixes the encoded string by the byte size
+   * in a 32-bit 2s complement little endian field.
+   * @group values
+   */
+  val ascii32L = string32L(Charset.forName("US-ASCII"))
+
+  /**
    * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
   val utf8_32 = string32(Charset.forName("UTF-8"))
+
+  /**
+   * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
+   * in a 32-bit 2s complement little endian field.
+   * @group values
+   */
+  val utf8_32L = string32L(Charset.forName("UTF-8"))
 
   /**
    * Encodes/decodes `UUID`s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.
