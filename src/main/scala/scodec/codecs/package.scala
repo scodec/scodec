@@ -984,6 +984,51 @@ package object codecs {
       withToString(s"vectorOfN($countCodec, $valueCodec)")
 
   /**
+   * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
+   *
+   * When encoding, each `A` in the vector is encoded and all of the resulting bits are combined using `mux`.
+   *
+   * When decoding, `deMux` is called repeatedly to obtain the next bits (to decode using `valueCodec`) and the
+   * remaining bits (input to `deMux` on next iteration) until a decoding error is encountered or no more bits remain.
+   * The final return value is a vector of all decoded element values.
+   *
+   * @param mux element multiplexer
+   * @param deMux element de-multiplexer (should return the next bits to decode and the remaining bits for next iteration)
+   * @param valueCodec element codec (used to decode next bits)
+   * @tparam A element type
+   * @return
+   */
+  def vectorMultiplexed[A](mux: (BitVector, BitVector) => BitVector, deMux: BitVector => (BitVector, BitVector), valueCodec: Codec[A]): Codec[Vector[A]] =
+    new VectorMultiplexedCodec[A](mux, deMux, valueCodec)
+
+  /**
+   * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
+   *
+   * When encoding, each `A` in the vector is encoded and all of the resulting bits are concatenated using `delimiter`.
+   *
+   * When decoding, the input bits are first (logically) grouped into `delimiter` sized chunks and partitioned around `delimiter` chunks.
+   * Then, the individual partitions are (concatenated and) decoded using the `valueCodec` and the values collected are returned in a vector.
+   *
+   * Note: This method applies specific semantics to the notion of a `delimiter`. An alternate (and faster) implementation could be to search
+   * for the `delimiter` using [[BitVector.indexOfSlice]] but this would work only if value bits do not contain the `delimiter` bits at
+   * any bit position.
+   *
+   * Example:
+   * {{{
+   * val codec = vectorDelimited(BitVector(' '), ascii)
+   * codec.decode(ascii.encode("i am delimited").require).require.value // Vector("i", "am", "delimited")
+   * }}}
+   *
+   * @param delimiter the bits used to separate element bit values
+   * @param valueCodec element codec (used to decode next bits)
+   * @tparam A element type
+   * @return
+   */
+  def vectorDelimited[A](delimiter: BitVector, valueCodec: Codec[A]): Codec[Vector[A]] =
+    if (delimiter.size == 0) vector(valueCodec)
+    else vectorMultiplexed(_ ++ delimiter ++ _, bits => DeMultiplexer.delimited(bits, delimiter), valueCodec)
+
+  /**
    * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
    *
    * When encoding, each `A` in the list is encoded and all of the resulting vectors are concatenated.
@@ -1015,6 +1060,51 @@ package object codecs {
       flatZip { count => new ListCodec(valueCodec, Some(count)) }.
       xmap[List[A]]({ case (cnt, xs) => xs }, xs => (xs.size, xs)).
       withToString(s"listOfN($countCodec, $valueCodec)")
+
+  /**
+   * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
+   *
+   * When encoding, each `A` in the list is encoded and all of the resulting bits are combined using `mux`.
+   *
+   * When decoding, `deMux` is called repeatedly to obtain the next bits (to decode using `valueCodec`) and the
+   * remaining bits (input to `deMux` on next iteration) until a decoding error is encountered or no more bits remain.
+   * The final return value is a list of all decoded element values.
+   *
+   * @param mux element multiplexer
+   * @param deMux element de-multiplexer (should return the next bits to decode and the remaining bits for next iteration)
+   * @param valueCodec element codec (used to decode next bits)
+   * @tparam A element type
+   * @return
+   */
+  def listMultiplexed[A](mux: (BitVector, BitVector) => BitVector, demux: BitVector => (BitVector, BitVector), valueCodec: Codec[A]): Codec[List[A]] =
+    new ListMultiplexedCodec[A](mux, demux, valueCodec)
+
+  /**
+   * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
+   *
+   * When encoding, each `A` in the list is encoded and all of the resulting bits are concatenated using `delimiter`.
+   *
+   * When decoding, the input bits are first (logically) grouped into `delimiter` sized chunks and partitioned around `delimiter` chunks.
+   * Then, the individual partitions are (concatenated and) decoded using the `valueCodec` and the values collected are returned in a list.
+   *
+   * Note: This method applies specific semantics to the notion of a `delimiter`. An alternate (and faster) implementation could be to search
+   * for the `delimiter` using [[BitVector.indexOfSlice]] but this would work only if value bits do not contain the `delimiter` bits at
+   * any bit position.
+   *
+   * Example:
+   * {{{
+   * val codec = listDelimited(BitVector(' '), ascii)
+   * codec.decode(ascii.encode("i am delimited").require).require.value // List("i", "am", "delimited")
+   * }}}
+   *
+   * @param delimiter the bits used to separate element bit values
+   * @param valueCodec element codec (used to decode next bits)
+   * @tparam A element type
+   * @return
+   */
+  def listDelimited[A](delimiter: BitVector, valueCodec: Codec[A]): Codec[List[A]] =
+    if (delimiter.size == 0) list(valueCodec)
+    else listMultiplexed(_ ++ delimiter ++ _, bits => DeMultiplexer.delimited(bits, delimiter), valueCodec)
 
   /**
    * Combinator that chooses amongst two codecs based on an implicitly available byte ordering.
