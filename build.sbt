@@ -33,3 +33,5 @@ binaryIssueFilters ++= Seq(
   ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.DiscriminatorCodec.this"),
   ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.Discriminated.toString")
 )
+
+enablePlugins(BuildInfoPlugin)
