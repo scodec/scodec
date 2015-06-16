@@ -482,28 +482,28 @@ package object codecs {
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
-  val ascii32 = string32(Charset.forName("US-ASCII"))
+  val ascii32 = string32(StandardCharsets.US_ASCII)
 
   /**
    * String codec that uses the `US-ASCII` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement little endian field.
    * @group values
    */
-  val ascii32L = string32L(Charset.forName("US-ASCII"))
+  val ascii32L = string32L(StandardCharsets.US_ASCII)
 
   /**
    * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
-  val utf8_32 = string32(Charset.forName("UTF-8"))
+  val utf8_32 = string32(StandardCharsets.UTF_8)
 
   /**
    * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement little endian field.
    * @group values
    */
-  val utf8_32L = string32L(Charset.forName("UTF-8"))
+  val utf8_32L = string32L(StandardCharsets.UTF_8)
 
   /**
    * Encodes/decodes `UUID`s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.
