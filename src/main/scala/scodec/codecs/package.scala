@@ -996,7 +996,7 @@ package object codecs {
    * @param deMux element de-multiplexer (should return the next bits to decode and the remaining bits for next iteration)
    * @param valueCodec element codec (used to decode next bits)
    * @tparam A element type
-   * @return
+   * @group combinators
    */
   def vectorMultiplexed[A](mux: (BitVector, BitVector) => BitVector, deMux: BitVector => (BitVector, BitVector), valueCodec: Codec[A]): Codec[Vector[A]] =
     new VectorMultiplexedCodec[A](mux, deMux, valueCodec)
@@ -1022,11 +1022,14 @@ package object codecs {
    * @param delimiter the bits used to separate element bit values
    * @param valueCodec element codec (used to decode next bits)
    * @tparam A element type
-   * @return
+   * @group combinators
    */
   def vectorDelimited[A](delimiter: BitVector, valueCodec: Codec[A]): Codec[Vector[A]] =
     if (delimiter.size == 0) vector(valueCodec)
-    else vectorMultiplexed(_ ++ delimiter ++ _, bits => DeMultiplexer.delimited(bits, delimiter), valueCodec)
+    else vectorMultiplexed(
+      _ ++ delimiter ++ _,
+      bits => DeMultiplexer.delimited(bits, delimiter),
+      valueCodec).withToString(s"vectorDelimited($delimiter, $valueCodec)")
 
   /**
    * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
@@ -1074,10 +1077,10 @@ package object codecs {
    * @param deMux element de-multiplexer (should return the next bits to decode and the remaining bits for next iteration)
    * @param valueCodec element codec (used to decode next bits)
    * @tparam A element type
-   * @return
+   * @group combinators
    */
-  def listMultiplexed[A](mux: (BitVector, BitVector) => BitVector, demux: BitVector => (BitVector, BitVector), valueCodec: Codec[A]): Codec[List[A]] =
-    new ListMultiplexedCodec[A](mux, demux, valueCodec)
+  def listMultiplexed[A](mux: (BitVector, BitVector) => BitVector, deMux: BitVector => (BitVector, BitVector), valueCodec: Codec[A]): Codec[List[A]] =
+    new ListMultiplexedCodec[A](mux, deMux, valueCodec)
 
   /**
    * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
@@ -1100,11 +1103,14 @@ package object codecs {
    * @param delimiter the bits used to separate element bit values
    * @param valueCodec element codec (used to decode next bits)
    * @tparam A element type
-   * @return
+   * @group combinators
    */
   def listDelimited[A](delimiter: BitVector, valueCodec: Codec[A]): Codec[List[A]] =
     if (delimiter.size == 0) list(valueCodec)
-    else listMultiplexed(_ ++ delimiter ++ _, bits => DeMultiplexer.delimited(bits, delimiter), valueCodec)
+    else listMultiplexed(
+      _ ++ delimiter ++ _,
+      bits => DeMultiplexer.delimited(bits, delimiter),
+      valueCodec).withToString(s"listDelimited($delimiter, $valueCodec)")
 
   /**
    * Combinator that chooses amongst two codecs based on an implicitly available byte ordering.

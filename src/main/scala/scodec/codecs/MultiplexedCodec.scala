@@ -5,6 +5,9 @@ import scodec.bits.BitVector
 
 import scala.language.higherKinds
 
+/**
+ * A trait that enables custom handling for encoding/decoding sequences.
+ */
 sealed trait MultiplexedCodec {
 
   def sizeBound: SizeBound = SizeBound.unknown
@@ -91,10 +94,14 @@ private[codecs] class VectorMultiplexedCodec[A](mux: (BitVector, BitVector) => B
   def encode(value: Vector[A]): Attempt[BitVector] = encode(codec, mux)(value)
 
   def decode(bits: BitVector): Attempt[DecodeResult[Vector[A]]] = decode[Vector, A](codec, deMux)(bits)
+
+  override def toString: String = s"vectorMultiplexed($codec, $mux, $deMux)"
 }
 
 private[codecs] class ListMultiplexedCodec[A](mux: (BitVector, BitVector) => BitVector, deMux: BitVector => (BitVector, BitVector), codec: Codec[A]) extends Codec[List[A]] with MultiplexedCodec {
   def encode(value: List[A]): Attempt[BitVector] = encode(codec, mux)(value)
 
   def decode(bits: BitVector): Attempt[DecodeResult[List[A]]] = decode[List, A](codec, deMux)(bits)
+
+  override def toString: String = s"listMultiplexed($codec, $mux, $deMux)"
 }
