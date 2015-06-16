@@ -11,9 +11,9 @@ rootPackage := "scodec"
 
 libraryDependencies ++= Seq(
   "org.scodec" %% "scodec-bits" % "1.0.7-SNAPSHOT",
-  "com.chuusai" %% "shapeless" % "2.2.0",
-  "org.scalatest" %% "scalatest" % "2.2.0" % "test",
-  "org.scalacheck" %% "scalacheck" % "1.11.3" % "test",
+  "com.chuusai" %% "shapeless" % "2.2.2",
+  "org.scalatest" %% "scalatest" % "3.0.0-M1" % "test",
+  "org.scalacheck" %% "scalacheck" % "1.12.3" % "test",
   "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
 )
 
