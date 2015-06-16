@@ -26,3 +26,5 @@ OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}")
 
 binaryIssueFilters ++= Seq(
 )
+
+enablePlugins(BuildInfoPlugin)
