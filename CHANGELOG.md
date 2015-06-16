@@ -1,5 +1,7 @@
 1.8.0
 =====
+ - Added support for Scala.js.
+ - Changed `DiscriminatorCodec#typecase` to take a `ClassTag` instead of a `Manfiest`.
  - Changed `Codec#{upcast,downcast}` to take a `Typeable` instance instead of a `Manifest`, in order to avoid Java reflection.
 
 1.7.2

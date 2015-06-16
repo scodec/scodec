@@ -12,7 +12,7 @@ class CodecTest extends CodecSuite {
   "all codecs" should {
 
     "support flatZip" in {
-      val codec = uint8 flatZip { n => fixedSizeBits(n.toLong, ascii) }
+      val codec = uint8 flatZip { n => fixedSizeBits(n.toLong, utf8) }
       roundtripAll(codec, Seq((0, ""), (8, "a"), (32, "test")))
     }
 
@@ -157,7 +157,7 @@ class CodecTest extends CodecSuite {
       roundtrip(codec, B(0))
     }
     "return an error from encode if passed a different subtype of target type" in {
-      codec.encode(C(0)) shouldBe 'failure
+      codec.encode(C(0)).isFailure shouldBe true
     }
     "work in presence of nested objects/classes" in {
       object X { object Y }
@@ -176,7 +176,7 @@ class CodecTest extends CodecSuite {
       roundtrip(codec, B)
     }
     "return an error from decode if decoded value is a supertype of a different type" in {
-      codec.decode(hex"02".bits) shouldBe 'failure
+      codec.decode(hex"02".bits).isFailure shouldBe true
     }
     "work in presence of nested objects/classes" in {
       trait P

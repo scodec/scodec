@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scala.reflect.ClassTag
+
 import scodec.bits.BitVector
 import DiscriminatorCodec.{ Case, Prism }
 
@@ -281,7 +283,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
    * @param cr $paramCr
    * @group discriminator
    */
-  def typecase[R <: A: Manifest](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] =
+  def typecase[R <: A: ClassTag](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] =
     subcaseO(tag)(a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None)(cr)
 
   /**
@@ -293,20 +295,20 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
    * @param cr $paramCr
    * @group discriminator
    */
-  def typecase[R <: A: Manifest](encodeTag: B, decodeTag: B => Boolean, cr: Codec[R]): DiscriminatorCodec[A, B] =
+  def typecase[R <: A: ClassTag](encodeTag: B, decodeTag: B => Boolean, cr: Codec[R]): DiscriminatorCodec[A, B] =
     subcaseO(encodeTag, decodeTag)(a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None)(cr)
 
-  private def matchesClass[R: Manifest](a: A) = {
-    val clazz = manifest[R] match {
-      case Manifest.Byte => classOf[java.lang.Byte]
-      case Manifest.Char => classOf[java.lang.Character]
-      case Manifest.Short => classOf[java.lang.Short]
-      case Manifest.Int => classOf[java.lang.Integer]
-      case Manifest.Long => classOf[java.lang.Long]
-      case Manifest.Float => classOf[java.lang.Float]
-      case Manifest.Double => classOf[java.lang.Double]
-      case Manifest.Boolean => classOf[java.lang.Boolean]
-      case m => m.runtimeClass
+  private def matchesClass[R](a: A)(implicit ctr: ClassTag[R]) = {
+    val clazz = ctr match {
+      case ClassTag.Byte => classOf[java.lang.Byte]
+      case ClassTag.Char => classOf[java.lang.Character]
+      case ClassTag.Short => classOf[java.lang.Short]
+      case ClassTag.Int => classOf[java.lang.Integer]
+      case ClassTag.Long => classOf[java.lang.Long]
+      case ClassTag.Float => classOf[java.lang.Float]
+      case ClassTag.Double => classOf[java.lang.Double]
+      case ClassTag.Boolean => classOf[java.lang.Boolean]
+      case ct => ct.runtimeClass
     }
     clazz.isAssignableFrom(a.getClass)
   }

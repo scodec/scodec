@@ -1,9 +1,9 @@
 package scodec
 package codecs
 
-import java.nio.CharBuffer
+import java.nio.{ ByteBuffer, CharBuffer }
 import java.nio.charset.Charset
-import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
+import java.nio.charset.{ MalformedInputException, UnmappableCharacterException }
 
 import scodec.bits.BitVector
 
@@ -24,7 +24,8 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
   override def decode(buffer: BitVector) = {
     val decoder = charset.newDecoder
     try {
-      Attempt.successful(DecodeResult(decoder.decode(buffer.toByteBuffer).toString, BitVector.empty))
+      val asBuffer = ByteBuffer.wrap(buffer.toByteArray)
+      Attempt.successful(DecodeResult(decoder.decode(asBuffer).toString, BitVector.empty))
     } catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
         Attempt.failure(Err(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'"))

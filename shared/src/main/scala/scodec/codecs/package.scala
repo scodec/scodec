@@ -2,7 +2,7 @@ package scodec
 
 import scala.language.implicitConversions
 
-import java.nio.charset.Charset
+import java.nio.charset.{ Charset, StandardCharsets }
 import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 import java.util.zip.Deflater
@@ -449,13 +449,13 @@ package object codecs {
    * String codec that uses the `US-ASCII` charset. See [[string]] for more information on `String` codecs.
    * @group values
    */
-  val ascii = string(Charset.forName("US-ASCII"))
+  val ascii = string(StandardCharsets.US_ASCII)
 
   /**
    * String codec that uses the `UTF-8` charset. See [[string]] for more information on `String` codecs.
    * @group values
    */
-  val utf8 = string(Charset.forName("UTF-8"))
+  val utf8 = string(StandardCharsets.UTF_8)
 
   /**
    * String codec that uses the implicit `Charset` and prefixes the encoded string by the byte size
@@ -1319,7 +1319,7 @@ package object codecs {
    *
    * @group crypto
    */
-  val x509Certificate: Codec[X509Certificate] =
+  def x509Certificate: Codec[X509Certificate] =
     certificate("X.509").
       xmap[X509Certificate](_.asInstanceOf[X509Certificate], identity).
       withToString("x509certificate")

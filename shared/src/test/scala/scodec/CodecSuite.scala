@@ -20,7 +20,7 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
 
   protected def roundtrip[A](codec: Codec[A], value: A): Unit = {
     val encoded = codec.encode(value)
-    encoded shouldBe 'successful
+    encoded.isSuccessful shouldBe true
     val Attempt.Successful(DecodeResult(decoded, remainder)) = codec.decode(encoded.require)
     remainder shouldEqual BitVector.empty
     decoded shouldEqual value

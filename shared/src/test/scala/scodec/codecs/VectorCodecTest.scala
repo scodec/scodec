@@ -11,7 +11,7 @@ class VectorCodecTest extends CodecSuite {
     "be performant" in {
       val codec = vector(int32).complete
       val trials = 10
-      val sizes = List(10, 100, 1000, 10000, 100000)
+      val sizes = List(10, 100, 1000, 10000)
       val results = (1 to trials).map { trial =>
         sizes map { size =>
           val vec = definedSamples(Gen.listOfN(size, arbitrary[Int]).map { _.toVector }).head

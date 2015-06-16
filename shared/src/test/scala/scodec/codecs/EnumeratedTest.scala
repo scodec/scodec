@@ -8,15 +8,14 @@ class EnumeratedTest extends CodecSuite {
 
   object SIPrefix extends Enumeration {
     type SIPrefix = Value
-    val DEKA = Value(10)
-    val HECTO = Value(100)
-    val KILO = Value(1000)
-    val MEGA = Value(1000000)
-    val GIGA = Value(1000000000)
+    val DEKA = Value
+    val HECTO = Value
+    val KILO = Value
+    val MEGA = Value
+    val GIGA = Value
   }
 
   "enumerated codec" should {
-
     val codec = enumerated(int32, SIPrefix)
     implicit def generator = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
 
@@ -29,7 +28,7 @@ class EnumeratedTest extends CodecSuite {
     }
 
     "fail for an invalid id" in {
-      codec.decode(hex"00000001".bits).isFailure should equal (true)
+      codec.decode(hex"000000FF".bits).isFailure should equal (true)
     }
   }
 }
