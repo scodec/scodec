@@ -992,6 +992,8 @@ package object codecs {
    * remaining bits (input to `deMux` on next iteration) until a decoding error is encountered or no more bits remain.
    * The final return value is a vector of all decoded element values.
    *
+   * Note: For large vectors, it may be necessary to compact bits in `deMux`.
+   *
    * @param mux element multiplexer
    * @param deMux element de-multiplexer (should return the next bits to decode and the remaining bits for next iteration)
    * @param valueCodec element codec (used to decode next bits)
@@ -1072,6 +1074,8 @@ package object codecs {
    * When decoding, `deMux` is called repeatedly to obtain the next bits (to decode using `valueCodec`) and the
    * remaining bits (input to `deMux` on next iteration) until a decoding error is encountered or no more bits remain.
    * The final return value is a list of all decoded element values.
+   *
+   * Note: For large lists, it may be necessary to compact bits in `deMux`.
    *
    * @param mux element multiplexer
    * @param deMux element de-multiplexer (should return the next bits to decode and the remaining bits for next iteration)

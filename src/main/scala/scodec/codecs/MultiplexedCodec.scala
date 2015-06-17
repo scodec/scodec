@@ -43,8 +43,10 @@ sealed trait MultiplexedCodec {
    * Uses `deMux` repeatedly to obtain the stream of vectors to decode to a value of type `A`.
    * Terminates when the next stream to decode is empty or upon first decoding error.
    *
+   * Note: For large sequences, it may be necessary to compact bits in `deMux`.
+   *
    * @param dec element decoder
-   * @param deMux returns `(next, rest)` tuples where `next` is the input to `dec` and `rest` is the next input to `deMux`
+   * @param deMux returns `(next, rest)` tuples where `next` is input to `dec` yielding `(value, remainder)` and `remainder ++ rest` is the next input to `deMux`
    * @param buffer input bits
    * @return
    */
@@ -55,10 +57,10 @@ sealed trait MultiplexedCodec {
     var error: Option[Err] = None
     while (temp._1.nonEmpty) {
       dec.decode(temp._1) match {
-        case Attempt.Successful(DecodeResult(value, _)) =>
+        case Attempt.Successful(DecodeResult(value, remainder)) =>
           builder += value
           count += 1
-          temp = deMux(temp._2)
+          temp = deMux(remainder ++ temp._2)
         case Attempt.Failure(err) =>
           error = Some(err.pushContext(count.toString))
           temp = (BitVector.empty, BitVector.empty)

@@ -26,12 +26,9 @@ class MultiplexedCodecTest extends CodecSuite {
       // a realistic example would have a more complex deMux (potentially resulting in exponential time complexities)
       val codec = vectorMultiplexed(
         _ ++ delimiter ++ _,
-        bits => bits.size match {
-          case i if i >= 32 => bits.splitAt(32)
-          case 0 => (BitVector.empty, BitVector.empty)
-        },
+        bits => (bits.compact, BitVector.empty),
         int32)
-      val trials = 5
+      val trials = 10
       val sizes = List(10, 100, 1000, 10000, 100000)
       val results = (1 to trials).map { trial =>
         sizes map { size =>
