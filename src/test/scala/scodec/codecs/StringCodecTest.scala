@@ -23,6 +23,22 @@ class StringCodecTest extends CodecSuite {
     }
   }
 
+  "cstring codec" should {
+
+    "roundtrip" in {
+      roundtripAll(cstring, Seq("test", ""))
+    }
+
+    "decode up to the first null-character" in {
+      cstring.decode(ascii.encode("hello\u0000").require ++ BitVector.bit(true)) should be (Attempt.successful(DecodeResult("hello", BitVector.bit(true))))
+    }
+
+    "fail decoding with an error when buffer contains bytes unsupported by charset" in {
+      cstring.decode(ascii.encode("0123456789ABCDEF").require) shouldBe Attempt.failure(Err("Does not contain a 'NUL' termination byte."))
+    }
+
+  }
+
   "utf8 codec" should {
     "roundtrip" in {
       roundtripAll(utf8, Seq("test", "", "with\ttabs", "withλ"))
