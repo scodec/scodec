@@ -11,7 +11,7 @@ class CoproductCodecTest extends CodecSuite {
 
     "support index based discriminators" in {
       type IBS = Int :+: Boolean :+: String :+: CNil
-      val codec: Codec[IBS] = (int32 :+: bool(8) :+: variableSizeBytes(uint8, ascii)).discriminatedByIndex(uint8)
+      val codec: Codec[IBS] = (int32 :+: bool(8) :+: variableSizeBytes(uint8, utf8)).discriminatedByIndex(uint8)
 
       codec.encode(Coproduct[IBS](1)).require shouldBe hex"0000000001".bits
       codec.encode(Coproduct[IBS](true)).require shouldBe hex"01ff".bits
@@ -32,8 +32,8 @@ class CoproductCodecTest extends CodecSuite {
     "support arbitrary discriminators" in {
       type IBS = Int :+: Boolean :+: String :+: CNil
       val codec: Codec[IBS] =
-        (int32 :+: bool(8) :+: variableSizeBytes(uint8, ascii)).
-          discriminatedBy(fixedSizeBytes(1, ascii)).
+        (int32 :+: bool(8) :+: variableSizeBytes(uint8, utf8)).
+          discriminatedBy(fixedSizeBytes(1, utf8)).
           using(Sized("i", "b", "s"))
 
       codec.encode(Coproduct[IBS](1)).require shouldBe hex"6900000001".bits
@@ -54,7 +54,7 @@ class CoproductCodecTest extends CodecSuite {
     "support choice codecs" in {
       type US = Unit :+: String :+: CNil
       val codec: Codec[US] =
-        (constant(1) :+: variableSizeBytes(uint8, ascii)).choice
+        (constant(1) :+: variableSizeBytes(uint8, utf8)).choice
 
       codec.encode(Coproduct[US](())).require shouldBe hex"01".bits
       codec.complete.decode(hex"01".bits).require.value shouldBe Coproduct[US](())

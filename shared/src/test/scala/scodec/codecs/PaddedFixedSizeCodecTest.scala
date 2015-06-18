@@ -9,7 +9,7 @@ class PaddedFixedSizeCodecTest extends CodecSuite {
 
   "the paddedfixedSizeBytes combinators" should {
     "roundtrip" in {
-      roundtrip(paddedFixedSizeBytes(4, ascii, ones), "test")
+      roundtrip(paddedFixedSizeBytes(4, utf8, ones), "test")
       roundtrip(paddedFixedSizeBytes(1, uint8, ones), 12)
       roundtrip(paddedFixedSizeBytes(2, uint8, ones), 12)
     }
@@ -38,7 +38,7 @@ class PaddedFixedSizeCodecTest extends CodecSuite {
 
   "the paddedfixedSizeBits combinators" should {
     "roundtrip" in {
-      roundtrip(paddedFixedSizeBits(32, ascii, ones), "test")
+      roundtrip(paddedFixedSizeBits(32, utf8, ones), "test")
       roundtrip(paddedFixedSizeBits(8, uint8, ones), 12)
       roundtrip(paddedFixedSizeBits(16, uint8, ones), 12)
     }
@@ -72,9 +72,9 @@ class PaddedFixedSizeCodecTest extends CodecSuite {
     }
 
     "fail encoding when value is too large to be encoded by size codec" in {
-      val encoded = ascii.encode("test").require
-      paddedFixedSizeBits(32, ascii, ones).decode(encoded ++ BitVector.low(48)) shouldBe Attempt.successful(DecodeResult("test", BitVector.low(48)))
-      paddedFixedSizeBits(24, ascii, ones).encode("test") shouldBe Attempt.failure(Err("[test] requires 32 bits but field is fixed size of 24 bits"))
+      val encoded = utf8.encode("test").require
+      paddedFixedSizeBits(32, utf8, ones).decode(encoded ++ BitVector.low(48)) shouldBe Attempt.successful(DecodeResult("test", BitVector.low(48)))
+      paddedFixedSizeBits(24, utf8, ones).encode("test") shouldBe Attempt.failure(Err("[test] requires 32 bits but field is fixed size of 24 bits"))
     }
 
     "support pkcs5/pkcs7 style padding" in {

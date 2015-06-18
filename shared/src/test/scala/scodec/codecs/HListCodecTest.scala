@@ -16,11 +16,11 @@ class HListCodecTest extends CodecSuite {
 
 
     "support construction via :: operator" in {
-      roundtripAll((uint8 :: uint8 :: ascii), Seq(1 :: 2 :: "test" :: HNil))
+      roundtripAll((uint8 :: uint8 :: utf8), Seq(1 :: 2 :: "test" :: HNil))
     }
 
     "support conversion HList codec to a case class codec via as method" in {
-      roundtripAll((uint8 :: uint8 :: ascii).as[Foo], Seq(Foo(1, 2, "test")))
+      roundtripAll((uint8 :: uint8 :: utf8).as[Foo], Seq(Foo(1, 2, "test")))
     }
 
     "support conversion of non-HList codec to a case class codec via as method" in {
@@ -42,7 +42,7 @@ class HListCodecTest extends CodecSuite {
     }
 
     "provide ability to append via :+ operator" in {
-      roundtrip(((uint8 :: uint8) :+ ascii).as[Foo], Foo(1, 2, "test"))
+      roundtrip(((uint8 :: uint8) :+ utf8).as[Foo], Foo(1, 2, "test"))
     }
 
     "provide ability to concatenate two HList codecs" in {
@@ -62,7 +62,7 @@ class HListCodecTest extends CodecSuite {
 
     "support dropping all Unit values out of an HList codec" in {
       def ign(size: Int) = scodec.codecs.ignore(size.toLong)
-      val codec = (uint8 :: ign(8) :: uint8 :: ign(8) :: ascii).dropUnits.as[Foo]
+      val codec = (uint8 :: ign(8) :: uint8 :: ign(8) :: utf8).dropUnits.as[Foo]
       roundtrip(codec, Foo(1, 2, "test"))
     }
 

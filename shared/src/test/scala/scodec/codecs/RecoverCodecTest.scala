@@ -13,7 +13,7 @@ class RecoverCodecTest extends CodecSuite {
           bits <- codec.encode(b)
           result <- codec.decode(bits)
         } yield result
-        rest shouldBe 'empty
+        rest.isEmpty shouldBe true
         b2 shouldBe true
       }
     }
@@ -22,7 +22,7 @@ class RecoverCodecTest extends CodecSuite {
       forAll { (i: Int) =>
         val codec = recover(constant(BitVector fromInt i))
         val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty)
-        rest shouldBe 'empty
+        rest.isEmpty shouldBe true
         b shouldBe false
       }
     }
@@ -56,7 +56,7 @@ class RecoverCodecTest extends CodecSuite {
       forAll { (i: Int) =>
         val codec = lookahead(constant(BitVector fromInt i))
         val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty)
-        rest shouldBe 'empty
+        rest.isEmpty shouldBe true
         b shouldBe false
       }
     }

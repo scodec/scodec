@@ -12,7 +12,7 @@ class TupleCodecTest extends CodecSuite {
     }
 
     "provide a type alias for left nested tuples" in {
-      (uint8 ~ uint8 ~ ascii): Codec[Int ~ Int ~ String]
+      (uint8 ~ uint8 ~ utf8): Codec[Int ~ Int ~ String]
       ()
     }
 
@@ -41,7 +41,7 @@ class TupleCodecTest extends CodecSuite {
     "allow extraction via ~ operator" in {
       (uint8 ~ uint8 ~ uint8).decode(BitVector(24, 255, 14)) match {
         case Attempt.Successful(DecodeResult(a ~ b ~ c, rest)) =>
-          rest should be ('empty)
+          rest.isEmpty shouldBe true
           a should be (24)
           b should be (255)
           c should be (14)

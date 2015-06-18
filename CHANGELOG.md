@@ -1,5 +1,7 @@
 1.8.0
 =====
+ - Added support for Scala.js.
+ - Changed `DiscriminatorCodec#typecase` to take a `ClassTag` instead of a `Manfiest`.
  - Changed `Codec#{upcast,downcast}` to take a `Typeable` instance instead of a `Manifest`, in order to avoid Java reflection.
  - Changed `withToString` to take its argument by-name, so that string formatting/interpolation only occurs when `toString` is called.
  - Added `vectorMultiplexed`/`listMultiplexed` combinators, for creating a `Codec[Vector[A]]`/`Codec[List[A]]` from a `Codec[A]` and custom multiplexing/demultiplexing logic.
