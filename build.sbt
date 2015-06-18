@@ -12,7 +12,7 @@ rootPackage := "scodec"
 libraryDependencies ++= Seq(
   "org.scodec" %% "scodec-bits" % "1.0.7",
   "com.chuusai" % "shapeless" % "2.1.0" cross CrossVersion.fullMapped {
-    case "2.10.4" => "2.10.4"
+    case "2.10.5" => "2.10.5"
     case x if x startsWith "2.11." => "2.11"
   },
   "org.scalatest" %% "scalatest" % "2.2.0" % "test",
