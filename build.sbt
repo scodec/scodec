@@ -16,11 +16,12 @@ lazy val core = crossProject.in(file(".")).
   enablePlugins(BuildInfoPlugin).
   settings(commonSettings: _*).
   settings(scodecPrimaryModule: _*).
+  jvmSettings(scodecPrimaryModuleJvm: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.0.7-SNAPSHOT",
+      "org.scodec" %%% "scodec-bits" % "1.0.7",
       "com.chuusai" %%% "shapeless" % "2.2.2",
-      "org.scalatest" %%% "scalatest" % "3.0.0-M1" % "test",
+      "org.scalatest" %%% "scalatest" % "3.0.0-M2" % "test",
       "org.scalacheck" %%% "scalacheck" % "1.12.3" % "test"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil)
