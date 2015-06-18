@@ -411,7 +411,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
    * @group combinators
    */
-  final def withToString(str: String): Codec[A] = new Codec[A] {
+  final def withToString(str: => String): Codec[A] = new Codec[A] {
     override def sizeBound: SizeBound = self.sizeBound
     override def encode(a: A) = self.encode(a)
     override def decode(buffer: BitVector) = self.decode(buffer)
