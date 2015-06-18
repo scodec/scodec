@@ -8,8 +8,7 @@ val commonSettings = Seq(
 )
 
 lazy val root = project.in(file(".")).aggregate(coreJVM, coreJS).settings(commonSettings: _*).settings(
-  publish := {},
-  publishLocal := {}
+  publishArtifact := false
 )
 
 lazy val core = crossProject.in(file(".")).
