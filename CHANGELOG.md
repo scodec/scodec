@@ -1,6 +1,9 @@
 1.8.0
 =====
  - Changed `Codec#{upcast,downcast}` to take a `Typeable` instance instead of a `Manifest`, in order to avoid Java reflection.
+ - Added `vectorMultiplexed`/`listMultiplexed` combinators, for creating a `Codec[Vector[A]]`/`Codec[List[A]]` from a `Codec[A]` and custom multiplexing/demultiplexing logic.
+ - Added `vectorDelimited`/`listDelimited` combinators, for creating a `Codec[Vector[A]]`/`Codec[List[A]]` from a `Codec[A]` and a delimiter, expressed as a `BitVector`.
+ - Added `cstring` codec, for encoding/decoding `US-ASCII` strings that are terminated by a NUL (0) byte.
 
 1.7.2
 =====
