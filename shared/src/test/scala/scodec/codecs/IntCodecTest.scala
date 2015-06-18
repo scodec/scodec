@@ -46,12 +46,10 @@ class IntCodecTest extends CodecSuite {
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 8191) { (n: Int) =>
-        whenever(n >= 0 && n <= 8191) {
-          val bigEndian = uint(13).encode(n).require
-          val littleEndian = uintL(13).encode(n).require.toByteVector
-          val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
-          flipped shouldBe bigEndian
-        }
+        val bigEndian = uint(13).encode(n).require
+        val littleEndian = uintL(13).encode(n).require.toByteVector
+        val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
+        flipped shouldBe bigEndian
       }
     }
 

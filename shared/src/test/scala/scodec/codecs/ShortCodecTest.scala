@@ -6,15 +6,13 @@ import scodec.bits.BitVector
 
 class ShortCodecTest extends CodecSuite {
   def check(low: Short, high: Short)(f: (Short) => Unit): Unit = {
-    forAll(Gen.choose(low, high)) { n =>
-      whenever(n >= low) { f(n) }
-    }
+    forAll(Gen.choose(low, high)) { n => f(n) }
   }
 
   "the short16 codec" should { "roundtrip" in { forAll { (n: Short) => roundtrip(short16, n) } } }
   "the short16L codec" should { "roundtrip" in { forAll { (n: Short) => roundtrip(short16L, n) } } }
-  "the ushort(n) codec" should { "roundtrip" in { forAll { (n: Short) => whenever(n >= 0) { roundtrip(ushort(15), n) } } } }
-  "the ushortL(n) codec" should { "roundtrip" in { forAll { (n: Short) => whenever(n >= 0) { roundtrip(ushortL(15), n) } } } }
+  "the ushort(n) codec" should { "roundtrip" in { forAll(Gen.choose(0, 32767)) { n => roundtrip(ushort(15), n.toShort) } } }
+  "the ushortL(n) codec" should { "roundtrip" in { forAll(Gen.choose(0, 32767)) { n => roundtrip(ushortL(15), n.toShort) } } }
 
   "the short codecs" should {
     "support endianess correctly" in {
@@ -24,12 +22,10 @@ class ShortCodecTest extends CodecSuite {
         littleEndian shouldBe bigEndian.reverse
       }
       check(0, 8191) { (n: Short) =>
-        whenever(n >= 0 && n <= 8191) {
-          val bigEndian = ushort(13).encode(n).require
-          val littleEndian = ushortL(13).encode(n).require.toByteVector
-          val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
-          flipped shouldBe bigEndian
-        }
+        val bigEndian = ushort(13).encode(n).require
+        val littleEndian = ushortL(13).encode(n).require.toByteVector
+        val flipped = BitVector(littleEndian.last).take(5) ++ littleEndian.init.reverse.toBitVector
+        flipped shouldBe bigEndian
       }
     }
 

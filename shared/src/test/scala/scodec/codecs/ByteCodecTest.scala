@@ -6,13 +6,11 @@ import scodec.bits.BitVector
 
 class ByteCodecTest extends CodecSuite {
   def check(low: Byte, high: Byte)(f: (Byte) => Unit): Unit = {
-    forAll(Gen.choose(low, high)) { n =>
-      whenever(n >= low) { f(n) }
-    }
+    forAll(Gen.choose(low, high)) { n => f(n) }
   }
 
   "the byte codec" should { "roundtrip" in { forAll { (n: Byte) => roundtrip(byte, n) } } }
-  "the ubyte(n) codec" should { "roundtrip" in { forAll { (n: Byte) => whenever(n >= 0) { roundtrip(ubyte(7), n) } } } }
+  "the ubyte(n) codec" should { "roundtrip" in { forAll(Gen.choose(0, 127)) { n => roundtrip(ubyte(7), n.toByte) } } }
 
   "the byte codecs" should {
     "return an error when value to encode is out of legal range" in {
