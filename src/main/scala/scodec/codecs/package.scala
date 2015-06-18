@@ -1,5 +1,7 @@
 package scodec
 
+import scodec.Attempt.{Failure, Successful}
+
 import scala.language.implicitConversions
 
 import java.nio.charset.Charset
@@ -456,6 +458,23 @@ package object codecs {
    * @group values
    */
   val utf8 = string(Charset.forName("UTF-8"))
+
+  /**
+   * String codec that uses the `US-ASCII` charset that encodes strings with a trailing `NUL` termination byte
+   * and decodes a string up to the next `NUL` termination byte.
+   * It fails to decode if the bit vector ends before a `NUL` termination byte can be found.
+   */
+  val cstring :Codec[String] = filtered(ascii, new Codec[BitVector] {
+    val nul = BitVector.lowByte
+    override def sizeBound: SizeBound = SizeBound.unknown
+    override def encode(bits: BitVector): Attempt[BitVector] = Successful(bits ++ nul)
+    override def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] = {
+        bits.bytes.indexOfSlice(nul.bytes) match {
+        case -1 => Failure(Err("Does not contain a 'NUL' termination byte."))
+        case i => Successful(DecodeResult(bits.take(i * 8L), bits.drop(i * 8L + 8L)))
+      }
+    }
+  }).withToString("cstring")
 
   /**
    * String codec that uses the implicit `Charset` and prefixes the encoded string by the byte size
