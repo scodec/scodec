@@ -1114,7 +1114,7 @@ package object codecs {
    * Then, the individual partitions are (concatenated and) decoded using the `valueCodec` and the values collected are returned in a vector.
    *
    * Note: This method applies specific semantics to the notion of a `delimiter`. An alternate (and faster) implementation could be to search
-   * for the `delimiter` using [[BitVector.indexOfSlice]] but this would work only if value bits do not contain the `delimiter` bits at
+   * for the `delimiter` using `BitVector.indexOfSlice` but this would work only if value bits do not contain the `delimiter` bits at
    * any bit position.
    *
    * Example:
@@ -1197,7 +1197,7 @@ package object codecs {
    * Then, the individual partitions are (concatenated and) decoded using the `valueCodec` and the values collected are returned in a list.
    *
    * Note: This method applies specific semantics to the notion of a `delimiter`. An alternate (and faster) implementation could be to search
-   * for the `delimiter` using [[BitVector.indexOfSlice]] but this would work only if value bits do not contain the `delimiter` bits at
+   * for the `delimiter` using `BitVector.indexOfSlice` but this would work only if value bits do not contain the `delimiter` bits at
    * any bit position.
    *
    * Example:
