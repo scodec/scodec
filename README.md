@@ -117,3 +117,8 @@ Getting Binaries
 ----------------
 
 See the [releases page on the website](http://scodec.org/releases/).
+
+Building
+--------
+
+This project uses sbt and requires node.js to be installed in order to run Scala.js tests. To build, run `sbt publish-local`.
