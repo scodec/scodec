@@ -41,7 +41,7 @@ to [Typelevel](http://typelevel.org/about.html).
 Introduction
 ------------
 
-The primary abstraction is a [`Codec[A]`](src/main/scala/scodec/Codec.scala), which supports encoding a value of type `A` to a
+The primary abstraction is a [`Codec[A]`](shared/src/main/scala/scodec/Codec.scala), which supports encoding a value of type `A` to a
 `BitVector` and decoding a `BitVector` to a value of type `A`.
 
 The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a number of predefined codecs and combinators.
@@ -100,9 +100,9 @@ Examples
 
 There are various examples in the test directory, including codecs for:
 
- - [UDP Datagrams](src/test/scala/scodec/examples/UdpDatagramExample.scala)
- - [MPEG Packets](src/test/scala/scodec/examples/MpegPacketExample.scala)
- - [libpcap Files](src/test/scala/scodec/examples/PcapExample.scala)
+ - [UDP Datagrams](shared/src/test/scala/scodec/examples/UdpDatagramExample.scala)
+ - [MPEG Packets](shared/src/test/scala/scodec/examples/MpegPacketExample.scala)
+ - [libpcap Files](jvm/src/test/scala/scodec/examples/PcapExample.scala)
 
 The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
 quality codecs for the above examples.
