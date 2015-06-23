@@ -289,6 +289,40 @@ package object codecs {
   val uint32L: Codec[Long] = new LongCodec(32, false, ByteOrdering.LittleEndian)
 
   /**
+   * Codec for variable-length big-endian integers.
+   * Encoding requires between 1 and 5 bytes, depending on the value.
+   * Smaller ints require less bytes. Negative values are always encoded with 5 bytes.
+   * @group numbers
+   */
+  val vint: Codec[Int] = new VarIntCodec(ByteOrdering.BigEndian)
+
+  /**
+   * Codec for variable-length little-endian integers.
+   * Encoding requires between 1 and 5 bytes, depending on the value.
+   * Smaller ints require less bytes. Negative values are always encoded with 5 bytes.
+   * @group numbers
+   */
+  val vintL: Codec[Int] = new VarIntCodec(ByteOrdering.LittleEndian)
+
+  /**
+   * Codec for variable-length big-endian longs.
+   * Encoding requires between 1 and 9 bytes, depending on the value.
+   * Smaller longs require less bytes.
+   * Negative values are not supported.
+   * @group numbers
+   */
+  val vlong: Codec[Long] = new VarLongCodec(ByteOrdering.BigEndian)
+
+  /**
+   * Codec for variable-length little-endian longs.
+   * Encoding requires between 1 and 9 bytes, depending on the value.
+   * Smaller longs require less bytes.
+   * Negative values are not supported.
+   * @group numbers
+   */
+  val vlongL: Codec[Long] = new VarLongCodec(ByteOrdering.LittleEndian)
+
+  /**
    * Codec for n-bit 2s complement bytes.
    * @param size number of bits (must be 0 < size <= 8)
    * @group numbers
