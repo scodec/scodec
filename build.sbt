@@ -7,7 +7,7 @@ val commonSettings = Seq(
   contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("pchiusano", "Paul Chiusano"))
 )
 
-lazy val root = project.in(file(".")).aggregate(coreJVM, coreJS).settings(commonSettings: _*).settings(
+lazy val root = project.in(file(".")).aggregate(coreJVM, coreJS, benchmarks).settings(commonSettings: _*).settings(
   publishArtifact := false
 )
 
@@ -37,3 +37,9 @@ lazy val core = crossProject.in(file(".")).
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
+
+lazy val benchmarks = project.in(file("benchmarks")).dependsOn(coreJVM).enablePlugins(JmhPlugin).
+  settings(commonSettings: _*).
+  settings(
+    publishArtifact := false
+  )
