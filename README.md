@@ -29,10 +29,10 @@ Administrative
 
 This project is licensed under a [3-clause BSD license](LICENSE).
 
-The [Typelevel mailing list](https://groups.google.com/forum/#!forum/typelevel) contains release announcements and is generally a good place to go for help. Also consider using the [scodec tag on StackOverflow](http://stackoverflow.com/questions/tagged/scodec).
+The [scodec mailing list](https://groups.google.com/forum/#!forum/scodec) contains release announcements and is generally a good place to go for help. Also consider using the [scodec tag on StackOverflow](http://stackoverflow.com/questions/tagged/scodec).
 
 People are expected to follow the [Typelevel Code of Conduct](http://typelevel.org/conduct.html)
-when discussing scodec on the Github page, IRC channel, mailing list,
+when discussing scodec on the Github page, Gitter channel, mailing list,
 or other venues.
 
 Concerns or issues can be sent to Michael Pilquist (*mpilquist@gmail.com*) or
@@ -44,7 +44,7 @@ Introduction
 The primary abstraction is a [`Codec[A]`](shared/src/main/scala/scodec/Codec.scala), which supports encoding a value of type `A` to a
 `BitVector` and decoding a `BitVector` to a value of type `A`.
 
-The [`codecs`](src/main/scala/scodec/codecs/package.scala) package provides a number of predefined codecs and combinators.
+The [`codecs`](shared/src/main/scala/scodec/codecs/package.scala) package provides a number of predefined codecs and combinators.
 
 ```scala
     import scodec._
@@ -92,8 +92,8 @@ Codecs can also be implicitly resolved, resulting in usage like:
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
 See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](http://scodec.org/api/). Especially:
- - [`Codec`](http://scodec.org/api/scodec-core/1.7.1/#scodec.Codec)
- - [`codecs` package](http://scodec.org/api/scodec-core/1.7.1/#scodec.codecs.package)
+ - [`Codec`](http://scodec.org/api/scodec-core/1.8.0/#scodec.Codec)
+ - [`codecs` package](http://scodec.org/api/scodec-core/1.8.0/#scodec.codecs.package)
 
 Examples
 --------
