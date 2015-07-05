@@ -15,6 +15,7 @@ jdk:
   - oraclejdk8
 
 script:
+  - node -v
   - sbt ++$TRAVIS_SCALA_VERSION test
 
   # Tricks to avoid unnecessary cache updates
