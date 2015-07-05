@@ -33,7 +33,10 @@ lazy val core = crossProject.in(file(".")).
     binaryIssueFilters ++= Seq(
     )
   ).
-  jsSettings(commonJsSettings: _*)
+  jsSettings(commonJsSettings: _*).
+  jsSettings(
+    jsEnv in Test := PhantomJSEnv().value
+  )
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
