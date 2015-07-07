@@ -1,5 +1,6 @@
 1.8.1
 =====
+ - Added `vint`, `vintL`, `vlong`, and `vlongL` codecs, which encode integers in a variable number of bytes.
  - Fixed source links in ScalaDoc.
 
 1.8.0
