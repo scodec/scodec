@@ -1,3 +1,7 @@
+1.8.1
+=====
+ - Fixed source links in ScalaDoc.
+
 1.8.0
 =====
  - Added support for Scala.js.
