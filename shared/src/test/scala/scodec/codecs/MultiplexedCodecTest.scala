@@ -29,7 +29,7 @@ class MultiplexedCodecTest extends CodecSuite {
         bits => (bits.compact, BitVector.empty),
         int32)
       val trials = 10
-      val sizes = List(10, 100, 1000, 10000, 100000)
+      val sizes = List(10, 100, 1000, 10000)
       val results = (1 to trials).map { trial =>
         sizes map { size =>
           val vec = definedSamples(Gen.listOfN(size, Arbitrary.arbitrary[Int]).map {
