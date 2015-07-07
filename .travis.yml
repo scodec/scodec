@@ -16,7 +16,7 @@ jdk:
 
 script:
   - node -v
-  - sbt ++$TRAVIS_SCALA_VERSION test
+  - sbt ++$TRAVIS_SCALA_VERSION "project coreJVM" test
 
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" -exec rm {} +
