@@ -3,7 +3,7 @@
  - Added `xmapc`, `exmapc`, `narrowc`, and `widenc` methods to `Codec` and other types with `Transform` instances. These methods are curried versions of their non-curried counterparts, allowing the resulting type to be inferred based on result of first function. For example, `bits.xmap[ByteVector](_.bytes, _.bits)` can now be written as `bits.xmapc(_.bytes)(_.bits)`.
  - Added `vint`, `vintL`, `vlong`, and `vlongL` codecs, which encode integers in a variable number of bytes.
  - Fixed source links in ScalaDoc.
- - Upgraded to scodec-bits 1.0.9, shapeless 2.2.4, and scala.js 0.6.4.
+ - Upgraded to scodec-bits 1.0.9, shapeless 2.2.4, scala 2.11.7, and scala.js 0.6.4.
 
 1.8.0
 =====
