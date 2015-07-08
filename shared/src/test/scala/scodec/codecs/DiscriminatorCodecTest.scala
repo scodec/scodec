@@ -86,8 +86,8 @@ class DiscriminatorCodecTest extends CodecSuite {
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
       val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
       val codec: Codec[Either[Reserved, Color]] = choice(
-        nonReserved.xmap[Right[Reserved, Color]](c => Right(c), _.b).upcast[Either[Reserved, Color]],
-        reserved.xmap[Left[Reserved, Color]](r => Left(r), _.a).upcast[Either[Reserved, Color]]
+        nonReserved.xmapc(Right.apply)(_.b).upcast[Either[Reserved, Color]],
+        reserved.xmapc(Left.apply)(_.a).upcast[Either[Reserved, Color]]
       )
 
       roundtrip(codec, Right(Red))
