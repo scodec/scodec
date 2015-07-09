@@ -45,10 +45,22 @@ package object scodec {
     def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): F[B] = t.exmap(self, f, g)
 
     /**
+     * Curried version of `exmap`.
+     * @group combinators
+     */
+    def exmapc[B](f: A => Attempt[B])(g: B => Attempt[A]): F[B] = t.exmap(self, f, g)
+
+    /**
      * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
      * @group combinators
      */
     def xmap[B](f: A => B, g: B => A): F[B] = t.xmap(self, f, g)
+
+    /**
+     * Curried version of `xmap`.
+     * @group combinators
+     */
+    def xmapc[B](f: A => B)(g: B => A): F[B] = t.xmap(self, f, g)
 
     /**
      * Transforms using two functions, `A => Attempt[B]` and `B => A`.
@@ -60,6 +72,12 @@ package object scodec {
     def narrow[B](f: A => Attempt[B], g: B => A): F[B] = t.narrow(self, f, g)
 
     /**
+     * Curried version of `narrow`.
+     * @group combinators
+     */
+    def narrowc[B](f: A => Attempt[B])(g: B => A): F[B] = t.narrow(self, f, g)
+
+    /**
      * Transforms using two functions, `A => B` and `B => Attempt[A]`.
      *
      * The supplied functions form an injection from `A` to `B`. Hence, this method converts from
@@ -69,6 +87,12 @@ package object scodec {
     def widen[B](f: A => B, g: B => Attempt[A]): F[B] = t.widen(self, f, g)
 
     /**
+     * Curried version of `widen`.
+     * @group combinators
+     */
+    def widenc[B](f: A => B)(g: B => Attempt[A]): F[B] = t.widen(self, f, g)
+
+    /**
      * Transforms using two functions, `A => B` and `B => Option[A]`.
      *
      * Particularly useful when combined with case class apply/unapply. E.g., `widenOpt(fa, Foo.apply, Foo.unapply)`.
@@ -76,6 +100,12 @@ package object scodec {
      * @group combinators
      */
     def widenOpt[B](f: A => B, g: B => Option[A]): F[B] = t.widenOpt(self, f, g)
+
+    /**
+     * Curried version of `widenOpt`.
+     * @group combinators
+     */
+    def widenOptc[B](f: A => B)(g: B => Option[A]): F[B] = t.widenOpt(self, f, g)
 
     /**
      * Transforms using two functions, `A => B` and `B => Option[A]`.

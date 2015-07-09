@@ -3,6 +3,7 @@ import com.typesafe.tools.mima.plugin.MimaKeys._
 
 val commonSettings = Seq(
   scodecModule := "scodec-core",
+  githubProject := "scodec",
   rootPackage := "scodec",
   contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("pchiusano", "Paul Chiusano")),
   scalaVersion := "2.12.0-M1",
@@ -24,14 +25,15 @@ lazy val core = project.in(file(".")).
   ).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.0.7",
-      "com.chuusai" %%% "shapeless" % "2.2.2",
+      "org.scodec" %%% "scodec-bits" % "1.0.9",
+      "com.chuusai" %%% "shapeless" % "2.2.4",
       "org.scalatest" %%% "scalatest" % "2.2.5-M1" % "test",
       "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil)
   ).
-  settings(
+  jvmSettings(
+    docSourcePath := new File(baseDirectory.value, ".."),
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
