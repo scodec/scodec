@@ -24,7 +24,7 @@ trait Encoder[-A] { self =>
    * Attempts to encode the specified value in to a bit vector.
    *
    * @param value value to encode
-   * @param return error or binary encoding of the value
+   * @return error or binary encoding of the value
    * @group primary
    */
   def encode(value: A): Attempt[BitVector]
