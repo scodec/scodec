@@ -6,15 +6,15 @@ import scodec.bits.BitVector
 
 private[codecs] object UuidCodec extends Codec[UUID] {
 
-  val codec = int64 ~ int64
+  private val mkUUID: (Long, Long) => UUID = new UUID(_, _)
 
-  override def sizeBound = codec.sizeBound
+  override val sizeBound = int64.sizeBound * 2L
 
   override def encode(u: UUID) =
-    codec.encode((u.getMostSignificantBits, u.getLeastSignificantBits))
+    Codec.encodeBoth(int64, int64)(u.getMostSignificantBits, u.getLeastSignificantBits)
 
   override def decode(bits: BitVector) =
-    codec.decode(bits) map { _ map { case (m, l) => new UUID(m, l) } }
+    Codec.decodeBothCombine(int64, int64)(bits)(mkUUID)
 
   override def toString = "uuid"
 }
