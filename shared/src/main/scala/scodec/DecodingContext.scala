@@ -8,6 +8,7 @@ import scodec.bits.BitVector
  *
  * Note: this is a domain specific fail fast state monad.
  */
+@deprecated("Use flatMap on Codec or Decoder, which provides equivalent functionality", "1.8.2")
 sealed abstract class DecodingContext[A] { self =>
 
   /** Runs the sequenced decoding operations by decoding the specified bit vector. */

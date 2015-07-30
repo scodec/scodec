@@ -139,12 +139,12 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
   }
 
   override def decode(buffer: BitVector) = (for {
-    initialBits <- DecodingContext.get
-    value <- DecodingContext(codec)
-    bitsAfterValueDecoding <- DecodingContext.get
+    initialBits <- Decoder.get
+    value <- codec
+    bitsAfterValueDecoding <- Decoder.get
     valueBits = initialBits take (initialBits.size - bitsAfterValueDecoding.size)
-    decodedSig <- DecodingContext(signatureCodec)
-    _ <- DecodingContext liftAttempt verify(valueBits.toByteVector, decodedSig.toByteVector)
+    decodedSig <- signatureCodec
+    _ <- Decoder liftAttempt verify(valueBits.toByteVector, decodedSig.toByteVector)
   } yield value).decode(buffer)
 
   private def verify(data: ByteVector, signatureBytes: ByteVector): Attempt[Unit] = {

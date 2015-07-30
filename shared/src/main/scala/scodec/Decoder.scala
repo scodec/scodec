@@ -118,7 +118,7 @@ trait DecoderFunctions {
    * @group conv
    */
   final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(buffer: BitVector)(f: (A, B) => C): Attempt[DecodeResult[C]] = {
-    // Note: this could be written using DecodingContext but this function is called *a lot* and needs to be very fast
+    // Note: this could be written using flatMap on Decoder but this function is called *a lot* and needs to be very fast
     decA.decode(buffer) flatMap { aResult =>
       decB.decode(aResult.remainder) map { bResult => bResult map { b => f(aResult.value, b) } }
     }
@@ -231,5 +231,41 @@ object Decoder extends DecoderFunctions {
     private lazy val value = a
     def decode(bits: BitVector) = Attempt.successful(DecodeResult(value, bits))
     override def toString = s"const($value)"
+  }
+
+  /**
+   * Lifts a value of `Attempt[A]` in to a `Decoder`.
+   * @group ctor
+   */
+  def liftAttempt[A](attempt: Attempt[A]): Decoder[A] = new Decoder[A] {
+    def decode(b: BitVector) = attempt map { a => DecodeResult(a, b) }
+    override def toString = s"constAttempt($attempt)"
+  }
+
+  /**
+   * Gets a decoder that returns the input bit vector as its value and also returns the value as its remainder.
+   * @group ctor
+   */
+  def get: Decoder[BitVector] = new Decoder[BitVector] {
+    def decode(b: BitVector) = Attempt.successful(DecodeResult(b, b))
+    override def toString = "get"
+  }
+
+  /**
+   * Gets a decoder that ignores its input bit vector and sets the remainder to the specified value.
+   * @group ctor
+   */
+  def set(remainder: BitVector): Decoder[Unit] = new Decoder[Unit] {
+    def decode(b: BitVector) = Attempt.successful(DecodeResult((), remainder))
+    override def toString = s"set($remainder)"
+  }
+
+  /**
+   * Gets a decoder that transforms the input bit vector with the specified function and returns the result as the remainder.
+   * @group ctor
+   */
+  def modify(f: BitVector => BitVector): Decoder[Unit] = new Decoder[Unit] {
+    def decode(b: BitVector) = Attempt.successful(DecodeResult((), f(b)))
+    override def toString = s"modify"
   }
 }

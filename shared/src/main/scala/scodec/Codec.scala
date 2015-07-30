@@ -168,11 +168,6 @@ import scodec.bits.BitVector
  * If authoring combinators that require implicit codec arguments, use `shapeless.Lazy[Codec[A]]` instead of
  * `Codec[A]`. This prevents the occurrence of diverging implicit expansion errors.
  *
- * == Miscellaneous ==
- *
- * Note: [[DecodingContext]] allows multiple decoders/codecs to be sequenced one after the other, with the
- * remainder from each decode operation fed in to the input of the next.
- *
  * @groupname tuple Tuple Support
  * @groupprio tuple 11
  *
@@ -307,8 +302,8 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     def sizeBound: SizeBound = self.sizeBound.atLeast
     override def encode(t: (A, B)) = Codec.encodeBoth(self, f(t._1))(t._1, t._2)
     override def decode(buffer: BitVector) = (for {
-      a <- DecodingContext(self)
-      b <- DecodingContext(f(a))
+      a <- self
+      b <- f(a)
     } yield (a, b)).decode(buffer)
   }
 
@@ -348,8 +343,8 @@ trait Codec[A] extends GenCodec[A, A] { self =>
       } yield encA ++ encB
     }
     def decode(bv: BitVector) = (for {
-      a <- DecodingContext(self)
-      b <- DecodingContext(f(a))
+      a <- self
+      b <- f(a)
     } yield b).decode(bv)
   }
 
