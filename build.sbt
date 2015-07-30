@@ -39,3 +39,7 @@ lazy val core = crossProject.in(file(".")).
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
+
+lazy val benchmark: Project = project.in(file("benchmark")).dependsOn(coreJVM).enablePlugins(JmhPlugin).
+  settings(commonSettings: _*).
+  settings(publishArtifact := false)
