@@ -10,6 +10,7 @@ package scodec
 final case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
   require(lowerBound >= 0)
   require(upperBound.getOrElse(0L) >= 0)
+  require(upperBound.getOrElse(lowerBound) >= lowerBound)
 
   /**
    * Returns the exact size of the encoded bits. Defined when the lower bound is equal to the upper bound.
