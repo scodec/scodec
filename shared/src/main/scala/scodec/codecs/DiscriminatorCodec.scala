@@ -354,9 +354,9 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
     }
 
   def decode(bits: BitVector) = (for {
-    b <- DecodingContext(by)
-    k <- DecodingContext.liftAttempt(matcher(b))
-    r <- DecodingContext(framing(k.prism.repCodec))
+    b <- by
+    k <- Decoder.liftAttempt(matcher(b))
+    r <- framing(k.prism.repCodec)
   } yield k.prism.review(r)).decode(bits)
 
   override def toString = s"discriminated($by)"

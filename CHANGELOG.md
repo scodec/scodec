@@ -1,3 +1,7 @@
+1.8.2
+=====
+ - Deprecated `DecodingContext`, as it is equal in power to `flatMap` on `Codec`/`Decoder`.
+
 1.8.1
 =====
  - Added `xmapc`, `exmapc`, `narrowc`, and `widenc` methods to `Codec` and other types with `Transform` instances. These methods are curried versions of their non-curried counterparts, allowing the resulting type to be inferred based on result of first function. For example, `bits.xmap[ByteVector](_.bytes, _.bits)` can now be written as `bits.xmapc(_.bytes)(_.bits)`.
