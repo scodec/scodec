@@ -10,7 +10,7 @@ import scodec.codecs._
  *  - surrounds the list with a leading 0x22 and trailing 0x22
  *  - list entires may not contain the specified reserved byte
  */
-class DelimitedExample extends CodecSuite {
+class CustomDelimitedExample extends CodecSuite {
 
   def byteDelimited[A](value: Codec[A], delimiter: Byte): Codec[List[A]] = new Codec[List[A]] {
     def sizeBound = SizeBound.unknown
