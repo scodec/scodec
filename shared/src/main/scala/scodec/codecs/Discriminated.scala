@@ -32,4 +32,7 @@ final case class Discriminated[X, D](codec: Codec[D], framing: CodecTransformati
 /** Companion for [[Discriminated]]. */
 object Discriminated {
   def apply[X, D](codec: Codec[D]): Discriminated[X, D] = new Discriminated(codec)
+
+  /** Binds the discriminator value `D` to type `Y`. */
+  def bind[Y <: X](discriminator: D): Discriminator[X, Y, D] = Discriminator(discriminator)
 }
