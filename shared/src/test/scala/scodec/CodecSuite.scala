@@ -14,6 +14,9 @@ import scodec.bits.BitVector
 
 abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPropertyChecks {
 
+  implicit override val generatorDrivenConfig: PropertyCheckConfiguration =
+    PropertyCheckConfiguration(minSuccessful = 100, workers = 4)
+
   protected def roundtrip[A](a: A)(implicit c: Lazy[Codec[A]]): Unit = {
     roundtrip(c.value, a)
   }

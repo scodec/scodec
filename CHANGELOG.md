@@ -1,6 +1,10 @@
 1.8.2
 =====
+ - Restored support for Android 4.3 and lower.
  - Deprecated `DecodingContext`, as it is equal in power to `flatMap` on `Codec`/`Decoder`.
+ - Added `bind` method to `Discriminated`, allowing less boilerplate in creating `Discriminator` instances.
+ - Fixed bug in `listDelimited` codec.
+ - Minor optimizations, including faster `UUID` codec and upgrade to scodec-bits 1.0.10, which has additional performance improvements.
 
 1.8.1
 =====

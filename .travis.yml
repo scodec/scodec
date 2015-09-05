@@ -9,14 +9,14 @@ language: scala
 
 scala:
   - 2.10.5
-  - 2.11.6
+  - 2.11.7
 
 jdk:
   - oraclejdk8
 
 script:
   - node -v
-  - sbt ++$TRAVIS_SCALA_VERSION "project coreJVM" test
+  - sbt ++$TRAVIS_SCALA_VERSION "project coreJVM" test mima-report-binary-issues
 
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" -exec rm {} +
