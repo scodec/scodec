@@ -314,6 +314,13 @@ package object codecs {
   val vlong: Codec[Long] = new VarLongCodec(ByteOrdering.BigEndian)
 
   /**
+   * Codec for variable-length packed decimal longs.
+   * Negative values are not supported.
+   * @group numbers
+   */
+  val vpbcd: Codec[Long] = new VarPackedDecimalCodec
+
+  /**
    * Codec for variable-length little-endian longs.
    * Encoding requires between 1 and 9 bytes, depending on the value.
    * Smaller longs require less bytes.
@@ -419,6 +426,8 @@ package object codecs {
    * @group numbers
    */
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.LittleEndian)
+
+  def pbcd(nibbles: Int): Codec[Long] = fixedSizeBits(nibbles.toLong*4, vpbcd)
 
   /**
    * 32-bit big endian IEEE 754 floating point number.
