@@ -427,6 +427,11 @@ package object codecs {
    */
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.LittleEndian)
 
+  /**
+   * Codec for n-nibble packed decimal (BCD) integers that are represented with `Long`.
+   * @param nibbles number of nibbles (4-bit chunks)
+   * @group numbers
+   */
   def pbcd(nibbles: Int): Codec[Long] = fixedSizeBits(nibbles.toLong*4, vpbcd)
 
   /**
