@@ -318,7 +318,7 @@ package object codecs {
    * Negative values are not supported.
    * @group numbers
    */
-  val vpbcd: Codec[Long] = new VarPackedDecimalCodec
+  val vpbcd: Codec[Long] = VarPackedDecimalCodec
 
   /**
    * Codec for variable-length little-endian longs.
