@@ -85,7 +85,7 @@ object DeMultiplexer {
     delimited(bits, delimiter, 0)
 
   private def delimited(bits: BitVector, delimiter: BitVector, start: Long): (BitVector, BitVector) =
-    bits.indexOfSlice(delimiter) match {
+    bits.indexOfSlice(delimiter, start) match {
       case -1 => (bits, BitVector.empty)
       case i if (i % delimiter.size) == 0 => (bits.take(i), bits.drop(i + delimiter.size))
       case i => delimited(bits, delimiter, i + delimiter.size)

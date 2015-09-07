@@ -56,8 +56,8 @@ private[scodec] object HListCodec {
     override def sizeBound = codecA.sizeBound.atLeast
     override def encode(xs: A :: L) = Codec.encodeBoth(codecA, f(xs.head))(xs.head, xs.tail)
     override def decode(buffer: BitVector) = (for {
-      a <- DecodingContext(codecA)
-      l <- DecodingContext(f(a))
+      a <- codecA
+      l <- f(a)
     } yield a :: l).decode(buffer)
     override def toString = s"flatPrepend($codecA, $f)"
   }
@@ -73,8 +73,8 @@ private[scodec] object HListCodec {
       Codec.encodeBoth(codecK, f(k))(k, l)
     }
     override def decode(buffer: BitVector) = (for {
-      k <- DecodingContext(codecK)
-      l <- DecodingContext(f(k))
+      k <- codecK
+      l <- f(k)
     } yield k ::: l).decode(buffer)
     override def toString = s"flatConcat($codecK, $f)"
   }
@@ -90,8 +90,8 @@ private[scodec] object HListCodec {
       Codec.encodeBoth(codecL, f(l))(l, rest.head)
     }
     override def decode(buffer: BitVector) = (for {
-      l <- DecodingContext(codecL)
-      a <- DecodingContext(f(l))
+      l <- codecL
+      a <- f(l)
     } yield l :+ a).decode(buffer)
     override def toString = s"flatConcat($codecL, $f)"
   }

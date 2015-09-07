@@ -2,7 +2,7 @@ package scodec
 
 import scala.language.implicitConversions
 
-import java.nio.charset.{ Charset, StandardCharsets }
+import java.nio.charset.Charset
 import java.security.cert.{ Certificate, X509Certificate }
 import java.util.UUID
 import java.util.zip.Deflater
@@ -483,13 +483,13 @@ package object codecs {
    * String codec that uses the `US-ASCII` charset. See [[string]] for more information on `String` codecs.
    * @group values
    */
-  val ascii = string(StandardCharsets.US_ASCII)
+  val ascii = string(Platform.ascii)
 
   /**
    * String codec that uses the `UTF-8` charset. See [[string]] for more information on `String` codecs.
    * @group values
    */
-  val utf8 = string(StandardCharsets.UTF_8)
+  val utf8 = string(Platform.utf8)
 
   /**
    * String codec that uses the `US-ASCII` charset that encodes strings with a trailing `NUL` termination byte
@@ -534,28 +534,28 @@ package object codecs {
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
-  val ascii32 = string32(StandardCharsets.US_ASCII)
+  val ascii32 = string32(Platform.ascii)
 
   /**
    * String codec that uses the `US-ASCII` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement little endian field.
    * @group values
    */
-  val ascii32L = string32L(StandardCharsets.US_ASCII)
+  val ascii32L = string32L(Platform.ascii)
 
   /**
    * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement big endian field.
    * @group values
    */
-  val utf8_32 = string32(StandardCharsets.UTF_8)
+  val utf8_32 = string32(Platform.utf8)
 
   /**
    * String codec that uses the `UTF-8` charset and prefixes the encoded string by the byte size
    * in a 32-bit 2s complement little endian field.
    * @group values
    */
-  val utf8_32L = string32L(StandardCharsets.UTF_8)
+  val utf8_32L = string32L(Platform.utf8)
 
   /**
    * Encodes/decodes `UUID`s as 2 64-bit big-endian longs, first the high 64-bits then the low 64-bits.
@@ -1736,4 +1736,3 @@ package object codecs {
   /** Provides common implicit codecs. */
   object implicits extends ImplicitCodecs
 }
-

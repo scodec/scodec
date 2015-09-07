@@ -32,5 +32,9 @@ class SizeBoundTest extends WordSpec with Matchers {
       SizeBound.choice(List(SizeBound.exact(1), SizeBound.exact(2), SizeBound.exact(3))) shouldBe SizeBound.bounded(1, 3)
       SizeBound.choice(Nil) shouldBe SizeBound.exact(0)
     }
+
+    "prevent creation of non-sensical bounds" in {
+      an[IllegalArgumentException] should be thrownBy { SizeBound(1, Some(0)); () }
+    }
   }
 }

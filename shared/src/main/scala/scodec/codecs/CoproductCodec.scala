@@ -53,10 +53,10 @@ private[scodec] object CoproductCodec {
     }
 
     def decode(buffer: BitVector) = (for {
-      discriminator <- DecodingContext(discriminatorCodec)
-      index <- DecodingContext.liftAttempt(Attempt.fromOption(discriminatorToIndex(discriminator), new UnknownDiscriminator(discriminator)))
-      decoder <- DecodingContext.liftAttempt(Attempt.fromOption(liftedCodecs.lift(index), Err(s"Unsupported index $index (for discriminator $discriminator)")))
-      value <- DecodingContext(decoder)
+      discriminator <- discriminatorCodec
+      index <- Decoder.liftAttempt(Attempt.fromOption(discriminatorToIndex(discriminator), new UnknownDiscriminator(discriminator)))
+      decoder <- Decoder.liftAttempt(Attempt.fromOption(liftedCodecs.lift(index), Err(s"Unsupported index $index (for discriminator $discriminator)")))
+      value <- decoder
     } yield value).decode(buffer)
 
     override def toString = liftedCodecs.mkString("(", " :+: ", ")") + s" by $discriminatorCodec"

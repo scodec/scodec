@@ -17,6 +17,10 @@ class MultiplexedCodecTest extends CodecSuite {
       codec.decode(bits).require.value shouldBe list
       codec.decode(bits).require.remainder shouldBe BitVector.empty
     }
+    "handle when delimiter is far from start" in {
+      val data = hex"22993a01353a90223a093af20129260750062759082049964318053a2016283a203a003af230493af9783a003a22".bits
+      listDelimited(hex"3a".bits, bytes).decode(data).require.remainder shouldBe BitVector.empty
+    }
   }
 
   "vectorMultiplexed codec" should {
