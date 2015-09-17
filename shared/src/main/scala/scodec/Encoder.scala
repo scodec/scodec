@@ -185,4 +185,16 @@ object Encoder extends EncoderFunctions {
    * @group conv
    */
   def encode[A](a: A)(implicit e: Lazy[Encoder[A]]): Attempt[BitVector] = e.value.encode(a)
+
+  /**
+   * Transform typeclass instance.
+   * @group inst
+   */
+  implicit val transformInstance: Transform[Encoder] = new Transform[Encoder] {
+    def exmap[A, B](encoder: Encoder[A], f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] =
+      encoder.econtramap(g)
+
+    override def xmap[A, B](encoder: Encoder[A], f: A => B, g: B => A): Encoder[B] =
+      encoder.contramap(g)
+  }
 }
