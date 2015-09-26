@@ -21,6 +21,11 @@ class DerivedCodecTest extends CodecSuite {
   case class Arrangement(lines: Vector[Line])
   case class Woz(x: Int, y: String, pts: Vector[Point])
 
+  case class Rec(x: Int, y: List[Rec])
+
+  sealed abstract class Tree[A]
+  case class Node[A](l: Tree[A], r: Tree[A]) extends Tree[A]
+  case class Leaf[A](value: A) extends Tree[A]
 
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
@@ -76,6 +81,20 @@ class DerivedCodecTest extends CodecSuite {
       codec.encode(Foo(1, 2, "Hello")).require shouldBe hex"010102000548656c6c6f".bits
       codec.encode(Bar(1, 2)).require shouldBe hex"000102".bits
     }
-  }
 
+    "support recursive products" in {
+      import codecs.implicits._
+      val codec = Codec[Rec]
+      roundtrip(codec, Rec(1, List(Rec(2, Nil))))
+    }
+
+    "support recursive ADTs" in {
+      import codecs.implicits._
+      implicit def d[A] = Discriminated[Tree[A], Boolean](bool)
+      implicit def d0[A] = d[A].bind[Node[A]](false)
+      implicit def d1[A] = d[A].bind[Leaf[A]](true)
+      val codec = Codec[Tree[Int]]
+      roundtrip(codec, Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
+    }
+  }
 }
