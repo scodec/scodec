@@ -1314,13 +1314,7 @@ package object codecs {
    * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
    * @group combinators
    */
-  def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
-    private lazy val c = codec
-    def sizeBound = c.sizeBound
-    def encode(a: A) = c.encode(a)
-    def decode(b: BitVector) = c.decode(b)
-    override def toString = s"lazily($c)"
-  }
+  def lazily[A](codec: => Codec[A]): Codec[A] = Codec.lazily(codec)
 
   /**
    * Codec that always fails encoding and decoding with the specified message.
