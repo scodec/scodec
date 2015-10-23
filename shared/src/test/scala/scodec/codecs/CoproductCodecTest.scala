@@ -62,5 +62,16 @@ class CoproductCodecTest extends CodecSuite {
       codec.encode(Coproduct[US]("Hello")).require shouldBe hex"0548656c6c6f".bits
       codec.complete.decode(hex"0548656c6c6f".bits).require.value shouldBe Coproduct[US]("Hello")
     }
+
+    "support framing" in {
+      type IBS = Int :+: Boolean :+: String :+: CNil
+      val codec: Codec[IBS] = (int32 :+: bool(8) :+: utf8).
+        framing(new CodecTransformation { def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c) }).
+        discriminatedByIndex(uint8)
+
+      codec.encode(Coproduct[IBS](1)).require shouldBe hex"000400000001".bits
+      codec.encode(Coproduct[IBS](true)).require shouldBe hex"0101ff".bits
+      codec.encode(Coproduct[IBS]("Hello")).require shouldBe hex"020548656c6c6f".bits
+    }
   }
 }
