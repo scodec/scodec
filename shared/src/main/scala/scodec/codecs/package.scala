@@ -80,14 +80,17 @@ import shapeless.syntax.sized._
  * @groupname combinators Combinators
  * @groupprio combinators 3
  *
+ * @groupname guards Guards
+ * @groupprio guards 4
+ *
  * @groupname tuples Tuple Support
- * @groupprio tuples 4
+ * @groupprio tuples 5
  *
  * @groupname logging Logging
- * @groupprio logging 5
+ * @groupprio logging 6
  *
  * @groupname crypto Cryptography
- * @groupprio crypto 6
+ * @groupprio crypto 7
  */
 package object codecs {
 
@@ -1024,6 +1027,8 @@ package object codecs {
    * When encoding, a `Some` results in `guard` encoding a `true` and `target` encoding the value.
    * A `None` results in `guard` encoding a false and the `target` not encoding anything.
    *
+   * Various guard codecs and combinators are provided by this library -- e.g., `bitsRemaining` and `recover`.
+   *
    * @param guard codec that determines whether the target codec is included
    * @param target codec to conditionally include
    * @group combinators
@@ -1032,6 +1037,19 @@ package object codecs {
     either(guard, provide(()), target).
       xmap[Option[A]](_.right.toOption, _.toRight(())).
       withToString(s"optional($guard, $target)")
+
+  /**
+   * Codec that decodes true when the input vector is non-empty and false when it is empty.
+   * Encodes to an empty bit vector.
+   *
+   * @group guards
+   */
+  val bitsRemaining: Codec[Boolean] = new Codec[Boolean] {
+    def sizeBound = SizeBound.exact(0)
+    def encode(b: Boolean) = Attempt.successful(BitVector.empty)
+    def decode(b: BitVector) = Attempt.successful(DecodeResult(b.nonEmpty, b))
+    override def toString = "bitsRemaining"
+  }
 
   /**
    * Creates a `Codec[A]` from a `Codec[Option[A]]` and a fallback `Codec[A]`.
