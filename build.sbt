@@ -19,8 +19,8 @@ lazy val core = crossProject.in(file(".")).
   jvmSettings(scodecPrimaryModuleJvm: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.0.10",
-      "com.chuusai" %%% "shapeless" % "2.2.5",
+      "org.scodec" %%% "scodec-bits" % "1.0.11-SNAPSHOT",
+      "com.chuusai" %%% "shapeless" % "2.3.0-SNAPSHOT",
       "org.scalatest" %%% "scalatest" % "3.0.0-M7" % "test",
       "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test"
     ),
