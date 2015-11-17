@@ -15,7 +15,7 @@ private[codecs] final class VariableSizeCodec[A](sizeCodec: Codec[Long], valueCo
   } yield encSize ++ encA
 
   private def fail(a: A, msg: String): Err =
-    Err(s"[$a] is too long to be encoded: $msg")
+    Err.General(s"failed to encode size of [$a]: $msg", List("size"))
 
   override def decode(buffer: BitVector) =
     decoder.decode(buffer)

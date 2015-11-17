@@ -852,12 +852,16 @@ package object codecs {
    * @group combinators
    */
   def variableSizeBytesLong[A](size: Codec[Long], value: Codec[A], sizePadding: Long = 0): Codec[A] = new Codec[A] {
-    private val codec = variableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), value, sizePadding * 8)
+    private val codec = variableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), value, sizePadding * 8)
     def sizeBound = size.sizeBound + value.sizeBound
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"variableSizeBytes($size, $value)"
   }
+
+  private def bitsToBytesDivisible(n: Long): Attempt[Long] =
+    if (n % 8 == 0) Attempt.successful(n / 8)
+    else Attempt.failure(Err(s"$n is not evenly divisible by 8"))
 
   /**
    * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
@@ -921,7 +925,7 @@ package object codecs {
    * @group combinators
    */
   def variableSizePrefixedBytesLong[A, B](size: Codec[Long], prefix: Codec[A], value: Codec[B], sizePadding: Long = 0): Codec[(A, B)] = new Codec[(A, B)] {
-    private val codec = variableSizePrefixedBitsLong(size.xmap[Long](_ * 8, _ / 8), prefix, value, sizePadding * 8)
+    private val codec = variableSizePrefixedBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), prefix, value, sizePadding * 8)
     def sizeBound = size.sizeBound + value.sizeBound
     def encode(ab: (A, B)) = codec.encode(ab)
     def decode(b: BitVector) = codec.decode(b)
@@ -981,7 +985,7 @@ package object codecs {
    * @param sizePadding number of bits to subtract from the size before decoding
    */
   def peekVariableSizeBytesLong(size: Codec[Long], sizePadding: Long = 0L): Codec[BitVector] = new Codec[BitVector] {
-    private val codec = peekVariableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), sizePadding * 8)
+    private val codec = peekVariableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), sizePadding * 8)
     def sizeBound = codec.sizeBound
     def encode(a: BitVector) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
