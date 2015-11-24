@@ -1637,7 +1637,6 @@ package object codecs {
      discriminated[Either[A,B]].by(uint8)
      .| (0) { case Left(l) => l } (Left.apply) (codecA)
      .| (1) { case Right(r) => r } (Right.apply) (codecB)
-     .build
    }}}
 
    * This encodes an `Either[A,B]` by checking the given patterns
