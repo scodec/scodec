@@ -1,3 +1,14 @@
+1.8.3
+=====
+ - Added new `bitsRemaining` codec, which decodes `true` if a non-empty vector is encountered.
+ - Fixed bug in `listOfN`/`vectorOfN` such that decoding now fails if less than `n` elements are decoded.
+ - Added `framing` to `CoproductCodecBuilder`, allowing a `CodecTransformation` to be applied to all cases.
+ - Added support for deriving recursive case classes and ADTs.
+ - Added support for `as` combinator on `Encoder` and `Decoder`.
+ - Added support for packed decimals (`pbcd`, `vpbcd`).
+ - Added `sizedList`/`sizedVector` codecs, which encode/decode collections of a statically known size.
+ - Fixed bug in `variableSizeBytes` where, if the wrapped codec generates a vector which has a size not evenly divisible by 8, the vector was truncated to next lowest byte boundary.
+
 1.8.2
 =====
  - Restored support for Android 4.3 and lower.
