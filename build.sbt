@@ -11,6 +11,7 @@ val commonSettings = Seq(
   scalacOptions in Compile := (scalacOptions in Compile).value.filter {
     case "-Yinline" => false
     case "-Yclosure-elim" => false
+    case "-Xfatal-warnings" => false
     case other => true
   }
 )
@@ -32,10 +33,10 @@ lazy val core = project.in(file(".")).
   ).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.0.11",
+      "org.scodec" %%% "scodec-bits" % "1.0.12",
       "com.chuusai" %%% "shapeless" % "2.2.5",
-      "org.scalatest" %%% "scalatest" % "2.2.5-M2" % "test",
-      "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test"
+      "org.scalatest" %%% "scalatest" % "2.2.5-M3" % "test",
+      "org.scalacheck" %%% "scalacheck" % "1.11.6" % "test"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil)
   ).
