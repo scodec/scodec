@@ -496,6 +496,29 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   def apply[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
 
   /**
+   * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
+   * Typically used to consruct codecs for recursive structures.
+   *
+   * @group ctor
+   */
+  def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
+    // Avoid use of lazy val to avoid synchronization - okay to race on creation of codec,
+    // and okay for multiple threads to compute their own codecs
+    private var _c: Codec[A] = null
+    private def c: Codec[A] = {
+      if (_c eq null) {
+        _c = codec
+        if (_c eq null) throw new NullPointerException("lazy codec constructor returned null")
+      }
+      _c
+    }
+    def sizeBound = c.sizeBound
+    def encode(a: A) = c.encode(a)
+    def decode(b: BitVector) = c.decode(b)
+    override def toString = s"lazily($c)"
+  }
+
+  /**
    * Encodes the specified value to a bit vector using an implicitly available codec.
    * @group conv
    */
@@ -529,7 +552,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT],
     headCodec: Lazy[Codec[VH]],
     tailAux: Lazy[Codec[TRec]]
-  ): Codec[FieldType[KH, VH] :: TRec] = {
+  ): Codec[FieldType[KH, VH] :: TRec] = lazily {
     val headFieldCodec: Codec[FieldType[KH, VH]] = headCodec.value.toFieldWithContext(keys().head)
     headFieldCodec :: tailAux.value
   }

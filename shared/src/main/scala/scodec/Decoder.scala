@@ -268,4 +268,16 @@ object Decoder extends DecoderFunctions {
     def decode(b: BitVector) = Attempt.successful(DecodeResult((), f(b)))
     override def toString = s"modify"
   }
+
+  /**
+   * Transform typeclass instance.
+   * @group inst
+   */
+  implicit val transformInstance: Transform[Decoder] = new Transform[Decoder] {
+    def exmap[A, B](decoder: Decoder[A], f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
+      decoder.emap(f)
+
+    override def xmap[A, B](decoder: Decoder[A], f: A => B, g: B => A): Decoder[B] =
+      decoder.map(f)
+  }
 }

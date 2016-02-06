@@ -9,7 +9,8 @@ import java.util.zip.Deflater
 
 import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
 
-import shapeless.HList
+import shapeless.{ HList, Nat, Sized }
+import shapeless.syntax.sized._
 
 /**
  * Provides codecs for common types and combinators for building larger codecs.
@@ -79,14 +80,17 @@ import shapeless.HList
  * @groupname combinators Combinators
  * @groupprio combinators 3
  *
+ * @groupname guards Guards
+ * @groupprio guards 4
+ *
  * @groupname tuples Tuple Support
- * @groupprio tuples 4
+ * @groupprio tuples 5
  *
  * @groupname logging Logging
- * @groupprio logging 5
+ * @groupprio logging 6
  *
  * @groupname crypto Cryptography
- * @groupprio crypto 6
+ * @groupprio crypto 7
  */
 package object codecs {
 
@@ -314,6 +318,13 @@ package object codecs {
   val vlong: Codec[Long] = new VarLongCodec(ByteOrdering.BigEndian)
 
   /**
+   * Codec for variable-length packed decimal longs.
+   * Negative values are not supported.
+   * @group numbers
+   */
+  val vpbcd: Codec[Long] = VarPackedDecimalCodec
+
+  /**
    * Codec for variable-length little-endian longs.
    * Encoding requires between 1 and 9 bytes, depending on the value.
    * Smaller longs require less bytes.
@@ -419,6 +430,13 @@ package object codecs {
    * @group numbers
    */
   def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.LittleEndian)
+
+  /**
+   * Codec for n-nibble packed decimal (BCD) integers that are represented with `Long`.
+   * @param nibbles number of nibbles (4-bit chunks)
+   * @group numbers
+   */
+  def pbcd(nibbles: Int): Codec[Long] = fixedSizeBits(nibbles.toLong*4, vpbcd)
 
   /**
    * 32-bit big endian IEEE 754 floating point number.
@@ -834,12 +852,16 @@ package object codecs {
    * @group combinators
    */
   def variableSizeBytesLong[A](size: Codec[Long], value: Codec[A], sizePadding: Long = 0): Codec[A] = new Codec[A] {
-    private val codec = variableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), value, sizePadding * 8)
+    private val codec = variableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), value, sizePadding * 8)
     def sizeBound = size.sizeBound + value.sizeBound
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"variableSizeBytes($size, $value)"
   }
+
+  private def bitsToBytesDivisible(n: Long): Attempt[Long] =
+    if (n % 8 == 0) Attempt.successful(n / 8)
+    else Attempt.failure(Err(s"$n is not evenly divisible by 8"))
 
   /**
    * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
@@ -903,7 +925,7 @@ package object codecs {
    * @group combinators
    */
   def variableSizePrefixedBytesLong[A, B](size: Codec[Long], prefix: Codec[A], value: Codec[B], sizePadding: Long = 0): Codec[(A, B)] = new Codec[(A, B)] {
-    private val codec = variableSizePrefixedBitsLong(size.xmap[Long](_ * 8, _ / 8), prefix, value, sizePadding * 8)
+    private val codec = variableSizePrefixedBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), prefix, value, sizePadding * 8)
     def sizeBound = size.sizeBound + value.sizeBound
     def encode(ab: (A, B)) = codec.encode(ab)
     def decode(b: BitVector) = codec.decode(b)
@@ -963,7 +985,7 @@ package object codecs {
    * @param sizePadding number of bits to subtract from the size before decoding
    */
   def peekVariableSizeBytesLong(size: Codec[Long], sizePadding: Long = 0L): Codec[BitVector] = new Codec[BitVector] {
-    private val codec = peekVariableSizeBitsLong(size.xmap[Long](_ * 8, _ / 8), sizePadding * 8)
+    private val codec = peekVariableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), sizePadding * 8)
     def sizeBound = codec.sizeBound
     def encode(a: BitVector) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
@@ -1009,6 +1031,8 @@ package object codecs {
    * When encoding, a `Some` results in `guard` encoding a `true` and `target` encoding the value.
    * A `None` results in `guard` encoding a false and the `target` not encoding anything.
    *
+   * Various guard codecs and combinators are provided by this library -- e.g., `bitsRemaining` and `recover`.
+   *
    * @param guard codec that determines whether the target codec is included
    * @param target codec to conditionally include
    * @group combinators
@@ -1017,6 +1041,19 @@ package object codecs {
     either(guard, provide(()), target).
       xmap[Option[A]](_.right.toOption, _.toRight(())).
       withToString(s"optional($guard, $target)")
+
+  /**
+   * Codec that decodes true when the input vector is non-empty and false when it is empty.
+   * Encodes to an empty bit vector.
+   *
+   * @group guards
+   */
+  val bitsRemaining: Codec[Boolean] = new Codec[Boolean] {
+    def sizeBound = SizeBound.exact(0)
+    def encode(b: Boolean) = Attempt.successful(BitVector.empty)
+    def decode(b: BitVector) = Attempt.successful(DecodeResult(b.nonEmpty, b))
+    override def toString = "bitsRemaining"
+  }
 
   /**
    * Creates a `Codec[A]` from a `Codec[Option[A]]` and a fallback `Codec[A]`.
@@ -1116,8 +1153,21 @@ package object codecs {
   def vectorOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[Vector[A]] =
     countCodec.
       flatZip { count => new VectorCodec(valueCodec, Some(count)) }.
-      xmap[Vector[A]]({ case (cnt, vec) => vec }, vec => (vec.size, vec)).
+      narrow[Vector[A]]({ case (cnt, xs) =>
+        if (xs.size == cnt) Attempt.successful(xs)
+        else Attempt.failure(Err(s"Insufficient number of elements: decoded ${xs.size} but should have decoded $cnt"))
+      }, xs => (xs.size, xs)).
       withToString(s"vectorOfN($countCodec, $valueCodec)")
+
+  /**
+   * Codec that encodes/decodes a vector of `n` elements, where `n` is known at compile time.
+   *
+   * @param size number of elements in the vector
+   * @param codec codec to encode/decode a single element of the sequence
+   * @group combinators
+   */
+  def sizedVector[A](size: Nat, codec: Codec[A])(implicit toInt: shapeless.ops.nat.ToInt[size.N]): Codec[Sized[Vector[A], size.N]] =
+    vectorOfN(provide(toInt()), codec).xmapc(_.sized(size).get)(_.unsized).withToString(s"sizedVector(${toInt()}, $codec)")
 
   /**
    * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
@@ -1199,8 +1249,21 @@ package object codecs {
   def listOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[List[A]] =
     countCodec.
       flatZip { count => new ListCodec(valueCodec, Some(count)) }.
-      xmap[List[A]]({ case (cnt, xs) => xs }, xs => (xs.size, xs)).
+      narrow[List[A]]({ case (cnt, xs) =>
+        if (xs.size == cnt) Attempt.successful(xs)
+        else Attempt.failure(Err(s"Insufficient number of elements: decoded ${xs.size} but should have decoded $cnt"))
+      }, xs => (xs.size, xs)).
       withToString(s"listOfN($countCodec, $valueCodec)")
+
+  /**
+   * Codec that encodes/decodes a list of `n` elements, where `n` is known at compile time.
+   *
+   * @param size number of elements in the list
+   * @param codec codec to encode/decode a single element of the sequence
+   * @group combinators
+   */
+  def sizedList[A](size: Nat, codec: Codec[A])(implicit toInt: shapeless.ops.nat.ToInt[size.N]): Codec[Sized[List[A], size.N]] =
+    listOfN(provide(toInt()), codec).xmapc(_.sized(size).get)(_.unsized).withToString(s"sizedList(${toInt()}, $codec)")
 
   /**
    * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
@@ -1300,13 +1363,7 @@ package object codecs {
    * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
    * @group combinators
    */
-  def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
-    private lazy val c = codec
-    def sizeBound = c.sizeBound
-    def encode(a: A) = c.encode(a)
-    def decode(b: BitVector) = c.decode(b)
-    override def toString = s"lazily($c)"
-  }
+  def lazily[A](codec: => Codec[A]): Codec[A] = Codec.lazily(codec)
 
   /**
    * Codec that always fails encoding and decoding with the specified message.

@@ -33,5 +33,13 @@ class ChecksumCodecTest extends CodecSuite {
     "fail decoding on checksum mismatch" in {
       codecSizeIncluded.decode(hex"0x0000000b68656c6c6f20776f726c6400".bits) shouldBe Attempt.failure(ChecksumMismatch(hex"0x0000000b68656c6c6f20776f726c64".bits, hex"2b".bits, hex"00".bits))
     }
+
+    "support putting the checksum before the data" in {
+      val crc32c = crc(hex"1edc6f41".bits, hex"ffffffff".bits, true, true, hex"ffffffff".bits)
+      def swap(c: Codec[(BitVector, BitVector)]): Codec[(BitVector, BitVector)] =
+        c.xmap(_.swap, _.swap)
+      val codec = checksummed(utf8_32, crc32c, swap(bits(32) ~ bits))
+      codec.encode("hello world").require shouldBe hex"edbbac630000000b68656c6c6f20776f726c64".bits
+    }
   }
 }
