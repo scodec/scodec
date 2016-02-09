@@ -50,7 +50,6 @@ The [`codecs`](shared/src/main/scala/scodec/codecs/package.scala) package provid
     import scodec._
     import scodec.bits._
     import codecs._
-    import scalaz.\/
 
     // Create a codec for an 8-bit unsigned int followed by an 8-bit unsigned int followed by a 16-bit unsigned int
     val firstCodec = (uint8 ~ uint8 ~ uint16)
@@ -92,8 +91,8 @@ Codecs can also be implicitly resolved, resulting in usage like:
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
 See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](http://scodec.org/api/). Especially:
- - [`Codec`](http://scodec.org/api/scodec-core/1.8.2/#scodec.Codec)
- - [`codecs` package](http://scodec.org/api/scodec-core/1.8.2/#scodec.codecs.package)
+ - [`Codec`](http://scodec.org/api/scodec-core/1.9.0/#scodec.Codec)
+ - [`codecs` package](http://scodec.org/api/scodec-core/1.9.0/#scodec.codecs.package)
 
 Examples
 --------
