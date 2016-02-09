@@ -43,7 +43,8 @@ class FletcherChecksumTest extends CodecSuite {
 
   private def pattern(n: Int, delta: Int, expected: Array[Byte]): Unit = {
     val signer = ChecksumFactory.fletcher16.newSigner
-    signer.update(ByteVector.fill(3 * n + delta)(0xAA).toArray)
+    signer.update(ByteVector.fill(3L * n + delta)(0xAA).toArray)
     assert(signer.verify(expected))
+    ()
   }
 }

@@ -27,18 +27,19 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
     val Attempt.Successful(DecodeResult(decoded, remainder)) = codec.decode(encoded.require)
     remainder shouldEqual BitVector.empty
     decoded shouldEqual value
+    ()
   }
 
   protected def roundtripAll[A](codec: Codec[A], as: GenTraversable[A]): Unit = {
     as foreach { a => roundtrip(codec, a) }
   }
 
-  protected def encodeError[A](codec: Codec[A], a: A, err: Err): Unit = {
+  protected def encodeError[A](codec: Codec[A], a: A, err: Err) = {
     val encoded = codec.encode(a)
     encoded shouldBe Attempt.Failure(err)
   }
 
-  protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A): Unit = {
+  protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A) = {
     val Attempt.Successful(DecodeResult(actual, rest)) = codec decode buf
     rest shouldBe BitVector.empty
     actual shouldBe expected

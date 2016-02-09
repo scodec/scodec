@@ -4,7 +4,7 @@ package codecs
 import org.scalacheck.Gen
 
 class VarIntCodecTest extends CodecSuite {
-  def check(low: Int, high: Int, size: Int)(codec: Codec[Int]): Unit = {
+  def check(low: Int, high: Int, size: Int)(codec: Codec[Int]) = {
     forAll(Gen.choose(low, high)) { n =>
       codec.encode(n).map(_.bytes.size) shouldBe Attempt.successful(size)
     }

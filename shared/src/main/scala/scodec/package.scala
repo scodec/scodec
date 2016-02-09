@@ -1,7 +1,7 @@
 import language.higherKinds
 
 import shapeless._
-import ops.hlist.{Prepend, RightFolder, Init, Last, Length, Split, Mapper}
+import ops.hlist.{ Prepend, Init, Last, Length, Split, Mapper }
 import poly._
 
 /**

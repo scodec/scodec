@@ -1,7 +1,6 @@
 package scodec
 package examples
 
-import scala.collection.immutable.IndexedSeq
 import scala.concurrent.duration._
 
 import java.io.{ File, FileInputStream }

@@ -3,7 +3,7 @@ package codecs
 
 import java.io.ByteArrayInputStream
 import java.security.KeyPairGenerator
-import java.security.cert.{ Certificate, CertificateFactory, X509Certificate }
+import java.security.cert.{ CertificateFactory, X509Certificate }
 import java.util.Date
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.jcajce._

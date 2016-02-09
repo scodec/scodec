@@ -2,7 +2,6 @@ package scodec
 package codecs
 
 import java.security.KeyPairGenerator
-import java.util.Arrays
 
 class SignatureCodecTest extends CodecSuite {
 

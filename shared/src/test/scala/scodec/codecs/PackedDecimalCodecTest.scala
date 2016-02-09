@@ -5,7 +5,7 @@ import org.scalacheck.Gen
 import scodec.bits._
 
 class PackedDecimalCodecTest extends CodecSuite {
-  def check(low: Long, high: Long, size: Int)(codec: Codec[Long]): Unit = {
+  def check(low: Long, high: Long, size: Int)(codec: Codec[Long]) = {
     forAll(Gen.choose(low, high)) { n =>
       codec.encode(n).map(_.bytes.size) shouldBe Attempt.successful(size)
     }

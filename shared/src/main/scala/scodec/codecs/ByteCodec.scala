@@ -1,9 +1,7 @@
 package scodec
 package codecs
 
-import java.nio.{ ByteBuffer, ByteOrder }
-
-import scodec.bits.{ BitVector, ByteOrdering, ByteVector }
+import scodec.bits.BitVector
 
 private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[Byte] {
 

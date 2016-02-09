@@ -103,6 +103,7 @@ class CodecTest extends CodecSuite {
       forAll { (n: Int) =>
         noop.encode(n) shouldBe uint8.encode(n)
       }
+      ()
     }
   }
 

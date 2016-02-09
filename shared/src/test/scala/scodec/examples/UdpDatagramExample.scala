@@ -1,7 +1,7 @@
 package scodec
 package examples
 
-import scodec.bits.{ BitVector, ByteVector }
+import scodec.bits.ByteVector
 
 class UdpDatagramExample extends CodecSuite {
 
