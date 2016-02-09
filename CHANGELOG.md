@@ -1,3 +1,7 @@
+1.9.0
+=====
+ - Upgraded to scodec-bits 1.1.0
+
 1.8.3
 =====
  - Added new `bitsRemaining` codec, which decodes `true` if a non-empty vector is encountered.
