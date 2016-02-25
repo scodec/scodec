@@ -3,7 +3,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[codecs] final class ConditionalCodec[A](included: Boolean, codec: Codec[A]) extends Codec[Option[A]] {
+private[codecs] final class ConditionalCodec[A](included: Boolean, codec: => Codec[A]) extends Codec[Option[A]] {
 
   override def sizeBound = if (included) codec.sizeBound else SizeBound.exact(0)
 
