@@ -1023,7 +1023,7 @@ package object codecs {
    * @param codec codec to conditionally include
    * @group combinators
    */
-  def conditional[A](included: Boolean, codec: Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
+  def conditional[A](included: Boolean, codec: => Codec[A]): Codec[Option[A]] = new ConditionalCodec(included, codec)
 
   /**
    * Codec of `Option[A]` that delegates to a `Codec[A]` when the `guard` codec decodes a true.
