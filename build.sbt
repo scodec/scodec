@@ -20,7 +20,7 @@ lazy val core = crossProject.in(file(".")).
   settings(
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.0",
-      "com.chuusai" %%% "shapeless" % "2.2.5",
+      "com.chuusai" %%% "shapeless" % "2.3.0",
       "org.scalatest" %%% "scalatest" % "3.0.0-M12" % "test",
       "org.scalacheck" %%% "scalacheck" % "1.12.5" % "test"
     ),
