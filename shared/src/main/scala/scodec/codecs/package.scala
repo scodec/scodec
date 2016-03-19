@@ -824,6 +824,7 @@ package object codecs {
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
     c.widen[Long](i => i.toLong, l => if (l > Int.MaxValue || l < Int.MinValue) Attempt.failure(Err(s"$l cannot be converted to an integer")) else Attempt.successful(l.toInt)).withToString(c.toString)
 
+
   /**
    * Codec that supports vectors of the form `size ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
@@ -1788,6 +1789,72 @@ package object codecs {
     val pfx = if (prefix.isEmpty) "" else s"$prefix: "
     logFailuresBuilder[A]((a, e) => println(s"${pfx}failed to encode $a: $e"), (b, e) => println(s"${pfx}failed to decode $b: $e"))(codec)
   }
+
+  /**
+   * Codec that ensures variable size data is constrained within a minSize and maxSize bounds.
+   *
+   * This means that the size is variable only within a limited range. It will work just as variableSizeBytes codec,
+   * but ensuring that the binary data is at least `minSize` bytes long and at most `maxSize` bytes long.
+   *
+   * The `minSize` has the default value of `0`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param value codec the encodes/decodes the value
+   * @param minSize minimum size in bytes that the message can have
+   * @param maxSize maximum size in bytes that the message can have
+   * @group combinators
+   */
+  def constrainedVariableSizeBytes[A](size: Codec[Int], value: Codec[A], minSize: Int, maxSize: Int): Codec[A] =
+    new ConstrainedVariableSizeCodec(widenIntToLong(size), value, minSize.toLong, maxSize.toLong)
+
+  /**
+   * Codec that ensures variable size data is constrained within a minSize and maxSize bounds.
+   *
+   * This means that the size is variable only within a limited range. It will work just as variableSizeBytes codec,
+   * but ensuring that the binary data is at least `minSize` bytes long and at most `maxSize` bytes long.
+   *
+   * The `minSize` has the default value of `0`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param value codec the encodes/decodes the value
+   * @param maxSize maximum size in bytes that the message can have
+   * @param minSize minimum size in bytes that the message can have
+   * @group combinators
+   */
+  def constrainedVariableSizeBytesLong[A](size: Codec[Long], value: Codec[A], minSize: Long, maxSize: Long): Codec[A] =
+    new ConstrainedVariableSizeCodec(size, value, minSize, maxSize)
+
+  /**
+   * Codec that ensures variable size data is constrained within a minSize and maxSize bounds.
+   *
+   * This means that the size is variable only within a limited range. It will work just as variableSizeBytes codec,
+   * but ensuring that the binary data is at least `minSize` bytes long and at most `maxSize` bytes long.
+   *
+   * The `minSize` has the default value of `0`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param value codec the encodes/decodes the value
+   * @param maxSize maximum size in bytes that the message can have
+   * @group combinators
+   */
+  def constrainedVariableSizeBytes[A](size: Codec[Int], value: Codec[A], maxSize: Int): Codec[A] =
+    new ConstrainedVariableSizeCodec(widenIntToLong(size), value, 0L, maxSize.toLong)
+
+  /**
+   * Codec that ensures variable size data is constrained within a minSize and maxSize bounds.
+   *
+   * This means that the size is variable only within a limited range. It will work just as variableSizeBytes codec,
+   * but ensuring that the binary data is at least `minSize` bytes long and at most `maxSize` bytes long.
+   *
+   * The `minSize` has the default value of `0`.
+   *
+   * @param size codec that encodes/decodes the size in bits
+   * @param value codec the encodes/decodes the value
+   * @param maxSize maximum size in bytes that the message can have
+   * @group combinators
+   */
+  def constrainedVariableSizeBytesLong[A](size: Codec[Long], value: Codec[A], maxSize: Long): Codec[A] =
+    new ConstrainedVariableSizeCodec(size, value, 0, maxSize)
 
   /** Provides common implicit codecs. */
   object implicits extends ImplicitCodecs
