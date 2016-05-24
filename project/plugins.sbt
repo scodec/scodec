@@ -1,3 +1,3 @@
 resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public/"
 
-addSbtPlugin("org.scodec" % "scodec-build" % "1.3.3")
+addSbtPlugin("org.scodec" % "scodec-build" % "1.4.1")
