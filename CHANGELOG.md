@@ -1,3 +1,7 @@
+1.10.0
+======
+ - Upgraded to shapeless 2.3.1
+
 1.9.0
 =====
  - Upgraded to scodec-bits 1.1.0
