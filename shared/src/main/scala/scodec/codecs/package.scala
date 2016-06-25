@@ -1,6 +1,7 @@
 package scodec
 
 import scala.language.implicitConversions
+import scala.math.{log10, floor}
 
 import java.nio.charset.Charset
 import java.security.cert.{ Certificate, X509Certificate }
@@ -437,6 +438,26 @@ package object codecs {
    * @group numbers
    */
   def pbcd(nibbles: Int): Codec[Long] = fixedSizeBits(nibbles.toLong*4, vpbcd)
+
+  /**
+   * Codec for n-nibble packed decimal (BCD) integers that are represented with `Long`.
+   * Works just as pbcd, but pads 0s on the left if encoded value is smaller than `nibbles` or
+   * if `nibbles` is odd.
+   * @param nibbles number of nibbles (4-bit chunks)
+   * @group numbers
+   */
+  def lpbcd(nibbles: Int): Codec[Long] = new Codec[Long]{
+    val nsize = nibbles.toLong * 4
+    val bsize = nsize + nsize % 8
+    def sizeBound = SizeBound.exact(bsize)
+    val codec = fixedSizeBits(nsize, vpbcd)
+    def decode(b: BitVector) = codec.decode(b)
+    def encode(l: Long) = codec.encode(l).map{x =>
+      val size: Long = floor(log10(l.toDouble) + 1).toLong * 4
+      (BitVector.low(bsize) ++ x.take(size)).drop(size)
+    }
+    override def toString = codec.toString
+  }
 
   /**
    * 32-bit big endian IEEE 754 floating point number.
