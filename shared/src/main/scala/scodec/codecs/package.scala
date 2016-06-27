@@ -441,8 +441,10 @@ package object codecs {
 
   /**
    * Codec for n-nibble packed decimal (BCD) integers that are represented with `Long`.
-   * Works just as pbcd, but pads 0s on the left if encoded value is smaller than `nibbles` or
-   * if `nibbles` is odd.
+   * This codec, despite requiring the size in nibbles, is byte-size oriented.
+   * This means it expects to parse complete bytes (even if nibble size is
+   * odd). For encoding, this codec will pad 0s on the left while, for
+   * decoding, it will fetch the size in bytes round up.
    * @param nibbles number of nibbles (4-bit chunks)
    * @group numbers
    */
@@ -450,13 +452,12 @@ package object codecs {
     val nsize = nibbles.toLong * 4
     val bsize = nsize + nsize % 8
     def sizeBound = SizeBound.exact(bsize)
-    val codec = fixedSizeBits(nsize, vpbcd)
-    def decode(b: BitVector) = codec.decode(b)
-    def encode(l: Long) = codec.encode(l).map{x =>
+    def decode(b: BitVector) = fixedSizeBits(bsize, vpbcd).decode(b)
+    def encode(l: Long) = fixedSizeBits(nsize, vpbcd).encode(l).map{x =>
       val size: Long = floor(log10(l.toDouble) + 1).toLong * 4
+
       (BitVector.low(bsize) ++ x.take(size)).drop(size)
     }
-    override def toString = codec.toString
   }
 
   /**

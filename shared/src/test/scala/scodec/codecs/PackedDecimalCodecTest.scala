@@ -29,6 +29,7 @@ class PackedDecimalCodecTest extends CodecSuite {
 
     "decode correctly" in {
       lpbcd(6).decode(hex"010323".bits) should be (Attempt.successful(DecodeResult(10323L, BitVector.empty)))
+      lpbcd(5).decode(hex"010323".bits) should be (Attempt.successful(DecodeResult(10323L, BitVector.empty)))
     }
   }
 
