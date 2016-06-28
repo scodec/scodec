@@ -1,3 +1,7 @@
+1.10.1
+======
+ - Added `lpbcd` for working with left padded BCD integers.
+
 1.10.0
 ======
  - Upgraded to shapeless 2.3.1
