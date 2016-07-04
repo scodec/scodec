@@ -1,3 +1,7 @@
+1.10.2
+======
+ - Built for 2.12.0-M5
+
 1.10.1
 ======
  - Added `lpbcd` for working with left padded BCD integers.
