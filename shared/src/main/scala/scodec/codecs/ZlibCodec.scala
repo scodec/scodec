@@ -17,7 +17,7 @@ private[scodec] class ZlibCodec[A](codec: Codec[A], level: Int, strategy: Int, n
   def decode(b: BitVector) =
     inflate(b, chunkSize).fold(
       e => Attempt.failure(Err(e.getMessage)),
-      bb => codec.decode(bb.value.bits).map(_.mapRemainder(_ ++ bb.remainder))
+      bb => codec.decode(bb.value.bits).map(_.mapRemainder(_ => bb.remainder))
     )
 
   private def inflate(b: BitVector, chunkSize: Int): Either[DataFormatException, DecodeResult[ByteVector]] = {
