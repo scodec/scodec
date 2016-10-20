@@ -1,6 +1,7 @@
 1.10.3
 ======
  - Built for 2.12.0-RC2
+ - Upgraded to scodec-bits 1.1.2
 
 1.10.2
 ======
