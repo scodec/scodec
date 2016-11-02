@@ -22,7 +22,7 @@ lazy val core = crossProject.in(file(".")).
       "org.scodec" %%% "scodec-bits" % "1.1.2",
       "com.chuusai" %%% "shapeless" % "2.3.2",
       "org.scalatest" %%% "scalatest" % "3.0.0" % "test",
-      "org.scalacheck" %%% "scalacheck" % "1.13.3" % "test"
+      "org.scalacheck" %%% "scalacheck" % "1.13.4" % "test"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil)
   ).
