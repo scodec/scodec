@@ -81,7 +81,7 @@ object Attempt {
   def failure[A](err: Err): Attempt[A] = Failure(err)
 
   /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt */
-  def guard[A](condition: => Boolean, err: String) =
+  def guard(condition: => Boolean, err: String) =
     if(condition) successful(()) else failure(Err(err))
 
   /** Creates a attempt from a try */
