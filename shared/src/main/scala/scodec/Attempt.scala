@@ -12,7 +12,7 @@ import scala.util.control.NonFatal
  *
  * @groupname Ungrouped Members
  * @groupprio 1
-  * @groupname combinators Basic Combinators
+ * @groupname combinators Basic Combinators
  * @groupprio combinators 0
  */
 sealed abstract class Attempt[+A] extends Product with Serializable {
@@ -67,7 +67,7 @@ sealed abstract class Attempt[+A] extends Product with Serializable {
   /** Converts to an either. */
   def toEither: Either[Err, A]
 
-  /** Converts to a try */
+  /** Converts to a try. */
   def toTry: Try[A]
 }
 
@@ -80,12 +80,16 @@ object Attempt {
   /** Creates an unsuccessful attempt. */
   def failure[A](err: Err): Attempt[A] = Failure(err)
 
-  /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt */
-  def guard(condition: => Boolean, err: String) =
+  /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt. */
+  def guard(condition: => Boolean, err: String): Attempt[Unit] =
     if(condition) successful(()) else failure(Err(err))
 
-  /** Creates a attempt from a try */
-  def fromTry[A](t: Try[A]) = t match {
+  /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt. */
+  def guard(condition: => Boolean, err: => Err): Attempt[Unit] =
+    if(condition) successful(()) else failure(err)
+
+  /** Creates a attempt from a try. */
+  def fromTry[A](t: Try[A]): Attempt[A] = t match {
     case scala.util.Success(value) => successful(value)
     case scala.util.Failure(NonFatal(ex)) => failure(Err(ex.getMessage))
   }

@@ -33,7 +33,8 @@ lazy val core = crossProject.in(file(".")).
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
     ),
     binaryIssueFilters ++= Seq(
-      ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec")
+      ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
+      ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
     )
   ).
   jsSettings(commonJsSettings: _*)
