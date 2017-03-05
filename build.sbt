@@ -24,7 +24,7 @@ lazy val core = crossProject.in(file(".")).
       "org.scalatest" %%% "scalatest" % "3.0.0" % "test",
       "org.scalacheck" %%% "scalacheck" % "1.13.4" % "test"
     ),
-    libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)) else Nil)
+    libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.patch)) else Nil)
   ).
   jvmSettings(
     docSourcePath := new File(baseDirectory.value, ".."),
