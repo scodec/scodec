@@ -52,14 +52,16 @@ The [`codecs`](shared/src/main/scala/scodec/codecs/package.scala) package provid
     import codecs._
 
     // Create a codec for an 8-bit unsigned int followed by an 8-bit unsigned int followed by a 16-bit unsigned int
-    val firstCodec = (uint8 ~ uint8 ~ uint16)
+    val firstCodec = uint8 ~ uint8 ~ uint16
 
     // Decode a bit vector using that codec
-    val result: DecodeResult[(Int ~ Int ~ Int)] = Codec.decode(firstCodec, BitVector(0x10, 0x2a, 0x03, 0xff))
+    val result: Attempt[DecodeResult[(Int ~ Int ~ Int)]] = firstCodec.decode(hex"102a03ff".bits)
+    // Successful(DecodeResult(((16, 42), 1023), BitVector(empty)))
 
     // Sum the result
     val add3 = (_: Int) + (_: Int) + (_: Int)
-    val sum: DecodeResult[Int] = result map add3
+    val sum: Attempt[DecodeResult[Int]] = result.map(_.map(add3))
+    // Successful(DecodeResult(1081, BitVector(empty)))
 ```
 
 Automatic case class binding is supported via Shapeless HLists:
@@ -73,7 +75,7 @@ Automatic case class binding is supported via Shapeless HLists:
     // Successful(BitVector(24 bits, 0xfb0a01))
 
     val decoded: Attempt[DecodeResult[Point]] = pointCodec.decode(hex"0xfb0a01".bits)
-    // Successful(DecodeResult(Point(-5,10,1),BitVector(empty)))
+    // Successful(DecodeResult(Point(-5, 10, 1), BitVector(empty)))
 ```
 
 Codecs can also be implicitly resolved, resulting in usage like:
@@ -85,14 +87,24 @@ Codecs can also be implicitly resolved, resulting in usage like:
     // Successful(BitVector(24 bits, 0xfb0a01))
 
     val decoded: Attempt[DecodeResult[Point]] = Codec.decode[Point](hex"0xfb0a01".bits)
-    // Successful(DecodeResult(Point(-5,10,1),BitVector(empty)))
+    // Successful(DecodeResult(Point(-5, 10, 1), BitVector(empty)))
 ```
+
+Note: by default, scodec provides no implicit codecs. Many sensible defaults can be imported via `import scodec.codecs.implicits._`, including codecs for various primitive types and some immutable collections.
 
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
 See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](http://scodec.org/api/). Especially:
- - [`Codec`](http://scodec.org/api/scodec-core/1.9.0/#scodec.Codec)
- - [`codecs` package](http://scodec.org/api/scodec-core/1.9.0/#scodec.codecs.package)
+ - [`Codec`](http://scodec.org/api/scodec-core/1.10.3/#scodec.Codec)
+ - [`codecs` package](http://scodec.org/api/scodec-core/1.10.3/#scodec.codecs.package)
+
+Ecosystem
+---------
+
+Many libraries have support for scodec:
+  - [FS2](https://github.com/functional-streams-for-scala)
+  - [Circe](https://github.com/circe/circe)
+  - [Refined](https://github.com/fthomas/refined)
 
 Examples
 --------
@@ -111,6 +123,8 @@ for the Bitcoin network protocol.
 
 The [scodec-msgpack](https://github.com/pocketberserker/scodec-msgpack) library provides
 codecs for [MessagePack](http://msgpack.org/).
+
+The [fs2-http](https://github.com/Spinoco/fs2-http) project uses FS2, scodec, and shapeless to implement a minimal HTTP client and server.
 
 Getting Binaries
 ----------------
