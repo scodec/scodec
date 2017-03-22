@@ -102,7 +102,7 @@ package object codecs {
   def bits: Codec[BitVector] = BitVectorCodec.withToString("bits")
 
   /**
-   * Encodes by returning the supplied bit vector if its length is `size` bits, otherwise returning error;
+   * Encodes by returning the supplied bit vector if its length is `size` bits, padding with zeroes if smaller than `size` bits, returning error if greater;
    * decodes by taking `size` bits from the supplied bit vector.
    *
    * @param size number of bits to encode/decode
@@ -117,13 +117,28 @@ package object codecs {
   }
 
   /**
+    * Encodes by returning the supplied bit vector if its length is `size` bits, otherwise returning error;
+    * decodes by taking `size` bits from the supplied bit vector.
+    *
+    * @param size number of bits to encode/decode
+    * @group bits
+    */
+  def bitsStrict(size: Long): Codec[BitVector] = new Codec[BitVector] {
+    private val codec = new FixedSizeStrictCodec(size, BitVectorCodec)
+    def sizeBound = codec.sizeBound
+    def encode(b: BitVector) = codec.encode(b)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"bitsStrict($size)"
+  }
+
+  /**
    * Encodes by returning supplied byte vector as a bit vector; decodes by taking all remaining bits in supplied bit vector and converting to a byte vector.
    * @group bits
    */
   def bytes: Codec[ByteVector] = bits.xmap[ByteVector](_.toByteVector, _.toBitVector).withToString("bytes")
 
   /**
-   * Encodes by returning the supplied byte vector if its length is `size` bytes, otherwise returning error;
+   * Encodes by returning the supplied byte vector if its length is `size` bytes, padding with zeroes if smaller than `size` bytes, returning error if greater;
    * decodes by taking `size * 8` bits from the supplied bit vector and converting to a byte vector.
    *
    * @param size number of bits to encode/decode
@@ -135,6 +150,21 @@ package object codecs {
     def encode(b: ByteVector) = codec.encode(b)
     def decode(b: BitVector) = codec.decode(b)
     override def toString = s"bytes($size)"
+  }
+
+  /**
+    * Encodes by returning the supplied byte vector if its length is `size` bytes, otherwise returning error;
+    * decodes by taking `size * 8` bits from the supplied bit vector and converting to a byte vector.
+    *
+    * @param size number of bits to encode/decode
+    * @group bits
+    */
+  def bytesStrict(size: Int): Codec[ByteVector] = new Codec[ByteVector] {
+    private val codec = new FixedSizeStrictCodec(size * 8L, BitVectorCodec).xmap[ByteVector](_.toByteVector, _.toBitVector)
+    def sizeBound = codec.sizeBound
+    def encode(b: ByteVector) = codec.encode(b)
+    def decode(b: BitVector) = codec.decode(b)
+    override def toString = s"bytesStrict($size)"
   }
 
   /**
