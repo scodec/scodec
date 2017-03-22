@@ -8,6 +8,11 @@ import scodec.codecs._
 object MpegCodecs {
 
   // Define case classes that describe MPEG packets and define an HList iso for each
+  //
+  // Note: This encoding is a simplified version of what's required to parse real
+  // MPEG packets. For a production quality codec, see the
+  // [Packet](https://github.com/scodec/scodec-protocols/blob/series/1.0.x/src/main/scala/scodec/protocols/mpeg/transport/Packet.scala)
+  // and associated data types from scodec-protocols.
 
   case class TransportStreamHeader(
     transportStringIndicator: Boolean,
