@@ -8,7 +8,11 @@ val commonSettings = Seq(
   contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("pchiusano", "Paul Chiusano"))
 )
 
-lazy val root = project.in(file(".")).aggregate(coreJVM, coreJS).settings(commonSettings: _*).settings(
+lazy val root = project.in(file(".")).aggregate(
+  testkitJVM, testkitJS,
+  coreJVM, coreJS,
+  unitTests).
+  settings(commonSettings: _*).settings(
   publishArtifact := false
 )
 
@@ -20,9 +24,7 @@ lazy val core = crossProject.in(file(".")).
   settings(
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.2",
-      "com.chuusai" %%% "shapeless" % "2.3.2",
-      "org.scalatest" %%% "scalatest" % "3.0.0" % "test",
-      "org.scalacheck" %%% "scalacheck" % "1.13.4" % "test"
+      "com.chuusai" %%% "shapeless" % "2.3.2"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.patch)) else Nil)
   ).
@@ -30,7 +32,7 @@ lazy val core = crossProject.in(file(".")).
     docSourcePath := new File(baseDirectory.value, ".."),
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
+
     ),
     binaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
@@ -41,6 +43,32 @@ lazy val core = crossProject.in(file(".")).
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
+
+lazy val testkit = crossProject.in(file("testkit")).
+  settings(commonSettings: _*).
+  settings(
+    libraryDependencies ++= Seq(
+      "org.scodec" %%% "scodec-bits" % "1.1.2",
+      "com.chuusai" %%% "shapeless" % "2.3.2",
+      "org.scalacheck" %%% "scalacheck" % "1.13.4",
+      "org.scalatest" %%% "scalatest" % "3.0.0"
+    )
+  ).
+  jsSettings(commonJsSettings: _*).
+  dependsOn(core % "compile->compile")
+
+lazy val testkitJVM = testkit.jvm
+lazy val testkitJS = testkit.js
+
+lazy val unitTests = project.in(file("unitTests")).
+  settings(commonSettings: _*).
+  settings(
+    libraryDependencies ++= Seq(
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.50" % "test"
+    )
+  ).
+  dependsOn(testkitJVM % "test->compile").
+  settings(publishArtifact := false)
 
 lazy val benchmark: Project = project.in(file("benchmark")).dependsOn(coreJVM).enablePlugins(JmhPlugin).
   settings(commonSettings: _*).

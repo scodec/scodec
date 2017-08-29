@@ -126,6 +126,11 @@ codecs for [MessagePack](http://msgpack.org/).
 
 The [fs2-http](https://github.com/Spinoco/fs2-http) project uses FS2, scodec, and shapeless to implement a minimal HTTP client and server.
 
+Testing Your Own Codecs
+-----------------------
+
+If you're creating your own `Codec` instances scodec publishes some of its own test tooling in the `scodec-testkit` module.
+
 Getting Binaries
 ----------------
 
