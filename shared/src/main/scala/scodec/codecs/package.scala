@@ -823,11 +823,13 @@ package object codecs {
    * @group combinators
    */
    def paddedVarAlignedBits[A](sizeCodec: Codec[Long], valueCodec: Codec[A], multipleForPadding: Int) = new PaddedVarAlignedCodec(sizeCodec, valueCodec, multipleForPadding.toLong)
+  
   /**
    * Byte equivalent of [[paddedVarAligendBits]].
    * @param sizeCodec codec that determines the size
    * @param valueCodec coec for encoding the payload
    * @param multipleForPadding multiple of bytes to align the value to with padding
+   * @group combinators
    */
    def paddedVarAlignedBytes[A](sizeCodec: Codec[Int], valueCodec: Codec[A], multipleForPadding: Int) = new Codec[A] {
       val sizedWiden = widenIntToLong(sizeCodec) 
