@@ -1,3 +1,9 @@
+1.10.4
+======
+ - Added `paddedVarAlignedBits` codec (thanks @vmarquez)
+ - Published testkit JAR (thanks @isomarcte)
+ - Built for Scala 2.11.11 and 2.12.4
+
 1.10.3
 ======
  - Built for 2.12.0-RC2
