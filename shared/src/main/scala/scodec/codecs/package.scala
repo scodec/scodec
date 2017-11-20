@@ -811,6 +811,34 @@ package object codecs {
      def decode(b: BitVector) = fcodec.decode(b)
      override def toString = s"paddedFixedSizeBytes($size, $codec)"
    }
+  
+  /**
+   * Codec that pads on a multiplier.
+   * 
+   * Similar to ByteAligendCodec, but instead of only padding to 8 bits, pads to a variable size
+   *
+   * @param sizeCodec codec that determines the size
+   * @param valueCodec codec for encoding the payload
+   * @param multipleForPadding multiple to align the value to with padding
+   * @group combinators
+   */
+   def paddedVarAlignedBits[A](sizeCodec: Codec[Long], valueCodec: Codec[A], multipleForPadding: Int) = new PaddedVarAlignedCodec(sizeCodec, valueCodec, multipleForPadding.toLong)
+  
+  /**
+   * Byte equivalent of [[paddedVarAligendBits]].
+   * @param sizeCodec codec that determines the size
+   * @param valueCodec coec for encoding the payload
+   * @param multipleForPadding multiple of bytes to align the value to with padding
+   * @group combinators
+   */
+   def paddedVarAlignedBytes[A](sizeCodec: Codec[Int], valueCodec: Codec[A], multipleForPadding: Int) = new Codec[A] {
+      val sizedWiden = widenIntToLong(sizeCodec) 
+      private val codec = new PaddedVarAlignedCodec(sizedWiden.widen[Long](_ * 8, bitsToBytesDivisible), valueCodec, multipleForPadding.toLong * 8)
+      override def encode(a: A) = codec.encode(a)
+      override def decode(buffer: BitVector) = codec.decode(buffer)
+      override def sizeBound = codec.sizeBound
+      override def toString = "PaddedVarAlignedBytesCodec"
+   }
 
   /**
    * Codec that limits the number of bits the specified codec works with.
