@@ -36,6 +36,11 @@ object ChecksumFactory {
     def newSigner = new ZipChecksumSigner(new Adler32())
   }
 
+  /** xor checksum. */
+  val xor: SignerFactory = new ChecksumFactory {
+    def newSigner = new XorSigner
+  }
+
   /** `java.security.Digest` implementation of Signer. */
   private class DigestSigner(impl: MessageDigest) extends Signer {
     def update(data: Array[Byte]): Unit = impl.update(data)
@@ -61,5 +66,13 @@ object ChecksumFactory {
     def update(data: Array[Byte]): Unit = impl.update(data, 0, data.length)
     def sign: Array[Byte] = ByteVector.fromLong(impl.getValue()).drop(4).toArray
     def verify(signature: Array[Byte]): Boolean = MessageDigest.isEqual(sign, signature)
+  }
+
+  private class XorSigner extends Signer {
+    var data: Array[Byte] = _
+
+    def update(data: Array[Byte]): Unit = this.data = data
+    def sign: Array[Byte] = Array(data.reduce((b1, b2) => (b1 ^ b2).toByte))
+    def verify(signature: Array[Byte]): Boolean = sign sameElements signature
   }
 }
