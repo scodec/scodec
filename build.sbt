@@ -29,9 +29,7 @@ lazy val core = crossProject.in(file(".")).
   jvmSettings(
     docSourcePath := new File(baseDirectory.value, ".."),
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
-    libraryDependencies ++= Seq(
-
-    ),
+    mimaPreviousArtifacts := mimaPreviousArtifacts.value.map(p => p.withName(p.name.replace("core", "scodec-core"))),
     mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
