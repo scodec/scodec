@@ -12,7 +12,6 @@ class VariableSizeDelimitedCodecTest extends CodecSuite {
     
     "decode value followed by delimiter" in {
       val buffer = BitVector('t', 'e', 's', 't', 0)
-      println(s"VariableSizeDelimitedCodecTest ${buffer.size}")
       variableSizeDelimited(constant(0), ascii, 8).decode(buffer) shouldBe Attempt.successful(DecodeResult("test", BitVector.empty))
     }
     

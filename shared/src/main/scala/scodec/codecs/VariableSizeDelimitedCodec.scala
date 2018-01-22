@@ -16,15 +16,13 @@ private[codecs] final class VariableSizeDelimitedCodec[A](delimiterCodec: Codec[
 
   override def encode(a: A) = for {
     encA <- valueCodec.encode(a)
-    encDel <- delimiterCodec.encode(())
-  } yield encA ++ encDel
+  } yield encA ++ delimiter
 
   override def decode(buffer: BitVector) = {
     val index = findDelimiterIndex(buffer) 
     if (index != -1) {
       val valueBuffer = buffer.take(index)
       val remainder = buffer.drop(index + delimiter.size)
-      println(s"VariableSizeDelimitedCodec.decode: [${delimiter.size}] $index [${valueBuffer.size}]$valueBuffer [${remainder.size}]$remainder")
       valueCodec.decode(valueBuffer).map(decodeResult => decodeResult.mapRemainder(_ ++ remainder) )
     } else {
       Attempt.failure(Err(s"expected delimiter $delimiterCodec"))
