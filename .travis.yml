@@ -17,8 +17,8 @@ jdk:
 
 script:
   - node -v
-  - sbt ++$TRAVIS_SCALA_VERSION "project coreJVM" test mima-report-binary-issues
-  - sbt ++$TRAVIS_SCALA_VERSION "project testkitJVM" test mima-report-binary-issues
+  - sbt ++$TRAVIS_SCALA_VERSION "project coreJVM" test mimaReportBinaryIssues
+  - sbt ++$TRAVIS_SCALA_VERSION "project testkitJVM" test mimaReportBinaryIssues
 
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" -exec rm {} +
