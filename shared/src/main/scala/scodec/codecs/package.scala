@@ -944,6 +944,28 @@ package object codecs {
     if (n % 8 == 0) Attempt.successful(n / 8)
     else Attempt.failure(Err(s"$n is not evenly divisible by 8"))
 
+
+    /**
+     * Codec that supports vectors of the form `value ++ delimiter` where the `delimiter` marks the end of the `value` field.
+     *
+     * @param size codec that encodes/decodes the delimiter
+     * @param value codec the encodes/decodes the value
+     * @group combinators
+     */
+    def variableSizeDelimited[A](delimiterCodec: Codec[Unit], value: Codec[A]): Codec[A] =
+      new VariableSizeDelimitedCodec(delimiterCodec, value)
+
+    /**
+     * Codec that supports vectors of the form `value ++ delimiter` where the `delimiter` marks the end of the `value` field.
+     *
+     * @param size codec that encodes/decodes the delimiter
+     * @param value codec the encodes/decodes the value
+     * @param multipleValueSize the size or a mutiple size of the expected value
+     * @group combinators
+     */
+    def variableSizeDelimited[A](delimiterCodec: Codec[Unit], value: Codec[A], multipleValueSize: Long): Codec[A] =
+      new VariableSizeDelimitedCodec(delimiterCodec, value, multipleValueSize)
+
   /**
    * Codec that supports vectors of the form `size ++ prefix ++ value` where the `size` field decodes to the bit length of the `value` field.
    *
