@@ -1,5 +1,4 @@
 import com.typesafe.tools.mima.core._
-import com.typesafe.tools.mima.plugin.MimaKeys._
 
 val commonSettings = Seq(
   scodecModule := "scodec-core",
@@ -18,13 +17,12 @@ lazy val root = project.in(file(".")).aggregate(
 
 lazy val core = crossProject.in(file(".")).
   enablePlugins(BuildInfoPlugin).
+  enablePlugins(ScodecPrimaryModuleSettings).
   settings(commonSettings: _*).
-  settings(scodecPrimaryModule: _*).
-  jvmSettings(scodecPrimaryModuleJvm: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.2",
-      "com.chuusai" %%% "shapeless" % "2.3.2"
+      "org.scodec" %%% "scodec-bits" % "1.1.6-SNAPSHOT",
+      "com.chuusai" %%% "shapeless" % "2.3.3"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.patch)) else Nil)
   ).
@@ -34,24 +32,24 @@ lazy val core = crossProject.in(file(".")).
     libraryDependencies ++= Seq(
 
     ),
-    binaryIssueFilters ++= Seq(
+    mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
     )
   ).
   jsSettings(commonJsSettings: _*)
 
-lazy val coreJVM = core.jvm
+lazy val coreJVM = core.jvm.enablePlugins(ScodecPrimaryModuleJVMSettings)
 lazy val coreJS = core.js
 
 lazy val testkit = crossProject.in(file("testkit")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.2",
-      "com.chuusai" %%% "shapeless" % "2.3.2",
-      "org.scalacheck" %%% "scalacheck" % "1.13.4",
-      "org.scalatest" %%% "scalatest" % "3.0.0"
+      "org.scodec" %%% "scodec-bits" % "1.1.6-SNAPSHOT",
+      "com.chuusai" %%% "shapeless" % "2.3.3",
+      "org.scalacheck" %%% "scalacheck" % "1.13.5",
+      "org.scalatest" %%% "scalatest" % "3.0.4"
     )
   ).
   jsSettings(commonJsSettings: _*).
