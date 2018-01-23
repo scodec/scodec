@@ -156,7 +156,7 @@ trait DecoderFunctions {
     val bldr = cbf()
     var remaining = buffer
     var count = 0
-    var maxCount = limit getOrElse Int.MaxValue
+    val maxCount = limit getOrElse Int.MaxValue
     var error: Option[Err] = None
     while (count < maxCount && remaining.nonEmpty) {
       dec.decode(remaining) match {

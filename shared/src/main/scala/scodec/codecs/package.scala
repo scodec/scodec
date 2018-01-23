@@ -1660,7 +1660,7 @@ package object codecs {
    * Extractor that allows pattern matching on the tuples created by tupling codecs.
    * @group tuples
    */
-  object ~ {
+  object ~ extends Serializable {
     def unapply[A, B](t: (A, B)): Option[(A, B)] = Some(t)
   }
 

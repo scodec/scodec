@@ -218,8 +218,10 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
      *
      * The collection must list the discriminators in the order that the corresponding types appear in the coproduct.
      */
-    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.coproduct.Length.Aux[C, N]): Codec[R] with KnownDiscriminatorType[A] =
+    def using[N <: Nat](discriminators: Sized[Seq[A], N])(implicit ev: ops.coproduct.Length.Aux[C, N]): Codec[R] with KnownDiscriminatorType[A] = {
+      val _ = ev // Convince scalac ev is used
       usingUnsafe(discriminators.seq)
+    }
 
     /**
      * Specifies the discriminator values for each of the union type members by providing the discriminators

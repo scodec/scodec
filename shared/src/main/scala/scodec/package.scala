@@ -366,7 +366,7 @@ package object scodec {
   type CodecTransformation = Codec ~> Codec
 
   /** Companion for [[CodecTransformation]]. */
-  object CodecTransformation {
+  object CodecTransformation extends Serializable {
     object Id extends CodecTransformation {
       def apply[X](c: Codec[X]): Codec[X] = c
     }

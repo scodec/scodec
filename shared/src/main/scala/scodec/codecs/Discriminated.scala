@@ -31,7 +31,10 @@ final case class Discriminated[X, D](codec: Codec[D], framing: CodecTransformati
   def this(codec: Codec[D]) = this(codec, CodecTransformation.Id)
 
   /** Binds the discriminator value `D` to type `Y`. */
-  def bind[Y <: X](discriminator: D)(implicit ev: Y =:!= X): Discriminator[X, Y, D] = Discriminator(discriminator)
+  def bind[Y <: X](discriminator: D)(implicit ev: Y =:!= X): Discriminator[X, Y, D] = {
+    val _ = ev // Convince scalac ev is used
+    Discriminator(discriminator)
+  }
 }
 
 /** Companion for [[Discriminated]]. */

@@ -38,6 +38,7 @@ private[scodec] object HListCodec {
     override def toString = s"append($l, $a)"
   }
 
+  // TODO: In 1.11+, remove lengthK
   def concat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](ck: Codec[K], cl: Codec[L])(implicit
     prepend: Prepend.Aux[K, L, KL],
     lengthK: Length.Aux[K, KLen],
@@ -62,6 +63,7 @@ private[scodec] object HListCodec {
     override def toString = s"flatPrepend($codecA, $f)"
   }
 
+  // TODO: In 1.11+, remove lengthK
   def flatConcat[K <: HList, L <: HList, KL <: HList, KLen <: Nat](codecK: Codec[K], f: K => Codec[L])(implicit
     prepend: Prepend.Aux[K, L, KL],
     lengthK: Length.Aux[K, KLen],
@@ -79,6 +81,7 @@ private[scodec] object HListCodec {
     override def toString = s"flatConcat($codecK, $f)"
   }
 
+  // TODO: In 1.11+, remove length
   def flatAppend[L <: HList, A, LA <: HList, Len <: Nat](codecL: Codec[L], f: L => Codec[A])(implicit
     prepend: Prepend.Aux[L, A :: HNil, LA],
     length: Length.Aux[L, Len],
