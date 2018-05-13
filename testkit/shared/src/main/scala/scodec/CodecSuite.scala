@@ -1,6 +1,5 @@
 package scodec
 
-import scala.collection.GenTraversable
 import scala.concurrent.duration._
 
 import shapeless.Lazy
@@ -30,7 +29,7 @@ abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPro
     ()
   }
 
-  protected def roundtripAll[A](codec: Codec[A], as: GenTraversable[A]): Unit = {
+  protected def roundtripAll[A](codec: Codec[A], as: collection.Iterable[A]): Unit = {
     as foreach { a => roundtrip(codec, a) }
   }
 
