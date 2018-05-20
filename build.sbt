@@ -1,4 +1,5 @@
 import com.typesafe.tools.mima.core._
+import sbtcrossproject.crossProject
 
 val commonSettings = Seq(
   scodecModule := "scodec-core",
@@ -15,7 +16,7 @@ lazy val root = project.in(file(".")).aggregate(
   publishArtifact := false
 )
 
-lazy val core = crossProject.in(file(".")).
+lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   enablePlugins(BuildInfoPlugin).
   enablePlugins(ScodecPrimaryModuleSettings).
   settings(commonSettings: _*).
@@ -40,7 +41,7 @@ lazy val core = crossProject.in(file(".")).
 lazy val coreJVM = core.jvm.enablePlugins(ScodecPrimaryModuleJVMSettings)
 lazy val coreJS = core.js
 
-lazy val testkit = crossProject.in(file("testkit")).
+lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
