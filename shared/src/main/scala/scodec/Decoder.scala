@@ -179,15 +179,16 @@ trait DecoderFunctions {
    */
   final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
     def decode(buffer: BitVector) = {
-      @annotation.tailrec def go(rem: List[Decoder[A]], lastErr: Err): Attempt[DecodeResult[A]] = rem match {
-        case Nil => Attempt.failure(lastErr)
+      @annotation.tailrec def go(rem: List[Decoder[A]], errs: List[Err]): Attempt[DecodeResult[A]] = rem match {
+        case Nil => Attempt.failure(Err(errs.reverse))
         case hd :: tl =>
           hd.decode(buffer) match {
             case res @ Attempt.Successful(_) => res
-            case Attempt.Failure(err) => go(tl, err)
+            case Attempt.Failure(err) => go(tl, err :: errs)
           }
       }
-      go(decoders.toList, Err("no decoders provided"))
+      if (decoders.isEmpty) Attempt.failure(Err("no decoders provided"))
+      else go(decoders.toList, Nil)
     }
   }
 }
