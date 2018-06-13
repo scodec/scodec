@@ -50,6 +50,14 @@ object Err {
     def pushContext(ctx: String) = copy(context = ctx :: context)
   }
 
+  final case class Composite(errs: List[Err], context: List[String]) extends Err {
+    def this(errs: List[Err]) = this(errs, Nil)
+    def message: String = errs.map(_.message).mkString("composite errors (", ",", ")")
+    def push(err: Err) = copy(errs = err :: errs)
+    def pushContext(ctx: String): Err = copy(context = ctx :: context)
+  }
+
   def apply(message: String): Err = new General(message)
+  def apply(errs: List[Err]): Err = new Composite(errs)
   def insufficientBits(needed: Long, have: Long): Err = new InsufficientBits(needed, have)
 }

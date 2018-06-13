@@ -141,15 +141,16 @@ trait EncoderFunctions {
   final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A] {
     def sizeBound = SizeBound.choice(encoders.map { _.sizeBound })
     def encode(a: A) = {
-      @annotation.tailrec def go(rem: List[Encoder[A]], lastErr: Err): Attempt[BitVector] = rem match {
-        case Nil => Attempt.failure(lastErr)
+      @annotation.tailrec def go(rem: List[Encoder[A]], errs: List[Err]): Attempt[BitVector] = rem match {
+        case Nil => Attempt.failure(Err(errs.reverse))
         case hd :: tl =>
           hd.encode(a) match {
             case res @ Attempt.Successful(_) => res
-            case Attempt.Failure(err) => go(tl, err)
+            case Attempt.Failure(err) => go(tl, err :: errs)
           }
       }
-      go(encoders.toList, Err("no encoders provided"))
+      if (encoders.isEmpty) Attempt.failure(Err("no encoders provided"))
+      else go(encoders.toList, Nil)
     }
   }
 }
