@@ -1,7 +1,5 @@
 package scodec
 
-import scala.reflect.ClassTag
-
 /**
  * Describes an error.
  *
