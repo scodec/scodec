@@ -60,4 +60,10 @@ object Err {
   def apply(message: String): Err = new General(message)
   def apply(errs: List[Err]): Err = new Composite(errs)
   def insufficientBits(needed: Long, have: Long): Err = new InsufficientBits(needed, have)
+
+  def needMoreBits: Err => Boolean = {
+    case _: InsufficientBits => true
+    case c: Composite => c.errs.exists(needMoreBits)
+    case _ => false
+  }
 }

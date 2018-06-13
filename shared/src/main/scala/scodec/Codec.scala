@@ -4,7 +4,7 @@ import shapeless._
 import shapeless.labelled.FieldType
 import shapeless.ops.record._
 
-import scodec.bits.BitVector
+import scodec.bits.{BitVector, ByteVector}
 
 /**
  * Supports encoding a value of type `A` to a `BitVector` and decoding a `BitVector` to a value of `A`.
@@ -274,6 +274,42 @@ trait Codec[A] extends GenCodec[A, A] { self =>
    * @group tuple
    */
   final def <~[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] = dropRight(codecB)
+
+  /**
+    * Returns a codec that encodes `A` followed by `etx`; decodes `A`, from bits occurring before `etx`, and discards
+    * `etx`. To support cases where `etx` can appear within the frame, the decode operation is retried repeatedly, on
+    * bits before the next occurrence of `etx`, until `retry` returns false for the last error.
+    *
+    * Usage:
+    * {{{
+    * // decode ASCII characters terminated by #
+    * ascii \ hex"23"
+    * // decode ASCII characters enclosed within spaces
+    * constant(hex"20") ~> (ascii \ hex"20")
+    * }}}
+    *
+    * @param etx terminal bytes
+    * @param retry controls retry of decode operation
+    */
+  def terminatedBy(etx: ByteVector, retry: Err => Boolean = Err.needMoreBits): Codec[A] =
+    new codecs.TerminatedByCodec[A](self, etx, retry)
+
+  /**
+    * Returns a codec that encodes `A` followed by `etx`; decodes `A`, from bits occurring before `etx`, and discards
+    * `etx`. To support cases where `etx` can appear within the frame, the decode operation is retried repeatedly, on
+    * bits before the next occurrence of `etx`, until `retry` returns false for the last error.
+    *
+    * Usage:
+    * {{{
+    * ascii \ hex"23"
+    * }}}
+    *
+    * Operator alias for [[terminatedBy]].
+    * @param etx terminal bytes
+    * @param retry controls retry of decode operation
+    */
+  def \(etx: ByteVector, retry: Err => Boolean = Err.needMoreBits): Codec[A] =
+    terminatedBy(etx, retry)
 
   /**
    * Converts this codec to an `HList` based codec by flattening all left nested pairs.
