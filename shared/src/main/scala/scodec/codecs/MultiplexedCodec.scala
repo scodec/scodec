@@ -4,6 +4,7 @@ import scodec._
 import scodec.bits.BitVector
 
 import scala.language.higherKinds
+import scala.collection.compat._
 
 /**
  * A trait that enables custom handling for encoding/decoding sequences.
@@ -50,8 +51,8 @@ sealed trait MultiplexedCodec {
    * @param buffer input bits
    * @return
    */
-  final def decode[F[_], A](dec: Decoder[A], deMux: BitVector => (BitVector, BitVector))(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): Attempt[DecodeResult[F[A]]] = {
-    val builder = cbf()
+  final def decode[F[_], A](dec: Decoder[A], deMux: BitVector => (BitVector, BitVector))(buffer: BitVector)(implicit cbf: Factory[A, F[A]]): Attempt[DecodeResult[F[A]]] = {
+    val builder = cbf.newBuilder
     var temp = deMux(buffer)
     var count = 0
     var error: Option[Err] = None

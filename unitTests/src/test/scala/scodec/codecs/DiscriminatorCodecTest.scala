@@ -21,8 +21,8 @@ class DiscriminatorCodecTest extends CodecSuite {
     "support building a codec using partial functions and subtyping" in {
       val codec =
         discriminated[AnyVal].by(uint8)
-        .\ (0) { case i: Int => i } (int32)
-        .\ (1) { case b: Boolean => b } (bool)
+        .\[Int](0) { case i: Int => i } (int32)
+        .\[Boolean](1) { case b: Boolean => b } (bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -33,8 +33,8 @@ class DiscriminatorCodecTest extends CodecSuite {
     "support building a codec using A => Option[B] and subtyping" in {
       val codec =
         discriminated[AnyVal].by(uint8)
-        ./ (0) { v => v match { case i: Int => Some(i); case _ => None }} (int32)
-        ./ (1) { v => v match { case b: Boolean => Some(b); case _ => None }} (bool)
+        ./[Int](0) { v => v match { case i: Int => Some(i); case _ => None }} (int32)
+        ./[Boolean](1) { v => v match { case b: Boolean => Some(b); case _ => None }} (bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -86,8 +86,8 @@ class DiscriminatorCodecTest extends CodecSuite {
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
       val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
       val codec: Codec[Either[Reserved, Color]] = choice(
-        nonReserved.xmapc(Right.apply)(_.b).upcast[Either[Reserved, Color]],
-        reserved.xmapc(Left.apply)(_.a).upcast[Either[Reserved, Color]]
+        nonReserved.xmapc(Right.apply)(_.right.get).upcast[Either[Reserved, Color]],
+        reserved.xmapc(Left.apply)(_.left.get).upcast[Either[Reserved, Color]]
       )
 
       roundtrip(codec, Right(Red))

@@ -17,7 +17,7 @@ final class TupleCodec[A, B](A: Codec[A], B: Codec[B]) extends Codec[(A, B)] {
   def ~~[C](C: Codec[C]): Tuple3Codec[A,B,C] = new Tuple3Codec(A,B,C)
 
   def widenAs[X](to: (A,B) => X, from: X => Option[(A,B)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B)"
 }
@@ -46,7 +46,7 @@ final class Tuple3Codec[A,B,C](A: Codec[A],
     } yield bits ++ bits2 ++ bits3
 
   def widenAs[X](to: (A,B,C) => X, from: X => Option[(A,B,C)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C)"
 }
@@ -78,7 +78,7 @@ final class Tuple4Codec[A,B,C,D](A: Codec[A],
 
 
   def widenAs[X](to: (A,B,C,D) => X, from: X => Option[(A,B,C,D)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
 }
 
@@ -111,7 +111,7 @@ final class Tuple5Codec[A,B,C,D,E](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5
 
   def widenAs[X](to: (A,B,C,D,E) => X, from: X => Option[(A,B,C,D,E)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E)"
 }
@@ -149,7 +149,7 @@ final class Tuple6Codec[A,B,C,D,E,F](A: Codec[A],
 
 
   def widenAs[X](to: (A,B,C,D,E,F) => X, from: X => Option[(A,B,C,D,E,F)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F)"
 }
@@ -189,7 +189,7 @@ final class Tuple7Codec[A,B,C,D,E,F,G](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7
 
   def widenAs[X](to: (A,B,C,D,E,F,G) => X, from: X => Option[(A,B,C,D,E,F,G)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G)"
 }
@@ -232,7 +232,7 @@ final class Tuple8Codec[A,B,C,D,E,F,G,H](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8
 
   def widenAs[X](to: (A,B,C,D,E,F,G,H) => X, from: X => Option[(A,B,C,D,E,F,G,H)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H)"
 }
@@ -278,7 +278,7 @@ final class Tuple9Codec[A,B,C,D,E,F,G,H,I](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9
 
   def widenAs[X](to: (A,B,C,D,E,F,G,H,I) => X, from: X => Option[(A,B,C,D,E,F,G,H,I)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I)"
 }
@@ -327,7 +327,7 @@ final class Tuple10Codec[A,B,C,D,E,F,G,H,I,J](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9 ++ bits10
 
   def widenAs[X](to: (A,B,C,D,E,F,G,H,I,J) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J)"
 }
@@ -379,7 +379,7 @@ final class Tuple11Codec[A,B,C,D,E,F,G,H,I,J,K](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9 ++ bits10 ++ bits11
 
   def widenAs[X](to: (A,B,C,D,E,F,G,H,I,J,K) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J,K)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J, $K)"
 }
@@ -433,7 +433,7 @@ final class Tuple12Codec[A,B,C,D,E,F,G,H,I,J,K,L](A: Codec[A],
     } yield bits ++ bits2 ++ bits3 ++ bits4 ++ bits5 ++ bits6 ++ bits7 ++ bits8 ++ bits9 ++ bits10 ++ bits11 ++ bits12
 
   def widenAs[X](to: (A,B,C,D,E,F,G,H,I,J,K,L) => X, from: X => Option[(A,B,C,D,E,F,G,H,I,J,K,L)]): Codec[X] =
-    this.widenOpt(to.tupled, from)
+    Transform[Codec].widenOpt(this, to.tupled, from)
 
   override def toString = s"($A, $B, $C, $D, $E, $F, $G, $H, $I, $J, $K, $L)"
 }

@@ -67,5 +67,5 @@ object SizeBound {
 
   /** Returns the union of all of the specified bounds, or an exact 0 size if the specified collection is empty. */
   def choice(bounds: collection.GenTraversableOnce[SizeBound]): SizeBound =
-    if (bounds.isEmpty) SizeBound.exact(0) else bounds.reduce(_ | _)
+    if (bounds.isEmpty) SizeBound.exact(0) else bounds.toIterator.reduce(_ | _)
 }

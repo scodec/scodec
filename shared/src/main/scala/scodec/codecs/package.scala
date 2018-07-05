@@ -1813,7 +1813,7 @@ package object codecs {
    * @return
    */
   def enumerated(discriminator: Codec[Int], enumeration: Enumeration) =
-    scodec.codecs.mappedEnum(discriminator, enumeration.values.map(e => e -> e.id).toMap)
+    scodec.codecs.mappedEnum(discriminator, (enumeration.values: Set[enumeration.Value]).map(e => e -> e.id).toMap) // https://github.com/scala/bug/issues/10906
 
   /**
    * Converts an `HList` of codecs in to a single codec.
