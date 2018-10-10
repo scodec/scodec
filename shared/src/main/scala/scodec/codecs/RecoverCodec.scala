@@ -7,7 +7,7 @@ private[codecs] final class RecoverCodec(target: Codec[Unit], lookahead: Boolean
 
   def sizeBound = target.sizeBound
 
-  def encode(a: Boolean) = target.encode(())
+  def encode(a: Boolean)= if(a) target.encode(()) else Attempt.successful(BitVector.empty)
 
   def decode(buffer: BitVector) =
     target.decode(buffer) match {

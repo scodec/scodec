@@ -6,15 +6,27 @@ import scodec.bits.BitVector
 class RecoverCodecTest extends CodecSuite {
 
   "the recover combinator" should {
-    "always code a value" in {
-      forAll { (i: Int, b: Boolean) =>
+    "always code a value for true value" in {
+      forAll { (i: Int) =>
         val codec = recover(constant(BitVector fromInt i))
         val Attempt.Successful(DecodeResult(b2, rest)) = for {
-          bits <- codec.encode(b)
+          bits <- codec.encode(true)
           result <- codec.decode(bits)
         } yield result
         rest.isEmpty shouldBe true
         b2 shouldBe true
+      }
+    }
+
+    "always code an empty vector for false value" in {
+      forAll { (i: Int) =>
+        val codec = recover(constant(BitVector fromInt i))
+        val Attempt.Successful(DecodeResult(b2, rest)) = for {
+          bits <- codec.encode(false)
+          result <- codec.decode(bits)
+        } yield result
+        rest.isEmpty shouldBe true
+        b2 shouldBe false
       }
     }
 
@@ -40,15 +52,27 @@ class RecoverCodecTest extends CodecSuite {
   }
 
   "the lookahead combinator" should {
-    "always code a value" in {
-      forAll { (i: Int, b: Boolean) =>
+    "always code a value for true value" in {
+      forAll { (i: Int) =>
         val codec = lookahead(constant(BitVector fromInt i))
         val Attempt.Successful((encoded, DecodeResult(b2, rest))) = for {
-          bits <- codec.encode(b)
+          bits <- codec.encode(true)
           result <- codec.decode(bits)
         } yield (bits, result)
         rest shouldBe encoded
         b2 shouldBe true
+      }
+    }
+
+    "always code an empty vector for false value" in {
+      forAll { (i: Int) =>
+        val codec = lookahead(constant(BitVector fromInt i))
+        val Attempt.Successful(DecodeResult(b2, rest)) = for {
+          bits <- codec.encode(false)
+          result <- codec.decode(bits)
+        } yield result
+        rest.isEmpty shouldBe true
+        b2 shouldBe false
       }
     }
 
