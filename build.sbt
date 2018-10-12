@@ -7,7 +7,8 @@ val commonSettings = Seq(
   rootPackage := "scodec",
   scmInfo := Some(ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")),
   contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("pchiusano", "Paul Chiusano")),
-  crossScalaVersions := "2.10.6" +: crossScalaVersions.value.filterNot(_.startsWith("2.10.")).filterNot(_.startsWith("2.13."))
+  crossScalaVersions := "2.10.6" +: crossScalaVersions.value.filterNot(_.startsWith("2.10.")).filterNot(_.startsWith("2.13.")),
+  releaseCrossBuild := true
 )
 
 lazy val root = project.in(file(".")).aggregate(
