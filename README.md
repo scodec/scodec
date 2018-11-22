@@ -111,9 +111,9 @@ Examples
 
 There are various examples in the test directory, including codecs for:
 
- - [UDP Datagrams](shared/src/test/scala/scodec/examples/UdpDatagramExample.scala)
- - [MPEG Packets](shared/src/test/scala/scodec/examples/MpegPacketExample.scala)
- - [libpcap Files](jvm/src/test/scala/scodec/examples/PcapExample.scala)
+ - [UDP Datagrams](unitTests/src/test/scala/scodec/examples/UdpDatagramExample.scala)
+ - [MPEG Packets](unitTests/src/test/scala/scodec/examples/MpegPacketExample.scala)
+ - [libpcap Files](unitTests/src/test/scala/scodec/examples/PcapExample.scala)
 
 The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
 quality codecs for the above examples.
