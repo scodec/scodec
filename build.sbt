@@ -51,7 +51,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
       "org.scodec" %%% "scodec-bits" % "1.1.5",
       "com.chuusai" %%% "shapeless" % "2.3.3",
       "org.scalacheck" %%% "scalacheck" % "1.13.5",
-      "org.scalatest" %%% "scalatest" % "3.0.4"
+      "org.scalatest" %%% "scalatest" % "3.0.5"
     )
   ).
   jsSettings(commonJsSettings: _*).
