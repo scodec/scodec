@@ -473,10 +473,7 @@ package object codecs {
       bits.consumeThen(width)(e => Attempt failure Err(e),
        (bits,rem) => vpbcd decodeValue bits map (a => DecodeResult(a,rem))
       )
-    def encode(l : Long): Attempt[BitVector] = {
-      val padding = BitVector.low(width - (log10(l.toDouble).toLong + 1) * 4L)
-      vpbcd encode l map (padding ++ _)
-    }
+    def encode(l : Long): Attempt[BitVector] = vpbcd encode l map (_ padLeft width)
     def sizeBound = SizeBound exact width
   }
 
