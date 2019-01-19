@@ -25,7 +25,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.5",
+      "org.scodec" %%% "scodec-bits" % "1.1.8",
       "com.chuusai" %%% "shapeless" % "2.3.3"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.patch)) else Nil)
@@ -48,7 +48,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.5",
+      "org.scodec" %%% "scodec-bits" % "1.1.8",
       "com.chuusai" %%% "shapeless" % "2.3.3",
       "org.scalacheck" %%% "scalacheck" % "1.13.5",
       "org.scalatest" %%% "scalatest" % "3.0.5"
