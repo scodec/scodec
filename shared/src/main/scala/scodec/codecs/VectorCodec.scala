@@ -1,6 +1,8 @@
 package scodec
 package codecs
 
+import scala.collection.compat._
+
 import scodec.bits.BitVector
 
 private[codecs] final class VectorCodec[A](codec: Codec[A], limit: Option[Int] = None) extends Codec[Vector[A]] {

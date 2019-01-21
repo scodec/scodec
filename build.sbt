@@ -33,7 +33,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "0.1.1",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "0.2.1",
       "org.scodec" %%% "scodec-bits" % "1.1.9",
       "com.chuusai" %%% "shapeless" % "2.3.3"
     )
@@ -51,17 +51,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
       }
     },
     mimaBinaryIssueFilters ++= Seq(
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.DecoderFunctions.decodeCollect"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.codecs.MultiplexedCodec.decode"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.GenCodec.decodeCollect"),
-      ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.DecoderFunctions.decodeCollect"),
-      ProblemFilters.exclude[ReversedMissingMethodProblem]("scodec.DecoderFunctions.decodeCollect"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.Decoder.decodeCollect"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.Codec.decodeCollect"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.codecs.ListMultiplexedCodec.decode"),
-      ProblemFilters.exclude[IncompatibleMethTypeProblem]("scodec.codecs.VectorMultiplexedCodec.decode"),
-      ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.MultiplexedCodec.decode"),
-      ProblemFilters.exclude[ReversedMissingMethodProblem]("scodec.codecs.MultiplexedCodec.decode"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
     )
