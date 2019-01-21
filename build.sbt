@@ -7,12 +7,11 @@ val commonSettings = Seq(
   rootPackage := "scodec",
   scmInfo := Some(ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")),
   contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("pchiusano", "Paul Chiusano")),
-  crossScalaVersions := "2.10.6" +: crossScalaVersions.value.filterNot(_.startsWith("2.10.")).filterNot(_.startsWith("2.13.")),
   releaseCrossBuild := true,
   scalacOptions --= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v >= 13 =>
-        Seq("-Yno-adapted-args")
+        Seq("-Yno-adapted-args", "-Ywarn-unused-import")
       case _ =>
         Seq()
     }
@@ -67,7 +66,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
       "org.scodec" %%% "scodec-bits" % "1.1.9",
       "com.chuusai" %%% "shapeless" % "2.3.3",
       "org.scalacheck" %%% "scalacheck" % "1.14.0",
-      "org.scalatest" %%% "scalatest" % "3.0.6-SNAP1"
+      "org.scalatest" %%% "scalatest" % "3.0.6-SNAP5"
     )
   ).
   jsSettings(commonJsSettings: _*).
