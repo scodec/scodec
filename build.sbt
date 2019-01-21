@@ -7,8 +7,15 @@ val commonSettings = Seq(
   rootPackage := "scodec",
   scmInfo := Some(ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")),
   contributors ++= Seq(Contributor("mpilquist", "Michael Pilquist"), Contributor("pchiusano", "Paul Chiusano")),
-  crossScalaVersions := "2.10.6" +: crossScalaVersions.value.filterNot(_.startsWith("2.10.")).filterNot(_.startsWith("2.13.")),
-  releaseCrossBuild := true
+  releaseCrossBuild := true,
+  scalacOptions --= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, v)) if v >= 13 =>
+        Seq("-Yno-adapted-args", "-Ywarn-unused-import")
+      case _ =>
+        Seq()
+    }
+  }
 )
 
 lazy val root = project.in(file(".")).aggregate(
@@ -25,15 +32,23 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "0.2.1",
       "org.scodec" %%% "scodec-bits" % "1.1.9",
       "com.chuusai" %%% "shapeless" % "2.3.3"
-    ),
-    libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.patch)) else Nil)
+    )
   ).
   jvmSettings(
     docSourcePath := new File(baseDirectory.value, ".."),
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
     mimaPreviousArtifacts := mimaPreviousArtifacts.value.map(p => p.withName(p.name.replace("core", "scodec-core"))),
+    mimaPreviousArtifacts := {
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v >= 13 =>
+          Set()
+        case _ =>
+          mimaPreviousArtifacts.value
+      }
+    },
     mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
@@ -50,8 +65,8 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.9",
       "com.chuusai" %%% "shapeless" % "2.3.3",
-      "org.scalacheck" %%% "scalacheck" % "1.13.5",
-      "org.scalatest" %%% "scalatest" % "3.0.5"
+      "org.scalacheck" %%% "scalacheck" % "1.14.0",
+      "org.scalatest" %%% "scalatest" % "3.0.6-SNAP5"
     )
   ).
   jsSettings(commonJsSettings: _*).

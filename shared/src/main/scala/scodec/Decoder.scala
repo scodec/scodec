@@ -1,6 +1,7 @@
 package scodec
 
 import scala.language.higherKinds
+import scala.collection.compat._
 
 import scodec.bits.BitVector
 
@@ -152,8 +153,8 @@ trait DecoderFunctions {
    * decoded. Exits upon first decoding error.
    * @group conv
    */
-  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: collection.generic.CanBuildFrom[F[A], A, F[A]]): Attempt[DecodeResult[F[A]]] = {
-    val bldr = cbf()
+  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(buffer: BitVector)(implicit cbf: Factory[A, F[A]]): Attempt[DecodeResult[F[A]]] = {
+    val bldr = cbf.newBuilder
     var remaining = buffer
     var count = 0
     val maxCount = limit getOrElse Int.MaxValue
