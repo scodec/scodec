@@ -467,7 +467,15 @@ package object codecs {
    * @param nibbles number of nibbles (4-bit chunks)
    * @group numbers
    */
-  def pbcd(nibbles: Int): Codec[Long] = fixedSizeBits(nibbles.toLong*4, vpbcd)
+  def pbcd(nibbles: Int): Codec[Long] = new Codec[Long] {
+    private def width: Long = nibbles.toLong * 4L
+    def decode(bits: BitVector): Attempt[DecodeResult[Long]] = 
+      bits.consumeThen(width)(e => Attempt failure Err(e),
+       (bits,rem) => vpbcd decodeValue bits map (a => DecodeResult(a,rem))
+      )
+    def encode(l : Long): Attempt[BitVector] = vpbcd encode l map (_ padLeft width)
+    def sizeBound = SizeBound exact width
+  }
 
   /**
    * Codec for n-nibble packed decimal (BCD) integers that are represented with `Long`.

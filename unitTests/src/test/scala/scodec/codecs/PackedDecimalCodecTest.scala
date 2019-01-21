@@ -18,6 +18,12 @@ class PackedDecimalCodecTest extends CodecSuite {
       pbcd(6).decode(hex"010323".bits) should be (Attempt.successful(DecodeResult(10323L, BitVector.empty)))
     }
 
+    "pad left when encoding (#126)" in {
+      pbcd(3).encode(0) shouldEqual Attempt.successful(bin"0000 0000 0000")
+      pbcd(3).encode(1) shouldEqual Attempt.successful(bin"0000 0000 0001")
+      pbcd(3).encode(79) shouldEqual Attempt.successful(bin"0000 0111 1001")
+      pbcd(3).encode(999) shouldEqual Attempt.successful(bin"1001 1001 1001")
+    }
   }
 
   "the lpbcd codec" should {
