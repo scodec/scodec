@@ -111,9 +111,9 @@ Examples
 
 There are various examples in the test directory, including codecs for:
 
- - [UDP Datagrams](shared/src/test/scala/scodec/examples/UdpDatagramExample.scala)
- - [MPEG Packets](shared/src/test/scala/scodec/examples/MpegPacketExample.scala)
- - [libpcap Files](jvm/src/test/scala/scodec/examples/PcapExample.scala)
+ - [UDP Datagrams](unitTests/src/test/scala/scodec/examples/UdpDatagramExample.scala)
+ - [MPEG Packets](unitTests/src/test/scala/scodec/examples/MpegPacketExample.scala)
+ - [libpcap Files](unitTests/src/test/scala/scodec/examples/PcapExample.scala)
 
 The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
 quality codecs for the above examples.
@@ -124,6 +124,8 @@ The [scodec-msgpack](https://github.com/pocketberserker/scodec-msgpack) library 
 codecs for [MessagePack](http://msgpack.org/).
 
 The [fs2-http](https://github.com/Spinoco/fs2-http) project uses FS2, scodec, and shapeless to implement a minimal HTTP client and server.
+
+The [scodec-bson](https://gitlab.com/lJoublanc/scodec-bson) library implements [BSON](http://bsonspec.org) codecs and combinators.
 
 Testing Your Own Codecs
 -----------------------
