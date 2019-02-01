@@ -63,6 +63,7 @@ lazy val coreJS = core.js
 lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
   settings(commonSettings: _*).
   settings(
+    name := scodecModule.value + "-testkit",
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.9",
       "com.chuusai" %%% "shapeless" % "2.3.3",
