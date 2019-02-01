@@ -95,8 +95,8 @@ Note: by default, scodec provides no implicit codecs. Many sensible defaults can
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 
 See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](http://scodec.org/api/). Especially:
- - [`Codec`](http://scodec.org/api/scodec-core/1.11.0/#scodec.Codec)
- - [`codecs` package](http://scodec.org/api/scodec-core/1.11.0/#scodec.codecs.package)
+ - [`Codec`](http://scodec.org/api/scodec-core/1.11.1/#scodec.Codec)
+ - [`codecs` package](http://scodec.org/api/scodec-core/1.11.1/#scodec.codecs.package)
 
 Ecosystem
 ---------
