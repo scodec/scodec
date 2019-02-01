@@ -31,6 +31,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   enablePlugins(ScodecPrimaryModuleSettings).
   settings(commonSettings: _*).
   settings(
+    name := scodecModule.value,
     libraryDependencies ++= Seq(
       "org.scala-lang.modules" %%% "scala-collection-compat" % "0.2.1",
       "org.scodec" %%% "scodec-bits" % "1.1.9",
