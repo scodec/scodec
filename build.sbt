@@ -41,7 +41,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   jvmSettings(
     docSourcePath := new File(baseDirectory.value, ".."),
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
-    mimaPreviousArtifacts := mimaPreviousArtifacts.value.map(p => p.withName(p.name.replace("core", "scodec-core"))),
     mimaPreviousArtifacts := {
       CrossVersion.partialVersion(scalaVersion.value) match {
         case Some((2, v)) if v >= 13 =>
