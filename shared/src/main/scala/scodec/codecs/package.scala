@@ -1427,6 +1427,43 @@ package object codecs {
       valueCodec).withToString(s"listDelimited($delimiter, $valueCodec)")
 
   /**
+    * Codec that encodes/decodes a `Map[A, B]` from a `Codec[A]` and a `Codec[B]`.
+    *
+    * When encoding, each item (`A`,`B`) in the map is encoded and all of the resulting vectors are concatenated.
+    *
+    * When decoding, `codec.decode` is called repeatedly until there are no more remaining bits and the value result
+    * of each `decode` is returned as an item in the map.
+    *
+    * @param keyCodec codec to encode/decode a key of the map
+    * @param valueCodec codec to encode/decode a value of the map
+    * @group combinators
+    */
+  def map[A, B](keyCodec: Codec[A], valueCodec: Codec[B]): Codec[Map[A, B]] = new MapCodec(keyCodec, valueCodec)
+
+  /**
+    * Codec that encodes/decodes a `Map[A, B]` from a `Codec[A]` and a `Codec[B]`.
+    *
+    * When encoding, each item (`A`,`B`) in the map is encoded and all of the resulting vectors are concatenated.
+    *
+    * When decoding, `codec.decode` is called repeatedly until there are no more remaining bits and the value result
+    * of each `decode` is returned as an item in the map.
+    *
+    * Note: when the count is known statically, use `listOfN(provide(count), ...)`.
+    *
+    * @param keyCodec codec to encode/decode a key of the map
+    * @param valueCodec codec to encode/decode a value of the map
+    * @group combinators
+    */
+  def mapOfN[A, B](countCodec: Codec[Int], keyCodec: Codec[A], valueCodec: Codec[B]): Codec[Map[A, B]] =
+    countCodec.
+      flatZip { count => new MapCodec(keyCodec, valueCodec, Some(count)) }.
+      narrow[Map[A, B]]({ case (cnt, xs) =>
+      if (xs.size == cnt) Attempt.successful(xs)
+      else Attempt.failure(Err(s"Insufficient number of elements: decoded ${xs.size} but should have decoded $cnt"))
+    }, xs => (xs.size, xs)).
+      withToString(s"mapOfN($countCodec, $keyCodec, $valueCodec)")
+
+  /**
    * Combinator that chooses amongst two codecs based on an implicitly available byte ordering.
    * @param big codec to use when big endian
    * @param little codec to use when little endian
