@@ -33,7 +33,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   settings(
     name := scodecModule.value,
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "0.2.1",
+      "org.scala-lang.modules" %%% "scala-collection-compat" % "0.3.0",
       "org.scodec" %%% "scodec-bits" % "1.1.9",
       "com.chuusai" %%% "shapeless" % "2.3.3"
     )
