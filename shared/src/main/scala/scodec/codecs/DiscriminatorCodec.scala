@@ -277,6 +277,10 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
 
   /**
    * $methodCaseCombinator
+   * 
+   * Note: when encoding a value of `A`, this combinator compares the runtime class of that value to the
+   * runtime class of the supplied `ClassTag[R]`. As such, the *erased* type of `A` is used and hence,
+   * this operation is not safe to use with parameterized representation types.
    *
    * @tparam R $typeR
    * @param tag $paramTag
@@ -288,6 +292,10 @@ final class DiscriminatorCodec[A, B] private[codecs] (by: Codec[B], cases: Vecto
 
   /**
    * $methodCaseCombinator
+   *
+   * Note: when encoding a value of `A`, this combinator compares the runtime class of that value to the
+   * runtime class of the supplied `ClassTag[R]`. As such, the *erased* type of `A` is used and hence,
+   * this operation is not safe to use with parameterized representation types.
    *
    * @tparam R $typeR
    * @param encodeTag $paramEncodeTag
