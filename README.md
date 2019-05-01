@@ -31,7 +31,7 @@ This project is licensed under a [3-clause BSD license](LICENSE).
 
 The [scodec mailing list](https://groups.google.com/forum/#!forum/scodec) contains release announcements and is generally a good place to go for help. Also consider using the [scodec tag on StackOverflow](http://stackoverflow.com/questions/tagged/scodec).
 
-People are expected to follow the [Typelevel Code of Conduct](http://typelevel.org/conduct.html)
+People are expected to follow the [Scala Code of Conduct](https://typelevel.org/code_of_conduct.html)
 when discussing scodec on the Github page, Gitter channel, mailing list,
 or other venues.
 
