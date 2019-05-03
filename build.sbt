@@ -80,7 +80,7 @@ lazy val unitTests = project.in(file("unitTests")).
   settings(commonSettings: _*).
   settings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.60" % "test"
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.61" % "test"
     ),
     libraryDependencies ++= (if (scalaBinaryVersion.value startsWith "2.10") Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.patch)) else Nil)
   ).
