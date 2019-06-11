@@ -1,8 +1,9 @@
 package scodec
 
-import org.scalatest.{ WordSpec, Matchers }
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class SizeBoundTest extends WordSpec with Matchers {
+class SizeBoundTest extends AnyWordSpec with Matchers {
 
   "the SizeBound class" should {
 

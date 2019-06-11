@@ -42,7 +42,7 @@ object ChecksumCodec {
    * @return
    */
   def apply(encoder: Encoder[ByteVector], range: Decoder[Int], padding: Int): Codec[BitVector] =
-    apply(encoder.contramap[BitVector](_.bytes), range.map(8L * _), 8l * padding)
+    apply(encoder.contramap[BitVector](_.bytes), range.map(8L * _), 8L * padding)
 
   /**
    * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.

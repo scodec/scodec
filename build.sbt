@@ -32,9 +32,15 @@ lazy val core = crossProject(JVMPlatform, JSPlatform).in(file(".")).
   settings(commonSettings: _*).
   settings(
     name := scodecModule.value,
+    unmanagedSourceDirectories in Compile += {
+      val dir = CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, v)) if v >= 13 => "scala-2.13+"
+        case _                       => "scala-2.12-"
+      }
+      baseDirectory.value / "../shared/src/main" / dir
+    },
     libraryDependencies ++= Seq(
-      "org.scala-lang.modules" %%% "scala-collection-compat" % "0.3.0",
-      "org.scodec" %%% "scodec-bits" % "1.1.9",
+      "org.scodec" %%% "scodec-bits" % "1.1.12",
       "com.chuusai" %%% "shapeless" % "2.3.3"
     )
   ).
@@ -64,10 +70,9 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
   settings(
     name := scodecModule.value + "-testkit",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.9",
-      "com.chuusai" %%% "shapeless" % "2.3.3",
       "org.scalacheck" %%% "scalacheck" % "1.14.0",
-      "org.scalatest" %%% "scalatest" % "3.0.6-SNAP5"
+      "org.scalatest" %%% "scalatest" % "3.1.0-SNAP13",
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP8"
     )
   ).
   jsSettings(commonJsSettings: _*).

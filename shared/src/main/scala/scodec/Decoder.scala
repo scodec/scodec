@@ -1,11 +1,12 @@
 package scodec
 
 import scala.language.higherKinds
-import scala.collection.compat._
 
 import scodec.bits.BitVector
 
 import shapeless.Lazy
+
+import scodec.compat._
 
 /**
  * Supports decoding a value of type `A` from a `BitVector`.

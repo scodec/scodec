@@ -6,12 +6,13 @@ import shapeless.Lazy
 
 import org.scalacheck.{ Gen, Arbitrary }
 import Arbitrary.arbitrary
-import org.scalatest.{Matchers, WordSpec}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
+import org.scalatest.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scodec.bits.BitVector
 
-abstract class CodecSuite extends WordSpec with Matchers with GeneratorDrivenPropertyChecks {
+abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks {
 
   implicit override val generatorDrivenConfig: PropertyCheckConfiguration =
     PropertyCheckConfiguration(minSuccessful = 100, workers = 4)

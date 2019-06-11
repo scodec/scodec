@@ -4,7 +4,8 @@ import scodec._
 import scodec.bits.BitVector
 
 import scala.language.higherKinds
-import scala.collection.compat._
+
+import scodec.compat._
 
 /**
  * A trait that enables custom handling for encoding/decoding sequences.
