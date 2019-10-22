@@ -833,7 +833,7 @@ package object codecs {
    def paddedVarAlignedBits[A](sizeCodec: Codec[Long], valueCodec: Codec[A], multipleForPadding: Int) = new PaddedVarAlignedCodec(sizeCodec, valueCodec, multipleForPadding.toLong)
   
   /**
-   * Byte equivalent of [[paddedVarAligendBits]].
+   * Byte equivalent of [[paddedVarAlignedBits]].
    * @param sizeCodec codec that determines the size
    * @param valueCodec coec for encoding the payload
    * @param multipleForPadding multiple of bytes to align the value to with padding
