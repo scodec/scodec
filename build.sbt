@@ -72,7 +72,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform).in(file("testkit")).
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % "1.14.0",
       "org.scalatest" %%% "scalatest" % "3.1.0-SNAP13",
-      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-SNAP8"
+      "org.scalatestplus" %%% "scalatestplus-scalacheck" % "1.0.0-M2"
     )
   ).
   jsSettings(commonJsSettings: _*).
