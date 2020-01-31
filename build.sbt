@@ -42,7 +42,8 @@ lazy val commonSettings = Seq(
       case other => sys.error(s"Unsupported scala version: $other")
     }),
   testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
-  releaseCrossBuild := true
+  releaseCrossBuild := true,
+  mimaPreviousArtifacts := Set.empty
 ) ++ publishingSettings
 
 lazy val publishingSettings = Seq(
@@ -111,12 +112,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
     mimaPreviousArtifacts := {
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v >= 13 =>
-          Set()
-        case _ =>
-          mimaPreviousArtifacts.value
-      }
+      List("1.11.4").map { pv =>
+        organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
+      }.toSet
     },
     mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
