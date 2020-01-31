@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        scala: [2.12.10, 2.13.1]
+    steps:
+    - uses: actions/checkout@v2
+    - uses: olafurpg/setup-scala@v5
+      with:
+        java-version: openjdk@1.11.0
+    - name: Format Check
+      if: matrix.scala == '2.13.1'
+      run: sbt ++${{matrix.scala}} fmtCheck
+    - name: JVM
+      run: sbt ++${{matrix.scala}} coreJVM/test
+    - name: JS
+      if: matrix.scala == '2.13.1' || matrix.scala == '2.12.10'
+      run: sbt ++${{matrix.scala}} coreJS/test
+    - name: Mima
+      if: matrix.scala == '2.13.1' || matrix.scala == '2.12.10'
+      run: sbt ++${{matrix.scala}} mimaReportBinaryIssues
