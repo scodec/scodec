@@ -37,6 +37,8 @@ lazy val commonSettings = Seq(
         List("-Xlint", "-Ywarn-unused")
       case v if v.startsWith("2.12") =>
         Nil
+      case v if v.startsWith("2.11") =>
+        Nil
       case v if v.startsWith("0.") =>
         Nil
       case other => sys.error(s"Unsupported scala version: $other")
