@@ -107,7 +107,24 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.12",
       "com.chuusai" %%% "shapeless" % "2.3.3"
-    )
+    ),
+    buildInfoPackage := "scodec",
+    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
+    scalacOptions in (Compile, doc) := {
+      val tagOrBranch = {
+        if (version.value.endsWith("SNAPSHOT")) gitCurrentBranch.value
+        else ("v" + version.value)
+      }
+      Seq(
+        "-groups",
+        "-implicits",
+        "-implicits-show-all",
+        "-sourcepath",
+        new File(baseDirectory.value, "../..").getCanonicalPath,
+        "-doc-source-url",
+        "https://github.com/scodec/scodec/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
+      )
+    }
   )
   .jvmSettings(
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
