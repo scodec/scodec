@@ -5,7 +5,13 @@ import java.util.zip.{DataFormatException, Inflater}
 
 import scodec.bits.{BitVector, ByteVector}
 
-private[scodec] class ZlibCodec[A](codec: Codec[A], level: Int, strategy: Int, nowrap: Boolean, chunkSize: Int) extends Codec[A] {
+private[scodec] class ZlibCodec[A](
+    codec: Codec[A],
+    level: Int,
+    strategy: Int,
+    nowrap: Boolean,
+    chunkSize: Int
+) extends Codec[A] {
 
   def sizeBound = SizeBound.unknown
 
@@ -20,7 +26,10 @@ private[scodec] class ZlibCodec[A](codec: Codec[A], level: Int, strategy: Int, n
       bb => codec.decode(bb.value.bits).map(_.mapRemainder(_ => bb.remainder))
     )
 
-  private def inflate(b: BitVector, chunkSize: Int): Either[DataFormatException, DecodeResult[ByteVector]] = {
+  private def inflate(
+      b: BitVector,
+      chunkSize: Int
+  ): Either[DataFormatException, DecodeResult[ByteVector]] =
     if (b.isEmpty) Right(DecodeResult(b.bytes, b))
     else {
       val arr = b.bytes.toArray
@@ -29,17 +38,21 @@ private[scodec] class ZlibCodec[A](codec: Codec[A], level: Int, strategy: Int, n
       try {
         inflater.setInput(arr)
         try {
-          val buffer = new Array[Byte](chunkSize min arr.length)
-          def loop(acc: ByteVector): ByteVector = {
+          val buffer = new Array[Byte](chunkSize.min(arr.length))
+          def loop(acc: ByteVector): ByteVector =
             if (inflater.finished || inflater.needsInput) acc
             else {
-              val count = inflater inflate buffer
+              val count = inflater.inflate(buffer)
               loop(acc ++ ByteVector(buffer, 0, count))
             }
-          }
           val inflated = loop(ByteVector.empty)
           if (inflater.finished) Right(DecodeResult(inflated, b.drop(inflater.getBytesRead * 8)))
-          else Left(new DataFormatException("Insufficient data -- inflation reached end of input without completing inflation - " + inflated))
+          else
+            Left(
+              new DataFormatException(
+                "Insufficient data -- inflation reached end of input without completing inflation - " + inflated
+              )
+            )
         } catch {
           case e: DataFormatException => Left(e)
         }
@@ -47,6 +60,4 @@ private[scodec] class ZlibCodec[A](codec: Codec[A], level: Int, strategy: Int, n
         inflater.end()
       }
     }
-  }
 }
-

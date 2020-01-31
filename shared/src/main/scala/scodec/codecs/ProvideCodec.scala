@@ -4,10 +4,10 @@ package codecs
 import scodec.bits.BitVector
 
 /**
- * Codec that provides a constant value from decode and ignores the value to encode.
- *
- * Useful as a combinator with [[DiscriminatorCodec]].
- */
+  * Codec that provides a constant value from decode and ignores the value to encode.
+  *
+  * Useful as a combinator with [[DiscriminatorCodec]].
+  */
 private[codecs] final class ProvideCodec[A](value: A) extends Codec[A] {
   override def sizeBound = SizeBound.exact(0)
   override def encode(a: A) = Attempt.successful(BitVector.empty)

@@ -4,33 +4,42 @@ package codecs
 import scodec.bits.BitVector
 import scala.annotation.tailrec
 
-private[codecs] final class PaddedFixedSizeCodec[A](size: Long, codec: Codec[A], padCodec: Long => Codec[Unit]) extends Codec[A] {
+private[codecs] final class PaddedFixedSizeCodec[A](
+    size: Long,
+    codec: Codec[A],
+    padCodec: Long => Codec[Unit]
+) extends Codec[A] {
   override def sizeBound = SizeBound.exact(size)
 
-  override def encode(a: A) = for {
-    encoded <- codec.encode(a)
-    result <- {
-      if (encoded.size > size)
-        Attempt.failure(Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits"))
-      else if (encoded.size == size)
-        Attempt.successful(encoded)
-      else {
-        val pc = padCodec(size - encoded.size)
-        pc.encode(()) match {
-          case Attempt.Successful(padding) =>
-            @tailrec def pad(bits: BitVector): Attempt[BitVector] = {
-              if (bits.size == size) Attempt.successful(bits)
-              else if (bits.size < size) pad(bits ++ padding)
-              else Attempt.failure(Err(s"padding overflows fixed size field of $size bits").pushContext("padding"))
-            }
-            pad(encoded)
+  override def encode(a: A) =
+    for {
+      encoded <- codec.encode(a)
+      result <- {
+        if (encoded.size > size)
+          Attempt.failure(
+            Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
+          )
+        else if (encoded.size == size)
+          Attempt.successful(encoded)
+        else {
+          val pc = padCodec(size - encoded.size)
+          pc.encode(()) match {
+            case Attempt.Successful(padding) =>
+              @tailrec def pad(bits: BitVector): Attempt[BitVector] =
+                if (bits.size == size) Attempt.successful(bits)
+                else if (bits.size < size) pad(bits ++ padding)
+                else
+                  Attempt.failure(
+                    Err(s"padding overflows fixed size field of $size bits").pushContext("padding")
+                  )
+              pad(encoded)
 
-          case Attempt.Failure(err) =>
-            Attempt.failure(err.pushContext("padding"))
+            case Attempt.Failure(err) =>
+              Attempt.failure(err.pushContext("padding"))
+          }
         }
       }
-    }
-  } yield result
+    } yield result
 
   override def decode(buffer: BitVector) =
     buffer.acquire(size) match {
@@ -45,7 +54,7 @@ private[codecs] final class PaddedFixedSizeCodec[A](size: Long, codec: Codec[A],
                 Attempt.successful(DecodeResult(res, buffer.drop(size)))
               else
                 pc.decode(bits) match {
-                  case Attempt.Failure(err) => Attempt.failure(err.pushContext("padding"))
+                  case Attempt.Failure(err)                        => Attempt.failure(err.pushContext("padding"))
                   case Attempt.Successful(DecodeResult(_, remain)) => validate(remain)
                 }
             validate(rest)
@@ -54,4 +63,3 @@ private[codecs] final class PaddedFixedSizeCodec[A](size: Long, codec: Codec[A],
 
   override def toString = s"paddedFixedSizeBits($size, $codec)"
 }
-

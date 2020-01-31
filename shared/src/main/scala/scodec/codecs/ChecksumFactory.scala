@@ -3,12 +3,12 @@ package codecs
 
 import java.security.MessageDigest
 import java.util.Arrays
-import java.util.zip.{ CRC32, Adler32, Checksum }
+import java.util.zip.{Adler32, CRC32, Checksum}
 import scodec.bits.ByteVector
 
 /**
- * Creates checksum implementations of [[SignerFactory]].
- */
+  * Creates checksum implementations of [[SignerFactory]].
+  */
 object ChecksumFactory {
 
   /** Creates a `java.security.Digest` factory for the specified algorithm. */
@@ -51,12 +51,11 @@ object ChecksumFactory {
   /** http://en.wikipedia.org/wiki/Fletcher's_checksum */
   private class Fletcher16Checksum extends Signer {
     var checksum = (0, 0)
-    def update(data: Array[Byte]): Unit = {
+    def update(data: Array[Byte]): Unit =
       checksum = data.foldLeft(checksum) { (p, b) =>
         val lsb = (p._2 + (0xff & b)) % 255
         ((p._1 + lsb) % 255, lsb)
       }
-    }
     def sign: Array[Byte] = Array(checksum._1.asInstanceOf[Byte], checksum._2.asInstanceOf[Byte])
     def verify(signature: Array[Byte]): Boolean = Arrays.equals(sign, signature)
   }
@@ -73,6 +72,6 @@ object ChecksumFactory {
 
     def update(data: Array[Byte]): Unit = this.data = data
     def sign: Array[Byte] = Array(data.reduce((b1, b2) => (b1 ^ b2).toByte))
-    def verify(signature: Array[Byte]): Boolean = sign sameElements signature
+    def verify(signature: Array[Byte]): Boolean = sign.sameElements(signature)
   }
 }

@@ -10,12 +10,16 @@ class ListCodecTest extends CodecSuite {
     "limit decoding to the specified number of records" in {
       val codec = listOfN(provide(10), uint8)
       val buffer = BitVector.low(8 * 100)
-      codec.decode(buffer) shouldBe Attempt.successful(DecodeResult(List.fill(10)(0), BitVector.low(8 * 90)))
+      codec.decode(buffer) shouldBe Attempt.successful(
+        DecodeResult(List.fill(10)(0), BitVector.low(8 * 90))
+      )
     }
 
     "support encoding size before vector contents" in {
       val codec = listOfN(int32, uint8)
-      codec.encode((1 to 10).toList) shouldBe Attempt.successful(hex"0000000a0102030405060708090a".bits)
+      codec.encode((1 to 10).toList) shouldBe Attempt.successful(
+        hex"0000000a0102030405060708090a".bits
+      )
     }
 
     "support not encoding size before vector contents" in {
@@ -25,7 +29,9 @@ class ListCodecTest extends CodecSuite {
 
     "fails decoding if < N elements decoded" in {
       val codec = listOfN(provide(10), uint8)
-      codec.decode(BitVector.low(8*5)) shouldBe Attempt.failure(Err("Insufficient number of elements: decoded 5 but should have decoded 10"))
+      codec.decode(BitVector.low(8 * 5)) shouldBe Attempt.failure(
+        Err("Insufficient number of elements: decoded 5 but should have decoded 10")
+      )
     }
   }
 }

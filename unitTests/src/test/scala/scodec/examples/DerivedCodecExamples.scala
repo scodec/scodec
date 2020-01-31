@@ -38,11 +38,7 @@ class DerivedCodecsExample extends CodecSuite {
 
     implicit val d: Discriminated[Color, Int] = Discriminated(uint8)
 
-    implicit val codec: Codec[Color] = mappedEnum(uint8,
-      Red -> 0,
-      Yellow -> 1,
-      Green -> 2
-    )
+    implicit val codec: Codec[Color] = mappedEnum(uint8, Red -> 0, Yellow -> 1, Green -> 2)
   }
 
   case class Point(x: Int, y: Int, z: Int)
@@ -103,7 +99,7 @@ class DerivedCodecsExample extends CodecSuite {
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
       Codec[Color].encode(Color.Green).require shouldBe hex"02".bits
-      Codec[Point].encode(Point(1, 2, 3)).require should have size(24)
+      Codec[Point].encode(Point(1, 2, 3)).require should have size (24)
     }
   }
 }

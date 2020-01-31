@@ -14,7 +14,11 @@ class BytesCodecTest extends CodecSuite {
     }
 
     "return an error when encoding with more bytes than expected" in {
-      bytes(8).encode(hex"010203040506070809") shouldBe Attempt.failure(Err("[BitVector(72 bits, 0x010203040506070809)] requires 72 bits but field is fixed size of 64 bits"))
+      bytes(8).encode(hex"010203040506070809") shouldBe Attempt.failure(
+        Err(
+          "[BitVector(72 bits, 0x010203040506070809)] requires 72 bits but field is fixed size of 64 bits"
+        )
+      )
     }
   }
 }

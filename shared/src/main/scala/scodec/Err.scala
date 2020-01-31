@@ -1,23 +1,23 @@
 package scodec
 
 /**
- * Describes an error.
- *
- * An error has a message and a list of context identifiers that provide insight into where an error occurs in a large structure.
- *
- * This type is not sealed so that codecs can return domain specific
- * subtypes and dispatch on those subtypes.
- */
+  * Describes an error.
+  *
+  * An error has a message and a list of context identifiers that provide insight into where an error occurs in a large structure.
+  *
+  * This type is not sealed so that codecs can return domain specific
+  * subtypes and dispatch on those subtypes.
+  */
 trait Err {
 
   /** Gets a description of the error. */
   def message: String
 
   /**
-   * Gets a stack of context identifiers.
-   *
-   * The head of the list is the outermost (i.e., least specific) identifier.
-   */
+    * Gets a stack of context identifiers.
+    *
+    * The head of the list is the outermost (i.e., least specific) identifier.
+    */
   def context: List[String]
 
   /** Gets a description of the error with the context identifiers prefixing the message. */

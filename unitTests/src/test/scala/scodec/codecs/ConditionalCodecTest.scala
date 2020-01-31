@@ -17,8 +17,8 @@ class ConditionalCodecTest extends CodecSuite {
 
       val result = conditional(false, retCodec).encode(Some("00"))
 
-      called should be (false)
-      result shouldBe a [Attempt.Successful[_]]
+      called should be(false)
+      result shouldBe a[Attempt.Successful[_]]
       result.require shouldBe BitVector.empty
     }
 
@@ -32,8 +32,8 @@ class ConditionalCodecTest extends CodecSuite {
 
       val result = conditional(true, retCodec).encode(Some("00"))
 
-      called should be (true)
-      result shouldBe a [Attempt.Successful[_]]
+      called should be(true)
+      result shouldBe a[Attempt.Successful[_]]
       result.require shouldBe hex"3030".bits
     }
 
@@ -47,8 +47,8 @@ class ConditionalCodecTest extends CodecSuite {
 
       val result = conditional(false, retCodec).decode(hex"3030".bits)
 
-      called should be (false)
-      result shouldBe a [Attempt.Successful[_]]
+      called should be(false)
+      result shouldBe a[Attempt.Successful[_]]
       result.require.value shouldBe None
     }
 
@@ -62,8 +62,8 @@ class ConditionalCodecTest extends CodecSuite {
 
       val result = conditional(true, retCodec).decode(hex"3030".bits)
 
-      called should be (true)
-      result shouldBe a [Attempt.Successful[_]]
+      called should be(true)
+      result shouldBe a[Attempt.Successful[_]]
       result.require.value shouldBe Some("00")
     }
 

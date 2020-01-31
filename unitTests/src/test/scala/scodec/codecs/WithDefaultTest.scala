@@ -10,14 +10,14 @@ class WithDefaultTest extends CodecSuite {
     "decode with fallback codec when opt codec returns none" in {
       forAll { (n: Int) =>
         val codec = withDefault(conditional(false, int8), int32)
-        shouldDecodeFullyTo(codec, BitVector fromInt n, n)
+        shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
       }
     }
 
     "return result of opt codec when it returns some from decode" in {
       forAll { (n: Int) =>
         val codec = withDefault(conditional(true, int32), int8)
-        shouldDecodeFullyTo(codec, BitVector fromInt n, n)
+        shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
       }
     }
   }
@@ -27,8 +27,8 @@ class WithDefaultTest extends CodecSuite {
     "return the default value when the opt codec returns none" in {
       forAll { (n: Int) =>
         val codec = withDefaultValue(conditional(false, int8), n)
-        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector fromInt n)
-        rest shouldBe (BitVector fromInt n)
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(n))
+        rest shouldBe (BitVector.fromInt(n))
         b shouldBe n
       }
     }
@@ -36,7 +36,7 @@ class WithDefaultTest extends CodecSuite {
     "return result of opt codec when it returns some from decode" in {
       forAll { (n: Int) =>
         val codec = withDefaultValue(conditional(true, int32), n)
-        shouldDecodeFullyTo(codec, BitVector fromInt n, n)
+        shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
       }
     }
   }

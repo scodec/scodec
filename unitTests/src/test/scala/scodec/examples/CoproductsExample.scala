@@ -88,7 +88,10 @@ class CoproductsExample extends CodecSuite {
       // sealed type hierarchies, the field name is the subtype name.
       val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedByIndex(uint8)
 
-      codec.encode(Woozle(256, 0)) shouldBe Attempt.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("Woozle"))
+      codec.encode(Woozle(256, 0)) shouldBe Attempt.failure(
+        Err("256 is greater than maximum value 255 for 8-bit unsigned integer")
+          .pushContext("Woozle")
+      )
     }
 
     "demonstrate arbitrary discriminators" in {
@@ -100,7 +103,8 @@ class CoproductsExample extends CodecSuite {
       // as the discriminator for the component at the corresponding index
       // in the coproduct.
 
-      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).using(Sized(2, 1))
+      val codec: Codec[Sprocket] =
+        Codec.coproduct[Sprocket].discriminatedBy(uint8).using(Sized(2, 1))
 
       val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
@@ -122,8 +126,10 @@ class CoproductsExample extends CodecSuite {
       // subtype name can be used.
       import shapeless.syntax.singleton._
 
-      val codec: Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(uint8).using(
-        'Wocket ->> 2 :: 'Woozle ->> 1 :: HNil)
+      val codec: Codec[Sprocket] = Codec
+        .coproduct[Sprocket]
+        .discriminatedBy(uint8)
+        .using('Wocket ->> 2 :: 'Woozle ->> 1 :: HNil)
 
       val encodedWoozle = codec.encode(Woozle(3, 10)).require
       encodedWoozle shouldBe hex"01030a".bits
@@ -191,15 +197,18 @@ class CoproductsExample extends CodecSuite {
       // where the discriminator value is accessed directly in the function argument.
       //
       // This can be accomplished by using the `provide` codec as the discriminator codec.
-      def codec(d: Int): Codec[Sprocket] = Codec.coproduct[Sprocket].discriminatedBy(provide(d)).auto
+      def codec(d: Int): Codec[Sprocket] =
+        Codec.coproduct[Sprocket].discriminatedBy(provide(d)).auto
 
       codec(1).decode(hex"030a".bits).require.value shouldBe Woozle(3, 10)
       codec(2).decode(hex"0101".bits).require.value shouldBe Wocket(1, true)
 
       val hlistCodec: Codec[Int :: Long :: Sprocket :: Int :: HNil] =
-        (uint8 :: uint32) flatConcat { case d :: _ :: HNil => codec(d) :: uint16 }
+        (uint8 :: uint32).flatConcat { case d :: _ :: HNil => codec(d) :: uint16 }
 
-      hlistCodec.encode(1 :: 0L :: Woozle(3, 10) :: 0 :: HNil).require shouldBe hex"0100000000030a0000".bits
+      hlistCodec
+        .encode(1 :: 0L :: Woozle(3, 10) :: 0 :: HNil)
+        .require shouldBe hex"0100000000030a0000".bits
     }
 
     "demonstrate defining dependent subtype codecs" in {
@@ -221,12 +230,18 @@ class CoproductsExample extends CodecSuite {
       // `provide(...)` to fix the subtype to the message type from the header,
       // and automatically looks up the discriminator types.
       def codec(header: Header): Codec[Sprocket] =
-        (wocketCodec(header) :+: woozleCodec(header)).as[Sprocket].discriminatedBy(provide(header.messageType)).auto
+        (wocketCodec(header) :+: woozleCodec(header))
+          .as[Sprocket]
+          .discriminatedBy(provide(header.messageType))
+          .auto
 
       // The component codecs do not have to be specified in the same order
       // as the Shapeless coproduct type.
       def outOfOrder(header: Header): Codec[Sprocket] =
-        (woozleCodec(header) :+: wocketCodec(header)).as[Sprocket].discriminatedBy(provide(header.messageType)).auto
+        (woozleCodec(header) :+: wocketCodec(header))
+          .as[Sprocket]
+          .discriminatedBy(provide(header.messageType))
+          .auto
     }
   }
 }

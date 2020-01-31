@@ -7,9 +7,10 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     "support building a codec using typecases" in {
       val codec =
-        discriminated[AnyVal].by(uint8)
-        .typecase(0, int32)
-        .typecase(1, bool)
+        discriminated[AnyVal]
+          .by(uint8)
+          .typecase(0, int32)
+          .typecase(1, bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -20,9 +21,10 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     "support building a codec using partial functions and subtyping" in {
       val codec =
-        discriminated[AnyVal].by(uint8)
-        .\[Int](0) { case i: Int => i } (int32)
-        .\[Boolean](1) { case b: Boolean => b } (bool)
+        discriminated[AnyVal]
+          .by(uint8)
+          .\[Int](0) { case i: Int => i }(int32)
+          .\[Boolean](1) { case b: Boolean => b }(bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -32,9 +34,14 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     "support building a codec using A => Option[B] and subtyping" in {
       val codec =
-        discriminated[AnyVal].by(uint8)
-        ./[Int](0) { v => v match { case i: Int => Some(i); case _ => None }} (int32)
-        ./[Boolean](1) { v => v match { case b: Boolean => Some(b); case _ => None }} (bool)
+        discriminated[AnyVal]
+          .by(uint8)
+          ./[Int](0) { v =>
+            v match { case i: Int => Some(i); case _ => None }
+          }(int32)
+          ./[Boolean](1) { v =>
+            v match { case b: Boolean => Some(b); case _ => None }
+          }(bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -106,9 +113,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       val goCodec = int32.widenOpt[Go](Go.apply, Go.unapply)
 
       val codec =
-        discriminated[Direction].by(uint8).
-          typecase(0, stayCodec).
-          typecase(1, goCodec)
+        discriminated[Direction].by(uint8).typecase(0, stayCodec).typecase(1, goCodec)
 
       roundtrip(codec, Stay)
       roundtrip(codec, Go(42))
@@ -120,9 +125,12 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Leaf(n: Int) extends Tree
 
       def treeCodec: Codec[Tree] = lazily {
-        discriminated[Tree].by(bool)
-        .| (false) { case l @ Leaf(n) => n } (Leaf.apply) (int32)
-        .| (true)  { case n @ Node(l, r) => (l, r) } { case (l, r) => Node(l, r) } (treeCodec ~ treeCodec)
+        discriminated[Tree]
+          .by(bool)
+          .|(false) { case l @ Leaf(n) => n }(Leaf.apply)(int32)
+          .|(true) { case n @ Node(l, r) => (l, r) } { case (l, r) => Node(l, r) }(
+            treeCodec ~ treeCodec
+          )
       }
 
       roundtrip(treeCodec, Leaf(42))
@@ -131,8 +139,9 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     "error when matching discriminator for encoding is not found" in {
       val codec =
-        discriminated[AnyVal].by(uint8)
-        .typecase(0, bool)
+        discriminated[AnyVal]
+          .by(uint8)
+          .typecase(0, bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -151,11 +160,12 @@ class DiscriminatorCodecTest extends CodecSuite {
       val annotateCodec = ascii.widenOpt[Annotate](Annotate.apply, Annotate.unapply)
 
       val codec =
-        discriminated[Direction].by(uint8).
-          typecase(0, stayCodec).
-          typecase(1, goCodec).
-          typecase(2, annotateCodec).
-          framing(new CodecTransformation {
+        discriminated[Direction]
+          .by(uint8)
+          .typecase(0, stayCodec)
+          .typecase(1, goCodec)
+          .typecase(2, annotateCodec)
+          .framing(new CodecTransformation {
             def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c)
           })
 

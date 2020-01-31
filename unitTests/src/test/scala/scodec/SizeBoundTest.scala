@@ -30,7 +30,8 @@ class SizeBoundTest extends AnyWordSpec with Matchers {
     }
 
     "support choice (i.e., ORing a collection of bounds together)" in {
-      SizeBound.choice(List(SizeBound.exact(1), SizeBound.exact(2), SizeBound.exact(3))) shouldBe SizeBound.bounded(1, 3)
+      SizeBound.choice(List(SizeBound.exact(1), SizeBound.exact(2), SizeBound.exact(3))) shouldBe SizeBound
+        .bounded(1, 3)
       SizeBound.choice(Nil) shouldBe SizeBound.exact(0)
     }
 

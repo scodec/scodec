@@ -5,8 +5,20 @@ import scodec.bits.BitVector
 
 class DoubleCodecTest extends CodecSuite {
 
-  "the double codec" should { "roundtrip" in { forAll { (n: Double) => roundtrip(double, n) } } }
-  "the doubleL codec" should { "roundtrip" in { forAll { (n: Double) => roundtrip(doubleL, n) } } }
+  "the double codec" should {
+    "roundtrip" in {
+      forAll { (n: Double) =>
+        roundtrip(double, n)
+      }
+    }
+  }
+  "the doubleL codec" should {
+    "roundtrip" in {
+      forAll { (n: Double) =>
+        roundtrip(doubleL, n)
+      }
+    }
+  }
 
   "the double codecs" should {
 
@@ -22,4 +34,3 @@ class DoubleCodecTest extends CodecSuite {
     }
   }
 }
-

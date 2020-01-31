@@ -23,9 +23,18 @@ trait ImplicitValues {
 
 /** Provides implicit codecs for collection types. */
 trait ImplicitCollections {
-  implicit def implicitListCodec[A](implicit ccount: Lazy[Codec[Int]], ca: Lazy[Codec[A]]): Codec[List[A]] = listOfN(ccount.value, ca.value)
-  implicit def implicitVectorCodec[A](implicit ccount: Lazy[Codec[Int]], ca: Lazy[Codec[A]]): Codec[Vector[A]] = vectorOfN(ccount.value, ca.value)
-  implicit def implicitOptionCodec[A](implicit cguard: Lazy[Codec[Boolean]], ca: Lazy[Codec[A]]): Codec[Option[A]] = optional(cguard.value, ca.value)
+  implicit def implicitListCodec[A](
+      implicit ccount: Lazy[Codec[Int]],
+      ca: Lazy[Codec[A]]
+  ): Codec[List[A]] = listOfN(ccount.value, ca.value)
+  implicit def implicitVectorCodec[A](
+      implicit ccount: Lazy[Codec[Int]],
+      ca: Lazy[Codec[A]]
+  ): Codec[Vector[A]] = vectorOfN(ccount.value, ca.value)
+  implicit def implicitOptionCodec[A](
+      implicit cguard: Lazy[Codec[Boolean]],
+      ca: Lazy[Codec[A]]
+  ): Codec[Option[A]] = optional(cguard.value, ca.value)
 }
 
 /** Provides implicit codecs for common types. */

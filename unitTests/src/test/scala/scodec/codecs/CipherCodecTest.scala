@@ -27,6 +27,8 @@ class CipherCodecTest extends CodecSuite {
 
   protected def testWithCipherFactory(implicit cf: CipherFactory): Unit = {
     val codec = encrypted { int32 ~ utf8 }
-    forAll { (n: Int, s: String) => roundtrip(codec, (n, s)) }
+    forAll { (n: Int, s: String) =>
+      roundtrip(codec, (n, s))
+    }
   }
 }

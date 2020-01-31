@@ -11,15 +11,20 @@ class CoproductCodecTest extends CodecSuite {
 
     "support index based discriminators" in {
       type IBS = Int :+: Boolean :+: String :+: CNil
-      val codec: Codec[IBS] = (int32 :+: bool(8) :+: variableSizeBytes(uint8, utf8)).discriminatedByIndex(uint8)
+      val codec: Codec[IBS] =
+        (int32 :+: bool(8) :+: variableSizeBytes(uint8, utf8)).discriminatedByIndex(uint8)
 
       codec.encode(Coproduct[IBS](1)).require shouldBe hex"0000000001".bits
       codec.encode(Coproduct[IBS](true)).require shouldBe hex"01ff".bits
       codec.encode(Coproduct[IBS]("Hello")).require shouldBe hex"020548656c6c6f".bits
       codec.sizeBound shouldBe SizeBound.atLeast(16)
 
-      forAll { (i: Int) => roundtrip(codec, Coproduct[IBS](i)) }
-      forAll { (b: Boolean) => roundtrip(codec, Coproduct[IBS](b)) }
+      forAll { (i: Int) =>
+        roundtrip(codec, Coproduct[IBS](i))
+      }
+      forAll { (b: Boolean) =>
+        roundtrip(codec, Coproduct[IBS](b))
+      }
       forAll { (s: String) =>
         if (s.size < 256) {
           codec.encode(Coproduct[IBS](s)).toOption.foreach { bits =>
@@ -32,16 +37,20 @@ class CoproductCodecTest extends CodecSuite {
     "support arbitrary discriminators" in {
       type IBS = Int :+: Boolean :+: String :+: CNil
       val codec: Codec[IBS] =
-        (int32 :+: bool(8) :+: variableSizeBytes(uint8, utf8)).
-          discriminatedBy(fixedSizeBytes(1, utf8)).
-          using(Sized("i", "b", "s"))
+        (int32 :+: bool(8) :+: variableSizeBytes(uint8, utf8))
+          .discriminatedBy(fixedSizeBytes(1, utf8))
+          .using(Sized("i", "b", "s"))
 
       codec.encode(Coproduct[IBS](1)).require shouldBe hex"6900000001".bits
       codec.encode(Coproduct[IBS](true)).require shouldBe hex"62ff".bits
       codec.encode(Coproduct[IBS]("Hello")).require shouldBe hex"730548656c6c6f".bits
 
-      forAll { (i: Int) => roundtrip(codec, Coproduct[IBS](i)) }
-      forAll { (b: Boolean) => roundtrip(codec, Coproduct[IBS](b)) }
+      forAll { (i: Int) =>
+        roundtrip(codec, Coproduct[IBS](i))
+      }
+      forAll { (b: Boolean) =>
+        roundtrip(codec, Coproduct[IBS](b))
+      }
       forAll { (s: String) =>
         if (s.size < 256) {
           codec.encode(Coproduct[IBS](s)).toOption.foreach { bits =>
@@ -65,9 +74,12 @@ class CoproductCodecTest extends CodecSuite {
 
     "support framing" in {
       type IBS = Int :+: Boolean :+: String :+: CNil
-      val codec: Codec[IBS] = (int32 :+: bool(8) :+: utf8).
-        framing(new CodecTransformation { def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c) }).
-        discriminatedByIndex(uint8)
+      val codec: Codec[IBS] =
+        (int32 :+: bool(8) :+: utf8)
+          .framing(new CodecTransformation {
+            def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c)
+          })
+          .discriminatedByIndex(uint8)
 
       codec.encode(Coproduct[IBS](1)).require shouldBe hex"000400000001".bits
       codec.encode(Coproduct[IBS](true)).require shouldBe hex"0101ff".bits

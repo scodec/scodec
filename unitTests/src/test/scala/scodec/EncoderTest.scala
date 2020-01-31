@@ -14,4 +14,3 @@ class EncoderTest extends CodecSuite {
     }
   }
 }
-

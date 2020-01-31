@@ -14,8 +14,10 @@ class EitherCodecTest extends CodecSuite {
       roundtrip(c, Left(255))
       roundtrip(c, Right("hello, world"))
       // locally override Arbitrary[Int] to fit in 8 bytes unsigned
-      implicit val arb = Arbitrary(Gen.choose(0,255))
-      forAll { (e: Either[Int,String]) => roundtrip(c, e) }
+      implicit val arb = Arbitrary(Gen.choose(0, 255))
+      forAll { (e: Either[Int, String]) =>
+        roundtrip(c, e)
+      }
     }
 
     "encode correctly" in {
@@ -25,5 +27,3 @@ class EitherCodecTest extends CodecSuite {
     }
   }
 }
-
-

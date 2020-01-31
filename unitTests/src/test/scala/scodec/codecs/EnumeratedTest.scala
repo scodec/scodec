@@ -1,6 +1,6 @@
 package scodec.codecs
 
-import org.scalacheck.{Gen, Arbitrary}
+import org.scalacheck.{Arbitrary, Gen}
 import scodec.bits._
 import scodec.CodecSuite
 
@@ -20,15 +20,19 @@ class EnumeratedTest extends CodecSuite {
     implicit def generator = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
 
     "roundtrip" in {
-      forAll { (v: SIPrefix.Value) => roundtrip(codec, v) }
+      forAll { (v: SIPrefix.Value) =>
+        roundtrip(codec, v)
+      }
     }
 
     "roundtrip with combinators" in {
-      forAll { (i: Int, v: SIPrefix.Value) => roundtrip(int32 ~ codec, i ~ v) }
+      forAll { (i: Int, v: SIPrefix.Value) =>
+        roundtrip(int32 ~ codec, i ~ v)
+      }
     }
 
     "fail for an invalid id" in {
-      codec.decode(hex"000000FF".bits).isFailure should equal (true)
+      codec.decode(hex"000000FF".bits).isFailure should equal(true)
     }
   }
 }

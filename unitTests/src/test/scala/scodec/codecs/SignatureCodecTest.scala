@@ -13,7 +13,7 @@ class SignatureCodecTest extends CodecSuite {
 
   "fixedSizeSignature codec" should {
     "roundtrip using SHA256withRSA" in {
-      testFixedSizeSignature(1024/8)(SignatureFactory("SHA256withRSA", keyPair))
+      testFixedSizeSignature(1024 / 8)(SignatureFactory("SHA256withRSA", keyPair))
     }
 
     "roundtrip using MD5" in {
@@ -28,7 +28,7 @@ class SignatureCodecTest extends CodecSuite {
       testFixedSizeSignature(4)(ChecksumFactory.crc32)
     }
 
-     "roundtrip using adler32" in {
+    "roundtrip using adler32" in {
       testFixedSizeSignature(4)(ChecksumFactory.adler32)
     }
   }
@@ -47,11 +47,15 @@ class SignatureCodecTest extends CodecSuite {
 
   protected def testFixedSizeSignature(size: Int)(implicit sf: SignerFactory): Unit = {
     val codec = fixedSizeSignature(size) { int32 ~ variableSizeBytes(int32, utf8) }
-    forAll { (n: Int, s: String, x: Int) => roundtrip(codec, n ~ s) }
+    forAll { (n: Int, s: String, x: Int) =>
+      roundtrip(codec, n ~ s)
+    }
   }
 
   protected def testVariableSizeSignature(implicit sf: SignerFactory): Unit = {
     val codec = variableSizeSignature(uint16) { int32 ~ variableSizeBytes(int32, utf8) } ~ int32
-    forAll { (n: Int, s: String, x: Int) => roundtrip(codec, n ~ s ~ x) }
+    forAll { (n: Int, s: String, x: Int) =>
+      roundtrip(codec, n ~ s ~ x)
+    }
   }
 }

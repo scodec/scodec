@@ -19,7 +19,7 @@ jobs:
       if: matrix.scala == '2.13.1'
       run: sbt ++${{matrix.scala}} fmtCheck
     - name: JVM
-      run: sbt ++${{matrix.scala}} coreJVM/test
+      run: sbt ++${{matrix.scala}} unitTests/test
     - name: JS
       if: matrix.scala == '2.13.1' || matrix.scala == '2.12.10'
       run: sbt ++${{matrix.scala}} coreJS/test

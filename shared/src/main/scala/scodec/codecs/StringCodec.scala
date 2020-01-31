@@ -1,9 +1,9 @@
 package scodec
 package codecs
 
-import java.nio.{ ByteBuffer, CharBuffer }
+import java.nio.{ByteBuffer, CharBuffer}
 import java.nio.charset.Charset
-import java.nio.charset.{ MalformedInputException, UnmappableCharacterException }
+import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
 
 import scodec.bits.BitVector
 
@@ -17,7 +17,9 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
     try Attempt.successful(BitVector(encoder.encode(buffer)))
     catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        Attempt.failure(Err(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'"))
+        Attempt.failure(
+          Err(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'")
+        )
     }
   }
 
@@ -28,7 +30,9 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
       Attempt.successful(DecodeResult(decoder.decode(asBuffer).toString, BitVector.empty))
     } catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
-        Attempt.failure(Err(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'"))
+        Attempt.failure(
+          Err(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'")
+        )
     }
   }
 

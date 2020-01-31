@@ -8,11 +8,12 @@ import scodec.bits.ByteVector
 class FletcherChecksumTest extends CodecSuite {
 
   "fletcher16 checksum" should {
+
     /**
-     *  http://en.wikipedia.org/wiki/Fletcher's_checksum
-     *
-     *  "Example calculation of the Fletcher-16 checksum"
-     */
+      *  http://en.wikipedia.org/wiki/Fletcher's_checksum
+      *
+      *  "Example calculation of the Fletcher-16 checksum"
+      */
     "wikipedia" in {
       val signer = ChecksumFactory.fletcher16.newSigner
       signer.update(Array(0x01, 0x02))
@@ -21,22 +22,19 @@ class FletcherChecksumTest extends CodecSuite {
 
     "0xAA * (3N+2) => Array(0x0,0x55)" in {
       forAll(Gen.posNum[Int]) { (n: Int) =>
-        pattern(n, 2,
-          Array(0x0, 0x55))
+        pattern(n, 2, Array(0x0, 0x55))
       }
     }
 
     "0xAA * (3N + 1) => Array(0xAA, 0xAA)" in {
       forAll(Gen.posNum[Int]) { (n: Int) =>
-        pattern(n, 1,
-          Array(0xAA.asInstanceOf[Byte], 0xAA.asInstanceOf[Byte]))
+        pattern(n, 1, Array(0xAA.asInstanceOf[Byte], 0xAA.asInstanceOf[Byte]))
       }
     }
 
     "0xAA * (3N) => Array(0x0, 0x0)" in {
       forAll(Gen.posNum[Int]) { (n: Int) =>
-        pattern(n, 0,
-          Array(0x0, 0x0))
+        pattern(n, 0, Array(0x0, 0x0))
       }
     }
   }

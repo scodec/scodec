@@ -33,7 +33,10 @@ class ProductsExample extends CodecSuite {
       implicit val i = uint8
       val codec = Codec[Woozle]
 
-      codec.encode(Woozle(1, 256)) shouldBe Attempt.failure(Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("strength"))
+      codec.encode(Woozle(1, 256)) shouldBe Attempt.failure(
+        Err("256 is greater than maximum value 255 for 8-bit unsigned integer")
+          .pushContext("strength")
+      )
     }
 
     "demonstrate hlist generation" in {

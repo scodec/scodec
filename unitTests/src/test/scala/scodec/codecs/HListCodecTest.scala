@@ -14,7 +14,6 @@ class HListCodecTest extends CodecSuite {
 
   "HList codec support" should {
 
-
     "support construction via :: operator" in {
       roundtripAll((uint8 :: uint8 :: utf8), Seq(1 :: 2 :: "test" :: HNil))
     }
@@ -32,12 +31,16 @@ class HListCodecTest extends CodecSuite {
     }
 
     "provide a flatPrepend method" in {
-      uint8 flatPrepend { n => bits(n.toLong).hlist }
+      uint8.flatPrepend { n =>
+        bits(n.toLong).hlist
+      }
       ()
     }
 
     "provide a flatZipHList method" in {
-      uint8 flatZipHList { n => bits(n.toLong) }
+      uint8.flatZipHList { n =>
+        bits(n.toLong)
+      }
       ()
     }
 
@@ -52,7 +55,7 @@ class HListCodecTest extends CodecSuite {
     "support HList equivalent of Codec#dropLeft" in {
       val codec = (uint8.unit(0) :~>: uint8.hlist).as[Bar]
       roundtrip(codec, Bar(1))
-      codec.encode(Bar(1)).require should have size(16)
+      codec.encode(Bar(1)).require should have size (16)
     }
 
     "support HList equivalent of Codec#dropLeft on a non-HList codec" in {
@@ -68,28 +71,38 @@ class HListCodecTest extends CodecSuite {
 
     "support removing an element of an HList codec by type" in {
       val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
-      val valuesWithFlags = flagsCodec flatPrepend { flgs =>
+      val valuesWithFlags = flagsCodec.flatPrepend { flgs =>
         conditional(flgs.x, uint8) ::
-        conditional(flgs.y, uint8) ::
-        conditional(flgs.z, uint8)
+          conditional(flgs.y, uint8) ::
+          conditional(flgs.z, uint8)
       }
-      val values = valuesWithFlags.derive[Flags].from { case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+      val values = valuesWithFlags.derive[Flags].from {
+        case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined)
+      }
       values.encode(None :: None :: None :: HNil) shouldBe Attempt.successful(bin"00000000")
-      values.encode(Some(1) :: Some(2) :: Some(3) :: HNil) shouldBe Attempt.successful(bin"11100000 00000001 00000010 00000011")
-      values.encode(Some(1) :: None :: Some(3) :: HNil) shouldBe Attempt.successful(bin"10100000 00000001 00000011")
+      values.encode(Some(1) :: Some(2) :: Some(3) :: HNil) shouldBe Attempt.successful(
+        bin"11100000 00000001 00000010 00000011"
+      )
+      values.encode(Some(1) :: None :: Some(3) :: HNil) shouldBe Attempt.successful(
+        bin"10100000 00000001 00000011"
+      )
       roundtrip(values, Some(1) :: Some(2) :: None :: HNil)
     }
 
     "support alternative to flatPrepend+derive pattern that avoids intermediate codec shape" in {
       val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
-      val values = flagsCodec.consume {
-        flgs => conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+      val values = flagsCodec.consume { flgs =>
+        conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
       } {
         case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined)
       }
       values.encode(None :: None :: None :: HNil) shouldBe Attempt.successful(bin"00000000")
-      values.encode(Some(1) :: Some(2) :: Some(3) :: HNil) shouldBe Attempt.successful(bin"11100000 00000001 00000010 00000011")
-      values.encode(Some(1) :: None :: Some(3) :: HNil) shouldBe Attempt.successful(bin"10100000 00000001 00000011")
+      values.encode(Some(1) :: Some(2) :: Some(3) :: HNil) shouldBe Attempt.successful(
+        bin"11100000 00000001 00000010 00000011"
+      )
+      values.encode(Some(1) :: None :: Some(3) :: HNil) shouldBe Attempt.successful(
+        bin"10100000 00000001 00000011"
+      )
       roundtrip(values, Some(1) :: Some(2) :: None :: HNil)
     }
 
@@ -97,12 +110,16 @@ class HListCodecTest extends CodecSuite {
       object double extends Poly1 {
         implicit val i = at[Int] { _ * 2 }
         implicit val l = at[Long] { _ * 2 }
-        implicit val b = at[Boolean] { b => b }
+        implicit val b = at[Boolean] { b =>
+          b
+        }
       }
       object half extends Poly1 {
         implicit val i = at[Int] { _ / 2 }
         implicit val l = at[Long] { _ / 2 }
-        implicit val b = at[Boolean] { b => b }
+        implicit val b = at[Boolean] { b =>
+          b
+        }
       }
       val codec = (uint8 :: uint32 :: bool(8) :: uint8).polyxmap(half, double)
 
@@ -119,12 +136,16 @@ class HListCodecTest extends CodecSuite {
       object double extends Poly1 {
         implicit val i = at[Int] { _ * 2 }
         implicit val l = at[Long] { _ * 2 }
-        implicit val b = at[Boolean] { b => b }
+        implicit val b = at[Boolean] { b =>
+          b
+        }
       }
       object half extends Poly1 {
         implicit val i = at[Int] { _ / 2 }
         implicit val l = at[Long] { _ / 2 }
-        implicit val b = at[Boolean] { b => b }
+        implicit val b = at[Boolean] { b =>
+          b
+        }
       }
       val codec = uint8.polyxmap(half, double)
 
@@ -139,9 +160,15 @@ class HListCodecTest extends CodecSuite {
 
     "support mapping a single polymorphic function over an HList codec" in {
       object negate extends Poly1 {
-        implicit val i = at[Int] { i => -i }
-        implicit val l = at[Long] { i => -i }
-        implicit val b = at[Boolean] { b => b }
+        implicit val i = at[Int] { i =>
+          -i
+        }
+        implicit val l = at[Long] { i =>
+          -i
+        }
+        implicit val b = at[Boolean] { b =>
+          b
+        }
       }
       val codec = (uint8 :: uint32 :: bool(8) :: uint8).polyxmap1(negate)
 
@@ -159,7 +186,7 @@ class HListCodecTest extends CodecSuite {
         implicit val i = at[Int] { _.toDouble }
         implicit val d = at[Double] { _.toInt }
       }
-      val codec: Codec[Double] = uint8 polyxmap1 i2d
+      val codec: Codec[Double] = uint8.polyxmap1(i2d)
 
       val value = 1.0d
 

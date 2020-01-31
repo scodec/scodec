@@ -22,7 +22,7 @@ object InvertibleRemove {
     }
 
   implicit def forNonTargetType[H, T <: HList, A](
-    implicit rest: InvertibleRemove[T, A]
+      implicit rest: InvertibleRemove[T, A]
   ): InvertibleRemove.Aux[H :: T, A, H :: rest.Out] =
     new InvertibleRemove[H :: T, A] {
       type Out = H :: rest.Out

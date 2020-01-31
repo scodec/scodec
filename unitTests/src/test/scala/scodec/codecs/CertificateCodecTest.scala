@@ -3,7 +3,7 @@ package codecs
 
 import java.io.ByteArrayInputStream
 import java.security.KeyPairGenerator
-import java.security.cert.{ CertificateFactory, X509Certificate }
+import java.security.cert.{CertificateFactory, X509Certificate}
 import java.util.Date
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.cert.jcajce._
@@ -23,10 +23,20 @@ class CertificateCodecTest extends CodecSuite {
     val notBefore = new Date(System.currentTimeMillis - 1000000)
     val notAfter = new Date()
     val subject = issuer
-    val bldr = new JcaX509v3CertificateBuilder(issuer, serialNum, notBefore, notAfter, subject, keyPair.getPublic)
+    val bldr = new JcaX509v3CertificateBuilder(
+      issuer,
+      serialNum,
+      notBefore,
+      notAfter,
+      subject,
+      keyPair.getPublic
+    )
     val signer = new JcaContentSignerBuilder("SHA1withRSA").build(keyPair.getPrivate)
     val holder = bldr.build(signer)
-    CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(holder.getEncoded)).asInstanceOf[X509Certificate]
+    CertificateFactory
+      .getInstance("X.509")
+      .generateCertificate(new ByteArrayInputStream(holder.getEncoded))
+      .asInstanceOf[X509Certificate]
   }
 
   "the x509Certificate codec" should {

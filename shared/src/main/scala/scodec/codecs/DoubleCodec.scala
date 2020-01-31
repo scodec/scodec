@@ -3,7 +3,7 @@ package codecs
 
 import java.nio.ByteBuffer
 
-import scodec.bits.{ BitVector, ByteOrdering }
+import scodec.bits.{BitVector, ByteOrdering}
 
 private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Double] {
 
@@ -20,9 +20,11 @@ private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Do
   override def decode(buffer: BitVector) =
     buffer.acquire(64) match {
       case Left(e) => Attempt.failure(Err.insufficientBits(64, buffer.size))
-      case Right(b) => Attempt.successful(DecodeResult(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble, buffer.drop(64)))
+      case Right(b) =>
+        Attempt.successful(
+          DecodeResult(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble, buffer.drop(64))
+        )
     }
 
   override def toString = "double"
 }
-

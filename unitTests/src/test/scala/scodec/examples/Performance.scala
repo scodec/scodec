@@ -3,7 +3,7 @@ package examples
 
 import scala.concurrent.duration._
 
-import java.io.{ File, FileInputStream }
+import java.io.{File, FileInputStream}
 
 import scodec.bits._
 
@@ -24,7 +24,7 @@ object Performance extends App {
     val elapsedInSeconds = elapsed / (1.second.toNanos.toDouble)
     val bitrate = bits.size / elapsedInSeconds
     val mbitrate = bitrate / (1024 * 1024)
-    println(f"$desc bitrate: $mbitrate%.3f Mbps - ${mbitrate/8}%.3f MBps")
+    println(f"$desc bitrate: $mbitrate%.3f Mbps - ${mbitrate / 8}%.3f MBps")
     res
   }
 

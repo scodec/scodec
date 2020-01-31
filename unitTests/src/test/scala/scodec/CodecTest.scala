@@ -12,18 +12,26 @@ class CodecTest extends CodecSuite {
   "all codecs" should {
 
     "support flatZip" in {
-      val codec = uint8 flatZip { n => fixedSizeBits(n.toLong, utf8) }
+      val codec = uint8.flatZip { n =>
+        fixedSizeBits(n.toLong, utf8)
+      }
       roundtripAll(codec, Seq((0, ""), (8, "a"), (32, "test")))
     }
 
     "support complete combinator" in {
       val codec = codecs.bits(8)
-      codec.decode(hex"00112233".toBitVector) shouldBe Attempt.successful(DecodeResult(hex"00".bits, hex"112233".bits))
-      codec.complete.decode(hex"00112233".toBitVector) shouldBe Attempt.failure(Err("24 bits remaining: 0x112233"))
-      codec.complete.decode(BitVector.fill(2000)(false)) shouldBe Attempt.failure(Err("more than 512 bits remaining"))
+      codec.decode(hex"00112233".toBitVector) shouldBe Attempt.successful(
+        DecodeResult(hex"00".bits, hex"112233".bits)
+      )
+      codec.complete.decode(hex"00112233".toBitVector) shouldBe Attempt.failure(
+        Err("24 bits remaining: 0x112233")
+      )
+      codec.complete.decode(BitVector.fill(2000)(false)) shouldBe Attempt.failure(
+        Err("more than 512 bits remaining")
+      )
     }
 
-    "support as method for converting to a new codec using implicit transform," which {
+    "support as method for converting to a new codec using implicit transform,".which {
 
       "works with HList codecs of 1 element" in {
         roundtripAll(uint8.hlist.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
@@ -88,7 +96,8 @@ class CodecTest extends CodecSuite {
       // accept 8 bit values no greater than 9
       val oneDigit: Codec[Int] = uint8.exmap[Int](
         v => if (v > 9) Attempt.failure(Err("badv")) else Attempt.successful(v),
-        d => if (d > 9) Attempt.failure(Err("badd")) else Attempt.successful(d))
+        d => if (d > 9) Attempt.failure(Err("badd")) else Attempt.successful(d)
+      )
 
       oneDigit.encode(3) shouldBe Attempt.successful(BitVector(0x03))
       oneDigit.encode(10) shouldBe Attempt.failure(Err("badd"))
@@ -98,7 +107,7 @@ class CodecTest extends CodecSuite {
       oneDigit.decode(BitVector.empty) shouldBe uint8.decode(BitVector.empty)
     }
 
-    "result in a no-op when mapping successful over both sides" which {
+    "result in a no-op when mapping successful over both sides".which {
       val noop: Codec[Int] = uint8.exmap[Int](Attempt.successful, Attempt.successful)
       forAll { (n: Int) =>
         noop.encode(n) shouldBe uint8.encode(n)
@@ -108,12 +117,16 @@ class CodecTest extends CodecSuite {
   }
 
   def i2l(i: Int): Long = i.toLong
-  def l2i(l: Long): Attempt[Int] = if (l >= Int.MinValue && l <= Int.MaxValue) Attempt.successful(l.toInt) else Attempt.failure(Err("out of range"))
+  def l2i(l: Long): Attempt[Int] =
+    if (l >= Int.MinValue && l <= Int.MaxValue) Attempt.successful(l.toInt)
+    else Attempt.failure(Err("out of range"))
 
   "narrow" should {
     "support converting to a smaller type" in {
       val narrowed: Codec[Int] = uint32.narrow(l2i, i2l)
-      forAll { (n: Int) => narrowed.encode(n) shouldBe uint32.encode(n.toLong) }
+      forAll { (n: Int) =>
+        narrowed.encode(n) shouldBe uint32.encode(n.toLong)
+      }
     }
   }
 
@@ -172,7 +185,8 @@ class CodecTest extends CodecSuite {
     trait A
     case object B extends A
     case object C extends A
-    val codec = discriminated[A].by(uint8).typecase(1, provide(B)).typecase(2, provide(C)).downcast[B.type]
+    val codec =
+      discriminated[A].by(uint8).typecase(1, provide(B)).typecase(2, provide(C)).downcast[B.type]
     "roundtrip values of original type" in {
       roundtrip(codec, B)
     }
@@ -182,7 +196,11 @@ class CodecTest extends CodecSuite {
     "work in presence of nested objects/classes" in {
       trait P
       object X extends P { object Y extends P }
-      val c = discriminated[P].by(uint8).typecase(0, provide(X)).typecase(1, provide(X.Y)).downcast[X.type]
+      val c = discriminated[P]
+        .by(uint8)
+        .typecase(0, provide(X))
+        .typecase(1, provide(X.Y))
+        .downcast[X.type]
       c.decodeValue(hex"00".bits) shouldBe Attempt.successful(X)
       c.decodeValue(hex"01".bits) shouldBe Attempt.failure(Err("not a value of type X.type"))
     }

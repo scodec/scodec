@@ -4,17 +4,17 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 /**
- * Right biased `Either[Err, A]`.
- *
- * An `Attempt` is either an `Attempt.Successful` or an `Attempt.Failure`. Attempts can be created
- * by calling `Attempt.successful` or `Attempt.failure`, as well as converting from an `Option` via
- * `fromOption`.
- *
- * @groupname Ungrouped Members
- * @groupprio 1
- * @groupname combinators Basic Combinators
- * @groupprio combinators 0
- */
+  * Right biased `Either[Err, A]`.
+  *
+  * An `Attempt` is either an `Attempt.Successful` or an `Attempt.Failure`. Attempts can be created
+  * by calling `Attempt.successful` or `Attempt.failure`, as well as converting from an `Option` via
+  * `fromOption`.
+  *
+  * @groupname Ungrouped Members
+  * @groupprio 1
+  * @groupname combinators Basic Combinators
+  * @groupprio combinators 0
+  */
 sealed abstract class Attempt[+A] extends Product with Serializable {
 
   /** Maps the supplied function over the successful value, if present. */
@@ -39,17 +39,17 @@ sealed abstract class Attempt[+A] extends Product with Serializable {
   def orElse[B >: A](fallback: => Attempt[B]): Attempt[B]
 
   /**
-   * If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
-   * a successful attempt is returned. If this attempt is successful or the supplied function is not defined
-   * for the cause of the failure, this attempt is returned unmodified.
-   */
+    * If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
+    * a successful attempt is returned. If this attempt is successful or the supplied function is not defined
+    * for the cause of the failure, this attempt is returned unmodified.
+    */
   def recover[B >: A](f: PartialFunction[Err, B]): Attempt[B]
 
   /**
-   * If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
-   * the result of applying that function is returned. If this attempt is successful or the supplied
-   * function is not defined for the cause of the failure, this attempt is returned unmodified.
-   */
+    * If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
+    * the result of applying that function is returned. If this attempt is successful or the supplied
+    * function is not defined for the cause of the failure, this attempt is returned unmodified.
+    */
   def recoverWith[B >: A](f: PartialFunction[Err, Attempt[B]]): Attempt[B]
 
   /** Returns the successful value if present; otherwise throws an `IllegalArgumentException`. */
@@ -82,15 +82,15 @@ object Attempt {
 
   /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt. */
   def guard(condition: => Boolean, err: String): Attempt[Unit] =
-    if(condition) successful(()) else failure(Err(err))
+    if (condition) successful(()) else failure(Err(err))
 
   /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt. */
   def guard(condition: => Boolean, err: => Err): Attempt[Unit] =
-    if(condition) successful(()) else failure(err)
+    if (condition) successful(()) else failure(err)
 
   /** Creates a attempt from a try. */
   def fromTry[A](t: Try[A]): Attempt[A] = t match {
-    case scala.util.Success(value) => successful(value)
+    case scala.util.Success(value)        => successful(value)
     case scala.util.Failure(NonFatal(ex)) => failure(Err(ex.getMessage))
   }
 
@@ -143,6 +143,7 @@ object Attempt {
     def isSuccessful: Boolean = false
     def toOption: None.type = None
     def toEither: Left[Err, Nothing] = Left(cause)
-    def toTry: Try[Nothing] = scala.util.Failure(new Exception(s"Error occurred: ${cause.messageWithContext}"))
+    def toTry: Try[Nothing] =
+      scala.util.Failure(new Exception(s"Error occurred: ${cause.messageWithContext}"))
   }
 }

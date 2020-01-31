@@ -12,9 +12,15 @@ class BooleanCodecTest extends CodecSuite {
       bool.encode(false) shouldBe Attempt.successful(BitVector.low(1))
     }
     "decode correctly" in {
-      bool.decode(BitVector.low(1)) shouldBe Attempt.successful(DecodeResult(false, BitVector.empty))
-      bool.decode(BitVector.high(1)) shouldBe Attempt.successful(DecodeResult(true, BitVector.empty))
-      bool.decode(BitVector.low(2)) shouldBe Attempt.successful(DecodeResult(false, BitVector.low(1)))
+      bool.decode(BitVector.low(1)) shouldBe Attempt.successful(
+        DecodeResult(false, BitVector.empty)
+      )
+      bool.decode(BitVector.high(1)) shouldBe Attempt.successful(
+        DecodeResult(true, BitVector.empty)
+      )
+      bool.decode(BitVector.low(2)) shouldBe Attempt.successful(
+        DecodeResult(false, BitVector.low(1))
+      )
     }
   }
 
@@ -25,9 +31,15 @@ class BooleanCodecTest extends CodecSuite {
       bool(8).encode(false) shouldBe Attempt.successful(BitVector.low(8))
     }
     "decode correctly" in {
-      bool(8).decode(BitVector.low(8)) shouldBe Attempt.successful(DecodeResult(false, BitVector.empty))
-      bool(8).decode(BitVector.high(8)) shouldBe Attempt.successful(DecodeResult(true, BitVector.empty))
-      bool(8).decode(BitVector.low(9)) shouldBe Attempt.successful(DecodeResult(false, BitVector.low(1)))
+      bool(8).decode(BitVector.low(8)) shouldBe Attempt.successful(
+        DecodeResult(false, BitVector.empty)
+      )
+      bool(8).decode(BitVector.high(8)) shouldBe Attempt.successful(
+        DecodeResult(true, BitVector.empty)
+      )
+      bool(8).decode(BitVector.low(9)) shouldBe Attempt.successful(
+        DecodeResult(false, BitVector.low(1))
+      )
       bool(8).decode(bin"10000000") shouldBe Attempt.successful(DecodeResult(true, BitVector.empty))
       bool(8).decode(bin"00000001") shouldBe Attempt.successful(DecodeResult(true, BitVector.empty))
     }
@@ -36,4 +48,3 @@ class BooleanCodecTest extends CodecSuite {
     }
   }
 }
-

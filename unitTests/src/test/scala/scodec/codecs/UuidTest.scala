@@ -10,7 +10,9 @@ class UuidTest extends CodecSuite {
 
   "uuid codec" should {
     "roundtrip" in {
-      forAll { (u: UUID) => roundtrip(uuid, u) }
+      forAll { (u: UUID) =>
+        roundtrip(uuid, u)
+      }
     }
   }
 }

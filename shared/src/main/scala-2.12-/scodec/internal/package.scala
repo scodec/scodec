@@ -10,4 +10,3 @@ private[scodec] object compat {
     def newBuilder: Builder[A, C] = factory()
   }
 }
-
