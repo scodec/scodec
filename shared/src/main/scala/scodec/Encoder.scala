@@ -117,20 +117,25 @@ trait EncoderFunctions {
     */
   final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): Attempt[BitVector] = {
     val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
+    var failure: Err = null
     seq.foreach { a =>
-      enc.encode(a) match {
-        case Attempt.Successful(aa) => buf += aa
-        case Attempt.Failure(err)   => return Attempt.failure(err.pushContext(buf.size.toString))
+      if (failure eq null) {
+        enc.encode(a) match {
+          case Attempt.Successful(aa) => buf += aa
+          case Attempt.Failure(err)   => failure = err.pushContext(buf.size.toString)
+        }
       }
     }
-    def merge(offset: Int, size: Int): BitVector = size match {
-      case 0 => BitVector.empty
-      case 1 => buf(offset)
-      case n =>
-        val half = size / 2
-        merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
-    }
-    Attempt.successful(merge(0, buf.size))
+    if (failure eq null) {
+      def merge(offset: Int, size: Int): BitVector = size match {
+        case 0 => BitVector.empty
+        case 1 => buf(offset)
+        case _ =>
+          val half = size / 2
+          merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
+      }
+      Attempt.successful(merge(0, buf.size))
+    } else Attempt.failure(failure)
   }
 
   /**

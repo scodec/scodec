@@ -12,7 +12,7 @@ private[codecs] final class IgnoreCodec(bits: Long) extends Codec[Unit] {
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits) match {
-      case Left(e)  => Attempt.failure(Err.insufficientBits(bits, buffer.size))
+      case Left(_)  => Attempt.failure(Err.insufficientBits(bits, buffer.size))
       case Right(_) => Attempt.successful(DecodeResult((), buffer.drop(bits)))
     }
 

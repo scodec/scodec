@@ -28,7 +28,7 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits.toLong) match {
-      case Left(e)  => Attempt.failure(Err.insufficientBits(bits.toLong, buffer.size))
+      case Left(_)  => Attempt.failure(Err.insufficientBits(bits.toLong, buffer.size))
       case Right(b) => Attempt.successful(DecodeResult(b.toByte(signed), buffer.drop(bits.toLong)))
     }
 

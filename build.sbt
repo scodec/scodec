@@ -24,20 +24,19 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  crossScalaVersions := List("2.11.12", "2.12.10", "2.13.1"),
+  crossScalaVersions := List("2.12.10", "2.13.1"),
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8",
     "-deprecation",
     "-feature",
+    "-language:higherKinds",
     "-unchecked"
   ) ++
     (scalaBinaryVersion.value match {
       case v if v.startsWith("2.13") =>
         List("-Xlint", "-Ywarn-unused")
       case v if v.startsWith("2.12") =>
-        Nil
-      case v if v.startsWith("2.11") =>
         Nil
       case v if v.startsWith("0.") =>
         Nil

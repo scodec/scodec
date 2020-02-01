@@ -17,7 +17,7 @@ final case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
     */
   def exact: Option[Long] = upperBound match {
     case Some(u) if lowerBound == u => upperBound
-    case other                      => None
+    case _                          => None
   }
 
   /** Returns a new bound with the upper bound removed. */
@@ -69,6 +69,6 @@ object SizeBound {
   val unknown: SizeBound = atLeast(0)
 
   /** Returns the union of all of the specified bounds, or an exact 0 size if the specified collection is empty. */
-  def choice(bounds: collection.GenTraversableOnce[SizeBound]): SizeBound =
-    if (bounds.isEmpty) SizeBound.exact(0) else bounds.toIterator.reduce(_ | _)
+  def choice(bounds: Iterable[SizeBound]): SizeBound =
+    if (bounds.isEmpty) SizeBound.exact(0) else bounds.iterator.reduce(_ | _)
 }

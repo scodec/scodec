@@ -1,7 +1,5 @@
 package scodec
 
-import language.higherKinds
-
 import shapeless._
 import shapeless.ops.coproduct.Align
 

@@ -1,7 +1,5 @@
 package scodec
 
-import scala.language.higherKinds
-
 import scodec.bits.BitVector
 
 import shapeless.Lazy

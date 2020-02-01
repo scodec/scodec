@@ -248,7 +248,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     * @group tuple
     */
   final def dropLeft[B](codecB: Codec[B])(implicit ev: Unit =:= A): Codec[B] =
-    pairedWith(codecB).xmap[B]({ case (a, b) => b }, b => (ev(()), b))
+    pairedWith(codecB).xmap[B]({ case (_, b) => b }, b => (ev(()), b))
 
   /**
     * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
@@ -266,7 +266,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     * @group tuple
     */
   final def dropRight[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] =
-    pairedWith(codecB).xmap[A]({ case (a, b) => a }, a => (a, ev(())))
+    pairedWith(codecB).xmap[A]({ case (a, _) => a }, a => (a, ev(())))
 
   /**
     * Assuming `B` is `Unit`, creates a `Codec[A]` that: encodes the `A` followed by a unit;

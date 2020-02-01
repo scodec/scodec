@@ -385,12 +385,12 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     new DiscriminatorCodec[A, B](by, cases, framing)
 
   def sizeBound =
-    by.sizeBound + SizeBound.choice(cases.iterator.map { c =>
+    by.sizeBound + SizeBound.choice(cases.map { c =>
       framing(c.prism.repCodec).sizeBound
     })
 
-  def encode(a: A) =
-    cases.iterator
+  def encode(a: A) = {
+    val itr = cases.iterator
       .flatMap { k =>
         k.prism
           .preview(a)
@@ -403,11 +403,9 @@ final class DiscriminatorCodec[A, B] private[codecs] (
           .map(List(_))
           .getOrElse(List())
       }
-      .toStream
-      .headOption match {
-      case None    => Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
-      case Some(r) => r
-    }
+    if (itr.hasNext) itr.next
+    else Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
+  }
 
   def decode(bits: BitVector) =
     (for {
@@ -466,7 +464,7 @@ private[codecs] object DiscriminatorCodec {
     // make sure that if condition is (x: X, f: X => Boolean), that
     // `f(x)` is true, otherwise this case will fail to match itself
     // on decoding!
-    condition.right.toOption.foreach {
+    condition.toOption.foreach {
       case (representative, matches) =>
         if (matches(representative)) true
         else sys.error(s"representative failed predicate: $representative")

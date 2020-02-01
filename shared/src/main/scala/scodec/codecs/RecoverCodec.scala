@@ -14,7 +14,7 @@ private[codecs] final class RecoverCodec(target: Codec[Unit], lookahead: Boolean
     target.decode(buffer) match {
       case Attempt.Successful(DecodeResult(_, rest)) =>
         Attempt.successful(DecodeResult(true, if (lookahead) buffer else rest))
-      case f: Attempt.Failure => Attempt.successful(DecodeResult(false, buffer))
+      case _: Attempt.Failure => Attempt.successful(DecodeResult(false, buffer))
     }
 
   override def toString = if (lookahead) s"lookahead($target)" else s"recover($target)"

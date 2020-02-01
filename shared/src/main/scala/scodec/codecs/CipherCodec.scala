@@ -104,7 +104,7 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
       val encrypted = cipherFactory.newEncryptCipher.doFinal(blocks)
       Attempt.successful(BitVector(encrypted))
     } catch {
-      case e: IllegalBlockSizeException =>
+      case _: IllegalBlockSizeException =>
         Attempt.failure(Err(s"Failed to encrypt: invalid block size ${blocks.size}"))
     }
   }

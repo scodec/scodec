@@ -1,5 +1,3 @@
-import language.higherKinds
-
 import shapeless._
 import ops.hlist.{Init, Last, Length, Mapper, Prepend, Split}
 import poly._

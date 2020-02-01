@@ -133,8 +133,8 @@ object ToCoproductCodecs {
         new Codec[A :+: CT] {
           def sizeBound = d.sizeBound
           def encode(c: A :+: CT) = c match {
-            case Inr(a)  => d.encode(a)
-            case Inl(ch) => Attempt.failure(Err(s"cannot encode $c"))
+            case Inr(a) => d.encode(a)
+            case Inl(_) => Attempt.failure(Err(s"cannot encode $c"))
           }
           def decode(buffer: BitVector) =
             d.decode(buffer).map {
@@ -254,7 +254,7 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
         discriminators: Sized[Seq[A], N]
     )(implicit ev: ops.coproduct.Length.Aux[C, N]): Codec[R] with KnownDiscriminatorType[A] = {
       val _ = ev // Convince scalac ev is used
-      usingUnsafe(discriminators.seq)
+      usingUnsafe(discriminators)
     }
 
     /**

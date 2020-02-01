@@ -1230,7 +1230,7 @@ package object codecs {
     */
   def optional[A](guard: Codec[Boolean], target: Codec[A]): Codec[Option[A]] =
     either(guard, provide(()), target)
-      .xmap[Option[A]](_.right.toOption, _.toRight(()))
+      .xmap[Option[A]](_.toOption, _.toRight(()))
       .withToString(s"optional($guard, $target)")
 
   /**
