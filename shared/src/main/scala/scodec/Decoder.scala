@@ -109,7 +109,9 @@ trait Decoder[+A] { self =>
     * @return tuple consisting of the terminating error if any and the accumulated value
     * @group conv
     */
-  final def decodeAll[B](f: A => B)(zero: B, append: (B, B) => B)(buffer: BitVector): (Option[Err], B) = {
+  final def decodeAll[B](
+      f: A => B
+  )(zero: B, append: (B, B) => B)(buffer: BitVector): (Option[Err], B) = {
     var remaining = buffer
     var acc = zero
     while (remaining.nonEmpty) {
@@ -130,7 +132,9 @@ trait Decoder[+A] { self =>
     * decoded. Exits upon first decoding error.
     * @group conv
     */
-  def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(implicit factory: Factory[A2, F[A2]]): Attempt[DecodeResult[F[A2]]] = {
+  def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(
+      implicit factory: Factory[A2, F[A2]]
+  ): Attempt[DecodeResult[F[A2]]] = {
     val bldr = factory.newBuilder
     var remaining = buffer
     var count = 0
@@ -149,7 +153,6 @@ trait Decoder[+A] { self =>
     }
     Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
   }
-
 
 }
 
