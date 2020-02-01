@@ -130,7 +130,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .jvmSettings(
     OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
     mimaPreviousArtifacts := {
-      List("1.11.4").map { pv =>
+      List().map { pv =>
         organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
       }.toSet
     },
