@@ -81,7 +81,10 @@ class DerivedCodecsExample extends CodecSuite {
 
     "demonstrate subtype overrides in companion" in {
       // Alternatively, the overriden codec can be defined in the companion of the subtype.
-      Codec.summon[Sprocket].encode(Wootle(4, hex"deadbeef".bits)).require shouldBe hex"0304deadbeef".bits
+      Codec
+        .summon[Sprocket]
+        .encode(Wootle(4, hex"deadbeef".bits))
+        .require shouldBe hex"0304deadbeef".bits
     }
 
     "demonstrate nested derivations" in {

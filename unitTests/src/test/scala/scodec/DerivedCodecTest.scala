@@ -30,7 +30,8 @@ class DerivedCodecTest extends CodecSuite {
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec.summon[Int :: Int :: String :: HNil]
+      Codec
+        .summon[Int :: Int :: String :: HNil]
         .encode(1 :: 2 :: "Hello" :: HNil)
         .require shouldBe hex"0102000548656c6c6f".bits
     }
