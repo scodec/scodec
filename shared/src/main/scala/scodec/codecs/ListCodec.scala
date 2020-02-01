@@ -11,9 +11,9 @@ private[codecs] final class ListCodec[A](codec: Codec[A], limit: Option[Int] = N
     case Some(lim) => codec.sizeBound * lim.toLong
   }
 
-  def encode(list: List[A]) = Encoder.encodeSeq(codec)(list)
+  def encode(list: List[A]) = codec.encodeAll(list)
 
-  def decode(buffer: BitVector) = Decoder.decodeCollect[List, A](codec, limit)(buffer)
+  def decode(buffer: BitVector) = codec.collect(buffer, limit)
 
   override def toString = s"list($codec)"
 }

@@ -28,16 +28,16 @@ object Performance extends App {
     res
   }
 
-  val pcapFile = time("pcap decode") { Codec.decode[PcapCodec.PcapFile](bits).require.value }
+  val pcapFile = time("pcap decode") { PcapCodec.pcapFile.decode(bits).require.value }
   println(s"Decoded ${pcapFile.records.size} records")
 
   for (i <- 1 to 20) {
     var pids = Set.empty[Int]
     val stats = time("pcap with mpeg decode") {
-      val pcapFile = Codec.decode[PcapCodec.PcapFile](bits).require.value
+      val pcapFile = PcapCodec.pcapFile.decode(bits).require.value
       pcapFile.records.foreach { record =>
         val mpeg = record.data.drop(22 * 8).drop(20 * 8)
-        Codec.decode[MpegCodecs.MpegPacket](mpeg).map { result =>
+        MpegCodecs.mpegPacket.decode(mpeg).map { result =>
           pids += result.value.header.pid
         }
       }

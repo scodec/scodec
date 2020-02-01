@@ -4,8 +4,6 @@ import scala.annotation.unchecked.uncheckedVariance
 
 import scodec.bits.BitVector
 
-import shapeless.Lazy
-
 /**
   * Supports encoding a value of type `A` to a `BitVector`.
   *
@@ -90,6 +88,33 @@ trait Encoder[-A] { self =>
     def encode(a: A) = self.encode(a)
     def decode(bits: BitVector) = Attempt.failure(Err("decoding not supported"))
   }
+
+  /**
+    * Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.
+    * @group conv
+    */
+  def encodeAll(as: Iterable[A]): Attempt[BitVector] = {
+    val buf = new collection.mutable.ArrayBuffer[BitVector](as.size)
+    var failure: Err = null
+    as.foreach { a =>
+      if (failure eq null) {
+        encode(a) match {
+          case Attempt.Successful(aa) => buf += aa
+          case Attempt.Failure(err)   => failure = err.pushContext(buf.size.toString)
+        }
+      }
+    }
+    if (failure eq null) {
+      def merge(offset: Int, size: Int): BitVector = size match {
+        case 0 => BitVector.empty
+        case 1 => buf(offset)
+        case _ =>
+          val half = size / 2
+          merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
+      }
+      Attempt.successful(merge(0, buf.size))
+    } else Attempt.failure(failure)
+  }
 }
 
 /**
@@ -110,33 +135,6 @@ trait EncoderFunctions {
       encodedA <- encA.encode(a)
       encodedB <- encB.encode(b)
     } yield encodedA ++ encodedB
-
-  /**
-    * Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.
-    * @group conv
-    */
-  final def encodeSeq[A](enc: Encoder[A])(seq: collection.immutable.Seq[A]): Attempt[BitVector] = {
-    val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
-    var failure: Err = null
-    seq.foreach { a =>
-      if (failure eq null) {
-        enc.encode(a) match {
-          case Attempt.Successful(aa) => buf += aa
-          case Attempt.Failure(err)   => failure = err.pushContext(buf.size.toString)
-        }
-      }
-    }
-    if (failure eq null) {
-      def merge(offset: Int, size: Int): BitVector = size match {
-        case 0 => BitVector.empty
-        case 1 => buf(offset)
-        case _ =>
-          val half = size / 2
-          merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
-      }
-      Attempt.successful(merge(0, buf.size))
-    } else Attempt.failure(failure)
-  }
 
   /**
     * Creates an encoder that encodes with each of the specified encoders, returning
@@ -173,12 +171,6 @@ trait EncoderFunctions {
 object Encoder extends EncoderFunctions {
 
   /**
-    * Provides syntax for summoning an `Encoder[A]` from implicit scope.
-    * @group ctor
-    */
-  def apply[A](implicit enc: Lazy[Encoder[A]]): Encoder[A] = enc.value
-
-  /**
     * Creates an encoder from the specified function.
     * @group ctor
     */
@@ -186,12 +178,6 @@ object Encoder extends EncoderFunctions {
     def sizeBound = SizeBound.unknown
     def encode(value: A) = f(value)
   }
-
-  /**
-    * Encodes the specified value to a bit vector using an implicitly available encoder.
-    * @group conv
-    */
-  def encode[A](a: A)(implicit e: Lazy[Encoder[A]]): Attempt[BitVector] = e.value.encode(a)
 
   /**
     * Transform typeclass instance.

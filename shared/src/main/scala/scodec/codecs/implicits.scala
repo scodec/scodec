@@ -2,8 +2,6 @@ package scodec
 package codecs
 
 import scodec.bits._
-import shapeless.Lazy
-
 import java.util.UUID
 
 /** Provides implicit codecs for simple value types. */
@@ -24,17 +22,17 @@ trait ImplicitValues {
 /** Provides implicit codecs for collection types. */
 trait ImplicitCollections {
   implicit def implicitListCodec[A](
-      implicit ccount: Lazy[Codec[Int]],
-      ca: Lazy[Codec[A]]
-  ): Codec[List[A]] = listOfN(ccount.value, ca.value)
+      implicit ccount: Codec[Int],
+      ca: Codec[A]
+  ): Codec[List[A]] = listOfN(ccount, ca)
   implicit def implicitVectorCodec[A](
-      implicit ccount: Lazy[Codec[Int]],
-      ca: Lazy[Codec[A]]
-  ): Codec[Vector[A]] = vectorOfN(ccount.value, ca.value)
+      implicit ccount: Codec[Int],
+      ca: Codec[A]
+  ): Codec[Vector[A]] = vectorOfN(ccount, ca)
   implicit def implicitOptionCodec[A](
-      implicit cguard: Lazy[Codec[Boolean]],
-      ca: Lazy[Codec[A]]
-  ): Codec[Option[A]] = optional(cguard.value, ca.value)
+      implicit cguard: Codec[Boolean],
+      ca: Codec[A]
+  ): Codec[Option[A]] = optional(cguard, ca)
 }
 
 /** Provides implicit codecs for common types. */

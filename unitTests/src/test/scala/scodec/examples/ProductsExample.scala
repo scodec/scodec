@@ -18,7 +18,7 @@ class ProductsExample extends CodecSuite {
       // as long as there's an implicit codec available for each
       // component type.
       implicit val i = uint8
-      val codec = Codec[Woozle]
+      val codec = Codec.summon[Woozle]
 
       codec.encode(Woozle(1, 2)).require shouldBe hex"0102".bits
 
@@ -31,7 +31,7 @@ class ProductsExample extends CodecSuite {
       // Auto generated case class codecs label each component codec
       // with the field name from the case class.
       implicit val i = uint8
-      val codec = Codec[Woozle]
+      val codec = Codec.summon[Woozle]
 
       codec.encode(Woozle(1, 256)) shouldBe Attempt.failure(
         Err("256 is greater than maximum value 255 for 8-bit unsigned integer")
@@ -42,7 +42,7 @@ class ProductsExample extends CodecSuite {
     "demonstrate hlist generation" in {
       // Codec.product supports direct `HList` types as well.
       implicit val (i, b) = (uint8, bool)
-      val codec = Codec[Int :: Int :: Boolean :: HNil]
+      val codec = Codec.summon[Int :: Int :: Boolean :: HNil]
 
       codec.encode(1 :: 2 :: true :: HNil).require shouldBe hex"0102ff".bits.dropRight(7)
     }
