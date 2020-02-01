@@ -2,8 +2,6 @@ package scodec
 
 import scala.concurrent.duration._
 
-import shapeless.Lazy
-
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
 import org.scalatest.Matchers
@@ -17,8 +15,8 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
   implicit override val generatorDrivenConfig: PropertyCheckConfiguration =
     PropertyCheckConfiguration(minSuccessful = 100, workers = 4)
 
-  protected def roundtrip[A](a: A)(implicit c: Lazy[Codec[A]]): Unit =
-    roundtrip(c.value, a)
+  protected def roundtrip[A](a: A)(implicit c: Codec[A]): Unit =
+    roundtrip(c, a)
 
   protected def roundtrip[A](codec: Codec[A], value: A): Unit = {
     val encoded = codec.encode(value)

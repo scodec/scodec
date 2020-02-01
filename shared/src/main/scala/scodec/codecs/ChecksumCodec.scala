@@ -18,7 +18,7 @@ object ChecksumCodec {
   def apply(encoder: Encoder[BitVector], range: Decoder[Long]): Codec[BitVector] =
     Codec(
       encoder,
-      Decoder(bits =>
+      Decoder[BitVector](bits =>
         range
           .decode(bits)
           .flatMap(size =>

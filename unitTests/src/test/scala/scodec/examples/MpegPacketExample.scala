@@ -104,8 +104,8 @@ class MpegPacketExample extends CodecSuite {
         None,
         Some(BitVector.low(184 * 8).toByteVector)
       )
-      val encoded = Codec.encode(pkt).require
-      val decoded = Codec.decode[MpegPacket](encoded).require.value
+      val encoded = mpegPacket.encode(pkt).require
+      val decoded = mpegPacket.decode(encoded).require.value
       decoded shouldBe pkt
     }
   }

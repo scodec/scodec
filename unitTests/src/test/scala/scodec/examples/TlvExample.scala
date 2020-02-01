@@ -63,7 +63,7 @@ class TlvExample extends CodecSuite {
       implicit val rightDiscriminator: Discriminator[Command, TurnRight, Int] = Discriminator(3)
 
       val codec: Codec[Either[UnrecognizedCommand, Command]] =
-        discriminatorFallback(unrecognizedCodec, Codec[Command])
+        discriminatorFallback(unrecognizedCodec, implicitly[Codec[Command]])
 
       roundtrip(codec, Right(Go))
       roundtrip(codec, Right(Stop))

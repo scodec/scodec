@@ -163,11 +163,6 @@ import scodec.bits.BitVector
   *
   * Full examples are available in the test directory of this project.
   *
-  * == Implicit Codecs ==
-  *
-  * If authoring combinators that require implicit codec arguments, use `shapeless.Lazy[Codec[A]]` instead of
-  * `Codec[A]`. This prevents the occurrence of diverging implicit expansion errors.
-  *
   * @groupname tuple Tuple Support
   * @groupprio tuple 11
   *
@@ -489,22 +484,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   }
 
   /**
-    * Gets an implicitly available codec for type `A`.
-    *
-    * If an implicit `Codec[A]` is not available, one might be able to be derived automatically.
-    * Codecs can be derived for:
-    *  - case classes (and hlists and records), where each component type of the case class either has an
-    *    implicitly available codec or one can be automatically derived
-    *  - sealed class hierarchies (and coproducts and unions), where:
-    *    - the root type, `A`, has an implicitly available `Discriminated[A, D]` for some `D`
-    *    - each subtype has an implicitly available codec or can have one derived
-    *    - each subtype `X` has an implicitly available `Discriminator[A, X, D]`
-    *
-    * @group ctor
-    */
-  def apply[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
-
-  /**
     * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
     * Typically used to consruct codecs for recursive structures.
     *
@@ -527,18 +506,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     override def toString = s"lazily($c)"
   }
 
-  /**
-    * Encodes the specified value to a bit vector using an implicitly available codec.
-    * @group conv
-    */
-  def encode[A](a: A)(implicit c: Lazy[Codec[A]]): Attempt[BitVector] = c.value.encode(a)
-
-  /**
-    * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
-    * @group conv
-    */
-  def decode[A](bits: BitVector)(implicit c: Lazy[Codec[A]]): Attempt[DecodeResult[A]] =
-    c.value.decode(bits)
+  def summon[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
 
   /**
     * Supports derived codecs.

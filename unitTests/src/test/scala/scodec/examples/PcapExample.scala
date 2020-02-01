@@ -101,26 +101,20 @@ class PcapExample extends CodecSuite {
       BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel)
     "support reading an entire file and then decoding it all" in {
       pending
-      Codec.decode[PcapFile](bits)
+      pcapFile.decode(bits)
       ()
     }
 
     "support reading the file header and then decoding each record, combining results via a monoid" in {
       pending
-      val fileHeader = Codec.decode[PcapHeader](bits.take(28 * 8)).require.value
+      val fileHeader = pcapHeader.decode(bits.take(28 * 8)).require.value
       implicit val ordering = fileHeader.ordering
 
       // Monoid that counts records
-      val (_, recordCount) = Codec.decodeAll[PcapRecord, Int](bits.drop(28 * 8))(0, _ + _) { _ =>
-        1
-      }
+      val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(28 * 8))
 
       // Monoid that accumulates records
-      val (_, records) =
-        Codec.decodeAll[PcapRecord, Vector[PcapRecord]](bits.drop(28 * 8))(Vector.empty, _ ++ _) {
-          r =>
-            Vector(r)
-        }
+      val (_, records) = pcapRecord.decodeAll(Vector(_))(Vector.empty, _ ++ _)(bits.drop(28 * 8))
     }
 
     // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes

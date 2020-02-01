@@ -30,35 +30,35 @@ class DerivedCodecTest extends CodecSuite {
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Int :: Int :: String :: HNil]
+      Codec.summon[Int :: Int :: String :: HNil]
         .encode(1 :: 2 :: "Hello" :: HNil)
         .require shouldBe hex"0102000548656c6c6f".bits
     }
 
     "support automatic generation of case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Foo].encode(Foo(1, 2, "Hello")).require shouldBe hex"0102000548656c6c6f".bits
+      Codec.summon[Foo].encode(Foo(1, 2, "Hello")).require shouldBe hex"0102000548656c6c6f".bits
     }
 
     "support automatic generation of nested case class codecs, where component codecs are derived as well" in {
       import implicits._
-      Codec[Qux]
-      Codec[Quy]
-      Codec[Quz]
-      Codec[Woz]
+      Codec.summon[Qux]
+      Codec.summon[Quy]
+      Codec.summon[Quz]
+      Codec.summon[Woz]
 
       val arr = Arrangement(
         Vector(Line(Point(0, 0, 0), Point(10, 10, 10)), Line(Point(0, 10, 1), Point(10, 0, 10)))
       )
 
-      val arrBinary = Codec.encode(arr).require
-      val decoded = Codec[Arrangement].decode(arrBinary).require.value
+      val arrBinary = Codec.summon[Arrangement].encode(arr).require
+      val decoded = Codec.summon[Arrangement].decode(arrBinary).require.value
       decoded shouldBe arr
     }
 
     "include field names in case class codecs" in {
       implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-      Codec[Foo].encode(Foo(1, 256, "Hello")) shouldBe Attempt.failure(
+      Codec.summon[Foo].encode(Foo(1, 256, "Hello")) shouldBe Attempt.failure(
         Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y")
       )
     }
@@ -90,7 +90,7 @@ class DerivedCodecTest extends CodecSuite {
 
     "support recursive products" in {
       import codecs.implicits._
-      val codec = Codec[Rec]
+      val codec = Codec.summon[Rec]
       roundtrip(codec, Rec(1, List(Rec(2, Nil))))
     }
 
@@ -99,7 +99,7 @@ class DerivedCodecTest extends CodecSuite {
       implicit def d[A] = Discriminated[Tree[A], Boolean](bool)
       implicit def d0[A] = d[A].bind[Node[A]](false)
       implicit def d1[A] = d[A].bind[Leaf[A]](true)
-      val codec = Codec[Tree[Int]]
+      val codec = Codec.summon[Tree[Int]]
       roundtrip(codec, Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
     }
   }

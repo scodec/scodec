@@ -2,8 +2,6 @@ package scodec
 
 import scodec.bits.BitVector
 
-import shapeless.Lazy
-
 import scodec.compat._
 
 /**
@@ -103,6 +101,56 @@ trait Decoder[+A] { self =>
     def encode(a: AA) = Attempt.failure(Err("encoding not supported"))
     def decode(bits: BitVector) = self.decode(bits)
   }
+
+  /**
+    * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type
+    * `B` using the supplied `zero` value and `append` function. Terminates when no more bits are available in the vector. Exits upon first decoding error.
+    *
+    * @return tuple consisting of the terminating error if any and the accumulated value
+    * @group conv
+    */
+  final def decodeAll[B](f: A => B)(zero: B, append: (B, B) => B)(buffer: BitVector): (Option[Err], B) = {
+    var remaining = buffer
+    var acc = zero
+    while (remaining.nonEmpty) {
+      decode(remaining) match {
+        case Attempt.Successful(DecodeResult(a, newRemaining)) =>
+          remaining = newRemaining
+          acc = append(acc, f(a))
+        case Attempt.Failure(cause) =>
+          return (Some(cause), acc)
+      }
+    }
+    (None, acc)
+  }
+
+  /**
+    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
+    * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
+    * decoded. Exits upon first decoding error.
+    * @group conv
+    */
+  def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(implicit factory: Factory[A2, F[A2]]): Attempt[DecodeResult[F[A2]]] = {
+    val bldr = factory.newBuilder
+    var remaining = buffer
+    var count = 0
+    val maxCount = limit.getOrElse(Int.MaxValue)
+    var error: Option[Err] = None
+    while (count < maxCount && remaining.nonEmpty) {
+      decode(remaining) match {
+        case Attempt.Successful(DecodeResult(value, rest)) =>
+          bldr += value
+          count += 1
+          remaining = rest
+        case Attempt.Failure(err) =>
+          error = Some(err.pushContext(count.toString))
+          remaining = BitVector.empty
+      }
+    }
+    Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
+  }
+
+
 }
 
 /**
@@ -141,58 +189,6 @@ trait DecoderFunctions {
     }
 
   /**
-    * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type
-    * `B` using the supplied `zero` value and `append` function. Terminates when no more bits are available in the vector. Exits upon first decoding error.
-    *
-    * @return tuple consisting of the terminating error if any and the accumulated value
-    * @group conv
-    */
-  final def decodeAll[A, B](buffer: BitVector)(zero: B, append: (B, B) => B)(
-      f: A => B
-  )(implicit decoder: Lazy[Decoder[A]]): (Option[Err], B) = {
-    var remaining = buffer
-    var acc = zero
-    while (remaining.nonEmpty) {
-      decoder.value.decode(remaining) match {
-        case Attempt.Successful(DecodeResult(a, newRemaining)) =>
-          remaining = newRemaining
-          acc = append(acc, f(a))
-        case Attempt.Failure(cause) =>
-          return (Some(cause), acc)
-      }
-    }
-    (None, acc)
-  }
-
-  /**
-    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
-    * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
-    * decoded. Exits upon first decoding error.
-    * @group conv
-    */
-  final def decodeCollect[F[_], A](dec: Decoder[A], limit: Option[Int])(
-      buffer: BitVector
-  )(implicit cbf: Factory[A, F[A]]): Attempt[DecodeResult[F[A]]] = {
-    val bldr = cbf.newBuilder
-    var remaining = buffer
-    var count = 0
-    val maxCount = limit.getOrElse(Int.MaxValue)
-    var error: Option[Err] = None
-    while (count < maxCount && remaining.nonEmpty) {
-      dec.decode(remaining) match {
-        case Attempt.Successful(DecodeResult(value, rest)) =>
-          bldr += value
-          count += 1
-          remaining = rest
-        case Attempt.Failure(err) =>
-          error = Some(err.pushContext(count.toString))
-          remaining = BitVector.empty
-      }
-    }
-    Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
-  }
-
-  /**
     * Creates a decoder that decodes with each of the specified decoders, returning
     * the first successful result.
     * @group conv
@@ -226,12 +222,6 @@ trait DecoderFunctions {
 object Decoder extends DecoderFunctions {
 
   /**
-    * Provides syntax for summoning a `Decoder[A]` from implicit scope.
-    * @group ctor
-    */
-  def apply[A](implicit dec: Lazy[Decoder[A]]): Decoder[A] = dec.value
-
-  /**
     * Creates a decoder from the specified function.
     * @group ctor
     */
@@ -240,20 +230,12 @@ object Decoder extends DecoderFunctions {
   }
 
   /**
-    * Decodes the specified bit vector in to a value of type `A` using an implicitly available codec.
-    * @group conv
-    */
-  def decode[A](bits: BitVector)(implicit d: Lazy[Decoder[A]]): Attempt[DecodeResult[A]] =
-    d.value.decode(bits)
-
-  /**
     * Creates a decoder that always decodes the specified value and returns the input bit vector unmodified.
     * @group ctor
     */
-  def point[A](a: => A): Decoder[A] = new Decoder[A] {
-    private lazy val value = a
-    def decode(bits: BitVector) = Attempt.successful(DecodeResult(value, bits))
-    override def toString = s"const($value)"
+  def pure[A](a: A): Decoder[A] = new Decoder[A] {
+    def decode(bits: BitVector) = Attempt.successful(DecodeResult(a, bits))
+    override def toString = s"const($a)"
   }
 
   /**
