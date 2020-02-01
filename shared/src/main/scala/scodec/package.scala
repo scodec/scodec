@@ -108,16 +108,6 @@ package object scodec {
     def widenOptc[B](f: A => B)(g: B => Option[A]): F[B] = t.widenOpt(self, f, g)
 
     /**
-      * Transforms using two functions, `A => B` and `B => Option[A]`.
-      *
-      * Particularly useful when combined with case class apply/unapply. E.g., `pxmap(fa, Foo.apply, Foo.unapply)`.
-      *
-      * @group combinators
-      */
-    @deprecated("Use widenOpt instead", "1.7.0")
-    def pxmap[B](f: A => B, g: B => Option[A]): F[B] = widenOpt(f, g)
-
-    /**
       * Transforms using implicitly available evidence that such a transformation is possible.
       *
       * Typical transformations include converting:
