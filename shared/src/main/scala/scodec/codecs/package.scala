@@ -2131,6 +2131,4 @@ package object codecs {
   ): Codec[A] =
     new ConstrainedVariableSizeCodec(size, value, 0, maxSize)
 
-  /** Provides common implicit codecs. */
-  object implicits extends ImplicitCodecs
 }

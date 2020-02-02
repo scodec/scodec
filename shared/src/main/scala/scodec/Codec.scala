@@ -3,7 +3,7 @@ package scodec
 import scala.deriving._
 import scala.compiletime._
 
-import scodec.bits.BitVector
+import scodec.bits.{BitVector, ByteVector}
 
 /**
   * Supports encoding a value of type `A` to a `BitVector` and decoding a `BitVector` to a value of `A`.
@@ -586,11 +586,27 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     * Transform typeclass instance.
     * @group inst
     */
-  implicit val transformInstance: Transform[Codec] = new Transform[Codec] {
+  given Transform[Codec] {
     def exmap[A, B](codec: Codec[A], f: A => Attempt[B], g: B => Attempt[A]): Codec[B] =
       codec.exmap(f, g)
 
     override def xmap[A, B](codec: Codec[A], f: A => B, g: B => A): Codec[B] =
       codec.xmap(f, g)
   }
+
+  given Codec[Byte] = codecs.byte
+  given Codec[Short] = codecs.short16
+  given Codec[Int] = codecs.int32
+  given Codec[Long] = codecs.int64
+  given Codec[Float] = codecs.float
+  given Codec[Double] = codecs.double
+  given Codec[String] = codecs.utf8_32
+  given Codec[Boolean] = codecs.bool(8)
+  given Codec[BitVector] = codecs.variableSizeBitsLong(codecs.int64, codecs.bits)
+  given Codec[ByteVector] = codecs.variableSizeBytesLong(codecs.int64, codecs.bytes)
+  given Codec[java.util.UUID] = codecs.uuid
+
+  given [A](given ccount: Codec[Int], ca: Codec[A]) as Codec[List[A]] = codecs.listOfN(ccount, ca)
+  given [A](given ccount: Codec[Int], ca: Codec[A]) as Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
+  given [A](given cguard: Codec[Boolean], ca: Codec[A]) as Codec[Option[A]] = codecs.optional(cguard, ca)
 }
