@@ -60,4 +60,6 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
 
   implicit def arbBitVector: Arbitrary[BitVector] =
     Arbitrary(arbitrary[Array[Byte]].map(BitVector.apply))
+
+  protected def assertBitsEqual(actual: BitVector, expected: BitVector) = assert(actual == expected)
 }

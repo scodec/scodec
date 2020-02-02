@@ -1,31 +1,35 @@
-// package scodec
-// package examples
+package scodec
+package examples
 
-// import shapeless._
+import scodec.bits._
+import codecs._
 
-// import scodec.bits._
-// import codecs._
+class CoproductsExample extends CodecSuite {
 
-// class CoproductsExample extends CodecSuite {
+  sealed trait Sprocket derives Codec
+  object Sprocket {
+    given Discriminated[Sprocket, Int] = Discriminated(uint8)
+  }
 
-//   sealed trait Sprocket
-//   object Sprocket {
-//     implicit val discriminated: Discriminated[Sprocket, Int] = Discriminated(uint8)
-//   }
+  case class Woozle(count: Int, strength: Int) extends Sprocket
+  object Woozle {
+    given Codec[Woozle] = (uint8 :: uint8).as[Woozle]
+    given Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
+  }
 
-//   case class Woozle(count: Int, strength: Int) extends Sprocket
-//   object Woozle {
-//     implicit val codec: Codec[Woozle] = (uint8 :: uint8).as[Woozle]
-//     implicit val discriminator: Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
-//   }
+  case class Wocket(size: Int, inverted: Boolean) extends Sprocket
+  object Wocket {
+    given Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
+    given Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
+  }
 
-//   case class Wocket(size: Int, inverted: Boolean) extends Sprocket
-//   object Wocket {
-//     implicit val codec: Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
-//     implicit val discriminator: Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
-//   }
-
-//   "coproduct codec examples" should {
+  "coproduct codec examples" should {
+    
+    "support derivation" in {
+      val codec = summon[Codec[Sprocket]]
+      val encodedWocket = codec.encode(Wocket(1, true)).require
+      assertBitsEqual(encodedWocket, 0x020101)
+    }
 //     // Codec.coproduct[Sprocket] returns a `CoproductCodecBuilder` which lets
 //     // us specify how the various subtypes are distinguished from each other
 //     // in the binary format.
@@ -243,5 +247,5 @@
 //           .discriminatedBy(provide(header.messageType))
 //           .auto
 //     }
-//   }
-// }
+  }
+}
