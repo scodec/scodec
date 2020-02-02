@@ -10,9 +10,6 @@ import java.util.zip.Deflater
 
 import scodec.bits.{BitVector, ByteOrdering, ByteVector}
 
-import shapeless.{HList, Nat, Sized}
-import shapeless.syntax.sized._
-
 /**
   * Provides codecs for common types and combinators for building larger codecs.
   *
@@ -1149,9 +1146,7 @@ package object codecs {
         )
       )
       private val decoder =
-        (peek(bits(sizeInBits)) ~ variableSizeBitsLong(size, bits, sizePadding)).map {
-          case (sz, b) => sz ++ b
-        }
+        (peek(bits(sizeInBits)) :: variableSizeBitsLong(size, bits, sizePadding)).map(_ ++ _)
       def sizeBound = size.sizeBound.atLeast
       def encode(b: BitVector) = Attempt.successful(b)
       def decode(b: BitVector) = decoder.decode(b)
@@ -1362,20 +1357,6 @@ package object codecs {
       .withToString(s"vectorOfN($countCodec, $valueCodec)")
 
   /**
-    * Codec that encodes/decodes a vector of `n` elements, where `n` is known at compile time.
-    *
-    * @param size number of elements in the vector
-    * @param codec codec to encode/decode a single element of the sequence
-    * @group combinators
-    */
-  def sizedVector[A](size: Nat, codec: Codec[A])(
-      implicit toInt: shapeless.ops.nat.ToInt[size.N]
-  ): Codec[Sized[Vector[A], size.N]] =
-    vectorOfN(provide(toInt()), codec)
-      .xmapc(_.sized(size).get)(_.unsized)
-      .withToString(s"sizedVector(${toInt()}, $codec)")
-
-  /**
     * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
     *
     * When encoding, each `A` in the vector is encoded and all of the resulting bits are combined using `mux`.
@@ -1477,20 +1458,6 @@ package object codecs {
         xs => (xs.size, xs)
       )
       .withToString(s"listOfN($countCodec, $valueCodec)")
-
-  /**
-    * Codec that encodes/decodes a list of `n` elements, where `n` is known at compile time.
-    *
-    * @param size number of elements in the list
-    * @param codec codec to encode/decode a single element of the sequence
-    * @group combinators
-    */
-  def sizedList[A](size: Nat, codec: Codec[A])(
-      implicit toInt: shapeless.ops.nat.ToInt[size.N]
-  ): Codec[Sized[List[A], size.N]] =
-    listOfN(provide(toInt()), codec)
-      .xmapc(_.sized(size).get)(_.unsized)
-      .withToString(s"sizedList(${toInt()}, $codec)")
 
   /**
     * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
@@ -1992,8 +1959,8 @@ package object codecs {
     * `Codec[X0 :: X1 :: ... :: Xn :: HNil].
     * @group combinators
     */
-  def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out =
-    toHListCodec(l)
+  // def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out =
+  //   toHListCodec(l)
 
   /**
     * Wraps a codec and adds logging of each encoding and decoding operation.

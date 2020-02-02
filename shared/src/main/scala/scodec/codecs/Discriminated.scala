@@ -1,8 +1,6 @@
 package scodec
 package codecs
 
-import shapeless.=:!=
-
 /**
   * Wrapper class that indicates subtypes of `X` are discriminated by type `D`
   * using the supplied `Codec[D]`.
@@ -31,8 +29,7 @@ final case class Discriminated[X, D](codec: Codec[D], framing: CodecTransformati
   def this(codec: Codec[D]) = this(codec, CodecTransformation.Id)
 
   /** Binds the discriminator value `D` to type `Y`. */
-  def bind[Y <: X](discriminator: D)(implicit ev: Y =:!= X): Discriminator[X, Y, D] = {
-    val _ = ev // Convince scalac ev is used
+  def bind[Y <: X](discriminator: D): Discriminator[X, Y, D] = {
     Discriminator(discriminator)
   }
 }

@@ -24,7 +24,8 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  crossScalaVersions := List("2.12.10", "2.13.1"),
+  scalaVersion := "0.22.0-bin-20200123-9982f0d-NIGHTLY",
+  crossScalaVersions := List(scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8",
@@ -98,16 +99,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-core",
-    unmanagedSourceDirectories in Compile += {
-      val dir = CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v >= 13 => "scala-2.13+"
-        case _                       => "scala-2.12-"
-      }
-      baseDirectory.value / "../shared/src/main" / dir
-    },
+    resolvers += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.12",
-      "com.chuusai" %%% "shapeless" % "2.3.3"
+      "org.scodec" %%% "scodec-bits" % "2.0.0-SNAPSHOT"
     ),
     buildInfoPackage := "scodec",
     buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
@@ -148,11 +142,17 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % "1.14.3",
-      "org.scalatest" %%% "scalatest" % "3.1.0",
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
-    )
+    libraryDependencies ++= {
+      if (isDotty.value)
+        Seq(
+          "dev.travisbrown" %%% "scalatest" % "3.1.0-20200123-9982f0d-NIGHTLY",
+          "dev.travisbrown" %%% "scalacheck-1-14" % "3.1.0.1-20200123-9982f0d-NIGHTLY"
+        )
+      else Seq(
+        "org.scalatest" %%% "scalatest" % "3.1.0",
+        "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
+      )
+    }
   )
   .dependsOn(core % "compile->compile")
 
@@ -163,6 +163,7 @@ lazy val unitTests = project
   .in(file("unitTests"))
   .settings(commonSettings: _*)
   .settings(
+    scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.64" % "test"
     ),

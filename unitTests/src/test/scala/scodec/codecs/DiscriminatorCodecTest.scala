@@ -21,7 +21,7 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     "support building a codec using partial functions and subtyping" in {
       val codec =
-        discriminated[AnyVal]
+        discriminated[Any]
           .by(uint8)
           .\[Int](0) { case i: Int => i }(int32)
           .\[Boolean](1) { case b: Boolean => b }(bool)
@@ -34,7 +34,7 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     "support building a codec using A => Option[B] and subtyping" in {
       val codec =
-        discriminated[AnyVal]
+        discriminated[Any]
           .by(uint8)
           ./[Int](0) { v =>
             v match { case i: Int => Some(i); case _ => None }
@@ -72,7 +72,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Reserved(value: Int) extends Color
 
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
-      val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
+      val reserved: Codec[Reserved] = uint8.as[Reserved]
       val codec: Codec[Color] = choice(nonReserved, reserved.upcast[Color])
 
       roundtrip(codec, Red)
@@ -91,10 +91,10 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Reserved(value: Int)
 
       val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
-      val reserved: Codec[Reserved] = uint8.widenOpt(Reserved.apply, Reserved.unapply)
+      val reserved: Codec[Reserved] = uint8.as[Reserved]
       val codec: Codec[Either[Reserved, Color]] = choice(
-        nonReserved.xmapc(Right.apply)(_.right.get).upcast[Either[Reserved, Color]],
-        reserved.xmapc(Left.apply)(_.left.get).upcast[Either[Reserved, Color]]
+        nonReserved.xmapc(Right.apply)(_.toOption.get).upcast[Either[Reserved, Color]],
+        reserved.xmapc(Left.apply)(_.swap.toOption.get).upcast[Either[Reserved, Color]]
       )
 
       roundtrip(codec, Right(Red))
@@ -110,7 +110,7 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Go(units: Int) extends Direction
 
       val stayCodec = provide(Stay)
-      val goCodec = int32.widenOpt[Go](Go.apply, Go.unapply)
+      val goCodec = int32.as[Go]
 
       val codec =
         discriminated[Direction].by(uint8).typecase(0, stayCodec).typecase(1, goCodec)
@@ -128,8 +128,8 @@ class DiscriminatorCodecTest extends CodecSuite {
         discriminated[Tree]
           .by(bool)
           .|(false) { case l @ Leaf(n) => n }(Leaf.apply)(int32)
-          .|(true) { case n @ Node(l, r) => (l, r) } { case (l, r) => Node(l, r) }(
-            treeCodec ~ treeCodec
+          .|(true) { case n @ Node(l, r) => (l, r) } { (l, r) => Node(l, r) }(
+            treeCodec :: treeCodec
           )
       }
 
@@ -156,8 +156,8 @@ class DiscriminatorCodecTest extends CodecSuite {
       case class Annotate(message: String) extends Direction
 
       val stayCodec = provide(Stay)
-      val goCodec = int32.widenOpt[Go](Go.apply, Go.unapply)
-      val annotateCodec = ascii.widenOpt[Annotate](Annotate.apply, Annotate.unapply)
+      val goCodec = int32.as[Go]
+      val annotateCodec = ascii.as[Annotate]
 
       val codec =
         discriminated[Direction]
@@ -165,9 +165,7 @@ class DiscriminatorCodecTest extends CodecSuite {
           .typecase(0, stayCodec)
           .typecase(1, goCodec)
           .typecase(2, annotateCodec)
-          .framing(new CodecTransformation {
-            def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c)
-          })
+          .framing([x] => (c: Codec[x]) => variableSizeBytes(uint8, c))
 
       roundtrip(list(codec), List(Stay, Go(1), Annotate("Hello"), Go(2), Stay))
     }

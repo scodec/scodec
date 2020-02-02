@@ -9,9 +9,9 @@ class ChecksumCodecTest extends CodecSuite {
     def xor(length: Long) =
       (bits: BitVector) => bits.grouped(length).foldLeft(BitVector.low(length))(_.xor(_))
 
-    val codecSizeIncluded = checksummed(utf8_32, xor(8), peekVariableSizeBytes(int32) ~ codecs.bits)
+    val codecSizeIncluded = checksummed(utf8_32, xor(8), peekVariableSizeBytes(int32) :: codecs.bits)
     val codecSizeExcluded =
-      checksummed(utf8, xor(8), variableSizeBytes(int32, codecs.bits) ~ codecs.bits)
+      checksummed(utf8, xor(8), variableSizeBytes(int32, codecs.bits) :: codecs.bits)
 
     "roundtrip" in {
       forAll { (s: String) =>
@@ -24,10 +24,10 @@ class ChecksumCodecTest extends CodecSuite {
 
     "roundtrip using combinators" in {
       forAll { (n: Int, s: String) =>
-        roundtrip(int32 ~ codecSizeIncluded, n ~ s)
+        roundtrip(int32 :: codecSizeIncluded, (n, s))
       }
       forAll { (n: Int, s: String) =>
-        roundtrip(int32 ~ codecSizeExcluded, n ~ s)
+        roundtrip(int32 :: codecSizeExcluded, (n, s))
       }
     }
 
@@ -59,7 +59,7 @@ class ChecksumCodecTest extends CodecSuite {
       val crc32c = crc(hex"1edc6f41".bits, hex"ffffffff".bits, true, true, hex"ffffffff".bits)
       def swap(c: Codec[(BitVector, BitVector)]): Codec[(BitVector, BitVector)] =
         c.xmap(_.swap, _.swap)
-      val codec = checksummed(utf8_32, crc32c, swap(codecs.bits(32) ~ codecs.bits))
+      val codec = checksummed(utf8_32, crc32c, swap(codecs.bits(32) :: codecs.bits))
       codec.encode("hello world").require shouldBe hex"edbbac630000000b68656c6c6f20776f726c64".bits
     }
   }

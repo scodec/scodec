@@ -111,7 +111,7 @@ object Attempt {
     def map[B](f: A => B): Attempt[B] = Successful(f(value))
     def mapErr(f: Err => Err): Attempt[A] = this
     def flatMap[B](f: A => Attempt[B]): Attempt[B] = f(value)
-    def flatten[B](implicit ev: A <:< Attempt[B]): Attempt[B] = value
+    def flatten[B](implicit ev: A <:< Attempt[B]): Attempt[B] = ev(value)
     def fold[B](ifFailure: Err => B, ifSuccessful: A => B): B = ifSuccessful(value)
     def getOrElse[B >: A](default: => B): B = value
     def orElse[B >: A](fallback: => Attempt[B]) = this

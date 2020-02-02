@@ -10,7 +10,7 @@ class ConditionalCodecTest extends CodecSuite {
     "not evaluate if condition is false when encoding" in {
       var called = false
 
-      def retCodec(): Codec[String] = {
+      def retCodec: Codec[String] = {
         called = true
         ascii
       }
@@ -25,7 +25,7 @@ class ConditionalCodecTest extends CodecSuite {
     "evaluate if condition is true when encoding" in {
       var called = false
 
-      def retCodec(): Codec[String] = {
+      def retCodec: Codec[String] = {
         called = true
         ascii
       }
@@ -40,7 +40,7 @@ class ConditionalCodecTest extends CodecSuite {
     "not evaluate if condition is false when decoding" in {
       var called = false
 
-      def retCodec(): Codec[String] = {
+      def retCodec: Codec[String] = {
         called = true
         ascii
       }
@@ -55,7 +55,7 @@ class ConditionalCodecTest extends CodecSuite {
     "evaluate if condition is true when decoding" in {
       var called = false
 
-      def retCodec(): Codec[String] = {
+      def retCodec: Codec[String] = {
         called = true
         ascii
       }

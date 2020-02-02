@@ -13,7 +13,7 @@ private[codecs] final class ListCodec[A](codec: Codec[A], limit: Option[Int] = N
 
   def encode(list: List[A]) = codec.encodeAll(list)
 
-  def decode(buffer: BitVector) = codec.collect(buffer, limit)
+  def decode(buffer: BitVector) = codec.collect[List, A](buffer, limit)
 
   override def toString = s"list($codec)"
 }

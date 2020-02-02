@@ -1,7 +1,3 @@
-import shapeless._
-import ops.hlist.{Init, Last, Length, Mapper, Prepend, Split}
-import poly._
-
 /**
   * Combinator library for working with binary data.
   *
@@ -119,271 +115,258 @@ package object scodec {
   }
 
   /** Provides common operations on a `Codec[HList]`. */
-  final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val self: Codec[L])
-      extends AnyVal {
-    import codecs.HListCodec
+  // final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val self: Codec[L])
+  //     extends AnyVal {
+  //   import codecs.HListCodec
 
-    /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec representing `Codec[B :: L]`.
-      * That is, this operator is a codec-level `HList` prepend operation.
-      * @param codec codec to prepend
-      * @group hlist
-      */
-    def ::[B](codec: Codec[B]): Codec[B :: L] = HListCodec.prepend(codec, self)
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec representing `Codec[B :: L]`.
+  //     * That is, this operator is a codec-level `HList` prepend operation.
+  //     * @param codec codec to prepend
+  //     * @group hlist
+  //     */
+  //   def ::[B](codec: Codec[B]): Codec[B :: L] = HListCodec.prepend(codec, self)
 
-    /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-      * `B :: L` but only returns `L`.  HList equivalent of `~>`.
-      * @group hlist
-      */
-    def :~>:[B](codec: Codec[B])(implicit ev: Unit =:= B): Codec[L] = codec.dropLeft(self)
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+  //     * `B :: L` but only returns `L`.  HList equivalent of `~>`.
+  //     * @group hlist
+  //     */
+  //   def :~>:[B](codec: Codec[B])(implicit ev: Unit =:= B): Codec[L] = codec.dropLeft(self)
 
-    /**
-      * Creates a new codec with all unit values filtered out.
-      * @group hlist
-      */
-    def dropUnits[M <: HList](implicit du: codecs.DropUnits.Aux[L, M]): Codec[M] =
-      HListCodec.dropUnits[L, M](self)
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+  //     * the `HList L` followed by a `B`.
+  //     * That is, this operator is a codec-level `HList` append operation.
+  //     * @group hlist
+  //     */
+  //   def :+[B, LB <: HList](codec: Codec[B])(
+  //       implicit
+  //       prepend: Prepend.Aux[L, B :: HNil, LB],
+  //       init: Init.Aux[LB, L],
+  //       last: Last.Aux[LB, B]
+  //   ): Codec[LB] = HListCodec.append(self, codec)
 
-    /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-      * the `HList L` followed by a `B`.
-      * That is, this operator is a codec-level `HList` append operation.
-      * @group hlist
-      */
-    def :+[B, LB <: HList](codec: Codec[B])(
-        implicit
-        prepend: Prepend.Aux[L, B :: HNil, LB],
-        init: Init.Aux[LB, L],
-        last: Last.Aux[LB, B]
-    ): Codec[LB] = HListCodec.append(self, codec)
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+  //     * the `HList K` followed by the `HList L`.
+  //     * @group hlist
+  //     */
+  //   def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(
+  //       implicit
+  //       prepend: Prepend.Aux[K, L, KL],
+  //       lengthK: Length.Aux[K, KLen],
+  //       split: Split.Aux[KL, KLen, K, L]
+  //   ): Codec[KL] = HListCodec.concat(k, self)
 
-    /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-      * the `HList K` followed by the `HList L`.
-      * @group hlist
-      */
-    def :::[K <: HList, KL <: HList, KLen <: Nat](k: Codec[K])(
-        implicit
-        prepend: Prepend.Aux[K, L, KL],
-        lengthK: Length.Aux[K, KLen],
-        split: Split.Aux[KL, KLen, K, L]
-    ): Codec[KL] = HListCodec.concat(k, self)
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+  //     * the `HList L` followed by the `HList M`, where the latter is encoded/decoded with the codec
+  //     * returned from applying `L` to `f`.
+  //     * @group hlist
+  //     */
+  //   def flatConcat[M <: HList, LM <: HList, LLen <: Nat](f: L => Codec[M])(
+  //       implicit
+  //       prepend: Prepend.Aux[L, M, LM],
+  //       lengthK: Length.Aux[L, LLen],
+  //       split: Split.Aux[LM, LLen, L, M]
+  //   ): Codec[LM] = HListCodec.flatConcat(self, f)
 
-    /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-      * the `HList L` followed by the `HList M`, where the latter is encoded/decoded with the codec
-      * returned from applying `L` to `f`.
-      * @group hlist
-      */
-    def flatConcat[M <: HList, LM <: HList, LLen <: Nat](f: L => Codec[M])(
-        implicit
-        prepend: Prepend.Aux[L, M, LM],
-        lengthK: Length.Aux[L, LLen],
-        split: Split.Aux[LM, LLen, L, M]
-    ): Codec[LM] = HListCodec.flatConcat(self, f)
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+  //     * the `HList L` followed by the value `A`, where the latter is encoded/decoded with the codec
+  //     * returned from applying `L` to `f`.
+  //     * @group hlist
+  //     */
+  //   def flatAppend[A, LA <: HList, Len <: Nat](f: L => Codec[A])(
+  //       implicit
+  //       prepend: Prepend.Aux[L, A :: HNil, LA],
+  //       length: Length.Aux[L, Len],
+  //       split: Split.Aux[LA, Len, L, A :: HNil]
+  //   ): Codec[LA] = HListCodec.flatAppend(self, f)
 
-    /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-      * the `HList L` followed by the value `A`, where the latter is encoded/decoded with the codec
-      * returned from applying `L` to `f`.
-      * @group hlist
-      */
-    def flatAppend[A, LA <: HList, Len <: Nat](f: L => Codec[A])(
-        implicit
-        prepend: Prepend.Aux[L, A :: HNil, LA],
-        length: Length.Aux[L, Len],
-        split: Split.Aux[LA, Len, L, A :: HNil]
-    ): Codec[LA] = HListCodec.flatAppend(self, f)
+  //   /**
+  //     * Polymorphic function version of `xmap`.
+  //     *
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
+  //     * xmapping with `p` and `q`, using `p` to convert from `L` to `M` and using `q` to convert from
+  //     * `M` to `L`.
+  //     *
+  //     * @param p polymorphic function that converts from `L` to `M`
+  //     * @param q polymorphic function that converts from `M` to `L`
+  //     * @group generic
+  //     */
+  //   def polyxmap[M <: HList](
+  //       p: Poly,
+  //       q: Poly
+  //   )(implicit lToM: Mapper.Aux[p.type, L, M], mToL: Mapper.Aux[q.type, M, L]): Codec[M] =
+  //     self.xmap(_.map(p), _.map(q))
 
-    /**
-      * Polymorphic function version of `xmap`.
-      *
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
-      * xmapping with `p` and `q`, using `p` to convert from `L` to `M` and using `q` to convert from
-      * `M` to `L`.
-      *
-      * @param p polymorphic function that converts from `L` to `M`
-      * @param q polymorphic function that converts from `M` to `L`
-      * @group generic
-      */
-    def polyxmap[M <: HList](
-        p: Poly,
-        q: Poly
-    )(implicit lToM: Mapper.Aux[p.type, L, M], mToL: Mapper.Aux[q.type, M, L]): Codec[M] =
-      self.xmap(_.map(p), _.map(q))
+  //   /**
+  //     * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
+  //     *
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
+  //     * xmapping with `p` for both forward and reverse directions.
+  //     *
+  //     * @param p polymorphic function that converts from `L` to `M` and from `M` to `L`
+  //     * @group generic
+  //     */
+  //   def polyxmap1[M <: HList](
+  //       p: Poly
+  //   )(implicit m: Mapper.Aux[p.type, L, M], m2: Mapper.Aux[p.type, M, L]): Codec[M] =
+  //     polyxmap(p, p)
 
-    /**
-      * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
-      *
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that's the result of
-      * xmapping with `p` for both forward and reverse directions.
-      *
-      * @param p polymorphic function that converts from `L` to `M` and from `M` to `L`
-      * @group generic
-      */
-    def polyxmap1[M <: HList](
-        p: Poly
-    )(implicit m: Mapper.Aux[p.type, L, M], m2: Mapper.Aux[p.type, M, L]): Codec[M] =
-      polyxmap(p, p)
+  //   /**
+  //     * Supports building a `Codec[M]` for some `HList M` where `M` is the `HList` that results in removing
+  //     * the first `A` from `L`.
+  //     *
+  //     * Example usage: {{{
+  //      case class Flags(x: Boolean, y: Boolean, z: Boolean)
+  //      val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
+  //        conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+  //      }
+  //      c.derive[Flags].from { case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+  //    }}}
+  //     *
+  //     * This codec, the `Codec[L]`, is used for encoding/decoding. When decoding, the first value of type
+  //     * `A` is removed from the `HList`.
+  //     *
+  //     * When encoding, the returned codec computes an `A` value using the supplied
+  //     * function and inserts the computed `A` in to the `HList M`, yielding an `HList L`. That `HList L`
+  //     * is then encoded using the original codec.
+  //     *
+  //     * This method is called `derive` because the value of type `A` is derived from the other fields
+  //     * in the `HList L`.
+  //     *
+  //     * @tparam A type to remove from `L` and derive from the resulting list
+  //     * @group hlist
+  //     */
+  //   def derive[A]: codecs.DeriveHListElementAux[L, A] = new codecs.DeriveHListElementAux[L, A](self)
+  // }
 
-    /**
-      * Supports building a `Codec[M]` for some `HList M` where `M` is the `HList` that results in removing
-      * the first `A` from `L`.
-      *
-      * Example usage: {{{
-       case class Flags(x: Boolean, y: Boolean, z: Boolean)
-       val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
-         conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
-       }
-       c.derive[Flags].from { case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
-     }}}
-      *
-      * This codec, the `Codec[L]`, is used for encoding/decoding. When decoding, the first value of type
-      * `A` is removed from the `HList`.
-      *
-      * When encoding, the returned codec computes an `A` value using the supplied
-      * function and inserts the computed `A` in to the `HList M`, yielding an `HList L`. That `HList L`
-      * is then encoded using the original codec.
-      *
-      * This method is called `derive` because the value of type `A` is derived from the other fields
-      * in the `HList L`.
-      *
-      * @tparam A type to remove from `L` and derive from the resulting list
-      * @group hlist
-      */
-    def derive[A]: codecs.DeriveHListElementAux[L, A] = new codecs.DeriveHListElementAux[L, A](self)
-  }
+  // /** Provides `HList` related syntax for codecs of any type. */
+  // final implicit class ValueCodecEnrichedWithHListSupport[A](val self: Codec[A]) extends AnyVal {
+  //   import codecs.HListCodec
 
-  /** Provides `HList` related syntax for codecs of any type. */
-  final implicit class ValueCodecEnrichedWithHListSupport[A](val self: Codec[A]) extends AnyVal {
-    import codecs.HListCodec
+  //   /**
+  //     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`.
+  //     * For example, {{{uint8 :: utf8}}} has type `Codec[Int :: String :: HNil]`.
+  //     * @group hlist
+  //     */
+  //   def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
+  //     codecB :: self :: HListCodec.hnilCodec
 
-    /**
-      * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`.
-      * For example, {{{uint8 :: utf8}}} has type `Codec[Int :: String :: HNil]`.
-      * @group hlist
-      */
-    def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
-      codecB :: self :: HListCodec.hnilCodec
+  //   /**
+  //     * When called on a `Codec[A]`, returns a new codec that encodes/decodes `B :: A :: HNil`.
+  //     * HList equivalent of `~>`.
+  //     * @group hlist
+  //     */
+  //   def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
+  //     codecB :~>: self.hlist
 
-    /**
-      * When called on a `Codec[A]`, returns a new codec that encodes/decodes `B :: A :: HNil`.
-      * HList equivalent of `~>`.
-      * @group hlist
-      */
-    def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
-      codecB :~>: self.hlist
+  //   /**
+  //     * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
+  //     * This allows later parts of an `HList` codec to be dependent on earlier values.
+  //     * @group hlist
+  //     */
+  //   def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = HListCodec.flatPrepend(self, f)
 
-    /**
-      * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
-      * This allows later parts of an `HList` codec to be dependent on earlier values.
-      * @group hlist
-      */
-    def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = HListCodec.flatPrepend(self, f)
+  //   /**
+  //     * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
+  //     * This allows later parts of an `HList` codec to be dependent on earlier values.
+  //     * Operator alias for `flatPrepend`.
+  //     * @group hlist
+  //     */
+  //   def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
 
-    /**
-      * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
-      * This allows later parts of an `HList` codec to be dependent on earlier values.
-      * Operator alias for `flatPrepend`.
-      * @group hlist
-      */
-    def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
+  //   /**
+  //     * Creates a new codec that encodes/decodes an `HList` type of `A :: B :: HNil` given a function `A => Codec[B]`.
+  //     * If `B` is an `HList` type, consider using `flatPrepend` instead, which avoids nested `HLists`.
+  //     * This is the direct `HList` equivalent of `flatZip`.
+  //     * @group hlist
+  //     */
+  //   def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f.andThen(_.hlist))
+  // }
 
-    /**
-      * Creates a new codec that encodes/decodes an `HList` type of `A :: B :: HNil` given a function `A => Codec[B]`.
-      * If `B` is an `HList` type, consider using `flatPrepend` instead, which avoids nested `HLists`.
-      * This is the direct `HList` equivalent of `flatZip`.
-      * @group hlist
-      */
-    def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f.andThen(_.hlist))
-  }
+  // /** Provides syntax related to generic programming for codecs of any type. */
+  // final implicit class ValueCodecEnrichedWithGenericSupport[A](val self: Codec[A]) extends AnyVal {
 
-  /** Provides syntax related to generic programming for codecs of any type. */
-  final implicit class ValueCodecEnrichedWithGenericSupport[A](val self: Codec[A]) extends AnyVal {
+  //   /**
+  //     * Polymorphic function version of `xmap`.
+  //     *
+  //     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
+  //     * xmapping with `p` and `q`, using `p` to convert from `A` to `B` and using `q` to convert from
+  //     * `B` to `A`.
+  //     *
+  //     * @param p polymorphic function that converts from `A` to `B`
+  //     * @param q polymorphic function that converts from `B` to `A`
+  //     * @group generic
+  //     */
+  //   def polyxmap[B](p: Poly, q: Poly)(
+  //       implicit aToB: Case.Aux[p.type, A :: HNil, B],
+  //       bToA: Case.Aux[q.type, B :: HNil, A]
+  //   ): Codec[B] =
+  //     self.xmap(aToB, bToA)
 
-    /**
-      * Polymorphic function version of `xmap`.
-      *
-      * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
-      * xmapping with `p` and `q`, using `p` to convert from `A` to `B` and using `q` to convert from
-      * `B` to `A`.
-      *
-      * @param p polymorphic function that converts from `A` to `B`
-      * @param q polymorphic function that converts from `B` to `A`
-      * @group generic
-      */
-    def polyxmap[B](p: Poly, q: Poly)(
-        implicit aToB: Case.Aux[p.type, A :: HNil, B],
-        bToA: Case.Aux[q.type, B :: HNil, A]
-    ): Codec[B] =
-      self.xmap(aToB, bToA)
+  //   /**
+  //     * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
+  //     *
+  //     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
+  //     * xmapping with `p` for both forward and reverse directions.
+  //     *
+  //     * @param p polymorphic function that converts from `A` to `B` and from `B` to `A`
+  //     * @group generic
+  //     */
+  //   def polyxmap1[B](p: Poly)(
+  //       implicit aToB: Case.Aux[p.type, A :: HNil, B],
+  //       bToA: Case.Aux[p.type, B :: HNil, A]
+  //   ): Codec[B] =
+  //     polyxmap(p, p)
+  // }
 
-    /**
-      * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
-      *
-      * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
-      * xmapping with `p` for both forward and reverse directions.
-      *
-      * @param p polymorphic function that converts from `A` to `B` and from `B` to `A`
-      * @group generic
-      */
-    def polyxmap1[B](p: Poly)(
-        implicit aToB: Case.Aux[p.type, A :: HNil, B],
-        bToA: Case.Aux[p.type, B :: HNil, A]
-    ): Codec[B] =
-      polyxmap(p, p)
-  }
+  // /** Provides additional methods on `HList`s. */
+  // final implicit class EnrichedHList[L <: HList](val self: L) extends AnyVal {
 
-  /** Provides additional methods on `HList`s. */
-  final implicit class EnrichedHList[L <: HList](val self: L) extends AnyVal {
+  //   /**
+  //     * Converts an `HList` of codecs in to a single codec.
+  //     * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a `Codec[X0 :: X1 :: ... :: Xn :: HNil].
+  //     */
+  //   def toCodec(implicit to: codecs.ToHListCodec[L]): to.Out = to(self)
+  // }
 
-    /**
-      * Converts an `HList` of codecs in to a single codec.
-      * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a `Codec[X0 :: X1 :: ... :: Xn :: HNil].
-      */
-    def toCodec(implicit to: codecs.ToHListCodec[L]): to.Out = to(self)
-  }
+  // /** Provides methods specific to encoders of Shapeless coproducts. */
+  // final implicit class EnrichedCoproductEncoder[C <: Coproduct](val self: Encoder[C])
+  //     extends AnyVal {
 
-  /** Provides methods specific to encoders of Shapeless coproducts. */
-  final implicit class EnrichedCoproductEncoder[C <: Coproduct](val self: Encoder[C])
-      extends AnyVal {
+  //   /**
+  //     * When called on a `Encoder[C]` where `C` is a coproduct containing type `A`, converts to an `Encoder[A]`.
+  //     * @group coproduct
+  //     */
+  //   def selectEncoder[A](implicit inj: ops.coproduct.Inject[C, A]): Encoder[A] = self.contramap {
+  //     a =>
+  //       Coproduct[C](a)
+  //   }
+  // }
 
-    /**
-      * When called on a `Encoder[C]` where `C` is a coproduct containing type `A`, converts to an `Encoder[A]`.
-      * @group coproduct
-      */
-    def selectEncoder[A](implicit inj: ops.coproduct.Inject[C, A]): Encoder[A] = self.contramap {
-      a =>
-        Coproduct[C](a)
-    }
-  }
+  // /** Provides methods specific to decoders of Shapeless coproducts. */
+  // final implicit class EnrichedCoproductDecoder[C <: Coproduct](val self: Decoder[C])
+  //     extends AnyVal {
 
-  /** Provides methods specific to decoders of Shapeless coproducts. */
-  final implicit class EnrichedCoproductDecoder[C <: Coproduct](val self: Decoder[C])
-      extends AnyVal {
-
-    /**
-      * When called on a `Decoder[C]` where `C` is a coproduct containing type `A`, converts to a `Decoder[Option[A]]`.
-      * @group coproduct
-      */
-    def selectDecoder[A](implicit sel: ops.coproduct.Selector[C, A]): Decoder[Option[A]] =
-      self.map { c =>
-        c.select[A]
-      }
-  }
-
-  final implicit class Tuple2CodecSupport[A](val self: Codec[A]) extends AnyVal {
-    def ~~[B](B: Codec[B]): codecs.TupleCodec[A, B] = new codecs.TupleCodec[A, B](self, B)
-  }
+  //   /**
+  //     * When called on a `Decoder[C]` where `C` is a coproduct containing type `A`, converts to a `Decoder[Option[A]]`.
+  //     * @group coproduct
+  //     */
+  //   def selectDecoder[A](implicit sel: ops.coproduct.Selector[C, A]): Decoder[Option[A]] =
+  //     self.map { c =>
+  //       c.select[A]
+  //     }
+  // }
 
   /** Universally quantified transformation of a `Codec` to a `Codec`. */
-  type CodecTransformation = Codec ~> Codec
+  type CodecTransformation = [x] => Codec[x] => Codec[x]
 
   /** Companion for [[CodecTransformation]]. */
   object CodecTransformation extends Serializable {
-    object Id extends CodecTransformation {
-      def apply[X](c: Codec[X]): Codec[X] = c
-    }
+    val Id: CodecTransformation = [x] => (c: Codec[x]) => c
   }
 }

@@ -1,9 +1,5 @@
 package scodec
 
-import shapeless._
-import shapeless.labelled.FieldType
-import shapeless.ops.record._
-
 import scodec.bits.BitVector
 
 /**
@@ -217,24 +213,10 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     exmap(a => Attempt.successful(f(a)), g)
 
   /**
-    * Lifts this codec in to a codec of a singleton hlist.
-    * @group hlist
-    */
-  final def hlist: Codec[A :: HNil] = xmap(_ :: HNil, _.head)
-
-  /**
-    * Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`.
+    * Lifts this codec in to a codec of a singleton tuple.
     * @group tuple
     */
-  final def pairedWith[B](codecB: Codec[B]): Codec[(A, B)] = new codecs.TupleCodec(this, codecB)
-
-  /**
-    * Creates a `Codec[(A, B)]` that first encodes/decodes an `A` followed by a `B`.
-    *
-    * Operator alias for [[pairedWith]].
-    * @group tuple
-    */
-  final def ~[B](codecB: Codec[B]): Codec[(A, B)] = pairedWith(codecB)
+  final def tuple: Codec[A *: Unit] = xmap(_ *: (), _.head)
 
   /**
     * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
@@ -243,7 +225,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     * @group tuple
     */
   final def dropLeft[B](codecB: Codec[B])(implicit ev: Unit =:= A): Codec[B] =
-    pairedWith(codecB).xmap[B]({ case (_, b) => b }, b => (ev(()), b))
+    (this :: codecB).xmap[B]({ (_, b) => b }, b => (ev(()), b))
 
   /**
     * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
@@ -261,7 +243,7 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     * @group tuple
     */
   final def dropRight[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] =
-    pairedWith(codecB).xmap[A]({ case (a, _) => a }, a => (a, ev(())))
+   (this :: codecB).xmap[A]({ (a, _) => a }, a => (a, ev(())))
 
   /**
     * Assuming `B` is `Unit`, creates a `Codec[A]` that: encodes the `A` followed by a unit;
@@ -280,8 +262,8 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     *
     * @group tuple
     */
-  final def flattenLeftPairs(implicit f: codecs.FlattenLeftPairs[A]): Codec[f.Out] =
-    xmap(a => f.flatten(a), l => f.unflatten(l))
+  // final def flattenLeftPairs(implicit f: codecs.FlattenLeftPairs[A]): Codec[f.Out] =
+  //   xmap(a => f.flatten(a), l => f.unflatten(l))
 
   /**
     * Converts this to a `Codec[Unit]` that encodes using the specified zero value and
@@ -359,11 +341,11 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     *
     * @group combinators
     */
-  final def upcast[B >: A](implicit ta: Typeable[A]): Codec[B] = new Codec[B] {
+  final def upcast[B >: A](implicit ct: reflect.ClassTag[A]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
-    def encode(b: B) = ta.cast(b) match {
-      case Some(a) => self.encode(a)
-      case None    => Attempt.failure(Err(s"not a value of type ${ta.describe}"))
+    def encode(b: B) = b match {
+      case a: A => self.encode(a)
+      case _    => Attempt.failure(Err(s"not a value of type ${ct.runtimeClass.getSimpleName}"))
     }
     def decode(bv: BitVector) = self.decode(bv)
     override def toString = self.toString
@@ -377,13 +359,13 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     *
     * @group combinators
     */
-  final def downcast[B <: A](implicit tb: Typeable[B]): Codec[B] = new Codec[B] {
+  final def downcast[B <: A](implicit ct: reflect.ClassTag[B]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(b)
     def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
-      tb.cast(result.value) match {
-        case Some(b) => Attempt.successful(DecodeResult(b, result.remainder))
-        case None    => Attempt.failure(Err(s"not a value of type ${tb.describe}"))
+      result.value match {
+        case b: B => Attempt.successful(DecodeResult(b, result.remainder))
+        case _    => Attempt.failure(Err(s"not a value of type ${ct.runtimeClass.getSimpleName}"))
       }
     }
     override def toString = self.toString
@@ -412,29 +394,29 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     override def toString = str
   }
 
-  /**
-    * Supports creation of a coproduct codec. See [[scodec.codecs.CoproductCodecBuilder]] for details.
-    * @group coproduct
-    */
-  def :+:[B](
-      left: Codec[B]
-  ): codecs.CoproductCodecBuilder[B :+: A :+: CNil, Codec[B] :: Codec[A] :: HNil, B :+: A :+: CNil] =
-    codecs.CoproductCodecBuilder(left :: self :: HNil)
+  // /**
+  //   * Supports creation of a coproduct codec. See [[scodec.codecs.CoproductCodecBuilder]] for details.
+  //   * @group coproduct
+  //   */
+  // def :+:[B](
+  //     left: Codec[B]
+  // ): codecs.CoproductCodecBuilder[B :+: A :+: CNil, Codec[B] :: Codec[A] :: HNil, B :+: A :+: CNil] =
+  //   codecs.CoproductCodecBuilder(left :: self :: HNil)
 
-  /**
-    * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
-    * @group combinators
-    */
-  def toField[K]: Codec[FieldType[K, A]] =
-    xmap[FieldType[K, A]](a => labelled.field[K](a), identity)
+  // /**
+  //   * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
+  //   * @group combinators
+  //   */
+  // def toField[K]: Codec[FieldType[K, A]] =
+  //   xmap[FieldType[K, A]](a => labelled.field[K](a), identity)
 
-  /**
-    * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
-    * The specified key is pushed in to the context of any errors that are returned from the resulting codec.
-    * @group combinators
-    */
-  def toFieldWithContext[K <: Symbol](k: K): Codec[FieldType[K, A]] =
-    toField[K].withContext(k.name)
+  // /**
+  //   * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
+  //   * The specified key is pushed in to the context of any errors that are returned from the resulting codec.
+  //   * @group combinators
+  //   */
+  // def toFieldWithContext[K <: Symbol](k: K): Codec[FieldType[K, A]] =
+  //   toField[K].withContext(k.name)
 
   override def decodeOnly[AA >: A]: Codec[AA] = {
     val sup = super.decodeOnly[AA]
@@ -506,59 +488,45 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     override def toString = s"lazily($c)"
   }
 
-  def summon[A](implicit c: Lazy[Codec[A]]): Codec[A] = c.value
-
-  /**
-    * Supports derived codecs.
-    * @group ctor
-    */
-  implicit val deriveHNil: Codec[HNil] =
-    codecs.HListCodec.hnilCodec
-
-  /**
-    * Supports derived codecs.
-    * @group ctor
-    */
-  implicit def deriveProduct[H, T <: HList](
-      implicit headCodec: Lazy[Codec[H]],
-      tailAux: Lazy[Codec[T]]
-  ): Codec[H :: T] =
-    headCodec.value :: tailAux.value
-
-  /**
-    * Supports derived codecs.
-    * @group ctor
-    */
-  implicit def deriveRecord[KH <: Symbol, VH, TRec <: HList, KT <: HList](
-      implicit
-      keys: Keys.Aux[FieldType[KH, VH] :: TRec, KH :: KT],
-      headCodec: Lazy[Codec[VH]],
-      tailAux: Lazy[Codec[TRec]]
-  ): Codec[FieldType[KH, VH] :: TRec] = lazily {
-    val headFieldCodec: Codec[FieldType[KH, VH]] = headCodec.value.toFieldWithContext(keys().head)
-    headFieldCodec :: tailAux.value
+  extension on [T <: Tuple, U <: Tuple](t: Codec[T])(given u: codecs.DropUnits[T] { type L = U }) {
+    def dropUnits: Codec[U] = t.xmap(u.removeUnits, u.addUnits)
   }
 
-  /**
-    * Supports derived codecs.
-    * @group ctor
-    */
-  implicit def deriveLabelledGeneric[A, Rec <: HList](
-      implicit
-      lgen: LabelledGeneric.Aux[A, Rec],
-      auto: Lazy[Codec[Rec]]
-  ): Codec[A] = auto.value.xmap(lgen.from, lgen.to)
+  extension on [H, T <: Tuple](t: Codec[T]) {
+    def ::(h: Codec[H]): Codec[H *: T] =
+      new Codec[H *: T] {
+        def sizeBound = h.sizeBound + t.sizeBound
+        def encode(ht: H *: T) = Codec.encodeBoth(h, t)(ht.head, ht.tail)
+        def decode(bv: BitVector) = Codec.decodeBoth(h, t)(bv).map(_.map(_ *: _))
+        override def toString = s"$h :: $t"
+      } 
+  }
 
-  /**
-    * Supports derived codecs.
-    * @group ctor
-    */
-  implicit def deriveCoproduct[A, D, C0 <: Coproduct](
-      implicit
-      discriminated: codecs.Discriminated[A, D],
-      auto: codecs.CoproductBuilderAuto[A] { type C = C0 },
-      auto2: codecs.CoproductBuilderAutoDiscriminators[A, C0, D]
-  ): Codec[A] = auto.apply.auto
+  extension on [A, B](b: Codec[B]) {
+    def ::(a: Codec[A]): Codec[(A, B)] =
+      new Codec[(A, B)] {
+        def sizeBound = a.sizeBound + b.sizeBound
+        def encode(ab: (A, B)) = Codec.encodeBoth(a, b)(ab._1, ab._2)
+        def decode(bv: BitVector) = Codec.decodeBoth(a, b)(bv)
+        override def toString = s"$a :: $b"
+      }
+  }
+
+  // def [H, T <: Tuple] (h: Codec[H]) :: (t: Codec[T]): Codec[H *: T] =
+  //  new Codec[H *: T] {
+  //     def sizeBound = h.sizeBound + t.sizeBound
+  //     def encode(ht: H *: T) = Codec.encodeBoth(h, t)(ht.head, ht.tail)
+  //     def decode(bv: BitVector) = Codec.decodeBoth(h, t)(bv).map(_.map(_ *: _))
+  //     override def toString = s"$h :: $t"
+  //   } 
+
+  // def [A, B] (a: Codec[A]) :: (b: Codec[B])(given DummyImplicit): Codec[(A, B)] =
+  //   new Codec[(A, B)] {
+  //     def sizeBound = a.sizeBound + b.sizeBound
+  //     def encode(ab: (A, B)) = Codec.encodeBoth(a, b)(ab._1, ab._2)
+  //     def decode(bv: BitVector) = Codec.decodeBoth(a, b)(bv)
+  //     override def toString = s"$a :: $b"
+  //   }
 
   /**
     * Creates a coproduct codec builder for the specified type.
@@ -574,7 +542,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
    }}}
     * @group ctor
     */
-  def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
+  // def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
 
   /**
     * Transform typeclass instance.

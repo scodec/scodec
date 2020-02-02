@@ -1,31 +1,31 @@
-package scodec
-package examples
+// package scodec
+// package examples
 
-import scodec.bits.ByteVector
+// import scodec.bits.ByteVector
 
-class UdpDatagramExample extends CodecSuite {
+// class UdpDatagramExample extends CodecSuite {
 
-  case class Datagram(sourcePort: Int, destinationPort: Int, checksum: Int, data: ByteVector)
+//   case class Datagram(sourcePort: Int, destinationPort: Int, checksum: Int, data: ByteVector)
 
-  object UdpCodec {
-    import scodec.codecs._
+//   object UdpCodec {
+//     import scodec.codecs._
 
-    implicit val datagram = {
-      ("source_port" | uint16) ::
-        ("dest_port" | uint16) ::
-        variableSizeBytes(
-          uint16,
-          ("checksum" | uint16) ::
-            ("data" | bytes)
-        )
-    }.as[Datagram]
-  }
+//     implicit val datagram = {
+//       ("source_port" | uint16) ::
+//         ("dest_port" | uint16) ::
+//         variableSizeBytes(
+//           uint16,
+//           ("checksum" | uint16) ::
+//             ("data" | bytes)
+//         )
+//     }.as[Datagram]
+//   }
 
-  import UdpCodec._
+//   import UdpCodec._
 
-  "Datagram codec" should {
-    "roundtrip" in {
-      roundtrip(Datagram(1234, 2345, 0, ByteVector.fill(0xff)(100)))
-    }
-  }
-}
+//   "Datagram codec" should {
+//     "roundtrip" in {
+//       roundtrip(Datagram(1234, 2345, 0, ByteVector.fill(0xff)(100)))
+//     }
+//   }
+// }

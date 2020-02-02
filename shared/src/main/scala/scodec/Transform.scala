@@ -1,12 +1,9 @@
 package scodec
 
-import shapeless._
-import shapeless.ops.coproduct.Align
-
-import scodec.codecs.DropUnits
+import scala.deriving.Mirror
 
 /** Typeclass that describes type constructors that support the `exmap` operation. */
-abstract class Transform[F[_]] { self =>
+trait Transform[F[_]] { self =>
 
   /**
     * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
@@ -60,12 +57,7 @@ abstract class Transform[F[_]] { self =>
     *  - an `F[C]` for some `C <: Coproduct` to/from an `F[SC]` for some sealed class `SC`, where the component types in
     *    the coproduct are the leaf subtypes of the sealed class.
     */
-  def as[A, B](fa: F[A])(implicit as: Transformer[A, B]): F[B] = as(fa)(self)
-}
-
-/** Companion for [[Transform]]. */
-object Transform {
-  def apply[F[_]](implicit t: Transform[F]): Transform[F] = t
+  def as[A, B](fa: F[A])(given as: Transformer[A, B]): F[B] = as(fa)(self)
 }
 
 /**
@@ -73,72 +65,78 @@ object Transform {
   * instance available.
   */
 @annotation.implicitNotFound("""Could not prove that ${A} can be converted to/from ${B}.""")
-abstract class Transformer[A, B] {
+trait Transformer[A, B] {
   def apply[F[_]: Transform](fa: F[A]): F[B]
 }
 
+trait TransformerLowPriority0 {
+  protected def toTuple[A, B <: Tuple](a: A)(given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): B =
+    Tuple.fromProduct(a.asInstanceOf[Product]).asInstanceOf[B]
+  
+  protected def fromTuple[A, B <: Tuple](b: B)(given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): A =
+    m.fromProduct(b.asInstanceOf[Product]).asInstanceOf[A]
+
+}
+
+trait TransformerLowPriority extends TransformerLowPriority0 {
+  given fromProductWithUnits[A, B <: Tuple, C <: Tuple](given 
+    m: Mirror.ProductOf[A],
+    ev: m.MirroredElemTypes =:= B,
+    du: codecs.DropUnits[C] { type L = B }
+  ): Transformer[A, C] =
+    new Transformer[A, C] {
+      def apply[F[_]: Transform](fa: F[A]): F[C] =
+        fa.xmap(a => du.addUnits(toTuple(a)), c => fromTuple(du.removeUnits(c)))
+    }
+
+  given fromProductWithUnitsReverse[A, B <: Tuple, C <: Tuple](given 
+    m: Mirror.ProductOf[A],
+    ev: m.MirroredElemTypes =:= B,
+    du: codecs.DropUnits[C] { type L = B }
+  ): Transformer[C, A] =
+    new Transformer[C, A] {
+      def apply[F[_]: Transform](fc: F[C]): F[A] =
+        fc.xmap(c => fromTuple(du.removeUnits(c)), a => du.addUnits(toTuple(a)))
+    }  
+}
+
 /** Companion for [[Transformer]]. */
-object Transformer {
+object Transformer extends TransformerLowPriority {
 
   /** Identity transformer. */
-  implicit def id[A]: Transformer[A, A] = new Transformer[A, A] {
+  given id[A]: Transformer[A, A] = new Transformer[A, A] {
     def apply[F[_]: Transform](fa: F[A]): F[A] = fa
   }
 
-  /** Builds a `Transformer[A, B]` from a Shapeless `Generic.Aux[A, B]`. */
-  implicit def fromGeneric[A, B](implicit gen: Generic.Aux[A, B]): Transformer[A, B] =
+  given fromProduct[A, B <: Tuple](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): Transformer[A, B] =
     new Transformer[A, B] {
-      def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.to(a), b => gen.from(b))
+      def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(toTuple, fromTuple)
     }
 
-  /** Builds a `Transformer[A, B]` from a Shapeless `Generic.Aux[B, A]`. */
-  implicit def fromGenericReverse[A, B](implicit gen: Generic.Aux[B, A]): Transformer[A, B] =
-    new Transformer[A, B] {
-      def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => gen.from(a), b => gen.to(b))
+  given fromProductReverse[A, B <: Tuple](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): Transformer[B, A] =
+    new Transformer[B, A] {
+      def apply[F[_]: Transform](fb: F[B]): F[A] = fb.xmap(fromTuple, toTuple)
     }
 
-  /** Builds a `Transformer[A, B]` from a Shapeless `Generic` for `A` where the representation is an `HList` which is compatible with the `HList B` with units removed. */
-  implicit def fromGenericWithUnitsHList[A, Repr <: HList, B <: HList](
-      implicit gen: Generic.Aux[A, Repr],
-      du: DropUnits.Aux[B, Repr]
-  ): Transformer[A, B] = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] =
-      fa.xmap(a => du.addUnits(gen.to(a)), b => gen.from(du.removeUnits(b)))
-  }
 
-  /** Builds a `Transformer[A, B]` from a Shapeless `Generic` for `B` where the representation is an `HList` which is compatible with the `HList A` with units removed. */
-  implicit def fromGenericWithUnitsHListReverse[A <: HList, Repr <: HList, B](
-      implicit gen: Generic.Aux[B, Repr],
-      du: DropUnits.Aux[A, Repr]
-  ): Transformer[A, B] = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] =
-      fa.xmap(a => gen.from(du.removeUnits(a)), b => du.addUnits(gen.to(b)))
-  }
+  given fromProductSingleton[A, B](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B *: Unit): Transformer[A, B] =
+    new Transformer[A, B] {
+      def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => toTuple(a).head, b => fromTuple(b *: ()))
+    }
 
-  /** Builds a `Transformer[A, B]` for singleton case class `A` and value `B`. */
-  implicit def fromGenericSingleton[A, B](
-      implicit gen: Generic.Aux[A, B :: HNil]
-  ): Transformer[A, B] = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] =
-      fa.xmap(a => gen.to(a).head, b => gen.from(b :: HNil))
-  }
+  given fromProductSingletonReverse[A, B](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B *: Unit): Transformer[B, A] =
+    new Transformer[B, A] {
+      def apply[F[_]: Transform](fb: F[B]): F[A] = fb.xmap(b => fromTuple(b *: ()), a => toTuple(a).head)
+    }
 
-  /** Builds a `Transformer[A, B]` for value `A` and singleton case class `B`. */
-  implicit def fromGenericSingletonReverse[A, B](
-      implicit gen: Generic.Aux[B, A :: HNil]
-  ): Transformer[A, B] = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] =
-      fa.xmap(a => gen.from(a :: HNil), b => gen.to(b).head)
-  }
-
-  /** Builds a `Transformer[A, B]` where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
-  implicit def fromGenericWithUnalignedCoproductReverse[B, Repr <: Coproduct, A <: Coproduct](
-      implicit
-      gen: Generic.Aux[B, Repr],
-      toAligned: Align[Repr, A],
-      fromAligned: Align[A, Repr]
-  ): Transformer[A, B] = new Transformer[A, B] {
-    def apply[F[_]: Transform](fa: F[A]): F[B] =
-      fa.xmap(a => gen.from(fromAligned(a)), b => toAligned(gen.to(b)))
-  }
+  // /** Builds a `Transformer[A, B]` where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
+  // implicit def fromGenericWithUnalignedCoproductReverse[B, Repr <: Coproduct, A <: Coproduct](
+  //     implicit
+  //     gen: Generic.Aux[B, Repr],
+  //     toAligned: Align[Repr, A],
+  //     fromAligned: Align[A, Repr]
+  // ): Transformer[A, B] = new Transformer[A, B] {
+  //   def apply[F[_]: Transform](fa: F[A]): F[B] =
+  //     fa.xmap(a => gen.from(fromAligned(a)), b => toAligned(gen.to(b)))
+  // }
 }
