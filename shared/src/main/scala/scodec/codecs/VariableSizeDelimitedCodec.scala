@@ -41,15 +41,15 @@ private[codecs] final class VariableSizeDelimitedCodec[A](
   }
 
   private def findDelimiterIndex(buffer: BitVector): Long = {
-    ???
-    // var offset = 0L
-    // do {
-    //   if (buffer.drop(offset).startsWith(delimiter)) {
-    //     return offset
-    //   }
-    //   offset += segmentSize
-    // } while (offset < buffer.size)
-    // -1
+    var offset = 0L
+    while {
+      if (buffer.drop(offset).startsWith(delimiter)) {
+        return offset
+      }
+      offset += segmentSize
+      offset < buffer.size
+    } do ()
+    -1
   }
 
   override def toString = s"VariableSizeDelimited($delimiterCodec, $valueCodec, $multipleValueSize)"
