@@ -536,7 +536,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     */
   // def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
 
-  inline given derived[A](given m: Mirror.Of[A]) as Codec[A] = {
+  inline def derived[A](given m: Mirror.Of[A]): Codec[A] = {
     val elemCodecs = summonAllCodecs[m.MirroredElemTypes]
     inline m match {
       case p: Mirror.ProductOf[A] =>

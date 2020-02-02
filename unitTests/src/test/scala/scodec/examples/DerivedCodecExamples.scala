@@ -12,12 +12,12 @@ class DerivedCodecsExample extends CodecSuite {
     given Discriminated[Sprocket, Int] = Discriminated(uint8)
   }
 
-  case class Woozle(count: Int, strength: Int) extends Sprocket
+  case class Woozle(count: Int, strength: Int) extends Sprocket derives Codec
   object Woozle {
     given Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
   }
 
-  case class Wocket(size: Int, inverted: Boolean) extends Sprocket
+  case class Wocket(size: Int, inverted: Boolean) extends Sprocket derives Codec
   object Wocket {
     given Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
   }
@@ -28,7 +28,7 @@ class DerivedCodecsExample extends CodecSuite {
     given Codec[Wootle] = (uint8 :: bits).as[Wootle]
   }
 
-  case class Geiling(name: String, sprockets: Vector[Sprocket])
+  case class Geiling(name: String, sprockets: Vector[Sprocket]) derives Codec
 
   sealed trait Color
   object Color {
