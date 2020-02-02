@@ -1,5 +1,8 @@
 package scodec
 
+import scala.deriving._
+import scala.compiletime._
+
 import scodec.bits.BitVector
 
 /**
@@ -543,6 +546,41 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     * @group ctor
     */
   // def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
+
+  inline given derived[A](given m: Mirror.Of[A]) as Codec[A] = {
+    val elemInstances = summonAll[m.MirroredElemTypes]
+    inline m match {
+      case s: Mirror.SumOf[A]     => deriveSum(s, elemInstances)
+      case p: Mirror.ProductOf[A] => deriveProduct(p, elemInstances)
+    }
+  }
+
+  private inline def summonOne[A]: A = summonFrom { case a: A => a }
+
+  private inline def summonAll[T <: Tuple]: List[Codec[_]] = inline erasedValue[T] match {
+    case _: Unit => Nil
+    case _: (t *: ts) => summonOne[Codec[t]] :: summonAll[ts]
+  }
+
+  private def deriveSum[A](s: Mirror.SumOf[A], elems: List[Codec[_]]): Codec[A] = ???
+
+  private def deriveProduct[A](p: Mirror.ProductOf[A], elems: List[Codec[_]]): Codec[A] =
+    new Codec[A] {
+      def sizeBound = elems.foldLeft(SizeBound.exact(0))(_ + _.sizeBound)
+      def encode(a: A) = 
+        a.asInstanceOf[Product].
+          productIterator.
+          zip(elems).
+          foldLeft(Attempt.successful(BitVector.empty)) { case (acc, (i, c)) =>
+            acc.flatMap(buf => c.asInstanceOf[Codec[Any]].encode(i).map(buf2 => buf ++ buf2))
+          }
+      def decode(b: BitVector) =
+        elems.foldLeft(Attempt.successful(DecodeResult(Nil: List[AnyRef], b))) { 
+          case (Attempt.Successful(DecodeResult(values, b)), c) =>
+            c.asInstanceOf[Codec[AnyRef]].decode(b).map(_.map(_ :: values))
+          case (f: Attempt.Failure, _) => f
+        }.map(_.map(values => p.fromProduct(new ArrayProduct(values.reverse.toArray))))
+    }
 
   /**
     * Transform typeclass instance.
