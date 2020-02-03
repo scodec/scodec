@@ -25,6 +25,10 @@
   */
 package object scodec {
 
+  implicit class AsSyntax[F[_], A](private val self: F[A]) extends AnyVal {
+    def as[B](given t1: Transform[F], t2: Transformer[A, B]): F[B] = t2(self)(given t1)
+  }
+
 
   /** Provides common operations on a `Codec[HList]`. */
   // final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val self: Codec[L])

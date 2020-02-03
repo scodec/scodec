@@ -179,7 +179,8 @@ object Encoder extends EncoderFunctions {
     def encode(value: A) = f(value)
   }
 
-  implicit class EncoderAs[A](private val self: Encoder[A]) extends AnyVal {
-    def as[B](given Transformer[A, B]): Encoder[B] = self.encodeOnly.as[B]
+  given Transform[Encoder] {
+    def [A, B](fa: Encoder[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] = 
+      fa.econtramap(g)
   }
 }

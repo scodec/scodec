@@ -278,7 +278,8 @@ object Decoder extends DecoderFunctions {
     override def toString = s"modify"
   }
 
-  implicit class DecoderAs[A](private val self: Decoder[A]) extends AnyVal {
-    def as[B](given Transformer[A, B]): Decoder[B] = self.decodeOnly.as[B]
+  given Transform[Decoder] {
+    def [A, B](fa: Decoder[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] = 
+      fa.emap(f)
   }
 }

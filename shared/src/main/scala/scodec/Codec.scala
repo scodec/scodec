@@ -174,13 +174,13 @@ import scala.collection.mutable
   *
   * @define TransformTC Codec
   */
-trait Codec[A] extends GenCodec[A, A] with TransformOps[Codec, A] { self =>
+trait Codec[A] extends GenCodec[A, A] { self =>
 
   /**
     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
     * @group combinators
     */
-  override def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B] {
+  final def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.econtramap(g).encode(b)
     def decode(buffer: BitVector) = self.emap(f).decode(buffer)
@@ -190,7 +190,7 @@ trait Codec[A] extends GenCodec[A, A] with TransformOps[Codec, A] { self =>
     * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
     * @group combinators
     */
-  override def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
+  final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(g(b))
     def decode(buffer: BitVector) = self.decode(buffer).map { _.map(f) }
@@ -683,4 +683,9 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   given [A](given ccount: Codec[Int], ca: Codec[A]) as Codec[List[A]] = codecs.listOfN(ccount, ca)
   given [A](given ccount: Codec[Int], ca: Codec[A]) as Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
   given [A](given cguard: Codec[Boolean], ca: Codec[A]) as Codec[Option[A]] = codecs.optional(cguard, ca)
+
+  given Transform[Codec] {
+    def [A, B](fa: Codec[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = 
+      fa.exmap(f, g)
+  }
 }

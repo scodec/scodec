@@ -863,7 +863,7 @@ package object codecs {
   ) = new Codec[A] {
     val sizedWiden = widenIntToLong(sizeCodec)
     private val codec = new PaddedVarAlignedCodec(
-      sizedWiden.widen[Long](_ * 8, bitsToBytesDivisible),
+      sizedWiden.widen(_ * 8, bitsToBytesDivisible),
       valueCodec,
       multipleForPadding.toLong * 8
     )
@@ -936,7 +936,7 @@ package object codecs {
     variableSizeBytesLong(widenIntToLong(size), value, sizePadding.toLong)
 
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
-    c.widen[Long](
+    c.widen(
         i => i.toLong,
         l =>
           if (l > Int.MaxValue || l < Int.MinValue)
@@ -978,7 +978,7 @@ package object codecs {
       sizePadding: Long = 0
   ): Codec[A] = new Codec[A] {
     private val codec =
-      variableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), value, sizePadding * 8)
+      variableSizeBitsLong(size.widen(_ * 8, bitsToBytesDivisible), value, sizePadding * 8)
     def sizeBound = size.sizeBound + value.sizeBound
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
@@ -1097,7 +1097,7 @@ package object codecs {
       sizePadding: Long = 0
   ): Codec[(A, B)] = new Codec[(A, B)] {
     private val codec = variableSizePrefixedBitsLong(
-      size.widen[Long](_ * 8, bitsToBytesDivisible),
+      size.widen(_ * 8, bitsToBytesDivisible),
       prefix,
       value,
       sizePadding * 8
@@ -1170,7 +1170,7 @@ package object codecs {
   def peekVariableSizeBytesLong(size: Codec[Long], sizePadding: Long = 0L): Codec[BitVector] =
     new Codec[BitVector] {
       private val codec =
-        peekVariableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), sizePadding * 8)
+        peekVariableSizeBitsLong(size.widen(_ * 8, bitsToBytesDivisible), sizePadding * 8)
       def sizeBound = codec.sizeBound
       def encode(a: BitVector) = codec.encode(a)
       def decode(b: BitVector) = codec.decode(b)
@@ -1341,7 +1341,7 @@ package object codecs {
       .flatZip { count =>
         new VectorCodec(valueCodec, Some(count))
       }
-      .narrow[Vector[A]](
+      .narrow(
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
@@ -1444,7 +1444,7 @@ package object codecs {
       .flatZip { count =>
         new ListCodec(valueCodec, Some(count))
       }
-      .narrow[List[A]](
+      .narrow(
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
