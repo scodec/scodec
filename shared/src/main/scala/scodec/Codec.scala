@@ -688,4 +688,8 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     def [A, B](fa: Codec[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = 
       fa.exmap(f, g)
   }
+
+  implicit class AsSyntax[A](private val self: Codec[A]) extends AnyVal {
+    def as[B](given t: Transformer[A, B]): Codec[B] = t(self)
+  }
 }

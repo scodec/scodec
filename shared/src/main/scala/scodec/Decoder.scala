@@ -282,4 +282,8 @@ object Decoder extends DecoderFunctions {
     def [A, B](fa: Decoder[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] = 
       fa.emap(f)
   }
+
+  implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal {
+    def as[B](given t: Transformer[A, B]): Decoder[B] = t(self)
+  }
 }
