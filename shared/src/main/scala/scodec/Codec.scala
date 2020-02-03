@@ -517,7 +517,20 @@ object Codec extends EncoderFunctions with DecoderFunctions {
           } yield a *: l).decode(b)
         override def toString = s"flatPrepend($codecA, $f)"
       }
+    def >>:~(f: A => Codec[B]): Codec[A *: B] = codecA.flatPrepend(f)
   }
+
+  extension on [B <: Tuple](rhs: Codec[B]) {
+    def :~>:(lhs: Codec[Unit]): Codec[B] = lhs.dropLeft(rhs)
+  }
+  //   /**
+  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+  //     * `B :: L` but only returns `L`.  HList equivalent of `~>`.
+  //     * @group hlist
+  //     */
+  //   def :~>:[B](codec: Codec[B])(implicit ev: Unit =:= B): Codec[L] = codec.dropLeft(self)
+
+
 
   // def [H, T <: Tuple] (h: Codec[H]) :: (t: Codec[T]): Codec[H *: T] =
   //  new Codec[H *: T] {
