@@ -4,6 +4,7 @@ import scala.deriving._
 import scala.compiletime._
 
 import scodec.bits.{BitVector, ByteVector}
+import scala.collection.mutable
 
 /**
   * Supports encoding a value of type `A` to a `BitVector` and decoding a `BitVector` to a value of `A`.
@@ -504,6 +505,20 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       }
   }
 
+  extension on [A, B <: Tuple](codecA: Codec[A]) {
+    def flatPrepend(f: A => Codec[B]): Codec[A *: B] =
+      new Codec[A *: B] {
+        def sizeBound = codecA.sizeBound.atLeast
+        def encode(ab: A *: B) = encodeBoth(codecA, f(ab.head))(ab.head, ab.tail)
+        def decode(b: BitVector) =
+          (for {
+            a <- codecA
+            l <- f(a)
+          } yield a *: l).decode(b)
+        override def toString = s"flatPrepend($codecA, $f)"
+      }
+  }
+
   // def [H, T <: Tuple] (h: Codec[H]) :: (t: Codec[T]): Codec[H *: T] =
   //  new Codec[H *: T] {
   //     def sizeBound = h.sizeBound + t.sizeBound
@@ -536,44 +551,81 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     */
   // def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
 
+  inline given derivedTuple[T <: Tuple] as Codec[T] = {
+    val codecs = summonCodecs[T].toArray.asInstanceOf[Array[Codec[_]]]
+    deriveProduct(codecs, _.toArray.iterator, p => Tuple.fromProduct(p).asInstanceOf[T])
+  }
+
   inline def derived[A](given m: Mirror.Of[A]): Codec[A] = {
-    val elemCodecs = summonAllCodecs[m.MirroredElemTypes]
+    val elemCodecs = summonCodecs[m.MirroredElemTypes].toArray.asInstanceOf[Array[Codec[_]]]
+    val elemLabels = summonLabels[m.MirroredElemLabels]
+    val codecs = elemCodecs.zip(elemLabels).map { (c, l) =>
+      c.withContext(l).asInstanceOf[Codec[_]]
+    }
     inline m match {
       case p: Mirror.ProductOf[A] =>
-        deriveProduct(p, elemCodecs)
+        deriveProduct(codecs, a => a.asInstanceOf[Product].productIterator, t => p.fromProduct(t).asInstanceOf[A])
       case s: Mirror.SumOf[A] =>
-        deriveSum(s, elemCodecs)
+        deriveSum(s, codecs)
     }
   }
 
   private inline def summonOne[A]: A = summonFrom { case a: A => a }
 
-  private inline def summonAllCodecs[T <: Tuple]: List[Codec[_]] = inline erasedValue[T] match {
+  private inline def summonCodecs[T <: Tuple]: List[Codec[_]] = inline erasedValue[T] match {
     case _: Unit => Nil
-    case _: (t *: ts) => summonOne[Codec[t]] :: summonAllCodecs[ts]
+    case _: (t *: ts) => summonOne[Codec[t]] :: summonCodecs[ts]
   }
 
-  private def deriveProduct[A](p: Mirror.ProductOf[A], elems: List[Codec[_]]): Codec[A] =
+  private inline def summonLabels[T <: Tuple]: List[String] = inline erasedValue[T] match {
+    case _: Unit => Nil
+    case _: (t *: ts) => constValue[t].asInstanceOf[String] :: summonLabels[ts]
+  }
+
+  private def deriveProduct[A](codecs: Array[Codec[_]], toElems: A => Iterator[Any], mk: Product => A): Codec[A] = {
     new Codec[A] {
-      def sizeBound = elems.foldLeft(SizeBound.exact(0))(_ + _.sizeBound)
-      def encode(a: A) = 
-        a.asInstanceOf[Product].
-          productIterator.
-          zip(elems).
-          foldLeft(Attempt.successful(BitVector.empty)) { case (acc, (i, c)) =>
-            acc.flatMap(buf => c.asInstanceOf[Codec[Any]].encode(i).map(buf2 => buf ++ buf2))
+      def sizeBound = codecs.foldLeft(SizeBound.exact(0))(_ + _.sizeBound)
+      def encode(a: A) = {
+        var i = 0
+        val elems = toElems(a)
+        var result = BitVector.empty
+        var err: Err = null
+        while (i < codecs.size && (err eq null)) {
+          val elem = elems.next.asInstanceOf[Any]
+          val codec = codecs(i).asInstanceOf[Codec[Any]]
+          codec.encode(elem) match {
+            case Attempt.Successful(out) =>
+              result = result ++ out
+            case Attempt.Failure(e) => err = e
           }
-      def decode(b: BitVector) =
-        elems.foldLeft(Attempt.successful(DecodeResult(Nil: List[AnyRef], b))) { 
-          case (Attempt.Successful(DecodeResult(values, b)), c) =>
-            c.asInstanceOf[Codec[AnyRef]].decode(b).map(_.map(_ :: values))
-          case (f: Attempt.Failure, _) => f
-        }.map(_.map(values => p.fromProduct(new ArrayProduct(values.reverse.toArray))))
+          i += 1
+        }
+        if (err eq null) Attempt.successful(result) else Attempt.failure(err)
+      }
+      def decode(b: BitVector) = {
+        var i = 0
+        val bldr = mutable.ArrayBuilder.make[AnyRef]
+        var buf = b
+        var err: Err = null
+        while (i < codecs.size && (err eq null)) {
+          val codec = codecs(i).asInstanceOf[Codec[AnyRef]]
+          codec.decode(buf) match {
+            case Attempt.Successful(DecodeResult(a, rem)) =>
+              bldr += a
+              buf = rem
+            case Attempt.Failure(e) => err = e
+          }
+          i += 1
+        }
+        if (err eq null) Attempt.successful(DecodeResult(mk(new ArrayProduct(bldr.result)), buf))
+        else Attempt.failure(err)
+      }
     }
+  }
 
   private def deriveSum[A](
     s: Mirror.SumOf[A], 
-    elemCodecs: List[Codec[_]],
+    elemCodecs: Array[Codec[_]],
   ): Codec[A] = new Codec[A] {
     private val discriminator = codecs.uint8
     def sizeBound = discriminator.sizeBound + SizeBound.choice(elemCodecs.map(_.sizeBound))

@@ -7,6 +7,20 @@ import implicits._
 
 class DerivedCodecsExample extends CodecSuite {
 
+  "enums" should {
+    enum Color derives Codec { case Red, Green, Blue }
+
+    "support explicit codecs" in {
+      val c = mappedEnum(uint8, Color.Red -> 10, Color.Green -> 20, Color.Blue -> 30)
+      assertBitsEqual(c.encode(Color.Green).require, 0x14)
+    }
+
+    "support derived codecs" in {
+      val c = summon[Codec[Color]]
+      assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, 0x000102)
+    }
+  }
+
   sealed trait Sprocket derives Codec
   case class Woozle(count: Int, strength: Int) extends Sprocket derives Codec
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket derives Codec
@@ -17,13 +31,13 @@ class DerivedCodecsExample extends CodecSuite {
 
   case class Geiling(name: String, sprockets: Vector[Sprocket]) derives Codec
 
-  sealed trait Color
-  object Color {
-    case object Red extends Color
-    case object Yellow extends Color
-    case object Green extends Color
+  sealed trait ColorT
+  object ColorT {
+    case object Red extends ColorT
+    case object Yellow extends ColorT
+    case object Green extends ColorT
 
-    given Codec[Color] = mappedEnum(uint8, Red -> 0, Yellow -> 1, Green -> 2)
+    given Codec[ColorT] = mappedEnum(uint8, Red -> 0, Yellow -> 1, Green -> 2)
   }
 
   case class Point(x: Int, y: Int, z: Int)
@@ -75,7 +89,7 @@ class DerivedCodecsExample extends CodecSuite {
     }
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
-      summon[Codec[Color]].encode(Color.Green).require shouldBe hex"02".bits
+      summon[Codec[ColorT]].encode(ColorT.Green).require shouldBe hex"02".bits
       summon[Codec[Point]].encode(Point(1, 2, 3)).require should have size (24)
     }
   }

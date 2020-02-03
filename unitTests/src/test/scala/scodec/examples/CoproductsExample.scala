@@ -6,19 +6,6 @@ import codecs._
 
 class CoproductsExample extends CodecSuite {
 
-  "enums" should {
-    "support explicit codecs" in {
-      enum Color { case Red, Green, Blue }
-      val c = mappedEnum(uint8, Color.Red -> 10, Color.Green -> 20, Color.Blue -> 30)
-      assertBitsEqual(c.encode(Color.Green).require, 0x14)
-    }
-    "support derived codecs" in {
-      enum Color derives Codec { case Red, Green, Blue }
-      val c = summon[Codec[Color]]
-      assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, 0x000102)
-    }
-  }
-
   sealed trait Sprocket derives Codec
   case class Woozle(count: Int, strength: Int) extends Sprocket
   object Woozle {
