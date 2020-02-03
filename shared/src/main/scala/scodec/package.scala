@@ -25,107 +25,11 @@
   */
 package object scodec {
 
-  /**
-    * Provides method syntax for working with a type constructor that has a [[Transform]] typeclass instance.
-    *
-    * @param self Supports [[TransformSyntax]].
-    */
-  implicit class TransformSyntax[F[_], A](val self: F[A])(implicit t: Transform[F]) {
-
-    /**
-      * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
-      * @group combinators
-      */
-    def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): F[B] = t.exmap(self, f, g)
-
-    /**
-      * Curried version of `exmap`.
-      * @group combinators
-      */
-    def exmapc[B](f: A => Attempt[B])(g: B => Attempt[A]): F[B] = t.exmap(self, f, g)
-
-    /**
-      * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
-      * @group combinators
-      */
-    def xmap[B](f: A => B, g: B => A): F[B] = t.xmap(self, f, g)
-
-    /**
-      * Curried version of `xmap`.
-      * @group combinators
-      */
-    def xmapc[B](f: A => B)(g: B => A): F[B] = t.xmap(self, f, g)
-
-    /**
-      * Transforms using two functions, `A => Attempt[B]` and `B => A`.
-      *
-      * The supplied functions form an injection from `B` to `A`. Hence, this method converts from
-      * a larger to a smaller type. Hence, the name `narrow`.
-      * @group combinators
-      */
-    def narrow[B](f: A => Attempt[B], g: B => A): F[B] = t.narrow(self, f, g)
-
-    /**
-      * Curried version of `narrow`.
-      * @group combinators
-      */
-    def narrowc[B](f: A => Attempt[B])(g: B => A): F[B] = t.narrow(self, f, g)
-
-    /**
-      * Transforms using two functions, `A => B` and `B => Attempt[A]`.
-      *
-      * The supplied functions form an injection from `A` to `B`. Hence, this method converts from
-      * a smaller to a larger type. Hence, the name `widen`.
-      * @group combinators
-      */
-    def widen[B](f: A => B, g: B => Attempt[A]): F[B] = t.widen(self, f, g)
-
-    /**
-      * Curried version of `widen`.
-      * @group combinators
-      */
-    def widenc[B](f: A => B)(g: B => Attempt[A]): F[B] = t.widen(self, f, g)
-
-    /**
-      * Transforms using two functions, `A => B` and `B => Option[A]`.
-      *
-      * Particularly useful when combined with case class apply/unapply. E.g., `widenOpt(fa, Foo.apply, Foo.unapply)`.
-      *
-      * @group combinators
-      */
-    def widenOpt[B](f: A => B, g: B => Option[A]): F[B] = t.widenOpt(self, f, g)
-
-    /**
-      * Curried version of `widenOpt`.
-      * @group combinators
-      */
-    def widenOptc[B](f: A => B)(g: B => Option[A]): F[B] = t.widenOpt(self, f, g)
-
-    /**
-      * Transforms using implicitly available evidence that such a transformation is possible.
-      *
-      * Typical transformations include converting:
-      *  - an `F[L]` for some `L <: HList` to/from an `F[CC]` for some case class `CC`, where the types in the case class are
-      *    aligned with the types in `L`
-      *  - an `F[C]` for some `C <: Coproduct` to/from an `F[SC]` for some sealed class `SC`, where the component types in
-      *    the coproduct are the leaf subtypes of the sealed class.
-      * @group combinators
-      */
-    def as[B](implicit as: Transformer[A, B]): F[B] = as(self)
-  }
 
   /** Provides common operations on a `Codec[HList]`. */
   // final implicit class HListCodecEnrichedWithHListSupport[L <: HList](val self: Codec[L])
   //     extends AnyVal {
   //   import codecs.HListCodec
-
-  //   /**
-  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec representing `Codec[B :: L]`.
-  //     * That is, this operator is a codec-level `HList` prepend operation.
-  //     * @param codec codec to prepend
-  //     * @group hlist
-  //     */
-  //   def ::[B](codec: Codec[B]): Codec[B :: L] = HListCodec.prepend(codec, self)
 
   //   /**
   //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
@@ -249,79 +153,12 @@ package object scodec {
   //   import codecs.HListCodec
 
   //   /**
-  //     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, creates a new codec that encodes/decodes an `HList` of `B :: A :: HNil`.
-  //     * For example, {{{uint8 :: utf8}}} has type `Codec[Int :: String :: HNil]`.
-  //     * @group hlist
-  //     */
-  //   def ::[B](codecB: Codec[B]): Codec[B :: A :: HNil] =
-  //     codecB :: self :: HListCodec.hnilCodec
-
-  //   /**
-  //     * When called on a `Codec[A]`, returns a new codec that encodes/decodes `B :: A :: HNil`.
-  //     * HList equivalent of `~>`.
-  //     * @group hlist
-  //     */
-  //   def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
-  //     codecB :~>: self.hlist
-
-  //   /**
-  //     * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
-  //     * This allows later parts of an `HList` codec to be dependent on earlier values.
-  //     * @group hlist
-  //     */
-  //   def flatPrepend[L <: HList](f: A => Codec[L]): Codec[A :: L] = HListCodec.flatPrepend(self, f)
-
-  //   /**
-  //     * Creates a new codec that encodes/decodes an `HList` type of `A :: L` given a function `A => Codec[L]`.
-  //     * This allows later parts of an `HList` codec to be dependent on earlier values.
-  //     * Operator alias for `flatPrepend`.
-  //     * @group hlist
-  //     */
-  //   def >>:~[L <: HList](f: A => Codec[L]): Codec[A :: L] = flatPrepend(f)
-
-  //   /**
   //     * Creates a new codec that encodes/decodes an `HList` type of `A :: B :: HNil` given a function `A => Codec[B]`.
   //     * If `B` is an `HList` type, consider using `flatPrepend` instead, which avoids nested `HLists`.
   //     * This is the direct `HList` equivalent of `flatZip`.
   //     * @group hlist
   //     */
   //   def flatZipHList[B](f: A => Codec[B]): Codec[A :: B :: HNil] = flatPrepend(f.andThen(_.hlist))
-  // }
-
-  // /** Provides syntax related to generic programming for codecs of any type. */
-  // final implicit class ValueCodecEnrichedWithGenericSupport[A](val self: Codec[A]) extends AnyVal {
-
-  //   /**
-  //     * Polymorphic function version of `xmap`.
-  //     *
-  //     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
-  //     * xmapping with `p` and `q`, using `p` to convert from `A` to `B` and using `q` to convert from
-  //     * `B` to `A`.
-  //     *
-  //     * @param p polymorphic function that converts from `A` to `B`
-  //     * @param q polymorphic function that converts from `B` to `A`
-  //     * @group generic
-  //     */
-  //   def polyxmap[B](p: Poly, q: Poly)(
-  //       implicit aToB: Case.Aux[p.type, A :: HNil, B],
-  //       bToA: Case.Aux[q.type, B :: HNil, A]
-  //   ): Codec[B] =
-  //     self.xmap(aToB, bToA)
-
-  //   /**
-  //     * Polymorphic function version of `xmap` that uses a single polymorphic function in both directions.
-  //     *
-  //     * When called on a `Codec[A]` where `A` is not a subytpe of `HList`, returns a new codec that's the result of
-  //     * xmapping with `p` for both forward and reverse directions.
-  //     *
-  //     * @param p polymorphic function that converts from `A` to `B` and from `B` to `A`
-  //     * @group generic
-  //     */
-  //   def polyxmap1[B](p: Poly)(
-  //       implicit aToB: Case.Aux[p.type, A :: HNil, B],
-  //       bToA: Case.Aux[p.type, B :: HNil, A]
-  //   ): Codec[B] =
-  //     polyxmap(p, p)
   // }
 
   // /** Provides additional methods on `HList`s. */
@@ -332,34 +169,6 @@ package object scodec {
   //     * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a `Codec[X0 :: X1 :: ... :: Xn :: HNil].
   //     */
   //   def toCodec(implicit to: codecs.ToHListCodec[L]): to.Out = to(self)
-  // }
-
-  // /** Provides methods specific to encoders of Shapeless coproducts. */
-  // final implicit class EnrichedCoproductEncoder[C <: Coproduct](val self: Encoder[C])
-  //     extends AnyVal {
-
-  //   /**
-  //     * When called on a `Encoder[C]` where `C` is a coproduct containing type `A`, converts to an `Encoder[A]`.
-  //     * @group coproduct
-  //     */
-  //   def selectEncoder[A](implicit inj: ops.coproduct.Inject[C, A]): Encoder[A] = self.contramap {
-  //     a =>
-  //       Coproduct[C](a)
-  //   }
-  // }
-
-  // /** Provides methods specific to decoders of Shapeless coproducts. */
-  // final implicit class EnrichedCoproductDecoder[C <: Coproduct](val self: Decoder[C])
-  //     extends AnyVal {
-
-  //   /**
-  //     * When called on a `Decoder[C]` where `C` is a coproduct containing type `A`, converts to a `Decoder[Option[A]]`.
-  //     * @group coproduct
-  //     */
-  //   def selectDecoder[A](implicit sel: ops.coproduct.Selector[C, A]): Decoder[Option[A]] =
-  //     self.map { c =>
-  //       c.select[A]
-  //     }
   // }
 
   /** Universally quantified transformation of a `Codec` to a `Codec`. */

@@ -179,15 +179,7 @@ object Encoder extends EncoderFunctions {
     def encode(value: A) = f(value)
   }
 
-  /**
-    * Transform typeclass instance.
-    * @group inst
-    */
-  implicit val transformInstance: Transform[Encoder] = new Transform[Encoder] {
-    def exmap[A, B](encoder: Encoder[A], f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] =
-      encoder.econtramap(g)
-
-    override def xmap[A, B](encoder: Encoder[A], f: A => B, g: B => A): Encoder[B] =
-      encoder.contramap(g)
+  implicit class EncoderAs[A](private val self: Encoder[A]) extends AnyVal {
+    def as[B](given Transformer[A, B]): Encoder[B] = self.encodeOnly.as[B]
   }
 }

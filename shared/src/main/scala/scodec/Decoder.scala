@@ -153,7 +153,6 @@ trait Decoder[+A] { self =>
     }
     Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
   }
-
 }
 
 /**
@@ -279,15 +278,7 @@ object Decoder extends DecoderFunctions {
     override def toString = s"modify"
   }
 
-  /**
-    * Transform typeclass instance.
-    * @group inst
-    */
-  implicit val transformInstance: Transform[Decoder] = new Transform[Decoder] {
-    def exmap[A, B](decoder: Decoder[A], f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
-      decoder.emap(f)
-
-    override def xmap[A, B](decoder: Decoder[A], f: A => B, g: B => A): Decoder[B] =
-      decoder.map(f)
+  implicit class DecoderAs[A](private val self: Decoder[A]) extends AnyVal {
+    def as[B](given Transformer[A, B]): Decoder[B] = self.decodeOnly.as[B]
   }
 }

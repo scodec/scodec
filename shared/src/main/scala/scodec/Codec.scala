@@ -174,13 +174,13 @@ import scala.collection.mutable
   *
   * @define TransformTC Codec
   */
-trait Codec[A] extends GenCodec[A, A] { self =>
+trait Codec[A] extends GenCodec[A, A] with TransformOps[Codec, A] { self =>
 
   /**
     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
     * @group combinators
     */
-  final def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B] {
+  override def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.econtramap(g).encode(b)
     def decode(buffer: BitVector) = self.emap(f).decode(buffer)
@@ -190,31 +190,11 @@ trait Codec[A] extends GenCodec[A, A] { self =>
     * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
     * @group combinators
     */
-  final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
+  override def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(g(b))
     def decode(buffer: BitVector) = self.decode(buffer).map { _.map(f) }
   }
-
-  /**
-    * Transforms using two functions, `A => Attempt[B]` and `B => A`.
-    *
-    * The supplied functions form an injection from `B` to `A`. Hence, this method converts from
-    * a larger to a smaller type. Hence, the name `narrow`.
-    * @group combinators
-    */
-  final def narrow[B](f: A => Attempt[B], g: B => A): Codec[B] =
-    exmap(f, b => Attempt.successful(g(b)))
-
-  /**
-    * Transforms using two functions, `A => B` and `B => Attempt[A]`.
-    *
-    * The supplied functions form an injection from `A` to `B`. Hence, this method converts from
-    * a smaller to a larger type. Hence, the name `widen`.
-    * @group combinators
-    */
-  final def widen[B](f: A => B, g: B => Attempt[A]): Codec[B] =
-    exmap(a => Attempt.successful(f(a)), g)
 
   /**
     * Lifts this codec in to a codec of a singleton tuple.
@@ -486,16 +466,27 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   }
 
   extension on [H, T <: Tuple](t: Codec[T]) {
+    /**
+      * Builds a `Codec[H *: T]` from a `Codec[H]` and a `Codec[T]` where `T` is a tuple type.
+      * That is, this operator is a codec-level tuple prepend operation.
+      * @param codec codec to prepend
+      * @group tuple
+      */
     def ::(h: Codec[H]): Codec[H *: T] =
       new Codec[H *: T] {
         def sizeBound = h.sizeBound + t.sizeBound
-        def encode(ht: H *: T) = Codec.encodeBoth(h, t)(ht.head, ht.tail)
-        def decode(bv: BitVector) = Codec.decodeBoth(h, t)(bv).map(_.map(_ *: _))
+        def encode(ht: H *: T) = encodeBoth(h, t)(ht.head, ht.tail)
+        def decode(bv: BitVector) = decodeBoth(h, t)(bv).map(_.map(_ *: _))
         override def toString = s"$h :: $t"
       } 
   }
 
   extension on [A, B](b: Codec[B]) {
+    /**
+      * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
+      * For example, {{{uint8 :: utf8}}} has type `Codec[(Int, Int)]`.
+      * @group tuple
+      */
     def ::(a: Codec[A]): Codec[(A, B)] =
       new Codec[(A, B)] {
         def sizeBound = a.sizeBound + b.sizeBound
@@ -506,6 +497,11 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   }
 
   extension on [A, B <: Tuple](codecA: Codec[A]) {
+    /**
+      * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
+      * This allows later parts of a tuple codec to be dependent on earlier values.
+      * @group tuple
+      */
     def flatPrepend(f: A => Codec[B]): Codec[A *: B] =
       new Codec[A *: B] {
         def sizeBound = codecA.sizeBound.atLeast
@@ -517,18 +513,33 @@ object Codec extends EncoderFunctions with DecoderFunctions {
           } yield a *: l).decode(b)
         override def toString = s"flatPrepend($codecA, $f)"
       }
+      
+    /**
+      * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
+      * This allows later parts of a tuple codec to be dependent on earlier values.
+      * Operator alias for `flatPrepend`.
+      * @group tuple
+      */
     def >>:~(f: A => Codec[B]): Codec[A *: B] = codecA.flatPrepend(f)
   }
 
   extension on [B <: Tuple](rhs: Codec[B]) {
+    /**
+      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
+      * `B :: L` but only returns `L`.  HList equivalent of `~>`.
+      * @group hlist
+      */
     def :~>:(lhs: Codec[Unit]): Codec[B] = lhs.dropLeft(rhs)
   }
   //   /**
-  //     * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-  //     * `B :: L` but only returns `L`.  HList equivalent of `~>`.
+  //     * When called on a `Codec[A]`, returns a new codec that encodes/decodes `B :: A :: HNil`.
+  //     * HList equivalent of `~>`.
   //     * @group hlist
   //     */
-  //   def :~>:[B](codec: Codec[B])(implicit ev: Unit =:= B): Codec[L] = codec.dropLeft(self)
+  //   def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
+  //     codecB :~>: self.hlist
+
+
 
 
 
@@ -655,18 +666,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     inline m match {
       case s: Mirror.Singleton => codecs.provide(s.fromProduct(null).asInstanceOf[A])
     }
-  }
-
-  /**
-    * Transform typeclass instance.
-    * @group inst
-    */
-  given Transform[Codec] {
-    def exmap[A, B](codec: Codec[A], f: A => Attempt[B], g: B => Attempt[A]): Codec[B] =
-      codec.exmap(f, g)
-
-    override def xmap[A, B](codec: Codec[A], f: A => B, g: B => A): Codec[B] =
-      codec.xmap(f, g)
   }
 
   given Codec[Byte] = codecs.byte
