@@ -6,21 +6,27 @@ import codecs._
 
 class CoproductsExample extends CodecSuite {
 
-  sealed trait Sprocket derives Codec
-  object Sprocket {
-    given Discriminated[Sprocket, Int] = Discriminated(uint8)
+  "enums" should {
+    "support explicit codecs" in {
+      enum Color { case Red, Green, Blue }
+      val c = mappedEnum(uint8, Color.Red -> 10, Color.Green -> 20, Color.Blue -> 30)
+      assertBitsEqual(c.encode(Color.Green).require, 0x14)
+    }
+    "support derived codecs" in {
+      enum Color derives Codec { case Red, Green, Blue }
+      val c = summon[Codec[Color]]
+      assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, 0x000102)
+    }
   }
 
+  sealed trait Sprocket derives Codec
   case class Woozle(count: Int, strength: Int) extends Sprocket
   object Woozle {
     given Codec[Woozle] = (uint8 :: uint8).as[Woozle]
-    given Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
   }
-
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket
   object Wocket {
     given Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
-    given Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
   }
 
   "coproduct codec examples" should {
@@ -28,7 +34,7 @@ class CoproductsExample extends CodecSuite {
     "support derivation" in {
       val codec = summon[Codec[Sprocket]]
       val encodedWocket = codec.encode(Wocket(1, true)).require
-      assertBitsEqual(encodedWocket, 0x020101)
+      assertBitsEqual(encodedWocket, 0x010101)
     }
 //     // Codec.coproduct[Sprocket] returns a `CoproductCodecBuilder` which lets
 //     // us specify how the various subtypes are distinguished from each other

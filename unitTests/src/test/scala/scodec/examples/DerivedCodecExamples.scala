@@ -8,23 +8,10 @@ import implicits._
 class DerivedCodecsExample extends CodecSuite {
 
   sealed trait Sprocket derives Codec
-  object Sprocket {
-    given Discriminated[Sprocket, Int] = Discriminated(uint8)
-  }
-
   case class Woozle(count: Int, strength: Int) extends Sprocket derives Codec
-  object Woozle {
-    given Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
-  }
-
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket derives Codec
-  object Wocket {
-    given Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
-  }
-
   case class Wootle(count: Int, data: BitVector) extends Sprocket
   object Wootle {
-    given Discriminator[Sprocket, Wootle, Int] = Discriminator(3)
     given Codec[Wootle] = (uint8 :: bits).as[Wootle]
   }
 
@@ -64,14 +51,14 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Sprocket defines a Discriminated[Sprocket, Int] in its companion
       // and each subclass defines a Discriminator[Sprocket, X, Int] in their companions.
-      summon[Codec[Sprocket]].encode(Wocket(3, true)).require shouldBe hex"0200000003ff".bits
+      summon[Codec[Sprocket]].encode(Wocket(3, true)).require shouldBe hex"0100000003ff".bits
     }
 
     "demonstrate subtype overrides in companion" in {
       // Alternatively, the overriden codec can be defined in the companion of the subtype.
       summon[Codec[Sprocket]]
         .encode(Wootle(4, hex"deadbeef".bits))
-        .require shouldBe hex"0304deadbeef".bits
+        .require shouldBe hex"0204deadbeef".bits
     }
 
     "demonstrate nested derivations" in {
@@ -83,7 +70,7 @@ class DerivedCodecsExample extends CodecSuite {
       // derived.
       val ceil = Geiling("Ceil", Vector(Woozle(1, 2), Wocket(3, true)))
       val encoded = summon[Codec[Geiling]].encode(ceil).require
-      encoded shouldBe hex"00000004 4365696c 00000002 010000000100000002 0200000003ff".bits
+      encoded shouldBe hex"00000004 4365696c 00000002 000000000100000002 0100000003ff".bits
       summon[Codec[Geiling]].decode(encoded).require.value shouldBe ceil
     }
 

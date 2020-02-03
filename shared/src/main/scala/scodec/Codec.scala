@@ -542,11 +542,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       case p: Mirror.ProductOf[A] =>
         deriveProduct(p, elemCodecs)
       case s: Mirror.SumOf[A] =>
-        val discriminated = summonOne[codecs.Discriminated[A, _]]
-        // TODO search for Discriminator[A, t, discriminated.D] instead of Discriminator[A, t, _]
-        val discriminators = summonAllDiscriminators[A, m.MirroredElemTypes]
-        val classTags = summonAllClassTags[m.MirroredElemTypes]
-        deriveSum(s, discriminated, elemCodecs, discriminators, classTags)
+        deriveSum(s, elemCodecs)
     }
   }
 
@@ -555,16 +551,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   private inline def summonAllCodecs[T <: Tuple]: List[Codec[_]] = inline erasedValue[T] match {
     case _: Unit => Nil
     case _: (t *: ts) => summonOne[Codec[t]] :: summonAllCodecs[ts]
-  }
-
-  private inline def summonAllDiscriminators[A, T <: Tuple]: List[codecs.Discriminator[A, _, _]] = inline erasedValue[T] match {
-    case _: Unit => Nil
-    case _: (t *: ts) => summonOne[codecs.Discriminator[A, t, _]] :: summonAllDiscriminators[A, ts]
-  }
-
-  private inline def summonAllClassTags[T <: Tuple]: List[reflect.ClassTag[_]] = inline erasedValue[T] match {
-    case _: Unit => Nil
-    case _: (t *: ts) => summonOne[reflect.ClassTag[t]] :: summonAllClassTags[ts]
   }
 
   private def deriveProduct[A](p: Mirror.ProductOf[A], elems: List[Codec[_]]): Codec[A] =
@@ -587,14 +573,22 @@ object Codec extends EncoderFunctions with DecoderFunctions {
 
   private def deriveSum[A](
     s: Mirror.SumOf[A], 
-    discriminated: codecs.Discriminated[A, _],
-    elemCodecs: List[Codec[_]], 
-    elemDiscriminators: List[codecs.Discriminator[A, _, _]],
-    elemClassTags: List[reflect.ClassTag[_]], 
-  ): Codec[A] = {
-    val c = codecs.discriminated[A].by(discriminated.codec.asInstanceOf[Codec[Any]])
-    elemDiscriminators.zip(elemCodecs).zip(elemClassTags).foldLeft(c) { case (acc, ((d, codec), ct)) =>
-      acc.typecase(d.value: Any, codec.asInstanceOf[Codec[A]])(given ct.asInstanceOf[reflect.ClassTag[A]])
+    elemCodecs: List[Codec[_]],
+  ): Codec[A] = new Codec[A] {
+    private val discriminator = codecs.uint8
+    def sizeBound = discriminator.sizeBound + SizeBound.choice(elemCodecs.map(_.sizeBound))
+    def encode(a: A) = {
+      val idx = s.ordinal(a)
+      (discriminator :: elemCodecs(idx).asInstanceOf[Codec[A]]).encode(idx, a)
+    }
+    def decode(b: BitVector) = {
+      discriminator.flatMap(idx => elemCodecs(idx).asInstanceOf[Codec[A]]).decode(b)
+    }
+  }
+
+  inline given derivedSingleton[A <: Singleton](given m: Mirror.Of[A]) as Codec[A] = {
+    inline m match {
+      case s: Mirror.Singleton => codecs.provide(s.fromProduct(null).asInstanceOf[A])
     }
   }
 
