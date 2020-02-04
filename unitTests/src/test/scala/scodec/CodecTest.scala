@@ -160,47 +160,47 @@ class CodecTest extends CodecSuite {
     }
   }
 
-  // "upcast" should {
-  //   trait A
-  //   case class B(x: Int) extends A
-  //   case class C(x: Int) extends A
-  //   val codec: Codec[A] = uint8.xmap[B](B.apply, _.x).upcast[A]
-  //   "roundtrip values of original type" in {
-  //     roundtrip(codec, B(0))
-  //   }
-  //   "return an error from encode if passed a different subtype of target type" in {
-  //     codec.encode(C(0)).isFailure shouldBe true
-  //   }
-  //   "work in presence of nested objects/classes" in {
-  //     object X { object Y }
-  //     val c = provide(X).upcast[Any]
-  //     c.encode(X) shouldBe Attempt.successful(BitVector.empty)
-  //     c.encode(X.Y) shouldBe Attempt.failure(Err("not a value of type X.type"))
-  //   }
-  // }
+  "upcast" should {
+    trait A
+    case class B(x: Int) extends A
+    case class C(x: Int) extends A
+    val codec: Codec[A] = uint8.xmap[B](B.apply, _.x).upcast[A]
+    "roundtrip values of original type" in {
+      roundtrip(codec, B(0))
+    }
+    "return an error from encode if passed a different subtype of target type" in {
+      codec.encode(C(0)).isFailure shouldBe true
+    }
+    "work in presence of nested objects/classes" in {
+      object X { object Y }
+      val c = provide(X).upcast[Any]
+      c.encode(X) shouldBe Attempt.successful(BitVector.empty)
+      c.encode(X.Y) shouldBe Attempt.failure(Err("not a value of type X$"))
+    }
+  }
 
-  // "downcast" should {
-  //   trait A
-  //   case object B extends A
-  //   case object C extends A
-  //   val codec =
-  //     discriminated[A].by(uint8).typecase(1, provide(B)).typecase(2, provide(C)).downcast[B.type]
-  //   "roundtrip values of original type" in {
-  //     roundtrip(codec, B)
-  //   }
-  //   "return an error from decode if decoded value is a supertype of a different type" in {
-  //     codec.decode(hex"02".bits).isFailure shouldBe true
-  //   }
-  //   "work in presence of nested objects/classes" in {
-  //     trait P
-  //     object X extends P { object Y extends P }
-  //     val c = discriminated[P]
-  //       .by(uint8)
-  //       .typecase(0, provide(X))
-  //       .typecase(1, provide(X.Y))
-  //       .downcast[X.type]
-  //     c.decodeValue(hex"00".bits) shouldBe Attempt.successful(X)
-  //     c.decodeValue(hex"01".bits) shouldBe Attempt.failure(Err("not a value of type X.type"))
-  //   }
-  // }
+  "downcast" should {
+    trait A
+    case object B extends A
+    case object C extends A
+    val codec =
+      discriminated[A].by(uint8).typecase(1, provide(B)).typecase(2, provide(C)).downcast[B.type]
+    "roundtrip values of original type" in {
+      roundtrip(codec, B)
+    }
+    "return an error from decode if decoded value is a supertype of a different type" in {
+      codec.decode(hex"02".bits).isFailure shouldBe true
+    }
+    "work in presence of nested objects/classes" in {
+      trait P
+      object X extends P { object Y extends P }
+      val c = discriminated[P]
+        .by(uint8)
+        .typecase(0, provide(X))
+        .typecase(1, provide(X.Y))
+        .downcast[X.type]
+      c.decodeValue(hex"00".bits) shouldBe Attempt.successful(X)
+      c.decodeValue(hex"01".bits) shouldBe Attempt.failure(Err("not a value of type X$"))
+    }
+  }
 }

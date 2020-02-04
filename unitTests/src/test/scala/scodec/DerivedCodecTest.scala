@@ -33,33 +33,24 @@ class DerivedCodecTest extends CodecSuite {
         hex"0102000548656c6c6f".bits)
     }
 
-    // "support automatic generation of case class codecs" in {
-    //   implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-    //   Codec.summon[Foo].encode(Foo(1, 2, "Hello")).require shouldBe hex"0102000548656c6c6f".bits
-    // }
+    "support automatic generation of case class codecs" in {
+      assertBitsEqual(summon[Codec[Foo]].encode(Foo(1, 2, "Hello")).require, 0x00000001000000020000000548656c6c6f)
+    }
 
-    // "support automatic generation of nested case class codecs, where component codecs are derived as well" in {
-    //   import implicits._
-    //   Codec.summon[Qux]
-    //   Codec.summon[Quy]
-    //   Codec.summon[Quz]
-    //   Codec.summon[Woz]
+    "support automatic generation of nested case class codecs, where component codecs are derived as well" in {
+      summon[Codec[Qux]]
+      summon[Codec[Quy]]
+      summon[Codec[Quz]]
+      summon[Codec[Woz]]
 
-    //   val arr = Arrangement(
-    //     Vector(Line(Point(0, 0, 0), Point(10, 10, 10)), Line(Point(0, 10, 1), Point(10, 0, 10)))
-    //   )
+      val arr = Arrangement(
+        Vector(Line(Point(0, 0, 0), Point(10, 10, 10)), Line(Point(0, 10, 1), Point(10, 0, 10)))
+      )
 
-    //   val arrBinary = Codec.summon[Arrangement].encode(arr).require
-    //   val decoded = Codec.summon[Arrangement].decode(arrBinary).require.value
-    //   decoded shouldBe arr
-    // }
-
-    // "include field names in case class codecs" in {
-    //   implicit val (i, s) = (uint8, variableSizeBytes(uint16, utf8))
-    //   Codec.summon[Foo].encode(Foo(1, 256, "Hello")) shouldBe Attempt.failure(
-    //     Err("256 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("y")
-    //   )
-    // }
+      val arrBinary = summon[Codec[Arrangement]].encode(arr).require
+      val decoded = summon[Codec[Arrangement]].decode(arrBinary).require.value
+      assert(decoded == arr)
+    }
 
     // "support automatic generation of coproduct codec builders" in {
     //   implicit val (u, s) = (constant(1), variableSizeBytes(uint16, utf8))
@@ -86,19 +77,14 @@ class DerivedCodecTest extends CodecSuite {
     //   codec.encode(Bar(1, 2)).require shouldBe hex"000102".bits
     // }
 
-    // "support recursive products" in {
-    //   import codecs.implicits._
-    //   val codec = Codec.summon[Rec]
-    //   roundtrip(codec, Rec(1, List(Rec(2, Nil))))
-    // }
+    "support recursive products" in {
+      pending // TODO
+      roundtrip(summon[Codec[Rec]], Rec(1, List(Rec(2, Nil))))
+    }
 
-    // "support recursive ADTs" in {
-    //   import codecs.implicits._
-    //   implicit def d[A] = Discriminated[Tree[A], Boolean](bool)
-    //   implicit def d0[A] = d[A].bind[Node[A]](false)
-    //   implicit def d1[A] = d[A].bind[Leaf[A]](true)
-    //   val codec = Codec.summon[Tree[Int]]
-    //   roundtrip(codec, Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
-    // }
+    "support recursive ADTs" in {
+      pending // TODO
+      roundtrip(summon[Codec[Tree[Int]]], Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
+    }
   }
 }
