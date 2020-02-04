@@ -23,8 +23,8 @@ class DiscriminatorCodecTest extends CodecSuite {
       val codec =
         discriminated[Any]
           .by(uint8)
-          .\[Int](0) { case i: Int => i }(int32)
-          .\[Boolean](1) { case b: Boolean => b }(bool)
+          .subcaseP[Int](0) { case i: Int => i }(int32)
+          .subcaseP[Boolean](1) { case b: Boolean => b }(bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)
@@ -36,10 +36,10 @@ class DiscriminatorCodecTest extends CodecSuite {
       val codec =
         discriminated[Any]
           .by(uint8)
-          ./[Int](0) { v =>
+          .subcaseO[Int](0) { v =>
             v match { case i: Int => Some(i); case _ => None }
           }(int32)
-          ./[Boolean](1) { v =>
+          .subcaseO[Boolean](1) { v =>
             v match { case b: Boolean => Some(b); case _ => None }
           }(bool)
 
@@ -50,87 +50,78 @@ class DiscriminatorCodecTest extends CodecSuite {
     }
 
     "support building a codec for an enumeration" in {
-      sealed trait Direction
-      case object North extends Direction
-      case object South extends Direction
-      case object East extends Direction
-      case object West extends Direction
+      enum Direction { case North, South, East, West }
 
-      val codec = mappedEnum(uint8, North -> 1, South -> 2, East -> 3, West -> 4)
+      val codec = mappedEnum(uint8, Direction.North -> 1, Direction.South -> 2, Direction.East -> 3, Direction.West -> 4)
 
-      roundtrip(codec, North)
-      roundtrip(codec, South)
-      roundtrip(codec, East)
-      roundtrip(codec, West)
+      roundtrip(codec, Direction.North)
+      roundtrip(codec, Direction.South)
+      roundtrip(codec, Direction.East)
+      roundtrip(codec, Direction.West)
     }
 
     "support building a codec for an enumeration with preserved reserved values" in {
-      trait Color
-      case object Red extends Color
-      case object Green extends Color
-      case object Blue extends Color
-      case class Reserved(value: Int) extends Color
+      enum Color {
+        case Red, Green, Blue
+        case Reserved(value: Int)
+      }
 
-      val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
-      val reserved: Codec[Reserved] = uint8.as[Reserved]
+      val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
+      val reserved: Codec[Color.Reserved] = uint8.as[Color.Reserved]
       val codec: Codec[Color] = choice(nonReserved, reserved.upcast[Color])
 
-      roundtrip(codec, Red)
-      roundtrip(codec, Green)
-      roundtrip(codec, Blue)
-      roundtrip(codec, Reserved(255))
-      roundtrip(codec, Reserved(4))
+      roundtrip(codec, Color.Red)
+      roundtrip(codec, Color.Green)
+      roundtrip(codec, Color.Blue)
+      roundtrip(codec, Color.Reserved(255))
+      roundtrip(codec, Color.Reserved(4))
     }
 
     "support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy" in {
-      trait Color
-      case object Red extends Color
-      case object Green extends Color
-      case object Blue extends Color
+      enum Color {
+        case Red, Green, Blue
+        case Reserved(value: Int)
+      }
 
-      case class Reserved(value: Int)
-
-      val nonReserved: Codec[Color] = mappedEnum(uint8, Red -> 1, Green -> 2, Blue -> 3)
-      val reserved: Codec[Reserved] = uint8.as[Reserved]
-      val codec: Codec[Either[Reserved, Color]] = choice(
-        nonReserved.xmapc(Right.apply)(_.toOption.get).upcast[Either[Reserved, Color]],
-        reserved.xmapc(Left.apply)(_.swap.toOption.get).upcast[Either[Reserved, Color]]
+      val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
+      val reserved: Codec[Color.Reserved] = uint8.as[Color.Reserved]
+      val codec: Codec[Either[Color.Reserved, Color]] = choice(
+        nonReserved.xmapc(Right.apply)(_.toOption.get).upcast[Either[Color.Reserved, Color]],
+        reserved.xmapc(Left.apply)(_.swap.toOption.get).upcast[Either[Color.Reserved, Color]]
       )
 
-      roundtrip(codec, Right(Red))
-      roundtrip(codec, Right(Green))
-      roundtrip(codec, Right(Blue))
-      roundtrip(codec, Left(Reserved(255)))
-      roundtrip(codec, Left(Reserved(4)))
+      roundtrip(codec, Right(Color.Red))
+      roundtrip(codec, Right(Color.Green))
+      roundtrip(codec, Right(Color.Blue))
+      roundtrip(codec, Left(new Color.Reserved(255)))
+      roundtrip(codec, Left(new Color.Reserved(4)))
     }
 
     "support building a codec for an ADT" in {
-      sealed trait Direction
-      case object Stay extends Direction
-      case class Go(units: Int) extends Direction
-
-      val stayCodec = provide(Stay)
-      val goCodec = int32.as[Go]
+      enum Direction {
+        case Stay
+        case Go(units: Int)
+      }
 
       val codec =
-        discriminated[Direction].by(uint8).typecase(0, stayCodec).typecase(1, goCodec)
+        discriminated[Direction].by(uint8).singleton(0, Direction.Stay).typecase(1, int32.as[Direction.Go])
 
-      roundtrip(codec, Stay)
-      roundtrip(codec, Go(42))
+      roundtrip(codec, Direction.Stay)
+      roundtrip(codec, Direction.Go(42))
     }
 
     "support building a codec for recusive ADTs - e.g., trees" in {
-      sealed trait Tree
-      case class Node(l: Tree, r: Tree) extends Tree
-      case class Leaf(n: Int) extends Tree
+      enum Tree {
+        case Node(l: Tree, r: Tree)
+        case Leaf(n: Int)
+      }
+      import Tree.{Node, Leaf}
 
       def treeCodec: Codec[Tree] = lazily {
         discriminated[Tree]
           .by(bool)
-          .|(false) { case l @ Leaf(n) => n }(Leaf.apply)(int32)
-          .|(true) { case n @ Node(l, r) => (l, r) } { (l, r) => Node(l, r) }(
-            treeCodec :: treeCodec
-          )
+          .typecase(false, int32.as[Leaf])
+          .typecase(true, (treeCodec :: treeCodec).as[Node])
       }
 
       roundtrip(treeCodec, Leaf(42))

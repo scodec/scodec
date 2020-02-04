@@ -1546,8 +1546,8 @@ package object codecs {
   ): Codec[Either[L, R]] =
     discriminated[Either[L, R]]
       .by(indicator)
-      .|(false) { case Left(l) => l }(Left.apply)(left)
-      .|(true) { case Right(r) => r }(Right.apply)(right)
+      .caseP(false) { case Left(l) => l }(Left.apply)(left)
+      .caseP(true) { case Right(r) => r }(Right.apply)(right)
 
   /**
     * Either codec that supports bit vectors of form `left or right` where the right codec
