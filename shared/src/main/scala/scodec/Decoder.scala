@@ -1,8 +1,8 @@
 package scodec
 
-import scodec.bits.BitVector
+import scala.collection.Factory
 
-import scodec.compat._
+import scodec.bits.BitVector
 
 /**
   * Supports decoding a value of type `A` from a `BitVector`.

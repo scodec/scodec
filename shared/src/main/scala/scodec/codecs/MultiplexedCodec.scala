@@ -1,9 +1,9 @@
 package scodec.codecs
 
+import scala.collection.Factory
+
 import scodec._
 import scodec.bits.BitVector
-
-import scodec.compat._
 
 /**
   * A trait that enables custom handling for encoding/decoding sequences.
