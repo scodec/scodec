@@ -78,12 +78,10 @@ class DerivedCodecTest extends CodecSuite {
     // }
 
     "support recursive products" in {
-      pending // TODO
       roundtrip(summon[Codec[Rec]], Rec(1, List(Rec(2, Nil))))
     }
 
     "support recursive ADTs" in {
-      pending // TODO
       roundtrip(summon[Codec[Tree[Int]]], Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
     }
   }
