@@ -27,13 +27,13 @@ object PcapCodec {
       }
   )
 
-  def gint16(given ordering: ByteOrdering): Codec[Int] =
+  def gint16(using ordering: ByteOrdering): Codec[Int] =
     if (ordering == ByteOrdering.BigEndian) int16 else int16L
-  def guint16(given ordering: ByteOrdering): Codec[Int] =
+  def guint16(using ordering: ByteOrdering): Codec[Int] =
     if (ordering == ByteOrdering.BigEndian) uint16 else uint16L
-  def gint32(given ordering: ByteOrdering): Codec[Int] =
+  def gint32(using ordering: ByteOrdering): Codec[Int] =
     if (ordering == ByteOrdering.BigEndian) int32 else int32L
-  def guint32(given ordering: ByteOrdering): Codec[Long] =
+  def guint32(using ordering: ByteOrdering): Codec[Long] =
     if (ordering == ByteOrdering.BigEndian) uint32 else uint32L
 
   case class PcapHeader(
@@ -66,7 +66,7 @@ object PcapCodec {
     def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
   }
 
-  def pcapRecordHeader(given ordering: ByteOrdering) = {
+  def pcapRecordHeader(using ordering: ByteOrdering) = {
     ("ts_sec" | guint32) ::
       ("ts_usec" | guint32) ::
       ("incl_len" | guint32) ::
@@ -75,7 +75,7 @@ object PcapCodec {
 
   case class PcapRecord(header: PcapRecordHeader, data: BitVector)
 
-  def pcapRecord(given ordering: ByteOrdering) = {
+  def pcapRecord(using ordering: ByteOrdering) = {
     ("record_header" | pcapRecordHeader).flatZip { hdr =>
       ("record_data" | bits(hdr.includedLength * 8))
     }
@@ -83,7 +83,7 @@ object PcapCodec {
 
   case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
 
-  val pcapFile = pcapHeader.flatZip(hdr => vector(pcapRecord(given hdr.ordering))).as[PcapFile]
+  val pcapFile = pcapHeader.flatZip(hdr => vector(pcapRecord(using hdr.ordering))).as[PcapFile]
 }
 
 class PcapExample extends CodecSuite {

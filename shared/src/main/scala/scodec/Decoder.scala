@@ -284,6 +284,6 @@ object Decoder extends DecoderFunctions {
   }
 
   implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal {
-    def as[B](given t: Transformer[A, B]): Decoder[B] = t(self)
+    def as[B](using t: Transformer[A, B]): Decoder[B] = t(self)
   }
 }

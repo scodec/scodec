@@ -185,6 +185,6 @@ object Encoder extends EncoderFunctions {
   }
 
   implicit class AsSyntax[A](private val self: Encoder[A]) extends AnyVal {
-    def as[B](given t: Transformer[A, B]): Encoder[B] = t(self)
+    def as[B](using t: Transformer[A, B]): Encoder[B] = t(self)
   }
 }

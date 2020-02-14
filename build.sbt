@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  scalaVersion := "0.22.0-bin-20200123-9982f0d-NIGHTLY",
+  scalaVersion := "0.22.0-RC1",
   crossScalaVersions := List(scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
@@ -145,8 +145,8 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= {
       if (isDotty.value)
         Seq(
-          "dev.travisbrown" %%% "scalatest" % "3.1.0-20200123-9982f0d-NIGHTLY",
-          "dev.travisbrown" %%% "scalacheck-1-14" % "3.1.0.1-20200123-9982f0d-NIGHTLY"
+          "dev.travisbrown" %%% "scalatest" % "3.1.0-20200201-c4c847f-NIGHTLY",
+          "dev.travisbrown" %%% "scalacheck-1-14" % "3.1.0.1-20200201-c4c847f-NIGHTLY"
         )
       else Seq(
         "org.scalatest" %%% "scalatest" % "3.1.0",

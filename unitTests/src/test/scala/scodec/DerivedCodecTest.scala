@@ -21,8 +21,8 @@ class DerivedCodecTest extends CodecSuite {
   case class Rec(x: Int, y: List[Rec]) derives Codec
 
   sealed abstract class Tree[A] derives Codec
-  case class Node[A](l: Tree[A], r: Tree[A]) extends Tree[A] derives Codec
-  case class Leaf[A](value: A) extends Tree[A] derives Codec
+  case class Node[A](l: Tree[A], r: Tree[A]) extends Tree[A]
+  case class Leaf[A](value: A) extends Tree[A]
 
   "automatic codec generation" should {
     "support automatic generation of HList codecs" in {

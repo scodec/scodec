@@ -59,7 +59,7 @@ trait Transform[F[_]] {
     *  - an `F[C]` for some `C <: Coproduct` to/from an `F[SC]` for some sealed class `SC`, where the component types in
     *    the coproduct are the leaf subtypes of the sealed class.
     */
-  // def [A](fa: F[A]).as[B](given t: Transformer[A, B]): F[B] = t(fa)(given this)
+  // def [A](fa: F[A]).as[B](using t: Transformer[A, B]): F[B] = t(fa)(using this)
 }
 
 /**
@@ -72,15 +72,15 @@ trait Transformer[A, B] {
 }
 
 trait TransformerLowPriority0 {
-  protected def toTuple[A, B <: Tuple](a: A)(given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): B =
+  protected def toTuple[A, B <: Tuple](a: A)(using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): B =
     Tuple.fromProduct(a.asInstanceOf[Product]).asInstanceOf[B]
   
-  protected def fromTuple[A, B <: Tuple](b: B)(given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): A =
+  protected def fromTuple[A, B <: Tuple](b: B)(using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): A =
     m.fromProduct(b.asInstanceOf[Product]).asInstanceOf[A]
 }
 
 trait TransformerLowPriority extends TransformerLowPriority0 {
-  given fromProductWithUnits[A, B <: Tuple, C <: Tuple](given 
+  given fromProductWithUnits[A, B <: Tuple, C <: Tuple](using 
     m: Mirror.ProductOf[A],
     ev: m.MirroredElemTypes =:= B,
     du: codecs.DropUnits[C] { type L = B }
@@ -90,7 +90,7 @@ trait TransformerLowPriority extends TransformerLowPriority0 {
         fa.xmap(a => du.addUnits(toTuple(a)), c => fromTuple(du.removeUnits(c)))
     }
 
-  given fromProductWithUnitsReverse[A, B <: Tuple, C <: Tuple](given 
+  given fromProductWithUnitsReverse[A, B <: Tuple, C <: Tuple](using 
     m: Mirror.ProductOf[A],
     ev: m.MirroredElemTypes =:= B,
     du: codecs.DropUnits[C] { type L = B }
@@ -109,22 +109,22 @@ object Transformer extends TransformerLowPriority {
     def apply[F[_]: Transform](fa: F[A]): F[A] = fa
   }
 
-  given fromProduct[A, B <: Tuple](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): Transformer[A, B] =
+  given fromProduct[A, B <: Tuple](using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): Transformer[A, B] =
     new Transformer[A, B] {
       def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(toTuple, fromTuple)
     }
 
-  given fromProductReverse[A, B <: Tuple](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): Transformer[B, A] =
+  given fromProductReverse[A, B <: Tuple](using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): Transformer[B, A] =
     new Transformer[B, A] {
       def apply[F[_]: Transform](fb: F[B]): F[A] = fb.xmap(fromTuple, toTuple)
     }
 
-  given fromProductSingleton[A, B](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B *: Unit): Transformer[A, B] =
+  given fromProductSingleton[A, B](using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B *: Unit): Transformer[A, B] =
     new Transformer[A, B] {
       def apply[F[_]: Transform](fa: F[A]): F[B] = fa.xmap(a => toTuple(a).head, b => fromTuple(b *: ()))
     }
 
-  given fromProductSingletonReverse[A, B](given m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B *: Unit): Transformer[B, A] =
+  given fromProductSingletonReverse[A, B](using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B *: Unit): Transformer[B, A] =
     new Transformer[B, A] {
       def apply[F[_]: Transform](fb: F[B]): F[A] = fb.xmap(b => fromTuple(b *: ()), a => toTuple(a).head)
     }

@@ -461,7 +461,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     override def toString = s"lazily($c)"
   }
 
-  extension on [T <: Tuple, U <: Tuple](t: Codec[T])(given u: codecs.DropUnits[T] { type L = U }) {
+  extension on [T <: Tuple, U <: Tuple](t: Codec[T])(using u: codecs.DropUnits[T] { type L = U }) {
     def dropUnits: Codec[U] = t.xmap(u.removeUnits, u.addUnits)
   }
 
@@ -551,7 +551,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   //     override def toString = s"$h :: $t"
   //   } 
 
-  // def [A, B] (a: Codec[A]) :: (b: Codec[B])(given DummyImplicit): Codec[(A, B)] =
+  // def [A, B] (a: Codec[A]) :: (b: Codec[B])(using DummyImplicit): Codec[(A, B)] =
   //   new Codec[(A, B)] {
   //     def sizeBound = a.sizeBound + b.sizeBound
   //     def encode(ab: (A, B)) = Codec.encodeBoth(a, b)(ab._1, ab._2)
@@ -609,7 +609,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
         Attempt.successful(DecodeResult(Tuple.fromProduct(elems).asInstanceOf[T], b))
     }
 
-  inline def derived[A](given m: Mirror.Of[A]): Codec[A] = new Codec[A] {
+  inline def derived[A](using m: Mirror.Of[A]): Codec[A] = new Codec[A] {
     def sizeBound = inline m match {
       case p: Mirror.ProductOf[A] =>
         sizeBoundElems[p.MirroredElemTypes]
@@ -749,9 +749,9 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   given Codec[ByteVector] = codecs.variableSizeBytesLong(codecs.int64, codecs.bytes)
   given Codec[java.util.UUID] = codecs.uuid
 
-  given [A](given ccount: Codec[Int], ca: Codec[A]) as Codec[List[A]] = codecs.listOfN(ccount, ca)
-  given [A](given ccount: Codec[Int], ca: Codec[A]) as Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
-  given [A](given cguard: Codec[Boolean], ca: Codec[A]) as Codec[Option[A]] = codecs.optional(cguard, ca)
+  given [A](using ccount: Codec[Int], ca: Codec[A]) as Codec[List[A]] = codecs.listOfN(ccount, ca)
+  given [A](using ccount: Codec[Int], ca: Codec[A]) as Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
+  given [A](using cguard: Codec[Boolean], ca: Codec[A]) as Codec[Option[A]] = codecs.optional(cguard, ca)
 
   given Transform[Codec] {
     def [A, B](fa: Codec[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = 
@@ -759,6 +759,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   }
 
   implicit class AsSyntax[A](private val self: Codec[A]) extends AnyVal {
-    def as[B](given t: Transformer[A, B]): Codec[B] = t(self)
+    def as[B](using t: Transformer[A, B]): Codec[B] = t(self)
   }
 }
