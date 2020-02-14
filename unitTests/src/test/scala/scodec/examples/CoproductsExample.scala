@@ -8,20 +8,14 @@ class CoproductsExample extends CodecSuite {
 
   sealed trait Sprocket derives Codec
   case class Woozle(count: Int, strength: Int) extends Sprocket
-  object Woozle {
-    given Codec[Woozle] = (uint8 :: uint8).as[Woozle]
-  }
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket
-  object Wocket {
-    given Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
-  }
 
   "coproduct codec examples" should {
     
     "support derivation" in {
       val codec = summon[Codec[Sprocket]]
       val encodedWocket = codec.encode(Wocket(1, true)).require
-      assertBitsEqual(encodedWocket, 0x010101)
+      assertBitsEqual(encodedWocket, 0x0100000001ff)
     }
 //     // Codec.coproduct[Sprocket] returns a `CoproductCodecBuilder` which lets
 //     // us specify how the various subtypes are distinguished from each other

@@ -23,11 +23,8 @@ class DerivedCodecsExample extends CodecSuite {
 
   sealed trait Sprocket derives Codec
   case class Woozle(count: Int, strength: Int) extends Sprocket derives Codec
-  case class Wocket(size: Int, inverted: Boolean) extends Sprocket derives Codec
+  case class Wocket(size: Int, inverted: Boolean) extends Sprocket
   case class Wootle(count: Int, data: BitVector) extends Sprocket
-  object Wootle {
-    given Codec[Wootle] = (uint8 :: bits).as[Wootle]
-  }
 
   case class Geiling(name: String, sprockets: Vector[Sprocket]) derives Codec
 
@@ -66,13 +63,6 @@ class DerivedCodecsExample extends CodecSuite {
       // In this example, Sprocket defines a Discriminated[Sprocket, Int] in its companion
       // and each subclass defines a Discriminator[Sprocket, X, Int] in their companions.
       summon[Codec[Sprocket]].encode(Wocket(3, true)).require shouldBe hex"0100000003ff".bits
-    }
-
-    "demonstrate subtype overrides in companion" in {
-      // Alternatively, the overriden codec can be defined in the companion of the subtype.
-      summon[Codec[Sprocket]]
-        .encode(Wootle(4, hex"deadbeef".bits))
-        .require shouldBe hex"0204deadbeef".bits
     }
 
     "demonstrate nested derivations" in {
