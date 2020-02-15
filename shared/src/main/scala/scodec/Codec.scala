@@ -555,6 +555,9 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   //     override def toString = s"$a :: $b"
   //   }
 
+  /**
+    * Constructs a `Codec[(A, B, ..., N)]` from a tuple `(Codec[A], Codec[B], ..., Codec[N])`.
+    */
   def fromTuple[A <: Tuple : Tuple.IsMappedBy[Codec]](a: A): Codec[Tuple.InverseMap[A, Codec]] = {
     def go[X <: Tuple](x: X): Codec[_ <: Tuple] = x match {
       case (hd: Codec[_]) *: tl => hd :: go(tl)
