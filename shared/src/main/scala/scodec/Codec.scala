@@ -174,7 +174,7 @@ import scala.collection.mutable
   *
   * @define TransformTC Codec
   */
-trait Codec[A] extends GenCodec[A, A] { self =>
+trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
 
   /**
     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.

@@ -55,7 +55,7 @@ import DiscriminatorCodec.{Case, Prism}
 final class DiscriminatorCodec[A, B] private[codecs] (
     by: Codec[B],
     cases: Vector[Case[A, B, Any]],
-    framing: CodecTransformation
+    framing: [x] => Codec[x] => Codec[x]
 ) extends Codec[A]
     with KnownDiscriminatorType[B] {
 
@@ -167,7 +167,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * @param framing new framing logic
     * @group discriminator
     */
-  def framing(framing: CodecTransformation): DiscriminatorCodec[A, B] =
+  def framing(framing: [x] => Codec[x] => Codec[x]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](by, cases, framing)
 
   def sizeBound =

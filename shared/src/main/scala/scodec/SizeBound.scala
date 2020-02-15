@@ -7,7 +7,7 @@ package scodec
   * @param lowerBound Minimum number of bits
   * @param upperBound Maximum number of bits
   */
-final case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
+case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
   require(lowerBound >= 0)
   require(upperBound.getOrElse(0L) >= 0)
   require(upperBound.getOrElse(lowerBound) >= lowerBound)
@@ -70,5 +70,5 @@ object SizeBound {
 
   /** Returns the union of all of the specified bounds, or an exact 0 size if the specified collection is empty. */
   def choice(bounds: Iterable[SizeBound]): SizeBound =
-    if (bounds.isEmpty) SizeBound.exact(0) else bounds.iterator.reduce(_ | _)
+    if (bounds.isEmpty) SizeBound.exact(0) else bounds.reduce(_ | _)
 }
