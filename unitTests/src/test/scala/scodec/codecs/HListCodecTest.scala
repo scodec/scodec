@@ -40,9 +40,9 @@ class HListCodecTest extends CodecSuite {
 //       roundtrip(((uint8 :: uint8) :+ utf8).as[Foo], Foo(1, 2, "test"))
 //     }
 
-//     "provide ability to concatenate two HList codecs" in {
-//       roundtrip(((uint8 :: uint8) ::: (uint8 :: uint8)).as[Baz], Baz(1, 2, 3, 4))
-//     }
+    "provide ability to concatenate two tuple codecs" in {
+      roundtrip(((uint8 :: uint8) ::: (uint8 :: uint8)).as[Baz], Baz(1, 2, 3, 4))
+    }
 
 //     "support HList equivalent of Codec#dropLeft" in {
 //       val codec = (uint8.unit(0) :~>: uint8.hlist).as[Bar]

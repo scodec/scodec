@@ -481,6 +481,28 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       } 
   }
 
+  extension on [A <: Tuple, B <: Tuple](b: Codec[B]) {
+    /**
+      * Builds a `Codec[H *: T]` from a `Codec[H]` and a `Codec[T]` where `T` is a tuple type.
+      * That is, this operator is a codec-level tuple prepend operation.
+      * @param codec codec to prepend
+      * @group tuple
+      */
+    inline def :::(a: Codec[A]): Codec[Tuple.Concat[A, B]] =
+      new Codec[Tuple.Concat[A, B]] {
+        def sizeBound = a.sizeBound + b.sizeBound
+        def encode(ab: Tuple.Concat[A, B]) = {
+          inline val sizeA = constValue[Tuple.Size[A]]
+          val (prefix, suffix) = ab.splitAt(sizeA)
+          encodeBoth(a, b)(prefix.asInstanceOf[A], suffix.asInstanceOf[B])
+        }
+        def decode(bv: BitVector) =
+          decodeBoth(a, b)(bv).map(_.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]]))
+          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
+        override def toString = s"$a :: $b"
+      } 
+  }
+
   extension on [A, B](b: Codec[B]) {
     /**
       * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
