@@ -169,12 +169,4 @@ package object scodec {
   //     */
   //   def toCodec(implicit to: codecs.ToHListCodec[L]): to.Out = to(self)
   // }
-
-  /** Universally quantified transformation of a `Codec` to a `Codec`. */
-  type CodecTransformation = [x] => Codec[x] => Codec[x]
-
-  /** Companion for [[CodecTransformation]]. */
-  object CodecTransformation extends Serializable {
-    val Id: CodecTransformation = [x] => (c: Codec[x]) => c
-  }
 }

@@ -539,10 +539,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   //   def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
   //     codecB :~>: self.hlist
 
-
-
-
-
   // def [H, T <: Tuple] (h: Codec[H]) :: (t: Codec[T]): Codec[H *: T] =
   //  new Codec[H *: T] {
   //     def sizeBound = h.sizeBound + t.sizeBound
@@ -559,21 +555,13 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   //     override def toString = s"$a :: $b"
   //   }
 
-  /**
-    * Creates a coproduct codec builder for the specified type.
-    *
-    * Support exists for coproducts and unions.
-    * Each component type must have an implicitly available codec.
-    *
-    * For example:
-   {{{
-  type C = Foo :+: Bar :+: Baz :+: CNil
-  val codec = Codec.coproduct[C].choice
-  codec.encode(Coproduct[C](Foo(...)))
-   }}}
-    * @group ctor
-    */
-  // def coproduct[A](implicit auto: codecs.CoproductBuilderAuto[A]): auto.Out = auto.apply
+  def fromTuple[A <: Tuple : Tuple.IsMappedBy[Codec]](a: A): Codec[Tuple.InverseMap[A, Codec]] = {
+    def go[X <: Tuple](x: X): Codec[_ <: Tuple] = x match {
+      case (hd: Codec[_]) *: tl => hd :: go(tl)
+      case () => codecs.provide(())
+    }
+    go(a).asInstanceOf[Codec[Tuple.InverseMap[A, Codec]]]
+  }
 
   inline given derivedTuple[A <: Tuple] as Codec[A] = new Codec[A] {
     def sizeBound = sizeBoundElems[A]

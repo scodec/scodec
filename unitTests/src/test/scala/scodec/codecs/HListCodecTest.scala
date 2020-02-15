@@ -1,34 +1,33 @@
-// package scodec
-// package codecs
+package scodec
+package codecs
 
-// import scodec.bits._
+import scodec.bits._
 
-// import shapeless._
+class HListCodecTest extends CodecSuite {
 
-// class HListCodecTest extends CodecSuite {
+  case class Foo(x: Int, y: Int, s: String)
+  case class Bar(x: Int)
+  case class Baz(a: Int, b: Int, c: Int, d: Int)
+  case class Flags(x: Boolean, y: Boolean, z: Boolean)
 
-//   case class Foo(x: Int, y: Int, s: String)
-//   case class Bar(x: Int)
-//   case class Baz(a: Int, b: Int, c: Int, d: Int)
-//   case class Flags(x: Boolean, y: Boolean, z: Boolean)
+  "HList codec support" should {
 
-//   "HList codec support" should {
+    "support construction via :: operator" in {
+      roundtrip((uint8 :: uint8 :: utf8), (1, 2, "test"))
+    }
 
-//     "support construction via :: operator" in {
-//       roundtripAll((uint8 :: uint8 :: utf8), Seq(1 :: 2 :: "test" :: HNil))
-//     }
+    "support conversion of tuple codec to a case class codec via as method" in {
+      roundtrip((uint8 :: uint8 :: utf8).as[Foo], Foo(1, 2, "test"))
+    }
 
-//     "support conversion HList codec to a case class codec via as method" in {
-//       roundtripAll((uint8 :: uint8 :: utf8).as[Foo], Seq(Foo(1, 2, "test")))
-//     }
+    "support conversion of non-tuple codec to a case class codec via as method" in {
+      roundtripAll(uint8.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
+    }
 
-//     "support conversion of non-HList codec to a case class codec via as method" in {
-//       roundtripAll(uint8.as[Bar], Seq(Bar(0), Bar(1), Bar(255)))
-//     }
-
-//     "support converting an hlist of codecs" in {
-//       val a: Codec[Int :: Long :: Boolean :: HNil] = (uint8 :: int64 :: bool :: HNil).toCodec
-//     }
+    "support converting an tuple of codecs" in {
+      val a: Codec[(Int, Long, Boolean)] = Codec.fromTuple(uint8, int64, bool)
+      roundtrip(a, (1, 2L, true))
+    }
 
 //     "provide a flatPrepend method" in {
 //       uint8.flatPrepend { n =>
@@ -196,5 +195,5 @@
 //       val decoded = codec.compact.decode(bits).require.value
 //       decoded shouldBe value
 //     }
-//   }
-// }
+  }
+}
