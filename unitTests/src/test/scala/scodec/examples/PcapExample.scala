@@ -92,7 +92,7 @@ class PcapExample extends CodecSuite {
 
   "Pcap codecs" should {
     def bits =
-      BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel)
+      BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel.nn)
     "support reading an entire file and then decoding it all" in {
       pending
       pcapFile.decode(bits)

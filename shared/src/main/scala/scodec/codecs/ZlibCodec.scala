@@ -22,7 +22,7 @@ private[scodec] class ZlibCodec[A](
 
   def decode(b: BitVector) =
     inflate(b, chunkSize).fold(
-      e => Attempt.failure(Err(e.getMessage)),
+      e => Attempt.failure(Err.fromThrowable(e)),
       bb => codec.decode(bb.value.bits).map(_.mapRemainder(_ => bb.remainder))
     )
 

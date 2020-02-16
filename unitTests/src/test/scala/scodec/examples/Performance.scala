@@ -10,7 +10,7 @@ import scodec.bits._
 object Performance extends App {
 
   val bits = {
-    val b = BitVector.fromMmap(new FileInputStream(new File("mpeg.pcap")).getChannel)
+    val b = BitVector.fromMmap(new FileInputStream(new File("mpeg.pcap")).getChannel.nn)
     // Don't want the lazy IO penalty to skew results
     b.force
   }

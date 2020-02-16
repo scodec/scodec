@@ -89,10 +89,7 @@ object Attempt {
     if (condition) successful(()) else failure(err)
 
   /** Creates a attempt from a try. */
-  def fromTry[A](t: Try[A]): Attempt[A] = t match {
-    case scala.util.Success(value)        => successful(value)
-    case scala.util.Failure(NonFatal(ex)) => failure(Err(ex.getMessage))
-  }
+  def fromTry[A](t: Try[A]): Attempt[A] = t.fold(e => failure(Err.fromThrowable(e)), successful)
 
   /** Creates an attempt from the supplied option. The `ifNone` value is used as the error message if `opt` is `None`. */
   def fromOption[A](opt: Option[A], ifNone: => Err): Attempt[A] =

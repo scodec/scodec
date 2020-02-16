@@ -32,7 +32,8 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-feature",
     "-language:higherKinds",
-    "-unchecked"
+    "-unchecked",
+    "-Yexplicit-nulls"
   ) ++
     (scalaBinaryVersion.value match {
       case v if v.startsWith("2.13") =>

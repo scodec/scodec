@@ -6,9 +6,9 @@ import java.security.KeyPairGenerator
 class SignatureCodecTest extends CodecSuite {
 
   private val keyPair = {
-    val keyGen = KeyPairGenerator.getInstance("RSA")
+    val keyGen = KeyPairGenerator.getInstance("RSA").nn
     keyGen.initialize(1024)
-    keyGen.generateKeyPair
+    keyGen.generateKeyPair.nn
   }
 
   "fixedSizeSignature codec" should {

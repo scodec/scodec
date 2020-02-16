@@ -9,9 +9,9 @@ import scodec.bits.ByteVector
 class CipherCodecTest extends CodecSuite {
 
   private val secretKey = {
-    val keyGen = KeyGenerator.getInstance("AES")
+    val keyGen = KeyGenerator.getInstance("AES").nn
     keyGen.init(128)
-    keyGen.generateKey
+    keyGen.generateKey.nn
   }
 
   private val iv = new IvParameterSpec(ByteVector.low(16).toArray)

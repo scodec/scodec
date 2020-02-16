@@ -421,16 +421,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     * @group ctor
     */
   def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
-    // Avoid use of lazy val to avoid synchronization - okay to race on creation of codec,
-    // and okay for multiple threads to compute their own codecs
-    private var _c: Codec[A] = null
-    private def c: Codec[A] = {
-      if (_c eq null) {
-        _c = codec
-        if (_c eq null) throw new NullPointerException("lazy codec constructor returned null")
-      }
-      _c
-    }
+    @annotation.threadUnsafe lazy val c: Codec[A] = codec
     def sizeBound = c.sizeBound
     def encode(a: A) = c.encode(a)
     def decode(b: BitVector) = c.decode(b)
@@ -686,7 +677,7 @@ object Codec extends EncoderFunctions with DecoderFunctions {
             if (ordinal == i) {
               summonFrom {
                 case s: Mirror.Singleton =>
-                  Attempt.successful(DecodeResult(s.fromProduct(null).asInstanceOf[S], b))
+                  Attempt.successful(DecodeResult(s.fromProduct(EmptyProduct).asInstanceOf[S], b))
                 case p: Mirror.ProductOf[`hd` & S] =>
                   val hdLabelValue = constValue[hdLabel].asInstanceOf[String]
                   inline val size = constValue[Tuple.Size[p.MirroredElemTypes]]

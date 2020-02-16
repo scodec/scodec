@@ -13,7 +13,7 @@ object ChecksumFactory {
 
   /** Creates a `java.security.Digest` factory for the specified algorithm. */
   def digest(algorithm: String): SignerFactory = new ChecksumFactory {
-    def newSigner: Signer = new DigestSigner(MessageDigest.getInstance(algorithm))
+    def newSigner: Signer = new DigestSigner(MessageDigest.getInstance(algorithm).nn)
   }
 
   /** Signer factory that does not have a distinct verifier. */
@@ -44,7 +44,7 @@ object ChecksumFactory {
   /** `java.security.Digest` implementation of Signer. */
   private class DigestSigner(impl: MessageDigest) extends Signer {
     def update(data: Array[Byte]): Unit = impl.update(data)
-    def sign: Array[Byte] = impl.digest
+    def sign: Array[Byte] = impl.digest.nn
     def verify(signature: Array[Byte]): Boolean = MessageDigest.isEqual(impl.digest(), signature)
   }
 

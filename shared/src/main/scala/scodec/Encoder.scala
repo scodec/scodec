@@ -95,16 +95,16 @@ trait Encoder[-A] { self =>
     */
   def encodeAll(as: Iterable[A]): Attempt[BitVector] = {
     val buf = new collection.mutable.ArrayBuffer[BitVector](as.size)
-    var failure: Err = null
+    var failure: Err | Null = null
     as.foreach { a =>
-      if (failure eq null) {
+      if (failure == null) {
         encode(a) match {
           case Attempt.Successful(aa) => buf += aa
           case Attempt.Failure(err)   => failure = err.pushContext(buf.size.toString)
         }
       }
     }
-    if (failure eq null) {
+    if (failure == null) {
       def merge(offset: Int, size: Int): BitVector = size match {
         case 0 => BitVector.empty
         case 1 => buf(offset)
@@ -113,7 +113,9 @@ trait Encoder[-A] { self =>
           merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
       }
       Attempt.successful(merge(0, buf.size))
-    } else Attempt.failure(failure)
+    } else {
+      Attempt.failure(failure.nn) // FIXME .nn shouldn't be necessary here b/c failure is checked for null above
+    }
   }
 }
 

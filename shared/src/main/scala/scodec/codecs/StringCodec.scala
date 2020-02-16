@@ -12,9 +12,9 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
   override def sizeBound = SizeBound.unknown
 
   override def encode(str: String) = {
-    val encoder = charset.newEncoder
-    val buffer = CharBuffer.wrap(str)
-    try Attempt.successful(BitVector(encoder.encode(buffer)))
+    val encoder = charset.newEncoder.nn
+    val buffer = CharBuffer.wrap(str).nn
+    try Attempt.successful(BitVector(encoder.encode(buffer).nn))
     catch {
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
         Attempt.failure(
@@ -24,7 +24,7 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
   }
 
   override def decode(buffer: BitVector) = {
-    val decoder = charset.newDecoder
+    val decoder = charset.newDecoder.nn
     try {
       val asBuffer = ByteBuffer.wrap(buffer.toByteArray)
       Attempt.successful(DecodeResult(decoder.decode(asBuffer).toString, BitVector.empty))
@@ -36,5 +36,5 @@ private[codecs] final class StringCodec(charset: Charset) extends Codec[String] 
     }
   }
 
-  override def toString = charset.displayName
+  override def toString = charset.displayName.nn
 }

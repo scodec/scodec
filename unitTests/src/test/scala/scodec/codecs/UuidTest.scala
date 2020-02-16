@@ -6,7 +6,7 @@ import org.scalacheck.Arbitrary
 
 class UuidTest extends CodecSuite {
 
-  implicit val arbitraryUuid: Arbitrary[UUID] = Arbitrary(UUID.randomUUID)
+  implicit val arbitraryUuid: Arbitrary[UUID] = Arbitrary(UUID.randomUUID.nn)
 
   "uuid codec" should {
     "roundtrip" in {
