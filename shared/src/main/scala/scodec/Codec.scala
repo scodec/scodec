@@ -428,8 +428,8 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     override def toString = s"lazily($c)"
   }
 
-  extension on [T <: Tuple, U <: Tuple](t: Codec[T])(using u: codecs.DropUnits[T] { type L = U }) {
-    def dropUnits: Codec[U] = t.xmap(u.removeUnits, u.addUnits)
+  extension on [T <: Tuple](codecT: Codec[T]) {
+    inline def dropUnits: Codec[codecs.DropUnits.T[T]] = codecT.xmap(t => codecs.DropUnits.drop(t), u => codecs.DropUnits.insert(u))
   }
 
   extension on [H, T <: Tuple](t: Codec[T]) {
@@ -485,6 +485,16 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       }
   }
 
+  extension on [A, B <: Tuple](codecB: Codec[B]) {
+    /**
+      * `codecB :+ codecA` returns a new codec that encodes/decodes the tuple `B` followed by an `A`.
+      * That is, this operator is a codec-level tuple append operation.
+      * @group tuple
+      */
+    inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: Unit]] = 
+      codecB ::: codecA.tuple
+  }
+
   extension on [A, B <: Tuple](codecA: Codec[A]) {
     /**
       * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
@@ -512,13 +522,107 @@ object Codec extends EncoderFunctions with DecoderFunctions {
     def >>:~(f: A => Codec[B]): Codec[A *: B] = codecA.flatPrepend(f)
   }
 
-  extension on [B <: Tuple](rhs: Codec[B]) {
+  extension on [A <: Tuple, B <: Tuple](codecA: Codec[A]) {
     /**
-      * When called on a `Codec[L]` for some `L <: HList`, returns a new codec that encodes/decodes
-      * `B :: L` but only returns `L`.  HList equivalent of `~>`.
-      * @group hlist
+      * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
+      * the tuple `A` followed by the tuple `B`, where the latter is encoded/decoded with the codec
+      * returned from applying `A` to `f`.
+      * @group tuple
       */
-    def :~>:(lhs: Codec[Unit]): Codec[B] = lhs.dropLeft(rhs)
+    inline def flatConcat(f: A => Codec[B]): Codec[Tuple.Concat[A, B]] = new Codec[Tuple.Concat[A, B]] {
+      def sizeBound = codecA.sizeBound.atLeast
+      def encode(ab: Tuple.Concat[A, B]) = {
+        val size = constValue[Tuple.Size[A]]
+        val (a, b) = ab.splitAt(size).asInstanceOf[(A, B)]
+        encodeBoth(codecA, f(a))(a, b)
+      }
+      def decode(bv: BitVector) =
+        codecA.decode(bv).flatMap { case DecodeResult(a, rem) =>
+          f(a).decode(rem).map(_.map(b => a ++ b))
+        }
+    }
+  }
+
+  extension on [A <: Tuple, B](codecA: Codec[A]) {
+    /**
+      * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
+      * the tuple `A` followed by the value `B`, where the latter is encoded/decoded with the codec
+      * returned from applying `A` to `f`.
+      * @group tuple
+      */
+    inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: Unit]] = new Codec[Tuple.Concat[A, B *: Unit]] {
+      def sizeBound = codecA.sizeBound.atLeast
+      def encode(ab: Tuple.Concat[A, B *: Unit]) = {
+        val size = constValue[Tuple.Size[A]]
+        val (a, b) = ab.splitAt(size).asInstanceOf[(A, B *: Unit)]
+        encodeBoth(codecA, f(a))(a, b.head)
+      }
+      def decode(bv: BitVector) =
+        codecA.decode(bv).flatMap { case DecodeResult(a, rem) =>
+          f(a).decode(rem).map(_.map(b => (a ++ (b *: ())): Tuple.Concat[A, B *: Unit]))
+          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
+        }
+    }
+  }
+
+  implicit class DeriveSyntax[A <: Tuple](private val self: Codec[A]) extends AnyVal {
+    /**
+      * Supports building a `Codec[M]` for some `HList M` where `M` is the `HList` that results in removing
+      * the first `A` from `L`.
+      *
+      * Example usage: {{{
+       case class Flags(x: Boolean, y: Boolean, z: Boolean)
+       val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
+         conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+       }
+       c.derive[Flags].from { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
+     }}}
+      *
+      * This codec, the `Codec[L]`, is used for encoding/decoding. When decoding, the first value of type
+      * `A` is removed from the `HList`.
+      *
+      * When encoding, the returned codec computes an `A` value using the supplied
+      * function and inserts the computed `A` in to the `HList M`, yielding an `HList L`. That `HList L`
+      * is then encoded using the original codec.
+      *
+      * This method is called `derive` because the value of type `A` is derived from the other fields
+      * in the `HList L`.
+      *
+      * @tparam A type to remove from `L` and derive from the resulting list
+      * @group tuple
+      */
+    def derive[B]: Derive[A, B] = new Derive[A, B](self)
+  }
+
+  class Derive[A <: Tuple, B](codecA: Codec[A]) extends AnyVal {
+    inline def from(f: TupleWithout[A, B] => B): Codec[TupleWithout[A, B]] =
+      codecA.xmap(a => remove(a), c => insert(c, f(c)))
+    inline def remove(a: A): TupleWithout[A, B] = {
+      val i = constValue[TupleIndexOf[A, B]]
+      val prefix = a.take(i)
+      val j = constValue[S[TupleIndexOf[A, B]]]
+      val suffix = a.drop(j)
+      (prefix ++ suffix).asInstanceOf[TupleWithout[A, B]]
+    }
+    inline def insert(c: TupleWithout[A, B], b: B): A = {
+      val i = constValue[TupleIndexOf[A, B]]
+      val (prefix, suffix) = c.splitAt(i)
+      (prefix ++ (b *: suffix)).asInstanceOf[A]
+    }
+  }
+
+  type TupleWithout[A <: Tuple, B] <: Tuple = A match {
+    case hd *: tl => hd match {
+      case B => tl
+      case _ => hd *: TupleWithout[tl, B]
+    }
+  }
+
+  type TupleIndexOf[A <: Tuple, B] <: Int = A match {
+    case hd *: tl => hd match {
+      case B => 0
+      case _ => S[TupleIndexOf[tl, B]]
+    }
   }
 
   /**

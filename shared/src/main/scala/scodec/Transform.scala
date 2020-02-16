@@ -80,24 +80,22 @@ trait TransformerLowPriority0 {
 }
 
 trait TransformerLowPriority extends TransformerLowPriority0 {
-  given fromProductWithUnits[A, B <: Tuple, C <: Tuple](using 
+  inline given fromProductWithUnits[A, B <: Tuple](using 
     m: Mirror.ProductOf[A],
-    ev: m.MirroredElemTypes =:= B,
-    du: codecs.DropUnits[C] { type L = B }
-  ): Transformer[A, C] =
-    new Transformer[A, C] {
-      def apply[F[_]: Transform](fa: F[A]): F[C] =
-        fa.xmap(a => du.addUnits(toTuple(a)), c => fromTuple(du.removeUnits(c)))
+    ev: m.MirroredElemTypes =:= codecs.DropUnits.T[B]
+  ): Transformer[A, B] =
+    new Transformer[A, B] {
+      def apply[F[_]: Transform](fa: F[A]): F[B] =
+        fa.xmap(a => codecs.DropUnits.insert(toTuple(a)), c => fromTuple(codecs.DropUnits.drop(c)))
     }
 
-  given fromProductWithUnitsReverse[A, B <: Tuple, C <: Tuple](using 
+  inline given fromProductWithUnitsReverse[A, B <: Tuple](using 
     m: Mirror.ProductOf[A],
-    ev: m.MirroredElemTypes =:= B,
-    du: codecs.DropUnits[C] { type L = B }
-  ): Transformer[C, A] =
-    new Transformer[C, A] {
-      def apply[F[_]: Transform](fc: F[C]): F[A] =
-        fc.xmap(c => fromTuple(du.removeUnits(c)), a => du.addUnits(toTuple(a)))
+    ev: m.MirroredElemTypes =:= codecs.DropUnits.T[B]
+  ): Transformer[B, A] =
+    new Transformer[B, A] {
+      def apply[F[_]: Transform](fc: F[B]): F[A] =
+        fc.xmap(c => fromTuple(codecs.DropUnits.drop(c)), a => codecs.DropUnits.insert(toTuple(a)))
     }  
 }
 

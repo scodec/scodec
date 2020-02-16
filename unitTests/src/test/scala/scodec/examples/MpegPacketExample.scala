@@ -53,14 +53,14 @@ object MpegCodecs {
 
   val tsHeaderCodec: Codec[TransportStreamHeader] = fixedSizeBytes(
     4, {
-      ("syncByte" | constant(0x47)) :~>:
+      ("syncByte" | constant(0x47)) ~> (
         ("transportStringIndicator" | bool) ::
         ("payloadUnitStartIndicator" | bool) ::
         ("transportPriority" | bool) ::
         ("pid" | uint(13)) ::
         ("scramblingControl" | uint2) ::
         ("adaptationFieldControl" | uint2) ::
-        ("continuityCounter" | uint4)
+        ("continuityCounter" | uint4))
     }
   ).as[TransportStreamHeader]
 
