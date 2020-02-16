@@ -276,7 +276,7 @@ trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
      (bool :: bool :: bool :: ignore(5)).consume { flgs =>
        conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
      } {
-       case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined) }
+       case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
      }
    }}}
     *
@@ -366,30 +366,6 @@ trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
     override def decode(buffer: BitVector) = self.decode(buffer)
     override def toString = str
   }
-
-  // /**
-  //   * Supports creation of a coproduct codec. See [[scodec.codecs.CoproductCodecBuilder]] for details.
-  //   * @group coproduct
-  //   */
-  // def :+:[B](
-  //     left: Codec[B]
-  // ): codecs.CoproductCodecBuilder[B :+: A :+: CNil, Codec[B] :: Codec[A] :: HNil, B :+: A :+: CNil] =
-  //   codecs.CoproductCodecBuilder(left :: self :: HNil)
-
-  // /**
-  //   * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
-  //   * @group combinators
-  //   */
-  // def toField[K]: Codec[FieldType[K, A]] =
-  //   xmap[FieldType[K, A]](a => labelled.field[K](a), identity)
-
-  // /**
-  //   * Lifts this codec to a codec of a shapeless field -- allowing it to be used in records and unions.
-  //   * The specified key is pushed in to the context of any errors that are returned from the resulting codec.
-  //   * @group combinators
-  //   */
-  // def toFieldWithContext[K <: Symbol](k: K): Codec[FieldType[K, A]] =
-  //   toField[K].withContext(k.name)
 
   override def decodeOnly[AA >: A]: Codec[AA] = {
     val sup = super.decodeOnly[AA]
@@ -553,29 +529,6 @@ object Codec extends EncoderFunctions with DecoderFunctions {
       */
     def :~>:(lhs: Codec[Unit]): Codec[B] = lhs.dropLeft(rhs)
   }
-  //   /**
-  //     * When called on a `Codec[A]`, returns a new codec that encodes/decodes `B :: A :: HNil`.
-  //     * HList equivalent of `~>`.
-  //     * @group hlist
-  //     */
-  //   def :~>:[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A :: HNil] =
-  //     codecB :~>: self.hlist
-
-  // def [H, T <: Tuple] (h: Codec[H]) :: (t: Codec[T]): Codec[H *: T] =
-  //  new Codec[H *: T] {
-  //     def sizeBound = h.sizeBound + t.sizeBound
-  //     def encode(ht: H *: T) = Codec.encodeBoth(h, t)(ht.head, ht.tail)
-  //     def decode(bv: BitVector) = Codec.decodeBoth(h, t)(bv).map(_.map(_ *: _))
-  //     override def toString = s"$h :: $t"
-  //   } 
-
-  // def [A, B] (a: Codec[A]) :: (b: Codec[B])(using DummyImplicit): Codec[(A, B)] =
-  //   new Codec[(A, B)] {
-  //     def sizeBound = a.sizeBound + b.sizeBound
-  //     def encode(ab: (A, B)) = Codec.encodeBoth(a, b)(ab._1, ab._2)
-  //     def decode(bv: BitVector) = Codec.decodeBoth(a, b)(bv)
-  //     override def toString = s"$a :: $b"
-  //   }
 
   /**
     * Constructs a `Codec[(A, B, ..., N)]` from a tuple `(Codec[A], Codec[B], ..., Codec[N])`.
