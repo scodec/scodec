@@ -41,7 +41,7 @@ class TupleCodecTest extends CodecSuite {
     }
 
     "provide ability to concatenate two tuple codecs" in {
-      roundtrip(((uint8 :: uint8) ::: (uint8 :: uint8)).as[Baz], Baz(1, 2, 3, 4))
+      roundtrip(((uint8 :: uint8) ++ (uint8 :: uint8)).as[Baz], Baz(1, 2, 3, 4))
     }
 
     "support dropping all Unit values out of a tuple codec" in {
@@ -67,7 +67,7 @@ class TupleCodecTest extends CodecSuite {
           conditional(flgs.y, uint8) ::
           conditional(flgs.z, uint8)
       }
-      val values = valuesWithFlags.derive[Flags].from {
+      val values = valuesWithFlags.deriveElement {
         case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined)
       }
       values.encode(None, None, None) shouldBe Attempt.successful(bin"00000000")

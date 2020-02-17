@@ -175,7 +175,8 @@ lazy val unitTests = project
                                      .cross(CrossVersion.patch)
                                  )
                                )
-                             else Nil)
+                             else Nil),
+    scalacOptions in (Test, console) ++= List("-Xprint:typer")
   )
   .dependsOn(testkitJVM % "test->compile")
   .settings(publishArtifact := false)

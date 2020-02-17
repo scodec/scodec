@@ -78,7 +78,7 @@ object MpegCodecs {
   ).as[AdaptationFieldFlags]
 
   val adaptationFieldCodec: Codec[AdaptationField] = {
-    ("adaptation_flags" | adaptationFieldFlagsCodec) >>:~ { flags =>
+    ("adaptation_flags" | adaptationFieldFlagsCodec).flatPrepend { flags =>
       ("pcr" | conditional(flags.pcrFlag, bits(48))) ::
         ("opcr" | conditional(flags.opcrFlag, bits(48))) ::
         ("spliceCountdown" | conditional(flags.splicingPointFlag, int8))
@@ -86,7 +86,7 @@ object MpegCodecs {
   }.as[AdaptationField]
 
   val packetCodec: Codec[MpegPacket] = {
-    ("header" | tsHeaderCodec) >>:~ { hdr =>
+    ("header" | tsHeaderCodec).flatPrepend { hdr =>
       ("adaptation_field" | conditional(hdr.adaptationFieldIncluded, adaptationFieldCodec)) ::
         ("payload" | conditional(hdr.payloadIncluded, bytes(184)))
     }
