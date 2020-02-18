@@ -50,16 +50,6 @@ class CodecTest extends CodecSuite {
         ()
       }
 
-      // "supports converting from a coproduct to a sealed class hierarchy, regardless of order in which types appear" in {
-      //   val foo = (uint8 :: uint8 :: variableSizeBytes(uint8, utf8)).as[Foo]
-      //   val bar = uint8.as[Bar]
-      //   val parent = (bar :+: foo).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]
-      //   roundtripAll(parent, Seq(Foo(1, 2, "Hi"), Bar(1)))
-
-      //   val outOfOrder = (foo :+: bar).discriminatedBy(uint8).using(Sized(1, 2)).as[Parent]
-      //   roundtripAll(outOfOrder, Seq(Foo(1, 2, "Hi"), Bar(1)))
-      // }
-
       "supports implicitly dropping unit values from a tuple" in {
         val c = (uint2 :: uint2 :: ignore(4) :: utf8_32).as[Foo]
         roundtrip(c, Foo(1, 2, "Hi"))

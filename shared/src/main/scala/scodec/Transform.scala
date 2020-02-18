@@ -53,11 +53,8 @@ trait Transform[F[_]] {
     * Transforms supplied `F[A]` to an `F[B]` using implicitly available evidence that such a transformation
     * is possible.
     *
-    * Typical transformations include converting:
-    *  - an `F[L]` for some `L <: HList` to/from an `F[CC]` for some case class `CC`, where the types in the case class are
-    *    aligned with the types in `L`
-    *  - an `F[C]` for some `C <: Coproduct` to/from an `F[SC]` for some sealed class `SC`, where the component types in
-    *    the coproduct are the leaf subtypes of the sealed class.
+    * The most common use case for this method is converting a `F[A]` for some `A <: Tuple` to/from an `F[CC]`
+    * for some case class `CC`, where the types in the case class are aligned with the types in `A`.
     */
   // def [A](fa: F[A]).as[B](using t: Transformer[A, B]): F[B] = t(fa)(using this)
 }
@@ -126,15 +123,4 @@ object Transformer extends TransformerLowPriority {
     new Transformer[B, A] {
       def apply[F[_]: Transform](fb: F[B]): F[A] = fb.xmap(b => fromTuple(b *: ()), a => toTuple(a).head)
     }
-
-  // /** Builds a `Transformer[A, B]` where `A` is a coproduct whose component types can be aligned with the coproduct representation of `B`. */
-  // implicit def fromGenericWithUnalignedCoproductReverse[B, Repr <: Coproduct, A <: Coproduct](
-  //     implicit
-  //     gen: Generic.Aux[B, Repr],
-  //     toAligned: Align[Repr, A],
-  //     fromAligned: Align[A, Repr]
-  // ): Transformer[A, B] = new Transformer[A, B] {
-  //   def apply[F[_]: Transform](fa: F[A]): F[B] =
-  //     fa.xmap(a => gen.from(fromAligned(a)), b => toAligned(gen.to(b)))
-  // }
 }

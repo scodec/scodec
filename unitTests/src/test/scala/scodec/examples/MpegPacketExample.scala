@@ -7,7 +7,7 @@ import scodec.codecs._
 // Define MPEG codecs
 object MpegCodecs {
 
-  // Define case classes that describe MPEG packets and define an HList iso for each
+  // Define case classes that describe MPEG packets
   //
   // Note: This encoding is a simplified version of what's required to parse real
   // MPEG packets. For a production quality codec, see the

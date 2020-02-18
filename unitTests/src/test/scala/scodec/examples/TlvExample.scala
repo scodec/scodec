@@ -36,7 +36,7 @@ class TlvExample extends CodecSuite {
 
     "be supported" in {
       // The type field acts as the discriminator
-      // The length field is handled by coproduct framing
+      // The length field is handled by framing
       // Each component codec writes the value
 
       val uint8or16: Codec[Int] = new Codec[Int] {

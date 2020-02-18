@@ -28,7 +28,7 @@ class ProductsExample extends CodecSuite {
       )
     }
 
-    "demonstrate hlist generation" in {
+    "demonstrate tuple generation" in {
       // You can summon tuple codecs directly
       val codec = summon[Codec[(Int, Int, Boolean)]]
       assertBitsEqual(codec.encode(1, 2, true).require, 0x00000001_00000002_ff)

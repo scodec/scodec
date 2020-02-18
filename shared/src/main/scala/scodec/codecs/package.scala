@@ -1954,15 +1954,6 @@ package object codecs {
     ) // https://github.com/scala/bug/issues/10906
 
   /**
-    * Converts an `HList` of codecs in to a single codec.
-    * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a
-    * `Codec[X0 :: X1 :: ... :: Xn :: HNil].
-    * @group combinators
-    */
-  // def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out =
-  //   toHListCodec(l)
-
-  /**
     * Wraps a codec and adds logging of each encoding and decoding operation.
     *
     * The `logEncode` and `logDecode` functions are called with the result of each encoding and decoding

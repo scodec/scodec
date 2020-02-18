@@ -12,9 +12,6 @@ import scodec.bits.BitVector
   *
   * @groupname combinators Basic Combinators
   * @groupprio combinators 10
-  *
-  * @groupname coproduct Coproduct Support
-  * @groupprio coproduct 13
   */
 trait Decoder[+A] { self =>
 
