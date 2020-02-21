@@ -150,7 +150,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
     name := "scodec-testkit",
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % "1.14.3",
-      "org.scalatest" %%% "scalatest" % "3.1.0",
+      "org.scalatest" %%% "scalatest" % "3.1.1",
       "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
     )
   )
