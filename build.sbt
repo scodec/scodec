@@ -106,7 +106,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       baseDirectory.value / "../shared/src/main" / dir
     },
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.12",
+      "org.scodec" %%% "scodec-bits" % "1.1.14",
       "com.chuusai" %%% "shapeless" % "2.3.3"
     ),
     buildInfoPackage := "scodec",
