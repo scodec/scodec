@@ -106,7 +106,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       baseDirectory.value / "../shared/src/main" / dir
     },
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.12",
+      "org.scodec" %%% "scodec-bits" % "1.1.14",
       "com.chuusai" %%% "shapeless" % "2.3.3"
     ),
     buildInfoPackage := "scodec",
@@ -150,8 +150,8 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
     name := "scodec-testkit",
     libraryDependencies ++= Seq(
       "org.scalacheck" %%% "scalacheck" % "1.14.3",
-      "org.scalatest" %%% "scalatest" % "3.1.0",
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
+      "org.scalatest" %%% "scalatest" % "3.1.1",
+      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
     )
   )
   .dependsOn(core % "compile->compile")

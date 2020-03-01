@@ -4,7 +4,7 @@ import scala.concurrent.duration._
 
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
