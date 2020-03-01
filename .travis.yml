@@ -8,7 +8,6 @@ cache:
 language: scala
 
 scala:
-  - 2.11.12
   - 2.12.10
   - 2.13.1
 
@@ -19,6 +18,8 @@ script:
   - node -v
   - sbt ++$TRAVIS_SCALA_VERSION "project coreJVM" test mimaReportBinaryIssues
   - sbt ++$TRAVIS_SCALA_VERSION "project testkitJVM" test mimaReportBinaryIssues
+  - sbt ++$TRAVIS_SCALA_VERSION "project coreJS" test
+  - sbt ++$TRAVIS_SCALA_VERSION "project testkitJS" test
 
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" -exec rm {} +
