@@ -23,9 +23,7 @@ object PcapCodec {
       if (bo == BigEndian) uint32.encode(magicNumber) else uint32L.encode(magicNumber),
     (buf: BitVector) =>
       uint32.decode(buf).map {
-        _.map { mn =>
-          if (mn == magicNumber) BigEndian else LittleEndian
-        }
+        _.map(mn => if (mn == magicNumber) BigEndian else LittleEndian)
       }
   )
 
@@ -86,9 +84,7 @@ object PcapCodec {
   case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
 
   implicit val pcapFile = {
-    pcapHeader >>:~ { hdr =>
-      vector(pcapRecord(hdr.ordering)).hlist
-    }
+    pcapHeader >>:~ { hdr => vector(pcapRecord(hdr.ordering)).hlist }
   }.as[PcapFile]
 }
 

@@ -19,12 +19,8 @@ class CoproductCodecTest extends CodecSuite {
       codec.encode(Coproduct[IBS]("Hello")).require shouldBe hex"020548656c6c6f".bits
       codec.sizeBound shouldBe SizeBound.atLeast(16)
 
-      forAll { (i: Int) =>
-        roundtrip(codec, Coproduct[IBS](i))
-      }
-      forAll { (b: Boolean) =>
-        roundtrip(codec, Coproduct[IBS](b))
-      }
+      forAll((i: Int) => roundtrip(codec, Coproduct[IBS](i)))
+      forAll((b: Boolean) => roundtrip(codec, Coproduct[IBS](b)))
       forAll { (s: String) =>
         if (s.size < 256) {
           codec.encode(Coproduct[IBS](s)).toOption.foreach { bits =>
@@ -45,12 +41,8 @@ class CoproductCodecTest extends CodecSuite {
       codec.encode(Coproduct[IBS](true)).require shouldBe hex"62ff".bits
       codec.encode(Coproduct[IBS]("Hello")).require shouldBe hex"730548656c6c6f".bits
 
-      forAll { (i: Int) =>
-        roundtrip(codec, Coproduct[IBS](i))
-      }
-      forAll { (b: Boolean) =>
-        roundtrip(codec, Coproduct[IBS](b))
-      }
+      forAll((i: Int) => roundtrip(codec, Coproduct[IBS](i)))
+      forAll((b: Boolean) => roundtrip(codec, Coproduct[IBS](b)))
       forAll { (s: String) =>
         if (s.size < 256) {
           codec.encode(Coproduct[IBS](s)).toOption.foreach { bits =>

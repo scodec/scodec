@@ -19,7 +19,7 @@ private[scodec] object HListCodec {
   def prepend[A, L <: HList](a: Codec[A], l: Codec[L]): Codec[A :: L] = new Codec[A :: L] {
     override def sizeBound = a.sizeBound + l.sizeBound
     override def encode(xs: A :: L) = Codec.encodeBoth(a, l)(xs.head, xs.tail)
-    override def decode(buffer: BitVector) = Codec.decodeBothCombine(a, l)(buffer) { _ :: _ }
+    override def decode(buffer: BitVector) = Codec.decodeBothCombine(a, l)(buffer)(_ :: _)
     override def toString = s"$a :: $l"
   }
 
@@ -35,7 +35,7 @@ private[scodec] object HListCodec {
   ): Codec[LA] = new Codec[LA] {
     override def sizeBound = l.sizeBound + a.sizeBound
     override def encode(xs: LA) = Codec.encodeBoth(l, a)(xs.init, xs.last)
-    override def decode(buffer: BitVector) = Codec.decodeBothCombine(l, a)(buffer) { _ :+ _ }
+    override def decode(buffer: BitVector) = Codec.decodeBothCombine(l, a)(buffer)(_ :+ _)
     override def toString = s"append($l, $a)"
   }
 
@@ -53,7 +53,7 @@ private[scodec] object HListCodec {
         val (k, l) = xs.split[KLen]
         Codec.encodeBoth(ck, cl)(k, l)
       }
-      override def decode(buffer: BitVector) = Codec.decodeBothCombine(ck, cl)(buffer) { _ ::: _ }
+      override def decode(buffer: BitVector) = Codec.decodeBothCombine(ck, cl)(buffer)(_ ::: _)
       override def toString = s"concat($ck, $cl)"
     }
   }

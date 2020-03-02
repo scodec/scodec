@@ -6,36 +6,26 @@ import scodec.bits.BitVector
 
 class ShortCodecTest extends CodecSuite {
   def check[A](low: Short, high: Short)(f: (Short) => A) =
-    forAll(Gen.choose(low, high)) { n =>
-      f(n)
-    }
+    forAll(Gen.choose(low, high))(n => f(n))
 
   "the short16 codec" should {
     "roundtrip" in {
-      forAll { (n: Short) =>
-        roundtrip(short16, n)
-      }
+      forAll((n: Short) => roundtrip(short16, n))
     }
   }
   "the short16L codec" should {
     "roundtrip" in {
-      forAll { (n: Short) =>
-        roundtrip(short16L, n)
-      }
+      forAll((n: Short) => roundtrip(short16L, n))
     }
   }
   "the ushort(n) codec" should {
     "roundtrip" in {
-      forAll(Gen.choose(0, 32767)) { n =>
-        roundtrip(ushort(15), n.toShort)
-      }
+      forAll(Gen.choose(0, 32767))(n => roundtrip(ushort(15), n.toShort))
     }
   }
   "the ushortL(n) codec" should {
     "roundtrip" in {
-      forAll(Gen.choose(0, 32767)) { n =>
-        roundtrip(ushortL(15), n.toShort)
-      }
+      forAll(Gen.choose(0, 32767))(n => roundtrip(ushortL(15), n.toShort))
     }
   }
 

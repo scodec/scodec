@@ -31,7 +31,7 @@ final case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
 
   /** Multiplies this size bound by the specified scalar. */
   def *(n: Long): SizeBound =
-    SizeBound(lowerBound = lowerBound * n, upperBound = upperBound.map { _ * n })
+    SizeBound(lowerBound = lowerBound * n, upperBound = upperBound.map(_ * n))
 
   /** ORs the specified size bound with this size bound, resulting in a new bound which has the minimum lower bound and maximum upper bound. */
   def |(that: SizeBound): SizeBound = combine(that)(_.min(_), _.max(_))

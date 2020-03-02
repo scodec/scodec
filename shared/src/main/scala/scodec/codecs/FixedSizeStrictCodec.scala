@@ -22,9 +22,7 @@ private[codecs] final class FixedSizeStrictCodec[A](size: Long, codec: Codec[A])
 
   override def decode(buffer: BitVector) =
     if (buffer.size == size) {
-      codec.decode(buffer.take(size)).map { res =>
-        DecodeResult(res.value, buffer.drop(size))
-      }
+      codec.decode(buffer.take(size)).map(res => DecodeResult(res.value, buffer.drop(size)))
     } else {
       Attempt.failure(Err(s"expected exactly $size bits but got ${buffer.size} bits"))
     }

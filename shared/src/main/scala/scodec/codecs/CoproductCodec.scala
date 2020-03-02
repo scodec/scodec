@@ -46,7 +46,7 @@ private[scodec] object CoproductCodec {
     private val liftedCodecs: List[Codec[C]] = aux(codecs)
 
     def sizeBound =
-      discriminatorCodec.sizeBound + SizeBound.choice(liftedCodecs.map { _.sizeBound })
+      discriminatorCodec.sizeBound + SizeBound.choice(liftedCodecs.map(_.sizeBound))
 
     def encode(c: C) = {
       val discriminator = coproductToDiscriminator(c)
@@ -86,7 +86,7 @@ private[scodec] object CoproductCodec {
     private val liftedCodecs: List[Codec[C]] = aux(codecs)
     private val decoder: Decoder[C] = Decoder.choiceDecoder(liftedCodecs: _*)
 
-    def sizeBound = SizeBound.choice(liftedCodecs.map { _.sizeBound })
+    def sizeBound = SizeBound.choice(liftedCodecs.map(_.sizeBound))
 
     def encode(c: C) = encodeCoproduct(liftedCodecs, c)
 
@@ -122,9 +122,7 @@ object ToCoproductCodecs {
         }
         def decode(buffer: BitVector) =
           codec.decode(buffer).map {
-            _.map { a =>
-              Coproduct[A :+: CT](a)
-            }
+            _.map(a => Coproduct[A :+: CT](a))
           }
         override def toString = codec.toString
       }
@@ -138,9 +136,7 @@ object ToCoproductCodecs {
           }
           def decode(buffer: BitVector) =
             d.decode(buffer).map {
-              _.map { a =>
-                Inr(a): A :+: CT
-              }
+              _.map(a => Inr(a): A :+: CT)
             }
           override def toString = d.toString
         }
@@ -285,9 +281,7 @@ final class CoproductCodecBuilder[C <: Coproduct, L <: HList, R] private[scodec]
     private def usingUnsafe(discriminators: Seq[A]): Codec[R] with KnownDiscriminatorType[A] = {
       val toDiscriminator: C => A = c => discriminators(CoproductCodec.indexOf(c))
       val fromDiscriminator: A => Option[Int] = a => {
-        val idx = discriminators.indexWhere { (x: A) =>
-          x == a
-        }
+        val idx = discriminators.indexWhere((x: A) => x == a)
         if (idx >= 0) Some(idx) else None
       }
       toRDiscriminated(

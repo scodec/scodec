@@ -7,16 +7,12 @@ class DoubleCodecTest extends CodecSuite {
 
   "the double codec" should {
     "roundtrip" in {
-      forAll { (n: Double) =>
-        roundtrip(double, n)
-      }
+      forAll((n: Double) => roundtrip(double, n))
     }
   }
   "the doubleL codec" should {
     "roundtrip" in {
-      forAll { (n: Double) =>
-        roundtrip(doubleL, n)
-      }
+      forAll((n: Double) => roundtrip(doubleL, n))
     }
   }
 

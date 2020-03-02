@@ -36,12 +36,8 @@ class DiscriminatorCodecTest extends CodecSuite {
       val codec =
         discriminated[AnyVal]
           .by(uint8)
-          ./[Int](0) { v =>
-            v match { case i: Int => Some(i); case _ => None }
-          }(int32)
-          ./[Boolean](1) { v =>
-            v match { case b: Boolean => Some(b); case _ => None }
-          }(bool)
+          ./[Int](0)(v => v match { case i: Int => Some(i); case _ => None })(int32)
+          ./[Boolean](1)(v => v match { case b: Boolean => Some(b); case _ => None })(bool)
 
       roundtrip(codec, true)
       roundtrip(codec, false)

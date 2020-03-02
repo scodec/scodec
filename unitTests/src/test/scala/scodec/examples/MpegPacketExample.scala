@@ -52,29 +52,27 @@ object MpegCodecs {
   )
 
   implicit val transportStreamHeader: Codec[TransportStreamHeader] = fixedSizeBytes(
-    4, {
-      ("syncByte" | constant(0x47)) :~>:
-        ("transportStringIndicator" | bool) ::
-        ("payloadUnitStartIndicator" | bool) ::
-        ("transportPriority" | bool) ::
-        ("pid" | uint(13)) ::
-        ("scramblingControl" | uint2) ::
-        ("adaptationFieldControl" | uint2) ::
-        ("continuityCounter" | uint4)
-    }
+    4,
+    ("syncByte" | constant(0x47)) :~>:
+      ("transportStringIndicator" | bool) ::
+      ("payloadUnitStartIndicator" | bool) ::
+      ("transportPriority" | bool) ::
+      ("pid" | uint(13)) ::
+      ("scramblingControl" | uint2) ::
+      ("adaptationFieldControl" | uint2) ::
+      ("continuityCounter" | uint4)
   ).as[TransportStreamHeader]
 
   implicit val adaptationFieldFlags: Codec[AdaptationFieldFlags] = fixedSizeBytes(
-    1, {
-      ("discontinuity" | bool) ::
-        ("randomAccess" | bool) ::
-        ("priority" | bool) ::
-        ("pcrFlag" | bool) ::
-        ("opcrFlag" | bool) ::
-        ("splicingPointFlag" | bool) ::
-        ("transportPrivateDataFlag" | bool) ::
-        ("adaptationFieldExtension" | bool)
-    }
+    1,
+    ("discontinuity" | bool) ::
+      ("randomAccess" | bool) ::
+      ("priority" | bool) ::
+      ("pcrFlag" | bool) ::
+      ("opcrFlag" | bool) ::
+      ("splicingPointFlag" | bool) ::
+      ("transportPrivateDataFlag" | bool) ::
+      ("adaptationFieldExtension" | bool)
   ).as[AdaptationFieldFlags]
 
   implicit val adaptationField: Codec[AdaptationField] = {

@@ -16,9 +16,7 @@ private[scodec] class ZlibCodec[A](
   def sizeBound = SizeBound.unknown
 
   def encode(a: A) =
-    codec.encode(a).map { b =>
-      b.deflate(level, strategy, nowrap, chunkSize)
-    }
+    codec.encode(a).map(b => b.deflate(level, strategy, nowrap, chunkSize))
 
   def decode(b: BitVector) =
     inflate(b, chunkSize).fold(

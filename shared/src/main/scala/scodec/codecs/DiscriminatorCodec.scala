@@ -368,8 +368,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
       b => errOrCase(b, tbl.get(b))
     } else {
       // this could be a bit smarter, but we fall back to linear scan
-      b =>
-        errOrCase(b, cases.find(_.condition.fold(_ == b, _._2(b))))
+      b => errOrCase(b, cases.find(_.condition.fold(_ == b, _._2(b))))
     }
   }
 
@@ -385,9 +384,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     new DiscriminatorCodec[A, B](by, cases, framing)
 
   def sizeBound =
-    by.sizeBound + SizeBound.choice(cases.map { c =>
-      framing(c.prism.repCodec).sizeBound
-    })
+    by.sizeBound + SizeBound.choice(cases.map(c => framing(c.prism.repCodec).sizeBound))
 
   def encode(a: A) = {
     val itr = cases.iterator
@@ -396,9 +393,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
           .preview(a)
           .map { r =>
             by.encode(k.representative)
-              .flatMap { bits =>
-                framing(k.prism.repCodec).encode(r).map(bits ++ _)
-              }
+              .flatMap(bits => framing(k.prism.repCodec).encode(r).map(bits ++ _))
           }
           .map(List(_))
           .getOrElse(List())

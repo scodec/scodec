@@ -7,16 +7,12 @@ class FloatCodecTest extends CodecSuite {
 
   "the float codec" should {
     "roundtrip" in {
-      forAll { (n: Float) =>
-        roundtrip(float, n)
-      }
+      forAll((n: Float) => roundtrip(float, n))
     }
   }
   "the floatL codec" should {
     "roundtrip" in {
-      forAll { (n: Float) =>
-        roundtrip(floatL, n)
-      }
+      forAll((n: Float) => roundtrip(floatL, n))
     }
   }
 

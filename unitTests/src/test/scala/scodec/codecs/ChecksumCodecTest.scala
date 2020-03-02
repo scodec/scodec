@@ -14,21 +14,13 @@ class ChecksumCodecTest extends CodecSuite {
       checksummed(utf8, xor(8), variableSizeBytes(int32, codecs.bits) ~ codecs.bits)
 
     "roundtrip" in {
-      forAll { (s: String) =>
-        roundtrip(codecSizeIncluded, s)
-      }
-      forAll { (s: String) =>
-        roundtrip(codecSizeExcluded, s)
-      }
+      forAll((s: String) => roundtrip(codecSizeIncluded, s))
+      forAll((s: String) => roundtrip(codecSizeExcluded, s))
     }
 
     "roundtrip using combinators" in {
-      forAll { (n: Int, s: String) =>
-        roundtrip(int32 ~ codecSizeIncluded, n ~ s)
-      }
-      forAll { (n: Int, s: String) =>
-        roundtrip(int32 ~ codecSizeExcluded, n ~ s)
-      }
+      forAll((n: Int, s: String) => roundtrip(int32 ~ codecSizeIncluded, n ~ s))
+      forAll((n: Int, s: String) => roundtrip(int32 ~ codecSizeExcluded, n ~ s))
     }
 
     "append checksum on encode" in {

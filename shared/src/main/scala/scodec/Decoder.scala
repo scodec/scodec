@@ -34,14 +34,14 @@ trait Decoder[+A] { self =>
     * @return error if value could not be decoded or the decoded value
     * @group primary
     */
-  final def decodeValue(bits: BitVector): Attempt[A] = decode(bits).map { _.value }
+  final def decodeValue(bits: BitVector): Attempt[A] = decode(bits).map(_.value)
 
   /**
     * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
     * @group combinators
     */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
-    def decode(bits: BitVector) = self.decode(bits).map { _.map(f) }
+    def decode(bits: BitVector) = self.decode(bits).map(_.map(f))
   }
 
   /**
@@ -49,9 +49,8 @@ trait Decoder[+A] { self =>
     * @group combinators
     */
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
-    def decode(bits: BitVector) = self.decode(bits).flatMap { result =>
-      f(result.value).decode(result.remainder)
-    }
+    def decode(bits: BitVector) =
+      self.decode(bits).flatMap(result => f(result.value).decode(result.remainder))
   }
 
   /**
@@ -60,9 +59,7 @@ trait Decoder[+A] { self =>
     */
   def emap[B](f: A => Attempt[B]): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits).flatMap { result =>
-      f(result.value).map { b =>
-        DecodeResult(b, result.remainder)
-      }
+      f(result.value).map(b => DecodeResult(b, result.remainder))
     }
   }
 
@@ -171,9 +168,7 @@ trait DecoderFunctions {
   final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(
       buffer: BitVector
   ): Attempt[DecodeResult[(A, B)]] =
-    decodeBothCombine(decA, decB)(buffer) { (a, b) =>
-      (a, b)
-    }
+    decodeBothCombine(decA, decB)(buffer)((a, b) => (a, b))
 
   /**
     * Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`.
@@ -184,11 +179,7 @@ trait DecoderFunctions {
   )(f: (A, B) => C): Attempt[DecodeResult[C]] =
     // Note: this could be written using flatMap on Decoder but this function is called *a lot* and needs to be very fast
     decA.decode(buffer).flatMap { aResult =>
-      decB.decode(aResult.remainder).map { bResult =>
-        bResult.map { b =>
-          f(aResult.value, b)
-        }
-      }
+      decB.decode(aResult.remainder).map(bResult => bResult.map(b => f(aResult.value, b)))
     }
 
   /**
@@ -246,9 +237,7 @@ object Decoder extends DecoderFunctions {
     * @group ctor
     */
   def liftAttempt[A](attempt: Attempt[A]): Decoder[A] = new Decoder[A] {
-    def decode(b: BitVector) = attempt.map { a =>
-      DecodeResult(a, b)
-    }
+    def decode(b: BitVector) = attempt.map(a => DecodeResult(a, b))
     override def toString = s"constAttempt($attempt)"
   }
 

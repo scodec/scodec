@@ -13,9 +13,7 @@ private[codecs] final class ByteAlignedCodec[A](codec: Codec[A]) extends Codec[A
   def sizeBound = {
     val sz = codec.sizeBound
     val lb = sz.lowerBound + padAmount(sz.lowerBound)
-    val ub = sz.upperBound.map { ub =>
-      ub + padAmount(ub)
-    }
+    val ub = sz.upperBound.map(ub => ub + padAmount(ub))
     SizeBound(lb, ub)
   }
 

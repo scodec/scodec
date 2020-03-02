@@ -33,9 +33,7 @@ class TupleCodecTest extends CodecSuite {
         fromTuple.encode(a :: b :: c :: HNil) shouldBe hlist.encode(a :: b :: c :: HNil)
       }
 
-      forAll { (bv: BitVector) =>
-        fromTuple.decode(bv) shouldBe hlist.decode(bv)
-      }
+      forAll((bv: BitVector) => fromTuple.decode(bv) shouldBe hlist.decode(bv))
 
       (int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8 ~ int8)
         .flattenLeftPairs
@@ -88,7 +86,8 @@ class TupleCodecTest extends CodecSuite {
         .require
         .value shouldBe 7
 
-      val add8 = (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int)
+      val add8 =
+        (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int) + (_: Int)
       (uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8 ~ uint8)
         .decode(bytes)
         .map(_.map(add8))
@@ -97,7 +96,8 @@ class TupleCodecTest extends CodecSuite {
     }
 
     "round trip a tuple codecs generated with ~~" in {
-      val codec12 = uint4 ~~ int64 ~~ bool ~~ double ~~ uint4 ~~ int64 ~~ bool ~~ double ~~ uint4 ~~ int64 ~~ bool ~~ double
+      val codec12 =
+        uint4 ~~ int64 ~~ bool ~~ double ~~ uint4 ~~ int64 ~~ bool ~~ double ~~ uint4 ~~ int64 ~~ bool ~~ double
 
       roundtrip(codec12, (1, 2L, true, 4d, 5, 6L, false, 8d, 9, 10L, true, 12d))
     }

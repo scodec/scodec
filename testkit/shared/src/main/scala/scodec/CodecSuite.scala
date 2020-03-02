@@ -28,9 +28,7 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
   }
 
   protected def roundtripAll[A](codec: Codec[A], as: collection.Iterable[A]): Unit =
-    as.foreach { a =>
-      roundtrip(codec, a)
-    }
+    as.foreach(a => roundtrip(codec, a))
 
   protected def encodeError[A](codec: Codec[A], a: A, err: Err) = {
     val encoded = codec.encode(a)
@@ -54,9 +52,7 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
     Stream.continually(gen.sample)
 
   protected def definedSamples[A](gen: Gen[A]): Stream[A] =
-    samples(gen).flatMap { x =>
-      x
-    }
+    samples(gen).flatMap(x => x)
 
   implicit def arbBitVector: Arbitrary[BitVector] =
     Arbitrary(arbitrary[Array[Byte]].map(BitVector.apply))

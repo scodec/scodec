@@ -1121,7 +1121,7 @@ package object codecs {
   def peek[A](target: Codec[A]): Codec[A] = new Codec[A] {
     def sizeBound = target.sizeBound
     def encode(a: A) = target.encode(a)
-    def decode(b: BitVector) = target.decode(b).map { _.mapRemainder(_ => b) }
+    def decode(b: BitVector) = target.decode(b).map(_.mapRemainder(_ => b))
   }
 
   /**
@@ -1343,9 +1343,7 @@ package object codecs {
     */
   def vectorOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[Vector[A]] =
     countCodec
-      .flatZip { count =>
-        new VectorCodec(valueCodec, Some(count))
-      }
+      .flatZip(count => new VectorCodec(valueCodec, Some(count)))
       .narrow[Vector[A]](
         {
           case (cnt, xs) =>
@@ -1460,9 +1458,7 @@ package object codecs {
     */
   def listOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[List[A]] =
     countCodec
-      .flatZip { count =>
-        new ListCodec(valueCodec, Some(count))
-      }
+      .flatZip(count => new ListCodec(valueCodec, Some(count)))
       .narrow[List[A]](
         {
           case (cnt, xs) =>
@@ -1708,7 +1704,7 @@ package object codecs {
             target.decode(value)
           }
         }
-      } yield result.mapRemainder { _ ++ r.remainder }
+      } yield result.mapRemainder(_ ++ r.remainder)
     override def toString = s"checksummed($target, $framing)"
   }
 

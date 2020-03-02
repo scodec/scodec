@@ -70,7 +70,7 @@ trait Encoder[-A] { self =>
     */
   def compact: Encoder[A] = new Encoder[A] {
     def sizeBound = self.sizeBound
-    def encode(a: A) = self.encode(a).map { _.compact }
+    def encode(a: A) = self.encode(a).map(_.compact)
   }
 
   /**
@@ -142,7 +142,7 @@ trait EncoderFunctions {
     * @group conv
     */
   final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A] {
-    def sizeBound = SizeBound.choice(encoders.map { _.sizeBound })
+    def sizeBound = SizeBound.choice(encoders.map(_.sizeBound))
     def encode(a: A) = {
       @annotation.tailrec
       def go(rem: List[Encoder[A]], errs: List[Err]): Attempt[BitVector] = rem match {

@@ -354,8 +354,7 @@ package object scodec {
       * @group coproduct
       */
     def selectEncoder[A](implicit inj: ops.coproduct.Inject[C, A]): Encoder[A] = self.contramap {
-      a =>
-        Coproduct[C](a)
+      a => Coproduct[C](a)
     }
   }
 
@@ -368,9 +367,7 @@ package object scodec {
       * @group coproduct
       */
     def selectDecoder[A](implicit sel: ops.coproduct.Selector[C, A]): Decoder[Option[A]] =
-      self.map { c =>
-        c.select[A]
-      }
+      self.map(c => c.select[A])
   }
 
   final implicit class Tuple2CodecSupport[A](val self: Codec[A]) extends AnyVal {

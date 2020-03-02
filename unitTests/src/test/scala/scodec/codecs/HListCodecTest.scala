@@ -31,16 +31,12 @@ class HListCodecTest extends CodecSuite {
     }
 
     "provide a flatPrepend method" in {
-      uint8.flatPrepend { n =>
-        bits(n.toLong).hlist
-      }
+      uint8.flatPrepend(n => bits(n.toLong).hlist)
       ()
     }
 
     "provide a flatZipHList method" in {
-      uint8.flatZipHList { n =>
-        bits(n.toLong)
-      }
+      uint8.flatZipHList(n => bits(n.toLong))
       ()
     }
 
@@ -108,18 +104,14 @@ class HListCodecTest extends CodecSuite {
 
     "support mapping a pair of polymorphic functions over an HList codec" in {
       object double extends Poly1 {
-        implicit val i = at[Int] { _ * 2 }
-        implicit val l = at[Long] { _ * 2 }
-        implicit val b = at[Boolean] { b =>
-          b
-        }
+        implicit val i = at[Int](_ * 2)
+        implicit val l = at[Long](_ * 2)
+        implicit val b = at[Boolean](b => b)
       }
       object half extends Poly1 {
-        implicit val i = at[Int] { _ / 2 }
-        implicit val l = at[Long] { _ / 2 }
-        implicit val b = at[Boolean] { b =>
-          b
-        }
+        implicit val i = at[Int](_ / 2)
+        implicit val l = at[Long](_ / 2)
+        implicit val b = at[Boolean](b => b)
       }
       val codec = (uint8 :: uint32 :: bool(8) :: uint8).polyxmap(half, double)
 
@@ -134,18 +126,14 @@ class HListCodecTest extends CodecSuite {
 
     "support mapping a pair of polymorphic functions over a non-HList codec" in {
       object double extends Poly1 {
-        implicit val i = at[Int] { _ * 2 }
-        implicit val l = at[Long] { _ * 2 }
-        implicit val b = at[Boolean] { b =>
-          b
-        }
+        implicit val i = at[Int](_ * 2)
+        implicit val l = at[Long](_ * 2)
+        implicit val b = at[Boolean](b => b)
       }
       object half extends Poly1 {
-        implicit val i = at[Int] { _ / 2 }
-        implicit val l = at[Long] { _ / 2 }
-        implicit val b = at[Boolean] { b =>
-          b
-        }
+        implicit val i = at[Int](_ / 2)
+        implicit val l = at[Long](_ / 2)
+        implicit val b = at[Boolean](b => b)
       }
       val codec = uint8.polyxmap(half, double)
 
@@ -160,15 +148,9 @@ class HListCodecTest extends CodecSuite {
 
     "support mapping a single polymorphic function over an HList codec" in {
       object negate extends Poly1 {
-        implicit val i = at[Int] { i =>
-          -i
-        }
-        implicit val l = at[Long] { i =>
-          -i
-        }
-        implicit val b = at[Boolean] { b =>
-          b
-        }
+        implicit val i = at[Int](i => -i)
+        implicit val l = at[Long](i => -i)
+        implicit val b = at[Boolean](b => b)
       }
       val codec = (uint8 :: uint32 :: bool(8) :: uint8).polyxmap1(negate)
 
@@ -183,8 +165,8 @@ class HListCodecTest extends CodecSuite {
 
     "support mapping a single polymorphic function over a non-HList codec" in {
       object i2d extends Poly1 {
-        implicit val i = at[Int] { _.toDouble }
-        implicit val d = at[Double] { _.toInt }
+        implicit val i = at[Int](_.toDouble)
+        implicit val d = at[Double](_.toInt)
       }
       val codec: Codec[Double] = uint8.polyxmap1(i2d)
 
