@@ -1,17 +1,15 @@
 *.class
 *.log
-.idea
-
-# sbt specific
+tags
 dist/*
 target/
 lib_managed/
 src_managed/
 project/boot/
 project/plugins/project/
-
-# Scala-IDE specific
+/.idea
 .scala_dependencies
-
 .bloop
 .metals
+project/metals.sbt
+
