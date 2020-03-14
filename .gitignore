@@ -16,3 +16,6 @@ project/plugins/project/
 .bloop
 .metals
 project/metals.sbt
+
+.dotty-ide-artifact
+.dotty-ide.json

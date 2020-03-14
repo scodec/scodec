@@ -88,13 +88,13 @@ lazy val publishingSettings = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(testkitJVM, testkitJS, coreJVM, coreJS, unitTests)
+  .aggregate(testkitJVM, coreJVM, unitTests)
   .settings(commonSettings: _*)
   .settings(
     publishArtifact := false
   )
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core = crossProject(JVMPlatform)
   .in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)
@@ -136,9 +136,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   )
 
 lazy val coreJVM = core.jvm
-lazy val coreJS = core.js
+// lazy val coreJS = core.js
 
-lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+lazy val testkit = crossProject(JVMPlatform)
   .in(file("testkit"))
   .settings(commonSettings: _*)
   .settings(
@@ -158,7 +158,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .dependsOn(core % "compile->compile")
 
 lazy val testkitJVM = testkit.jvm
-lazy val testkitJS = testkit.js
+// lazy val testkitJS = testkit.js
 
 lazy val unitTests = project
   .in(file("unitTests"))
