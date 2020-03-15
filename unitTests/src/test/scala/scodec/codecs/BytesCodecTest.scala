@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scodec.bits.{BitVector, HexStringSyntax}
+import scodec.bits._
 
 class BytesCodecTest extends CodecSuite {
 

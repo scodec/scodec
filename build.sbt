@@ -24,14 +24,16 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  crossScalaVersions := List("2.12.10", "2.13.1"),
+  scalaVersion := "0.22.0-RC1",
+  crossScalaVersions := List(scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8",
     "-deprecation",
     "-feature",
     "-language:higherKinds",
-    "-unchecked"
+    "-unchecked",
+    "-Yexplicit-nulls"
   ) ++
     (scalaBinaryVersion.value match {
       case v if v.startsWith("2.13") =>
@@ -84,28 +86,21 @@ lazy val publishingSettings = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(testkitJVM, testkitJS, coreJVM, coreJS, unitTests)
+  .aggregate(testkitJVM, coreJVM, unitTests)
   .settings(commonSettings: _*)
   .settings(
     publishArtifact := false
   )
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core = crossProject(JVMPlatform)
   .in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-core",
-    unmanagedSourceDirectories in Compile += {
-      val dir = CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v >= 13 => "scala-2.13+"
-        case _                       => "scala-2.12-"
-      }
-      baseDirectory.value / "../shared/src/main" / dir
-    },
+    resolvers += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.14",
-      "com.chuusai" %%% "shapeless" % "2.3.3"
+      "org.scodec" %%% "scodec-bits" % "2.0.0-SNAPSHOT"
     ),
     buildInfoPackage := "scodec",
     buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
@@ -139,28 +134,35 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   )
 
 lazy val coreJVM = core.jvm
-lazy val coreJS = core.js
+// lazy val coreJS = core.js
 
-lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+lazy val testkit = crossProject(JVMPlatform)
   .in(file("testkit"))
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % "1.14.3",
-      "org.scalatest" %%% "scalatest" % "3.1.1",
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
-    )
+    libraryDependencies ++= {
+      if (isDotty.value)
+        Seq(
+          "dev.travisbrown" %%% "scalatest" % "3.1.0-20200201-c4c847f-NIGHTLY",
+          "dev.travisbrown" %%% "scalacheck-1-14" % "3.1.0.1-20200201-c4c847f-NIGHTLY"
+        )
+      else Seq(
+        "org.scalatest" %%% "scalatest" % "3.1.1",
+        "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
+      )
+    }
   )
   .dependsOn(core % "compile->compile")
 
 lazy val testkitJVM = testkit.jvm
-lazy val testkitJS = testkit.js
+// lazy val testkitJS = testkit.js
 
 lazy val unitTests = project
   .in(file("unitTests"))
   .settings(commonSettings: _*)
   .settings(
+    scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.64" % "test"
     ),
@@ -171,7 +173,8 @@ lazy val unitTests = project
                                      .cross(CrossVersion.patch)
                                  )
                                )
-                             else Nil)
+                             else Nil),
+    scalacOptions in (Test, console) ++= List("-Xprint:typer")
   )
   .dependsOn(testkitJVM % "test->compile")
   .settings(publishArtifact := false)

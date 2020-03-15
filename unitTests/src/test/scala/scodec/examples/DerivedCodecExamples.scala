@@ -7,43 +7,39 @@ import implicits._
 
 class DerivedCodecsExample extends CodecSuite {
 
-  sealed trait Sprocket
-  object Sprocket {
-    implicit val discriminated: Discriminated[Sprocket, Int] = Discriminated(uint8)
+  "enums" should {
+    enum Color derives Codec { case Red, Green, Blue }
+
+    "support explicit codecs" in {
+      val c = mappedEnum(uint8, Color.Red -> 10, Color.Green -> 20, Color.Blue -> 30)
+      assertBitsEqual(c.encode(Color.Green).require, 0x14)
+    }
+
+    "support derived codecs" in {
+      val c = Codec[Color]
+      assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, 0x000102)
+    }
   }
 
-  case class Woozle(count: Int, strength: Int) extends Sprocket
-  object Woozle {
-    implicit val discriminator: Discriminator[Sprocket, Woozle, Int] = Discriminator(1)
-  }
-
+  sealed trait Sprocket derives Codec
+  case class Woozle(count: Int, strength: Int) extends Sprocket derives Codec
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket
-  object Wocket {
-    implicit val discriminator: Discriminator[Sprocket, Wocket, Int] = Discriminator(2)
-  }
-
   case class Wootle(count: Int, data: BitVector) extends Sprocket
-  object Wootle {
-    implicit val discriminator: Discriminator[Sprocket, Wootle, Int] = Discriminator(3)
-    implicit val codec: Codec[Wootle] = (uint8 :: bits).as[Wootle]
-  }
 
-  case class Geiling(name: String, sprockets: Vector[Sprocket])
+  case class Geiling(name: String, sprockets: Vector[Sprocket]) derives Codec
 
-  sealed trait Color
-  object Color {
-    case object Red extends Color
-    case object Yellow extends Color
-    case object Green extends Color
+  sealed trait ColorT
+  object ColorT {
+    case object Red extends ColorT
+    case object Yellow extends ColorT
+    case object Green extends ColorT
 
-    implicit val d: Discriminated[Color, Int] = Discriminated(uint8)
-
-    implicit val codec: Codec[Color] = mappedEnum(uint8, Red -> 0, Yellow -> 1, Green -> 2)
+    given Codec[ColorT] = mappedEnum(uint8, Red -> 0, Yellow -> 1, Green -> 2)
   }
 
   case class Point(x: Int, y: Int, z: Int)
   object Point {
-    implicit val codec: Codec[Point] = (uint8 :: uint8 :: uint8).as[Point]
+    given Codec[Point] = (uint8 :: uint8 :: uint8).as[Point]
   }
 
   "derived codec examples" should {
@@ -54,7 +50,7 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Woozle is a product of two integers, and scodec.codecs.implicits._
       // is imported in this file, resulting an an implicit Codec[Int] being available.
-      Codec.summon[Woozle].encode(Woozle(1, 2)).require shouldBe hex"0000000100000002".bits
+      Codec[Woozle].encode(Woozle(1, 2)).require shouldBe hex"0000000100000002".bits
     }
 
     "demonstrate deriving a codec for a sealed class hierarchy" in {
@@ -66,25 +62,7 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Sprocket defines a Discriminated[Sprocket, Int] in its companion
       // and each subclass defines a Discriminator[Sprocket, X, Int] in their companions.
-      Codec.summon[Sprocket].encode(Wocket(3, true)).require shouldBe hex"0200000003ff".bits
-    }
-
-    "demonstrate overriding arbitrary subtype codecs" in {
-      // When deriving a codec for a sealed class hierarchy, the codec used for each
-      // subtype is looked up implicitly, so they can be overriden by manipulating
-      // implicit scope.
-      //
-      // For example, we can change the Wocket codec and derive a new Sprocket codec.
-      implicit val codec: Codec[Wocket] = (uint8 :: ignore(7) :: bool).dropUnits.as[Wocket]
-      Codec.summon[Sprocket].encode(Wocket(3, true)).require shouldBe hex"020301".bits
-    }
-
-    "demonstrate subtype overrides in companion" in {
-      // Alternatively, the overriden codec can be defined in the companion of the subtype.
-      Codec
-        .summon[Sprocket]
-        .encode(Wootle(4, hex"deadbeef".bits))
-        .require shouldBe hex"0304deadbeef".bits
+      Codec[Sprocket].encode(Wocket(3, true)).require shouldBe hex"0100000003ff".bits
     }
 
     "demonstrate nested derivations" in {
@@ -95,14 +73,14 @@ class DerivedCodecsExample extends CodecSuite {
       // Codec[A]. There's no manually defined `Codec[Sprocket]` but one is implicitly
       // derived.
       val ceil = Geiling("Ceil", Vector(Woozle(1, 2), Wocket(3, true)))
-      val encoded = Codec.summon[Geiling].encode(ceil).require
-      encoded shouldBe hex"00000004 4365696c 00000002 010000000100000002 0200000003ff".bits
-      Codec.summon[Geiling].decode(encoded).require.value shouldBe ceil
+      val encoded = Codec[Geiling].encode(ceil).require
+      encoded shouldBe hex"00000004 4365696c 00000002 000000000100000002 0100000003ff".bits
+      Codec[Geiling].decode(encoded).require.value shouldBe ceil
     }
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
-      Codec.summon[Color].encode(Color.Green).require shouldBe hex"02".bits
-      Codec.summon[Point].encode(Point(1, 2, 3)).require should have size (24)
+      Codec[ColorT].encode(ColorT.Green).require shouldBe hex"02".bits
+      Codec[Point].encode(Point(1, 2, 3)).require should have size (24)
     }
   }
 }

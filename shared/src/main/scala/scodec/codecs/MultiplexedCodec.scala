@@ -1,9 +1,9 @@
 package scodec.codecs
 
+import scala.collection.Factory
+
 import scodec._
 import scodec.bits.BitVector
-
-import scodec.compat._
 
 /**
   * A trait that enables custom handling for encoding/decoding sequences.
@@ -24,16 +24,16 @@ sealed trait MultiplexedCodec {
       seq: collection.immutable.Seq[A]
   ): Attempt[BitVector] = {
     val buf = new collection.mutable.ArrayBuffer[BitVector](seq.size)
-    var failure: Err = null
+    var failure: Err | Null = null
     seq.foreach { a =>
-      if (failure eq null) {
+      if (failure == null) {
         enc.encode(a) match {
           case Attempt.Successful(aa) => buf += aa
           case Attempt.Failure(err)   => failure = err.pushContext(buf.size.toString)
         }
       }
     }
-    if (failure eq null) {
+    if (failure == null) {
       def merge(offset: Int, size: Int): BitVector = size match {
         case 0 => BitVector.empty
         case 1 => buf(offset)
@@ -42,7 +42,9 @@ sealed trait MultiplexedCodec {
           mux(merge(offset, half), merge(offset + half, half + (if (size % 2 == 0) 0 else 1)))
       }
       Attempt.successful(merge(0, buf.size))
-    } else Attempt.failure(failure)
+    } else {
+      Attempt.failure(failure.nn) // FIXME .nn shouldn't be necessary here
+    }
   }
 
   /**

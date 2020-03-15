@@ -9,9 +9,9 @@ import scodec.bits.ByteVector
 class CipherCodecTest extends CodecSuite {
 
   private val secretKey = {
-    val keyGen = KeyGenerator.getInstance("AES")
+    val keyGen = KeyGenerator.getInstance("AES").nn
     keyGen.init(128)
-    keyGen.generateKey
+    keyGen.generateKey.nn
   }
 
   private val iv = new IvParameterSpec(ByteVector.low(16).toArray)
@@ -26,7 +26,7 @@ class CipherCodecTest extends CodecSuite {
   }
 
   protected def testWithCipherFactory(implicit cf: CipherFactory): Unit = {
-    val codec = encrypted(int32 ~ utf8)
+    val codec = encrypted { int32 :: utf8 }
     forAll((n: Int, s: String) => roundtrip(codec, (n, s)))
   }
 }

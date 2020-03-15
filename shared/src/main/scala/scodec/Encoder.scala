@@ -12,9 +12,6 @@ import scodec.bits.BitVector
   *
   * @groupname combinators Basic Combinators
   * @groupprio combinators 10
-  *
-  * @groupname coproduct Coproduct Support
-  * @groupprio coproduct 13
   */
 trait Encoder[-A] { self =>
 
@@ -95,16 +92,16 @@ trait Encoder[-A] { self =>
     */
   def encodeAll(as: Iterable[A]): Attempt[BitVector] = {
     val buf = new collection.mutable.ArrayBuffer[BitVector](as.size)
-    var failure: Err = null
+    var failure: Err | Null = null
     as.foreach { a =>
-      if (failure eq null) {
+      if (failure == null) {
         encode(a) match {
           case Attempt.Successful(aa) => buf += aa
           case Attempt.Failure(err)   => failure = err.pushContext(buf.size.toString)
         }
       }
     }
-    if (failure eq null) {
+    if (failure == null) {
       def merge(offset: Int, size: Int): BitVector = size match {
         case 0 => BitVector.empty
         case 1 => buf(offset)
@@ -113,7 +110,9 @@ trait Encoder[-A] { self =>
           merge(offset, half) ++ merge(offset + half, half + (if (size % 2 == 0) 0 else 1))
       }
       Attempt.successful(merge(0, buf.size))
-    } else Attempt.failure(failure)
+    } else {
+      Attempt.failure(failure.nn) // FIXME .nn shouldn't be necessary here b/c failure is checked for null above
+    }
   }
 }
 
@@ -125,6 +124,13 @@ trait Encoder[-A] { self =>
   *
   */
 trait EncoderFunctions {
+
+  /**
+   * Encodes the specified value using the implicit `Encoder[A]`.
+   * @group conv
+   */
+  final def encode[A](a: A)(using encA: Encoder[A]): Attempt[BitVector] =
+    encA.encode(a)
 
   /**
     * Encodes the specified values, one after the other, to a bit vector using the specified encoders.
@@ -170,6 +176,8 @@ trait EncoderFunctions {
   */
 object Encoder extends EncoderFunctions {
 
+  inline def apply[A](using e: Encoder[A]): Encoder[A] = e
+
   /**
     * Creates an encoder from the specified function.
     * @group ctor
@@ -179,15 +187,12 @@ object Encoder extends EncoderFunctions {
     def encode(value: A) = f(value)
   }
 
-  /**
-    * Transform typeclass instance.
-    * @group inst
-    */
-  implicit val transformInstance: Transform[Encoder] = new Transform[Encoder] {
-    def exmap[A, B](encoder: Encoder[A], f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] =
-      encoder.econtramap(g)
+  given Transform[Encoder] {
+    def [A, B](fa: Encoder[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] = 
+      fa.econtramap(g)
+  }
 
-    override def xmap[A, B](encoder: Encoder[A], f: A => B, g: B => A): Encoder[B] =
-      encoder.contramap(g)
+  implicit class AsSyntax[A](private val self: Encoder[A]) extends AnyVal {
+    def as[B](using t: Transformer[A, B]): Encoder[B] = t(self)
   }
 }

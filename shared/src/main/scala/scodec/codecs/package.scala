@@ -10,9 +10,6 @@ import java.util.zip.Deflater
 
 import scodec.bits.{BitVector, ByteOrdering, ByteVector}
 
-import shapeless.{HList, Nat, Sized}
-import shapeless.syntax.sized._
-
 /**
   * Provides codecs for common types and combinators for building larger codecs.
   *
@@ -866,7 +863,7 @@ package object codecs {
   ) = new Codec[A] {
     val sizedWiden = widenIntToLong(sizeCodec)
     private val codec = new PaddedVarAlignedCodec(
-      sizedWiden.widen[Long](_ * 8, bitsToBytesDivisible),
+      sizedWiden.widen(_ * 8, bitsToBytesDivisible),
       valueCodec,
       multipleForPadding.toLong * 8
     )
@@ -939,7 +936,7 @@ package object codecs {
     variableSizeBytesLong(widenIntToLong(size), value, sizePadding.toLong)
 
   private def widenIntToLong(c: Codec[Int]): Codec[Long] =
-    c.widen[Long](
+    c.widen(
         i => i.toLong,
         l =>
           if (l > Int.MaxValue || l < Int.MinValue)
@@ -981,7 +978,7 @@ package object codecs {
       sizePadding: Long = 0
   ): Codec[A] = new Codec[A] {
     private val codec =
-      variableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), value, sizePadding * 8)
+      variableSizeBitsLong(size.widen(_ * 8, bitsToBytesDivisible), value, sizePadding * 8)
     def sizeBound = size.sizeBound + value.sizeBound
     def encode(a: A) = codec.encode(a)
     def decode(b: BitVector) = codec.decode(b)
@@ -1100,7 +1097,7 @@ package object codecs {
       sizePadding: Long = 0
   ): Codec[(A, B)] = new Codec[(A, B)] {
     private val codec = variableSizePrefixedBitsLong(
-      size.widen[Long](_ * 8, bitsToBytesDivisible),
+      size.widen(_ * 8, bitsToBytesDivisible),
       prefix,
       value,
       sizePadding * 8
@@ -1149,9 +1146,7 @@ package object codecs {
         )
       )
       private val decoder =
-        (peek(bits(sizeInBits)) ~ variableSizeBitsLong(size, bits, sizePadding)).map {
-          case (sz, b) => sz ++ b
-        }
+        (peek(bits(sizeInBits)) :: variableSizeBitsLong(size, bits, sizePadding)).map(_ ++ _)
       def sizeBound = size.sizeBound.atLeast
       def encode(b: BitVector) = Attempt.successful(b)
       def decode(b: BitVector) = decoder.decode(b)
@@ -1175,7 +1170,7 @@ package object codecs {
   def peekVariableSizeBytesLong(size: Codec[Long], sizePadding: Long = 0L): Codec[BitVector] =
     new Codec[BitVector] {
       private val codec =
-        peekVariableSizeBitsLong(size.widen[Long](_ * 8, bitsToBytesDivisible), sizePadding * 8)
+        peekVariableSizeBitsLong(size.widen(_ * 8, bitsToBytesDivisible), sizePadding * 8)
       def sizeBound = codec.sizeBound
       def encode(a: BitVector) = codec.encode(a)
       def decode(b: BitVector) = codec.decode(b)
@@ -1344,7 +1339,7 @@ package object codecs {
   def vectorOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[Vector[A]] =
     countCodec
       .flatZip(count => new VectorCodec(valueCodec, Some(count)))
-      .narrow[Vector[A]](
+      .narrow(
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
@@ -1358,20 +1353,6 @@ package object codecs {
         xs => (xs.size, xs)
       )
       .withToString(s"vectorOfN($countCodec, $valueCodec)")
-
-  /**
-    * Codec that encodes/decodes a vector of `n` elements, where `n` is known at compile time.
-    *
-    * @param size number of elements in the vector
-    * @param codec codec to encode/decode a single element of the sequence
-    * @group combinators
-    */
-  def sizedVector[A](size: Nat, codec: Codec[A])(
-      implicit toInt: shapeless.ops.nat.ToInt[size.N]
-  ): Codec[Sized[Vector[A], size.N]] =
-    vectorOfN(provide(toInt()), codec)
-      .xmapc(_.sized(size).get)(_.unsized)
-      .withToString(s"sizedVector(${toInt()}, $codec)")
 
   /**
     * Codec that encodes/decodes a `Vector[A]` from a `Codec[A]`.
@@ -1459,7 +1440,7 @@ package object codecs {
   def listOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[List[A]] =
     countCodec
       .flatZip(count => new ListCodec(valueCodec, Some(count)))
-      .narrow[List[A]](
+      .narrow(
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
@@ -1473,20 +1454,6 @@ package object codecs {
         xs => (xs.size, xs)
       )
       .withToString(s"listOfN($countCodec, $valueCodec)")
-
-  /**
-    * Codec that encodes/decodes a list of `n` elements, where `n` is known at compile time.
-    *
-    * @param size number of elements in the list
-    * @param codec codec to encode/decode a single element of the sequence
-    * @group combinators
-    */
-  def sizedList[A](size: Nat, codec: Codec[A])(
-      implicit toInt: shapeless.ops.nat.ToInt[size.N]
-  ): Codec[Sized[List[A], size.N]] =
-    listOfN(provide(toInt()), codec)
-      .xmapc(_.sized(size).get)(_.unsized)
-      .withToString(s"sizedList(${toInt()}, $codec)")
 
   /**
     * Codec that encodes/decodes a `List[A]` from a `Codec[A]`.
@@ -1575,8 +1542,8 @@ package object codecs {
   ): Codec[Either[L, R]] =
     discriminated[Either[L, R]]
       .by(indicator)
-      .|(false) { case Left(l) => l }(Left.apply)(left)
-      .|(true) { case Right(r) => r }(Right.apply)(right)
+      .caseP(false) { case Left(l) => l }(Left.apply)(left)
+      .caseP(true) { case Right(r) => r }(Right.apply)(right)
 
   /**
     * Either codec that supports bit vectors of form `left or right` where the right codec
@@ -1924,7 +1891,7 @@ package object codecs {
     */
   def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
     final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
-      new DiscriminatorCodec[A, B](discriminatorCodec, Vector(), CodecTransformation.Id)
+      new DiscriminatorCodec[A, B](discriminatorCodec, Vector(), [x] => (x: Codec[x]) => x)
   }
 
   /**
@@ -1981,15 +1948,6 @@ package object codecs {
       discriminator,
       (enumeration.values: Set[enumeration.Value]).map(e => e -> e.id).toMap
     ) // https://github.com/scala/bug/issues/10906
-
-  /**
-    * Converts an `HList` of codecs in to a single codec.
-    * That is, converts `Codec[X0] :: Codec[X1] :: ... :: Codec[Xn] :: HNil` in to a
-    * `Codec[X0 :: X1 :: ... :: Xn :: HNil].
-    * @group combinators
-    */
-  def hlist[L <: HList](l: L)(implicit toHListCodec: ToHListCodec[L]): toHListCodec.Out =
-    toHListCodec(l)
 
   /**
     * Wraps a codec and adds logging of each encoding and decoding operation.
@@ -2160,6 +2118,4 @@ package object codecs {
   ): Codec[A] =
     new ConstrainedVariableSizeCodec(size, value, 0, maxSize)
 
-  /** Provides common implicit codecs. */
-  object implicits extends ImplicitCodecs
 }

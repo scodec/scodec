@@ -17,14 +17,14 @@ class EnumeratedTest extends CodecSuite {
 
   "enumerated codec" should {
     val codec = enumerated(int32, SIPrefix)
-    implicit def generator = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
+    implicit def generator: Arbitrary[SIPrefix.Value] = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
 
     "roundtrip" in {
       forAll((v: SIPrefix.Value) => roundtrip(codec, v))
     }
 
     "roundtrip with combinators" in {
-      forAll((i: Int, v: SIPrefix.Value) => roundtrip(int32 ~ codec, i ~ v))
+      forAll((i: Int, v: SIPrefix.Value) => roundtrip(int32 :: codec, (i, v)))
     }
 
     "fail for an invalid id" in {

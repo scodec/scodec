@@ -13,7 +13,7 @@ private[codecs] final class VectorCodec[A](codec: Codec[A], limit: Option[Int] =
 
   def encode(vector: Vector[A]) = codec.encodeAll(vector)
 
-  def decode(buffer: BitVector) = codec.collect(buffer, limit)
+  def decode(buffer: BitVector) = codec.collect[Vector, A](buffer, limit)
 
   override def toString = s"vector($codec)"
 

@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 import java.util.UUID
 import scodec.bits.BitVector
 
-@BenchmarkMode(Array(Mode.AverageTime))
+// @BenchmarkMode(Array(Mode.AverageTime)) TODO
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @State(Scope.Benchmark)
 class UuidBenchmark {
@@ -17,7 +17,7 @@ class UuidBenchmark {
   assert(decode.isSuccessful)
 
   @Benchmark def encode: Attempt[BitVector] =
-    codec.encode(uuid)
+    codec.encode(uuid.nn)
 
   @Benchmark def decode: Attempt[DecodeResult[UUID]] =
     codec.decode(encoded)

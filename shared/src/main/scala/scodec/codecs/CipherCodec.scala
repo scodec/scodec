@@ -70,7 +70,7 @@ object CipherFactory {
       initForDecryption: Cipher => Unit
   ) extends CipherFactory {
 
-    private def newCipher: Cipher = Cipher.getInstance(transformation)
+    private def newCipher: Cipher = Cipher.getInstance(transformation).nn
 
     def newEncryptCipher: Cipher = {
       val cipher = newCipher
@@ -99,7 +99,7 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
   private def encrypt(bits: BitVector) = {
     val blocks = bits.toByteArray
     try {
-      val encrypted = cipherFactory.newEncryptCipher.doFinal(blocks)
+      val encrypted = cipherFactory.newEncryptCipher.doFinal(blocks).nn
       Attempt.successful(BitVector(encrypted))
     } catch {
       case _: IllegalBlockSizeException =>
@@ -117,7 +117,7 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
   private def decrypt(buffer: BitVector): Attempt[BitVector] = {
     val blocks = buffer.toByteArray
     try {
-      val decrypted = cipherFactory.newDecryptCipher.doFinal(blocks)
+      val decrypted = cipherFactory.newDecryptCipher.doFinal(blocks).nn
       Attempt.successful(BitVector(decrypted))
     } catch {
       case e @ (_: IllegalBlockSizeException | _: BadPaddingException) =>
