@@ -21,8 +21,9 @@ Performance is considered but yields to the above design constraints.
 
 Acknowledgements
 ----------------
-The library uses [Shapeless](https://github.com/milessabin/shapeless)
-and is heavily influenced by scala.util.parsing.combinator.
+Scodec 1.x used [Shapeless](https://github.com/milessabin/shapeless)
+and is heavily influenced by scala.util.parsing.combinator. As of Scodec 2.x, the library only
+depends on the standard library.
 
 Administrative
 --------------
@@ -57,33 +58,31 @@ The [`codecs`](shared/src/main/scala/scodec/codecs/package.scala) package provid
     // Successful(DecodeResult(1081, BitVector(empty)))
 ```
 
-Automatic case class binding is supported via Shapeless HLists:
+Automatic case class binding is supported via tuples:
 
 ```scala
     case class Point(x: Int, y: Int, z: Int)
 
-    val pointCodec = (int8 :: int8 :: int8).as[Point]
+    val pointCodec: Codec[Point] = (int8 :: int8 :: int8).as[Point]
 
     val encoded: Attempt[BitVector] = pointCodec.encode(Point(-5, 10, 1))
     // Successful(BitVector(24 bits, 0xfb0a01))
 
-    val decoded: Attempt[DecodeResult[Point]] = pointCodec.decode(hex"0xfb0a01".bits)
+    val decoded: Attempt[DecodeResult[Point]] = pointCodec.decode(0xfb0a01)
     // Successful(DecodeResult(Point(-5, 10, 1), BitVector(empty)))
 ```
 
-Codecs can also be implicitly resolved, resulting in usage like:
+Codecs can also be derived, resulting in usage like:
 
 ```scala
-    // Assuming Codec[Point] is in implicit scope
+    case class Point(x: Int, y: Int, z: Int) derives Codec
 
     val encoded: Attempt[BitVector] = Codec.encode(Point(-5, 10, 1))
-    // Successful(BitVector(24 bits, 0xfb0a01))
+    // Successful(BitVector(96 bits, 0x000000fb0000000a00000001))
 
-    val decoded: Attempt[DecodeResult[Point]] = Codec.decode[Point](hex"0xfb0a01".bits)
+    val decoded: Attempt[DecodeResult[Point]] = Codec.decode[Point](0x000000fb0000000a00000001)
     // Successful(DecodeResult(Point(-5, 10, 1), BitVector(empty)))
 ```
-
-Note: by default, scodec provides no implicit codecs. Many sensible defaults can be imported via `import scodec.codecs.implicits._`, including codecs for various primitive types and some immutable collections.
 
 New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
 

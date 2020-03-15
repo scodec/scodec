@@ -59,5 +59,9 @@ object Err {
 
   def apply(message: String): Err = new General(message)
   def apply(errs: List[Err]): Err = new Composite(errs)
+  def fromThrowable(t: Throwable): Err = {
+    val m = t.getMessage
+    new General(if (m == null) t.getClass.getSimpleName.nn else m)
+  }
   def insufficientBits(needed: Long, have: Long): Err = new InsufficientBits(needed, have)
 }

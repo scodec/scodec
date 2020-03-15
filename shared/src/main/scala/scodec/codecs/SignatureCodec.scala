@@ -22,7 +22,7 @@ trait Signer {
   */
 class SignatureSigner(impl: Signature) extends Signer {
   def update(data: Array[Byte]): Unit = impl.update(data)
-  def sign: Array[Byte] = impl.sign
+  def sign: Array[Byte] = impl.sign.nn
   def verify(signature: Array[Byte]): Boolean = impl.verify(signature)
 }
 
@@ -51,11 +51,11 @@ object SignatureFactory {
 
   /** Creates a signature factory for the specified algorithm using the specified key pair. */
   def apply(algorithm: String, keyPair: KeyPair): SignerFactory =
-    new SimpleSignatureFactory(algorithm, keyPair.getPrivate, keyPair.getPublic)
+    new SimpleSignatureFactory(algorithm, keyPair.getPrivate.nn, keyPair.getPublic.nn)
 
   /** Creates a signature factory for the specified algorithm using the specified key pair. */
   def apply(algorithm: String, privateKey: PrivateKey, certificate: Certificate): SignerFactory =
-    new SimpleSignatureFactory(algorithm, privateKey, certificate.getPublicKey)
+    new SimpleSignatureFactory(algorithm, privateKey, certificate.getPublicKey.nn)
 
   /** Creates a signature factory that only supports signing for the specified algorithm using the specified private key. */
   def signing(algorithm: String, privateKey: PrivateKey): SignerFactory =
@@ -73,12 +73,12 @@ object SignatureFactory {
 
   /** Creates a signature factory that only supports signing for the specified algorithm using the specified public key. */
   def verifying(algorithm: String, certificate: Certificate): SignerFactory =
-    verifying(algorithm, certificate.getPublicKey)
+    verifying(algorithm, certificate.getPublicKey.nn)
 
   private trait WithSignature {
     protected def algorithm: String
     protected def newSignature: Signature =
-      Signature.getInstance(algorithm)
+      Signature.getInstance(algorithm).nn
   }
 
   private trait SignatureFactorySigning extends WithSignature {

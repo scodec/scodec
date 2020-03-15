@@ -11,7 +11,7 @@ private[codecs] final class VariableSizePrefixedCodec[A, B](
 ) extends Codec[(A, B)] {
 
   private val decoder = sizeCodec.flatMap { sz =>
-    prefixCodec ~ fixedSizeBits(sz - sizePadding, valueCodec)
+    prefixCodec :: fixedSizeBits(sz - sizePadding, valueCodec)
   }
 
   def sizeBound = sizeCodec.sizeBound.atLeast + prefixCodec.sizeBound

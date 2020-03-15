@@ -34,7 +34,7 @@ class VectorCodecTest extends CodecSuite {
 
     "include index of problematic value when an error occurs during decoding" in {
       val codec = vector(
-        uint8.narrow[Int](
+        uint8.narrow(
           x => if (x == 0) Attempt.failure(Err("zero disallowed")) else Attempt.successful(x),
           x => x
         )

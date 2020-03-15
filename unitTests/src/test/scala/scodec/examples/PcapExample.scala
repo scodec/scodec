@@ -13,28 +13,28 @@ import scodec.bits.BitVector
 object PcapCodec {
   import scodec.codecs._
 
-  sealed trait ByteOrdering
-  case object BigEndian extends ByteOrdering
-  case object LittleEndian extends ByteOrdering
+  enum ByteOrdering { case BigEndian, LittleEndian }
 
   private val magicNumber = 0x000000A1B2C3D4L
   val byteOrdering = "magic_number" | Codec[ByteOrdering](
     (bo: ByteOrdering) =>
-      if (bo == BigEndian) uint32.encode(magicNumber) else uint32L.encode(magicNumber),
+      if (bo == ByteOrdering.BigEndian) uint32.encode(magicNumber) else uint32L.encode(magicNumber),
     (buf: BitVector) =>
       uint32.decode(buf).map {
-        _.map(mn => if (mn == magicNumber) BigEndian else LittleEndian)
+        _.map { mn =>
+          if (mn == magicNumber) ByteOrdering.BigEndian else ByteOrdering.LittleEndian
+        }
       }
   )
 
-  def gint16(implicit ordering: ByteOrdering): Codec[Int] =
-    if (ordering == BigEndian) int16 else int16L
-  def guint16(implicit ordering: ByteOrdering): Codec[Int] =
-    if (ordering == BigEndian) uint16 else uint16L
-  def gint32(implicit ordering: ByteOrdering): Codec[Int] =
-    if (ordering == BigEndian) int32 else int32L
-  def guint32(implicit ordering: ByteOrdering): Codec[Long] =
-    if (ordering == BigEndian) uint32 else uint32L
+  def gint16(using ordering: ByteOrdering): Codec[Int] =
+    if (ordering == ByteOrdering.BigEndian) int16 else int16L
+  def guint16(using ordering: ByteOrdering): Codec[Int] =
+    if (ordering == ByteOrdering.BigEndian) uint16 else uint16L
+  def gint32(using ordering: ByteOrdering): Codec[Int] =
+    if (ordering == ByteOrdering.BigEndian) int32 else int32L
+  def guint32(using ordering: ByteOrdering): Codec[Long] =
+    if (ordering == ByteOrdering.BigEndian) uint32 else uint32L
 
   case class PcapHeader(
       ordering: ByteOrdering,
@@ -46,8 +46,8 @@ object PcapCodec {
       network: Long
   )
 
-  implicit val pcapHeader = {
-    ("magic_number" | byteOrdering) >>:~ { implicit ordering =>
+  val pcapHeader = {
+    ("magic_number" | byteOrdering).flatPrepend { implicit ordering =>
       ("version_major" | guint16) ::
         ("version_minor" | guint16) ::
         ("thiszone" | gint32) ::
@@ -66,7 +66,7 @@ object PcapCodec {
     def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
   }
 
-  implicit def pcapRecordHeader(implicit ordering: ByteOrdering) = {
+  def pcapRecordHeader(using ordering: ByteOrdering) = {
     ("ts_sec" | guint32) ::
       ("ts_usec" | guint32) ::
       ("incl_len" | guint32) ::
@@ -75,17 +75,15 @@ object PcapCodec {
 
   case class PcapRecord(header: PcapRecordHeader, data: BitVector)
 
-  implicit def pcapRecord(implicit ordering: ByteOrdering) = {
-    ("record_header" | pcapRecordHeader) >>:~ { hdr =>
-      ("record_data" | bits(hdr.includedLength * 8)).hlist
+  def pcapRecord(using ordering: ByteOrdering) = {
+    ("record_header" | pcapRecordHeader).flatZip { hdr =>
+      ("record_data" | bits(hdr.includedLength * 8))
     }
   }.as[PcapRecord]
 
   case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
 
-  implicit val pcapFile = {
-    pcapHeader >>:~ { hdr => vector(pcapRecord(hdr.ordering)).hlist }
-  }.as[PcapFile]
+  val pcapFile = pcapHeader.flatZip(hdr => vector(pcapRecord(using hdr.ordering))).as[PcapFile]
 }
 
 class PcapExample extends CodecSuite {
@@ -94,7 +92,7 @@ class PcapExample extends CodecSuite {
 
   "Pcap codecs" should {
     def bits =
-      BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel)
+      BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel.nn)
     "support reading an entire file and then decoding it all" in {
       pending
       pcapFile.decode(bits)

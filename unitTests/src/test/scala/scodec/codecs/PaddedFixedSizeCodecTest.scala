@@ -1,8 +1,7 @@
 package scodec
 package codecs
 
-import scodec.bits.BitVector
-import scodec.bits.HexStringSyntax
+import scodec.bits._
 
 class PaddedFixedSizeCodecTest extends CodecSuite {
   val ones = constant(hex"ff")

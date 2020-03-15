@@ -12,9 +12,9 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 class CertificateCodecTest extends CodecSuite {
 
   private val keyPair = {
-    val keyGen = KeyPairGenerator.getInstance("RSA")
+    val keyGen = KeyPairGenerator.getInstance("RSA").nn
     keyGen.initialize(1024)
-    keyGen.generateKeyPair
+    keyGen.generateKeyPair.nn
   }
 
   val aCert: X509Certificate = {
@@ -32,7 +32,7 @@ class CertificateCodecTest extends CodecSuite {
       keyPair.getPublic
     )
     val signer = new JcaContentSignerBuilder("SHA1withRSA").build(keyPair.getPrivate)
-    val holder = bldr.build(signer)
+    val holder = bldr.build(signer).nn
     CertificateFactory
       .getInstance("X.509")
       .generateCertificate(new ByteArrayInputStream(holder.getEncoded))

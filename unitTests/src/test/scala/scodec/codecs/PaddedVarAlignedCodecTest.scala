@@ -1,7 +1,7 @@
 package scodec
 package codecs
 
-import scodec.bits.HexStringSyntax
+import scodec.bits._
 
 class PaddedVarAlignedCodecTest extends CodecSuite {
 

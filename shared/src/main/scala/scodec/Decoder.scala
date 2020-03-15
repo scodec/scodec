@@ -1,8 +1,8 @@
 package scodec
 
-import scodec.bits.BitVector
+import scala.collection.Factory
 
-import scodec.compat._
+import scodec.bits.BitVector
 
 /**
   * Supports decoding a value of type `A` from a `BitVector`.
@@ -12,9 +12,6 @@ import scodec.compat._
   *
   * @groupname combinators Basic Combinators
   * @groupprio combinators 10
-  *
-  * @groupname coproduct Coproduct Support
-  * @groupprio coproduct 13
   */
 trait Decoder[+A] { self =>
 
@@ -150,7 +147,6 @@ trait Decoder[+A] { self =>
     }
     Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
   }
-
 }
 
 /**
@@ -215,6 +211,8 @@ trait DecoderFunctions {
   */
 object Decoder extends DecoderFunctions {
 
+  inline def apply[A](using d: Decoder[A]): Decoder[A] = d
+
   /**
     * Creates a decoder from the specified function.
     * @group ctor
@@ -268,15 +266,12 @@ object Decoder extends DecoderFunctions {
     override def toString = s"modify"
   }
 
-  /**
-    * Transform typeclass instance.
-    * @group inst
-    */
-  implicit val transformInstance: Transform[Decoder] = new Transform[Decoder] {
-    def exmap[A, B](decoder: Decoder[A], f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
-      decoder.emap(f)
+  given Transform[Decoder] {
+    def [A, B](fa: Decoder[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] = 
+      fa.emap(f)
+  }
 
-    override def xmap[A, B](decoder: Decoder[A], f: A => B, g: B => A): Decoder[B] =
-      decoder.map(f)
+  implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal {
+    def as[B](using t: Transformer[A, B]): Decoder[B] = t(self)
   }
 }

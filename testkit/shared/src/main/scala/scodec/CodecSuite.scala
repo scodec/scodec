@@ -20,10 +20,10 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
 
   protected def roundtrip[A](codec: Codec[A], value: A): Unit = {
     val encoded = codec.encode(value)
-    encoded.isSuccessful shouldBe true
+    assert(encoded.isSuccessful)
     val Attempt.Successful(DecodeResult(decoded, remainder)) = codec.decode(encoded.require)
-    remainder shouldEqual BitVector.empty
-    decoded shouldEqual value
+    assertBitsEqual(remainder, BitVector.empty)
+    assert(decoded == value)
     ()
   }
 
@@ -32,13 +32,13 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
 
   protected def encodeError[A](codec: Codec[A], a: A, err: Err) = {
     val encoded = codec.encode(a)
-    encoded shouldBe Attempt.Failure(err)
+    assert(encoded == Attempt.Failure(err))
   }
 
   protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A) = {
     val Attempt.Successful(DecodeResult(actual, rest)) = codec.decode(buf)
-    rest shouldBe BitVector.empty
-    actual shouldBe expected
+    assertBitsEqual(rest, BitVector.empty)
+    assert(actual == expected)
   }
 
   protected def time[A](f: => A): (A, FiniteDuration) = {
@@ -48,12 +48,14 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
     (result, elapsed)
   }
 
-  protected def samples[A](gen: Gen[A]): Stream[Option[A]] =
-    Stream.continually(gen.sample)
+  protected def samples[A](gen: Gen[A]): LazyList[Option[A]] =
+    LazyList.continually(gen.sample)
 
-  protected def definedSamples[A](gen: Gen[A]): Stream[A] =
-    samples(gen).flatMap(x => x)
+  protected def definedSamples[A](gen: Gen[A]): LazyList[A] =
+    samples(gen).flatten
 
   implicit def arbBitVector: Arbitrary[BitVector] =
     Arbitrary(arbitrary[Array[Byte]].map(BitVector.apply))
+
+  protected def assertBitsEqual(actual: BitVector, expected: BitVector) = assert(actual == expected)
 }

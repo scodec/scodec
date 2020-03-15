@@ -10,7 +10,7 @@ import scodec.bits._
 object Performance extends App {
 
   val bits = {
-    val b = BitVector.fromMmap(new FileInputStream(new File("mpeg.pcap")).getChannel)
+    val b = BitVector.fromMmap(new FileInputStream(new File("mpeg.pcap")).getChannel.nn)
     // Don't want the lazy IO penalty to skew results
     b.force
   }
@@ -37,7 +37,9 @@ object Performance extends App {
       val pcapFile = PcapCodec.pcapFile.decode(bits).require.value
       pcapFile.records.foreach { record =>
         val mpeg = record.data.drop(22 * 8).drop(20 * 8)
-        MpegCodecs.mpegPacket.decode(mpeg).map(result => pids += result.value.header.pid)
+        MpegCodecs.packetCodec.decode(mpeg).map { result =>
+          pids += result.value.header.pid
+        }
       }
     }
     println("PIDs = " + pids.toList.sorted.mkString(", "))

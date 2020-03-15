@@ -15,7 +15,7 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
 
   override def encode(i: Long) = {
     require(i >= 0, "VarLong cannot encode negative longs")
-    val buffer = ByteBuffer.allocate(9).order(ByteOrder.BIG_ENDIAN)
+    val buffer = ByteBuffer.allocate(9).order(ByteOrder.BIG_ENDIAN).nn
     val encoder = if (ordering == BigEndian) BEEncoder else LEEncoder
     val written = encoder(i, buffer)
     buffer.flip()

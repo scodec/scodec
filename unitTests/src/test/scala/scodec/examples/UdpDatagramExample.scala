@@ -7,10 +7,10 @@ class UdpDatagramExample extends CodecSuite {
 
   case class Datagram(sourcePort: Int, destinationPort: Int, checksum: Int, data: ByteVector)
 
-  object UdpCodec {
+  object Datagram {
     import scodec.codecs._
 
-    implicit val datagram = {
+    given Codec[Datagram] = {
       ("source_port" | uint16) ::
         ("dest_port" | uint16) ::
         variableSizeBytes(
@@ -20,8 +20,6 @@ class UdpDatagramExample extends CodecSuite {
         )
     }.as[Datagram]
   }
-
-  import UdpCodec._
 
   "Datagram codec" should {
     "roundtrip" in {
