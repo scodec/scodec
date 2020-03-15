@@ -126,6 +126,13 @@ trait Encoder[-A] { self =>
 trait EncoderFunctions {
 
   /**
+   * Encodes the specified value using the implicit `Encoder[A]`.
+   * @group conv
+   */
+  final def encode[A](a: A)(using encA: Encoder[A]): Attempt[BitVector] =
+    encA.encode(a)
+
+  /**
     * Encodes the specified values, one after the other, to a bit vector using the specified encoders.
     * @group conv
     */

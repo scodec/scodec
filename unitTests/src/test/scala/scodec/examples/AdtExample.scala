@@ -13,7 +13,7 @@ class AdtExample extends CodecSuite {
   "ADT codec examples" should {
     
     "support derivation" in {
-      val codec = summon[Codec[Sprocket]]
+      val codec = Codec[Sprocket]
       val encodedWocket = codec.encode(Wocket(1, true)).require
       assertBitsEqual(encodedWocket, 0x0100000001ff)
     }

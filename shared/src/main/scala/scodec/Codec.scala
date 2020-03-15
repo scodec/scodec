@@ -87,7 +87,7 @@ import scala.collection.mutable
   *
   * Consider this example: {{{
   case class Point(x: Int, y: Int, z: Int) derives Codec
-  summon[Codec[Point]].encode(Point(1, 2, 3))
+  Codec[Point].encode(Point(1, 2, 3))
  }}}
   * In this example, no explicit codec was defined for `Point` and instead, an implicit one was derived as a result
   * of the `derives Codec` clause. Derivation of a codec for a case class requires each element of the case class to

@@ -16,7 +16,7 @@ class DerivedCodecsExample extends CodecSuite {
     }
 
     "support derived codecs" in {
-      val c = summon[Codec[Color]]
+      val c = Codec[Color]
       assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, 0x000102)
     }
   }
@@ -50,7 +50,7 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Woozle is a product of two integers, and scodec.codecs.implicits._
       // is imported in this file, resulting an an implicit Codec[Int] being available.
-      summon[Codec[Woozle]].encode(Woozle(1, 2)).require shouldBe hex"0000000100000002".bits
+      Codec[Woozle].encode(Woozle(1, 2)).require shouldBe hex"0000000100000002".bits
     }
 
     "demonstrate deriving a codec for a sealed class hierarchy" in {
@@ -62,7 +62,7 @@ class DerivedCodecsExample extends CodecSuite {
       //
       // In this example, Sprocket defines a Discriminated[Sprocket, Int] in its companion
       // and each subclass defines a Discriminator[Sprocket, X, Int] in their companions.
-      summon[Codec[Sprocket]].encode(Wocket(3, true)).require shouldBe hex"0100000003ff".bits
+      Codec[Sprocket].encode(Wocket(3, true)).require shouldBe hex"0100000003ff".bits
     }
 
     "demonstrate nested derivations" in {
@@ -73,14 +73,14 @@ class DerivedCodecsExample extends CodecSuite {
       // Codec[A]. There's no manually defined `Codec[Sprocket]` but one is implicitly
       // derived.
       val ceil = Geiling("Ceil", Vector(Woozle(1, 2), Wocket(3, true)))
-      val encoded = summon[Codec[Geiling]].encode(ceil).require
+      val encoded = Codec[Geiling].encode(ceil).require
       encoded shouldBe hex"00000004 4365696c 00000002 000000000100000002 0100000003ff".bits
-      summon[Codec[Geiling]].decode(encoded).require.value shouldBe ceil
+      Codec[Geiling].decode(encoded).require.value shouldBe ceil
     }
 
     "demonstrate that derivation support does not interfere with manually authored implicit codecs in companions" in {
-      summon[Codec[ColorT]].encode(ColorT.Green).require shouldBe hex"02".bits
-      summon[Codec[Point]].encode(Point(1, 2, 3)).require should have size (24)
+      Codec[ColorT].encode(ColorT.Green).require shouldBe hex"02".bits
+      Codec[Point].encode(Point(1, 2, 3)).require should have size (24)
     }
   }
 }

@@ -12,7 +12,7 @@ class ProductsExample extends CodecSuite {
 
   "product codec examples" should {
     "demonstrate case class generation" in {
-      val codec = summon[Codec[Woozle]]
+      val codec = Codec[Woozle]
       codec.encode(Woozle(1, 2)).require shouldBe hex"0000000100000002".bits
     }
 
@@ -22,7 +22,7 @@ class ProductsExample extends CodecSuite {
       case class Foo(x: Int)
       object Foo { given Codec[Foo] = uint8.as[Foo] }
       case class Bar(f: Foo) derives Codec
-      summon[Codec[Bar]].encode(Bar(Foo(500))) shouldBe Attempt.failure(
+      Codec[Bar].encode(Bar(Foo(500))) shouldBe Attempt.failure(
         Err("500 is greater than maximum value 255 for 8-bit unsigned integer")
           .pushContext("f")
       )
@@ -30,7 +30,7 @@ class ProductsExample extends CodecSuite {
 
     "demonstrate tuple generation" in {
       // You can summon tuple codecs directly
-      val codec = summon[Codec[(Int, Int, Boolean)]]
+      val codec = Codec[(Int, Int, Boolean)]
       assertBitsEqual(codec.encode(1, 2, true).require, 0x00000001_00000002_ff)
     }
 
