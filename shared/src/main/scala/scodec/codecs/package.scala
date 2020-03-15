@@ -1339,7 +1339,7 @@ package object codecs {
   def vectorOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[Vector[A]] =
     countCodec
       .flatZip(count => new VectorCodec(valueCodec, Some(count)))
-      .narrow[Vector[A]](
+      .narrow(
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
@@ -1440,7 +1440,7 @@ package object codecs {
   def listOfN[A](countCodec: Codec[Int], valueCodec: Codec[A]): Codec[List[A]] =
     countCodec
       .flatZip(count => new ListCodec(valueCodec, Some(count)))
-      .narrow[List[A]](
+      .narrow(
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
