@@ -125,7 +125,7 @@ trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(g(b))
-    def decode(buffer: BitVector) = self.decode(buffer).map { _.map(f) }
+    def decode(buffer: BitVector) = self.decode(buffer).map(_.map(f))
   }
 
   /**
@@ -283,8 +283,8 @@ trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
     */
   final def withContext(context: String): Codec[A] = new Codec[A] {
     def sizeBound: SizeBound = self.sizeBound
-    override def encode(a: A) = self.encode(a).mapErr { _.pushContext(context) }
-    override def decode(buffer: BitVector) = self.decode(buffer).mapErr { _.pushContext(context) }
+    override def encode(a: A) = self.encode(a).mapErr(_.pushContext(context))
+    override def decode(buffer: BitVector) = self.decode(buffer).mapErr(_.pushContext(context))
     override def toString = s"$context($self)"
   }
 

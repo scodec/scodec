@@ -15,10 +15,10 @@ class VectorCodecTest extends CodecSuite {
       val results = (1 to trials)
         .map { trial =>
           sizes.map { size =>
-            val vec = definedSamples(Gen.listOfN(size, arbitrary[Int]).map { _.toVector }).head
-            val (encoded, encodeTime) = time { codec.encode(vec).require }
+            val vec = definedSamples(Gen.listOfN(size, arbitrary[Int]).map(_.toVector)).head
+            val (encoded, encodeTime) = time(codec.encode(vec).require)
             //info(s"$trial - encoding $size took $encodeTime")
-            val (decoded, decodeTime) = time { codec.decode(encoded).require.value }
+            val (decoded, decodeTime) = time(codec.decode(encoded).require.value)
             //info(s"$trial - decoding $size took $decodeTime")
             decoded shouldBe vec
             encodeTime + decodeTime

@@ -1,6 +1,6 @@
 package scodec
 
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 class SizeBoundTest extends AnyWordSpec with Matchers {

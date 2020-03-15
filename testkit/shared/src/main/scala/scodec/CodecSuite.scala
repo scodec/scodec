@@ -4,7 +4,7 @@ import scala.concurrent.duration._
 
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
@@ -28,9 +28,7 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
   }
 
   protected def roundtripAll[A](codec: Codec[A], as: collection.Iterable[A]): Unit =
-    as.foreach { a =>
-      roundtrip(codec, a)
-    }
+    as.foreach(a => roundtrip(codec, a))
 
   protected def encodeError[A](codec: Codec[A], a: A, err: Err) = {
     val encoded = codec.encode(a)

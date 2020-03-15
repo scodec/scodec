@@ -30,17 +30,17 @@ class VariableSizeCodecTest extends CodecSuite {
     }
 
     "support padding of size" in {
-      variableSizeBits(uint8, uint8, 0).encode(0).map { _.take(8) } shouldBe Attempt.successful(
+      variableSizeBits(uint8, uint8, 0).encode(0).map(_.take(8)) shouldBe Attempt.successful(
         BitVector(0x08)
       )
-      variableSizeBytes(uint8, uint8, 0).encode(0).map { _.take(8) } shouldBe Attempt.successful(
+      variableSizeBytes(uint8, uint8, 0).encode(0).map(_.take(8)) shouldBe Attempt.successful(
         BitVector(0x01)
       )
 
-      variableSizeBits(uint8, uint8, 1).encode(0).map { _.take(8) } shouldBe Attempt.successful(
+      variableSizeBits(uint8, uint8, 1).encode(0).map(_.take(8)) shouldBe Attempt.successful(
         BitVector(0x09)
       )
-      variableSizeBytes(uint8, uint8, 1).encode(0).map { _.take(8) } shouldBe Attempt.successful(
+      variableSizeBytes(uint8, uint8, 1).encode(0).map(_.take(8)) shouldBe Attempt.successful(
         BitVector(0x02)
       )
     }

@@ -171,9 +171,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     new DiscriminatorCodec[A, B](by, cases, framing)
 
   def sizeBound =
-    by.sizeBound + SizeBound.choice(cases.map { c =>
-      framing(c.prism.repCodec).sizeBound
-    })
+    by.sizeBound + SizeBound.choice(cases.map(c => framing(c.prism.repCodec).sizeBound))
 
   def encode(a: A) = {
     val itr = cases.iterator

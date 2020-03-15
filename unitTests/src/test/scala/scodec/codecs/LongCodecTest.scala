@@ -6,36 +6,26 @@ import scodec.bits.BitVector
 
 class LongCodecTest extends CodecSuite {
   def check(low: Long, high: Long)(f: (Long) => Unit): Unit =
-    forAll(Gen.choose(low, high)) { n =>
-      f(n)
-    }
+    forAll(Gen.choose(low, high))(n => f(n))
 
   "the int64 codec" should {
     "roundtrip" in {
-      forAll { (n: Long) =>
-        roundtrip(int64, n)
-      }
+      forAll((n: Long) => roundtrip(int64, n))
     }
   }
   "the int64L codec" should {
     "roundtrip" in {
-      forAll { (n: Long) =>
-        roundtrip(int64L, n)
-      }
+      forAll((n: Long) => roundtrip(int64L, n))
     }
   }
   "the uint32 codec" should {
     "roundtrip" in {
-      check(0, 1L << (32 - 1)) { (n: Long) =>
-        roundtrip(uint32, n)
-      }
+      check(0, 1L << (32 - 1))((n: Long) => roundtrip(uint32, n))
     }
   }
   "the uint32L codec" should {
     "roundtrip" in {
-      check(0L, (1L << 32) - 1) { (n: Long) =>
-        roundtrip(uint32L, n)
-      }
+      check(0L, (1L << 32) - 1)((n: Long) => roundtrip(uint32L, n))
     }
   }
 

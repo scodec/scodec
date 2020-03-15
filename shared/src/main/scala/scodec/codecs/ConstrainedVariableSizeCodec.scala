@@ -31,9 +31,8 @@ private[codecs] final class ConstrainedVariableSizeCodec[A](
     val sz = enc.size
 
     if (checkBoundaries(sz))
-      sizeCodec.encode(sz).map(_ ++ enc).mapErr { e =>
-        failMsg(a, e.messageWithContext)
-      } else
+      sizeCodec.encode(sz).map(_ ++ enc).mapErr(e => failMsg(a, e.messageWithContext))
+    else
       Attempt.failure(Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
 
   }

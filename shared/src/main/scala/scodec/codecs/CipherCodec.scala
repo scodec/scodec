@@ -94,9 +94,7 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
   override def sizeBound = SizeBound.unknown
 
   override def encode(a: A) =
-    codec.encode(a).flatMap { b =>
-      encrypt(b)
-    }
+    codec.encode(a).flatMap(b => encrypt(b))
 
   private def encrypt(bits: BitVector) = {
     val blocks = bits.toByteArray
@@ -112,9 +110,7 @@ private[codecs] final class CipherCodec[A](codec: Codec[A])(implicit cipherFacto
   override def decode(buffer: BitVector) =
     decrypt(buffer).flatMap { result =>
       codec.decode(result).map {
-        _.mapRemainder { _ =>
-          BitVector.empty
-        }
+        _.mapRemainder(_ => BitVector.empty)
       }
     }
 

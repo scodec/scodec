@@ -11,9 +11,7 @@ class CodecTest extends CodecSuite {
   "all codecs" should {
 
     "support flatZip" in {
-      val codec = uint8.flatZip { n =>
-        fixedSizeBits(n.toLong, utf8)
-      }
+      val codec = uint8.flatZip(n => fixedSizeBits(n.toLong, utf8))
       roundtripAll(codec, Seq((0, ""), (8, "a"), (32, "test")))
     }
 
@@ -97,9 +95,7 @@ class CodecTest extends CodecSuite {
 
     "result in a no-op when mapping successful over both sides".which {
       val noop: Codec[Int] = uint8.exmap[Int](Attempt.successful, Attempt.successful)
-      forAll { (n: Int) =>
-        noop.encode(n) shouldBe uint8.encode(n)
-      }
+      forAll((n: Int) => noop.encode(n) shouldBe uint8.encode(n))
       ()
     }
   }
@@ -112,9 +108,7 @@ class CodecTest extends CodecSuite {
   "narrow" should {
     "support converting to a smaller type" in {
       val narrowed: Codec[Int] = uint32.narrow(l2i, i2l)
-      forAll { (n: Int) =>
-        narrowed.encode(n) shouldBe uint32.encode(n.toLong)
-      }
+      forAll((n: Int) => narrowed.encode(n) shouldBe uint32.encode(n.toLong))
     }
   }
 

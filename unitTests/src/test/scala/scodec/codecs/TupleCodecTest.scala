@@ -30,9 +30,7 @@ class TupleCodecTest extends CodecSuite {
     }
 
     "provide a flatPrepend method" in {
-      uint8.flatPrepend { n =>
-        bits(n.toLong).tuple
-      }
+      uint8.flatPrepend(n => bits(n.toLong).tuple)
       ()
     }
 

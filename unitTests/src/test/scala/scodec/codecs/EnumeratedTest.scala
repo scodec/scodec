@@ -20,15 +20,11 @@ class EnumeratedTest extends CodecSuite {
     implicit def generator: Arbitrary[SIPrefix.Value] = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
 
     "roundtrip" in {
-      forAll { (v: SIPrefix.Value) =>
-        roundtrip(codec, v)
-      }
+      forAll((v: SIPrefix.Value) => roundtrip(codec, v))
     }
 
     "roundtrip with combinators" in {
-      forAll { (i: Int, v: SIPrefix.Value) =>
-        roundtrip(int32 :: codec, (i, v))
-      }
+      forAll((i: Int, v: SIPrefix.Value) => roundtrip(int32 :: codec, (i, v)))
     }
 
     "fail for an invalid id" in {

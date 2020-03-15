@@ -25,9 +25,7 @@ class PaddedVarAlignedCodec[A](
     for {
       encA <- valueCodec.encode(a)
       padsize = calculatePadding(encA.size)
-      encSize <- sizeCodec.encode(encA.size).mapErr { e =>
-        fail(a, e.messageWithContext)
-      }
+      encSize <- sizeCodec.encode(encA.size).mapErr(e => fail(a, e.messageWithContext))
     } yield encSize ++ encA ++ BitVector.fill(padsize)(false)
 
   private def fail(a: A, msg: String): Err =

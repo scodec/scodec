@@ -7,7 +7,7 @@ private[codecs] final class LimitedSizeCodec[A](limit: Long, codec: Codec[A]) ex
 
   def sizeBound = {
     val sz = codec.sizeBound
-    val ub = sz.upperBound.map { _.min(limit) }.getOrElse(limit)
+    val ub = sz.upperBound.map(_.min(limit)).getOrElse(limit)
     SizeBound.bounded(sz.lowerBound, ub)
   }
 

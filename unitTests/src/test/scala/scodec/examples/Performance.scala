@@ -28,7 +28,7 @@ object Performance extends App {
     res
   }
 
-  val pcapFile = time("pcap decode") { PcapCodec.pcapFile.decode(bits).require.value }
+  val pcapFile = time("pcap decode")(PcapCodec.pcapFile.decode(bits).require.value)
   println(s"Decoded ${pcapFile.records.size} records")
 
   for (i <- 1 to 20) {

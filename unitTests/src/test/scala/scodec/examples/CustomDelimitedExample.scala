@@ -42,9 +42,7 @@ class CustomDelimitedExample extends CodecSuite {
   def quoted[A](inner: Codec[A]): Codec[A] = new Codec[A] {
     private val quote = BitVector(0x22)
     def sizeBound = inner.sizeBound + SizeBound.exact(16)
-    def encode(a: A) = inner.encode(a).map { b =>
-      quote ++ b ++ quote
-    }
+    def encode(a: A) = inner.encode(a).map(b => quote ++ b ++ quote)
     def decode(b: BitVector) =
       (for {
         _ <- constant(0x22)

@@ -21,9 +21,7 @@ class FletcherChecksumTest extends CodecSuite {
     }
 
     "0xAA * (3N+2) => Array(0x0,0x55)" in {
-      forAll(Gen.posNum[Int]) { (n: Int) =>
-        pattern(n, 2, Array(0x0, 0x55))
-      }
+      forAll(Gen.posNum[Int])((n: Int) => pattern(n, 2, Array(0x0, 0x55)))
     }
 
     "0xAA * (3N + 1) => Array(0xAA, 0xAA)" in {
@@ -33,9 +31,7 @@ class FletcherChecksumTest extends CodecSuite {
     }
 
     "0xAA * (3N) => Array(0x0, 0x0)" in {
-      forAll(Gen.posNum[Int]) { (n: Int) =>
-        pattern(n, 0, Array(0x0, 0x0))
-      }
+      forAll(Gen.posNum[Int])((n: Int) => pattern(n, 0, Array(0x0, 0x0)))
     }
   }
 

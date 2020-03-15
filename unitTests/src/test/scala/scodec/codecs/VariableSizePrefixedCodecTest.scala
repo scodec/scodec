@@ -30,14 +30,14 @@ class VariableSizePrefixedCodecTest extends CodecSuite {
     }
 
     "support padding of size" in {
-      variableSizePrefixedBits(uint8, int32, uint8, 0).encode(1 -> 0).map { _.take(8) } shouldBe Attempt
+      variableSizePrefixedBits(uint8, int32, uint8, 0).encode(1 -> 0).map(_.take(8)) shouldBe Attempt
         .successful(BitVector(0x08))
-      variableSizePrefixedBytes(uint8, int32, uint8, 0).encode(1 -> 0).map { _.take(8) } shouldBe Attempt
+      variableSizePrefixedBytes(uint8, int32, uint8, 0).encode(1 -> 0).map(_.take(8)) shouldBe Attempt
         .successful(BitVector(0x01))
 
-      variableSizePrefixedBits(uint8, int32, uint8, 1).encode(1 -> 0).map { _.take(8) } shouldBe Attempt
+      variableSizePrefixedBits(uint8, int32, uint8, 1).encode(1 -> 0).map(_.take(8)) shouldBe Attempt
         .successful(BitVector(0x09))
-      variableSizePrefixedBytes(uint8, int32, uint8, 1).encode(1 -> 0).map { _.take(8) } shouldBe Attempt
+      variableSizePrefixedBytes(uint8, int32, uint8, 1).encode(1 -> 0).map(_.take(8)) shouldBe Attempt
         .successful(BitVector(0x02))
     }
   }
