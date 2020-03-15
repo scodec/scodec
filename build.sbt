@@ -100,12 +100,7 @@ lazy val core = crossProject(JVMPlatform)
     name := "scodec-core",
     resolvers += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= Seq(
-<<<<<<< HEAD
       "org.scodec" %%% "scodec-bits" % "2.0.0-SNAPSHOT"
-=======
-      "org.scodec" %%% "scodec-bits" % "1.1.14",
-      "com.chuusai" %%% "shapeless" % "2.3.3"
->>>>>>> master
     ),
     buildInfoPackage := "scodec",
     buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
@@ -146,7 +141,6 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-<<<<<<< HEAD
     libraryDependencies ++= {
       if (isDotty.value)
         Seq(
@@ -154,17 +148,10 @@ lazy val testkit = crossProject(JVMPlatform)
           "dev.travisbrown" %%% "scalacheck-1-14" % "3.1.0.1-20200201-c4c847f-NIGHTLY"
         )
       else Seq(
-        "org.scalatest" %%% "scalatest" % "3.1.0",
-        "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.0.1"
+        "org.scalatest" %%% "scalatest" % "3.1.1",
+        "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
       )
     }
-=======
-    libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % "1.14.3",
-      "org.scalatest" %%% "scalatest" % "3.1.1",
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
-    )
->>>>>>> master
   )
   .dependsOn(core % "compile->compile")
 
