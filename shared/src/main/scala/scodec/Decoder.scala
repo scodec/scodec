@@ -211,6 +211,8 @@ trait DecoderFunctions {
   */
 object Decoder extends DecoderFunctions {
 
+  inline def apply[A](using d: Decoder[A]): Decoder[A] = d
+
   /**
     * Creates a decoder from the specified function.
     * @group ctor

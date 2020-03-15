@@ -169,6 +169,8 @@ trait EncoderFunctions {
   */
 object Encoder extends EncoderFunctions {
 
+  inline def apply[A](using e: Encoder[A]): Encoder[A] = e
+
   /**
     * Creates an encoder from the specified function.
     * @group ctor

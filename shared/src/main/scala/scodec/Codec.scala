@@ -323,6 +323,8 @@ trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
   */
 object Codec extends EncoderFunctions with DecoderFunctions {
 
+  inline def apply[A](using c: Codec[A]): Codec[A] = c
+
   /**
     * Creates a codec from encoder and decoder functions.
     * @group ctor
