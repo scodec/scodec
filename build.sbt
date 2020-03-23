@@ -141,17 +141,13 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies ++= {
-      if (isDotty.value)
-        Seq(
-          "dev.travisbrown" %%% "scalatest" % "3.1.0-20200201-c4c847f-NIGHTLY",
-          "dev.travisbrown" %%% "scalacheck-1-14" % "3.1.0.1-20200201-c4c847f-NIGHTLY"
-        )
-      else Seq(
-        "org.scalatest" %%% "scalatest" % "3.1.1",
-        "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
-      )
-    }
+    libraryDependencies ++= Seq(
+      "org.scalatest" %%% "scalatest" % "3.1.1",
+      ("org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1")
+        .intransitive()
+        .withDottyCompat(scalaVersion.value),
+      ("org.scalacheck" %%% "scalacheck" % "1.14.3").withDottyCompat(scalaVersion.value)
+    )
   )
   .dependsOn(core % "compile->compile")
 
@@ -166,14 +162,6 @@ lazy val unitTests = project
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.64" % "test"
     ),
-    libraryDependencies ++= (if (scalaBinaryVersion.value.startsWith("2.10"))
-                               Seq(
-                                 compilerPlugin(
-                                   ("org.scalamacros" % "paradise" % "2.0.1")
-                                     .cross(CrossVersion.patch)
-                                 )
-                               )
-                             else Nil),
     scalacOptions in (Test, console) ++= List("-Xprint:typer")
   )
   .dependsOn(testkitJVM % "test->compile")
