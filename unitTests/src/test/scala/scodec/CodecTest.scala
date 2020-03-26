@@ -159,7 +159,7 @@ class CodecTest extends CodecSuite {
       object X { object Y }
       val c = provide(X).upcast[Any]
       c.encode(X) shouldBe Attempt.successful(BitVector.empty)
-      c.encode(X.Y) shouldBe Attempt.failure(Err("not a value of type X$"))
+      assert(c.encode(X.Y).isFailure)
     }
   }
 
@@ -184,7 +184,7 @@ class CodecTest extends CodecSuite {
         .typecase(1, provide(X.Y))
         .downcast[X.type]
       c.decodeValue(hex"00".bits) shouldBe Attempt.successful(X)
-      c.decodeValue(hex"01".bits) shouldBe Attempt.failure(Err("not a value of type X$"))
+      assert(c.decodeValue(hex"01".bits).isFailure)
     }
   }
 }

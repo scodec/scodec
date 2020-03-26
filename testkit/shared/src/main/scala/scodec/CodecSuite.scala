@@ -4,6 +4,7 @@ import scala.concurrent.duration._
 
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
+import org.scalactic.source.Position
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -57,5 +58,5 @@ abstract class CodecSuite extends AnyWordSpec with Matchers with ScalaCheckPrope
   implicit def arbBitVector: Arbitrary[BitVector] =
     Arbitrary(arbitrary[Array[Byte]].map(BitVector.apply))
 
-  protected def assertBitsEqual(actual: BitVector, expected: BitVector) = assert(actual == expected)
+  protected def assertBitsEqual(actual: BitVector, expected: BitVector)(using p: Position) = assert(actual == expected)
 }
