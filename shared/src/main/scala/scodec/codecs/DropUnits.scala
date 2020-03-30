@@ -3,7 +3,12 @@ package codecs
 
 import scala.compiletime._
 
+// Note: top-level recursive match types are not currently supported (https://github.com/lampepfl/dotty/issues/6362)
+// When that is fixed, `DropUnits.T[A]` should be moved to a top-level type `DropUnits[A]`
+
 object DropUnits {
+  // 
+  /** The tuple which is the result of removing all 'Unit' types from the tuple 'A'. */
   type T[A <: Tuple] <: Tuple = A match {
     case hd *: tl => hd match {
       case Unit => T[tl]
@@ -13,9 +18,9 @@ object DropUnits {
   }
 
   inline def drop[A <: Tuple](a: A): T[A] = {
-    inline erasedValue[A] match {
-      case _: (Unit *: tl) => drop[tl](a.asInstanceOf[Unit *: tl].tail)
-      case _: (hd *: tl) => a.asInstanceOf[hd *: tl].head *: drop[tl](a.asInstanceOf[hd *: tl].tail)
+    inline a match {
+      case (_ *: t): (Unit *: tl) => drop[tl](t)
+      case (h *: t): (hd *: tl) => h *: drop[tl](t)
       case _: Unit => ()
     }
   }.asInstanceOf[T[A]]
