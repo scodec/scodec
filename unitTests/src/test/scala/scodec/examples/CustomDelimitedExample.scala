@@ -55,28 +55,26 @@ class CustomDelimitedExample extends CodecSuite {
       } yield value).decode(b)
   }
 
-  "the quotes/byteDelimited codec" should {
-    "decode a known good value" in {
-      val codec = quoted(byteDelimited(codecs.bytes, 0x3a.toByte))
-      val payload =
-        hex"22053a613a93213a3af50320004290290060293a503a09783a362e35353935373a932122".bits
-      val result = codec.decode(payload)
-      result shouldBe Attempt.successful(
-        DecodeResult(
-          List(
-            hex"05",
-            hex"61",
-            hex"9321",
-            hex"",
-            hex"f5032000429029006029",
-            hex"50",
-            hex"0978",
-            hex"362e3535393537",
-            hex"9321"
-          ),
-          BitVector.empty
-        )
+  test("quotes/byteDelimited") {
+    val codec = quoted(byteDelimited(codecs.bytes, 0x3a.toByte))
+    val payload =
+      hex"22053a613a93213a3af50320004290290060293a503a09783a362e35353935373a932122".bits
+    val result = codec.decode(payload)
+    assertEquals(result, Attempt.successful(
+      DecodeResult(
+        List(
+          hex"05",
+          hex"61",
+          hex"9321",
+          hex"",
+          hex"f5032000429029006029",
+          hex"50",
+          hex"0978",
+          hex"362e3535393537",
+          hex"9321"
+        ),
+        BitVector.empty
       )
-    }
+    ))
   }
 }

@@ -21,9 +21,7 @@ class UdpDatagramExample extends CodecSuite {
     }.as[Datagram]
   }
 
-  "Datagram codec" should {
-    "roundtrip" in {
-      roundtrip(Datagram(1234, 2345, 0, ByteVector.fill(0xff)(100)))
-    }
+  test("Datagram codec") {
+    roundtrip(Datagram(1234, 2345, 0, ByteVector.fill(0xff)(100)))
   }
 }
