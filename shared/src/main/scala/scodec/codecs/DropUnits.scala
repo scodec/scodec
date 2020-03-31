@@ -7,7 +7,6 @@ import scala.compiletime._
 // When that is fixed, `DropUnits.T[A]` should be moved to a top-level type `DropUnits[A]`
 
 object DropUnits {
-  // 
   /** The tuple which is the result of removing all 'Unit' types from the tuple 'A'. */
   type T[A <: Tuple] <: Tuple = A match {
     case hd *: tl => hd match {
@@ -18,9 +17,17 @@ object DropUnits {
   }
 
   inline def drop[A <: Tuple](a: A): T[A] = {
-    inline a match {
-      case (_ *: t): (Unit *: tl) => drop[tl](t)
-      case (h *: t): (hd *: tl) => h *: drop[tl](t)
+    // Ideally, the following would work:
+    // inline a match {
+    //   case (_ *: t): (Unit *: tl) => drop[tl](t)
+    //   case (h *: t): (hd *: tl) => h *: drop[tl](t)
+    //   case _: Unit => ()
+    // }
+    inline erasedValue[A] match {
+      case _: (Unit *: tl) => drop[tl](a.asInstanceOf[Unit *: tl].tail)
+      case _: (hd *: tl) => 
+        val at = a.asInstanceOf[hd *: tl]
+        at.head *: drop[tl](at.tail)
       case _: Unit => ()
     }
   }.asInstanceOf[T[A]]

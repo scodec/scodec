@@ -39,9 +39,7 @@ class CertificateCodecTest extends CodecSuite {
       .asInstanceOf[X509Certificate]
   }
 
-  "the x509Certificate codec" should {
-    "roundtrip" in {
-      roundtrip(x509Certificate, aCert)
-    }
+  test("roundtrip") {
+    roundtrip(x509Certificate, aCert)
   }
 }

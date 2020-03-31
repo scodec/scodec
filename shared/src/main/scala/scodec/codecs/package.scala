@@ -708,22 +708,6 @@ package object codecs {
   def constantLenient[A: Integral](bits: A*): Codec[Unit] = constantLenient(BitVector(bits: _*))
 
   /**
-    * Provides implicit conversions from literal types to constant codecs.
-    *
-    * For example, with `literals._` imported, `constant(0x47) ~> uint8`
-    * can be written as `0x47 ~> uint8`.
-    *
-    * Supports literal bytes, ints, `BitVector`s, and `ByteVector`s.
-    *
-    * @group bits
-    */
-  object literals {
-    implicit def constantIntCodec(a: Int): Codec[Unit] = constant(a)
-    implicit def constantByteVectorCodec(a: ByteVector): Codec[Unit] = constant(a)
-    implicit def constantBitVectorCodec(a: BitVector): Codec[Unit] = constant(a)
-  }
-
-  /**
     * Codec that limits the number of bits the specified codec works with.
     *
     * When encoding, if encoding with the specified codec

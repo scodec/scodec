@@ -32,43 +32,40 @@ class TlvExample extends CodecSuite {
 
   case class UnrecognizedCommand(commandType: Int, data: BitVector)
 
-  "type-length-value encodings" should {
+  test("type-length-value encodings") {
+    // The type field acts as the discriminator
+    // The length field is handled by framing
+    // Each component codec writes the value
 
-    "be supported" in {
-      // The type field acts as the discriminator
-      // The length field is handled by framing
-      // Each component codec writes the value
-
-      val uint8or16: Codec[Int] = new Codec[Int] {
-        def sizeBound = SizeBound.bounded(16, 24)
-        def encode(i: Int) =
-          uint8.encode(i).orElse(uint16.encode(i))
-        def decode(b: BitVector) =
-          uint16.decode(b).orElse(uint8.decode(b))
-      }
-
-      val commandCodec: Codec[Command] =
-        discriminated[Command].by(uint8)
-          .framing([x] => (c: Codec[x]) => variableSizeBytes(uint8, c))
-          .singleton(0, Command.Go)
-          .singleton(1, Command.Stop)
-          .typecase(2, uint8or16.as[Command.TurnLeft])
-          .typecase(3, uint8or16.as[Command.TurnRight])
-
-      val unrecognizedCodec: Codec[UnrecognizedCommand] =
-        (uint8 :: variableSizeBytes(uint8, bits)).as[UnrecognizedCommand]
-
-      val codec: Codec[Either[UnrecognizedCommand, Command]] =
-        discriminatorFallback(unrecognizedCodec, commandCodec)
-
-      roundtrip(codec, Right(Command.Go))
-      roundtrip(codec, Right(Command.Stop))
-      roundtrip(codec, Right(Command.TurnLeft(270)))
-      roundtrip(codec, Right(Command.TurnRight(180)))
-      codec.decode(hex"0400".bits).require.value shouldBe Left(
-        UnrecognizedCommand(4, BitVector.empty)
-      )
-      roundtrip(list(codec), List(Right(Command.TurnRight(180)), Right(Command.Go), Right(Command.Stop)))
+    val uint8or16: Codec[Int] = new Codec[Int] {
+      def sizeBound = SizeBound.bounded(16, 24)
+      def encode(i: Int) =
+        uint8.encode(i).orElse(uint16.encode(i))
+      def decode(b: BitVector) =
+        uint16.decode(b).orElse(uint8.decode(b))
     }
+
+    val commandCodec: Codec[Command] =
+      discriminated[Command].by(uint8)
+        .framing([x] => (c: Codec[x]) => variableSizeBytes(uint8, c))
+        .singleton(0, Command.Go)
+        .singleton(1, Command.Stop)
+        .typecase(2, uint8or16.as[Command.TurnLeft])
+        .typecase(3, uint8or16.as[Command.TurnRight])
+
+    val unrecognizedCodec: Codec[UnrecognizedCommand] =
+      (uint8 :: variableSizeBytes(uint8, bits)).as[UnrecognizedCommand]
+
+    val codec: Codec[Either[UnrecognizedCommand, Command]] =
+      discriminatorFallback(unrecognizedCodec, commandCodec)
+
+    roundtrip(codec, Right(Command.Go))
+    roundtrip(codec, Right(Command.Stop))
+    roundtrip(codec, Right(Command.TurnLeft(270)))
+    roundtrip(codec, Right(Command.TurnRight(180)))
+    assertEquals(codec.decode(hex"0400".bits).require.value, Left(
+      UnrecognizedCommand(4, BitVector.empty)
+    ))
+    roundtrip(list(codec), List(Right(Command.TurnRight(180)), Right(Command.Go), Right(Command.Stop)))
   }
 }
