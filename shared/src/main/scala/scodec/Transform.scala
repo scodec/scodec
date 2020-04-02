@@ -1,7 +1,5 @@
 package scodec
 
-import scala.deriving.Mirror
-
 /** Typeclass that describes type constructors that support the `exmap` operation. */
 trait Transform[F[_]] {
 
