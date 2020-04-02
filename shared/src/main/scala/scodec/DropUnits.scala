@@ -1,5 +1,4 @@
 package scodec
-package codecs
 
 import scala.compiletime._
 

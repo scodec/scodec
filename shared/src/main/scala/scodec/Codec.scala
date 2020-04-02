@@ -103,10 +103,21 @@ import scala.collection.mutable
   *
   * @groupname tuple Tuple Support
   * @groupprio tuple 11
-  *
-  * @define TransformTC Codec
   */
 trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
+
+  /**
+   * Transforms this codec to a `Codec[B]` if `A` is isomorphic to `B`,
+   * as defined by the `Transform` type class.
+   * 
+   * This is most commonly used to convert a tuple codec to a case class:
+   * @example {{{
+   * case class Point(x: Int, y: Int, z: Int)
+   * val c: Codec[(Int, Int, Int)] = int8 :: int8 :: int8
+   * val p: Codec[Point] = c.as[Point]
+   * }}}
+   */
+  def as[B](using iso: Iso[A, B]): Codec[B] = xmap(iso.to, iso.from)
 
   /**
     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
@@ -363,8 +374,8 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   }
 
   extension tupleOpsNoParams on [A <: Tuple](codecA: Codec[A]) {
-    inline def dropUnits: Codec[codecs.DropUnits.T[A]] =
-      codecA.xmap(a => codecs.DropUnits.drop(a), b => codecs.DropUnits.insert(b))
+    inline def dropUnits: Codec[DropUnits.T[A]] =
+      codecA.xmap(a => DropUnits.drop(a), b => DropUnits.insert(b))
   }
 
   extension tupleOpsLeftAssociative on [A <: Tuple, B](codecA: Codec[A]) {
@@ -738,9 +749,5 @@ object Codec extends EncoderFunctions with DecoderFunctions {
   given Transform[Codec] {
     def [A, B](fa: Codec[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = 
       fa.exmap(f, g)
-  }
-
-  implicit class AsSyntax[A](private val self: Codec[A]) extends AnyVal {
-    def as[B](using t: Transformer[A, B]): Codec[B] = t(self)
   }
 }
