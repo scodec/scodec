@@ -107,8 +107,7 @@ import scala.collection.mutable
 trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
 
   /**
-   * Transforms this codec to a `Codec[B]` if `A` is isomorphic to `B`,
-   * as defined by the `Transform` type class.
+   * Transforms this codec to a `Codec[B]` if `A` is isomorphic to `B`.
    * 
    * This is most commonly used to convert a tuple codec to a case class:
    * @example {{{
