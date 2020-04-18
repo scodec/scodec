@@ -104,7 +104,7 @@ import scala.collection.mutable
   * @groupname tuple Tuple Support
   * @groupprio tuple 11
   */
-trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
+trait Codec[A] extends Encoder[A], Decoder[A] { self =>
 
   /**
    * Transforms this codec to a `Codec[B]` if `A` is isomorphic to `B`.
@@ -331,7 +331,7 @@ trait Codec[A] extends Encoder[A] with Decoder[A] { self =>
   * @groupname inst Supporting Instances
   * @groupprio inst 3
   */
-object Codec extends EncoderFunctions with DecoderFunctions {
+object Codec extends EncoderFunctions, DecoderFunctions {
 
   inline def apply[A](using c: Codec[A]): Codec[A] = c
 
