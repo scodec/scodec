@@ -5,7 +5,7 @@ val scalaJSVersion =
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 
-addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.1")
+addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.9.5")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "3.9.2")
