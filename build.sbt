@@ -141,7 +141,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.1"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.2"
   )
   .dependsOn(core % "compile->compile")
 
@@ -153,7 +153,7 @@ lazy val unitTests = project
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.64" % "test"
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.65" % "test"
     ),
     scalacOptions in (Test, console) ++= List("-Xprint:typer")
   )
