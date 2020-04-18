@@ -272,6 +272,6 @@ object Decoder extends DecoderFunctions {
   }
 
   implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal {
-    def as[B](using t: Transformer[A, B]): Decoder[B] = t(self)
+    def as[B](using iso: Iso[A, B]): Decoder[B] = self.map(iso.to)
   }
 }

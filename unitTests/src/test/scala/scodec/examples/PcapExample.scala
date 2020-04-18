@@ -90,28 +90,23 @@ class PcapExample extends CodecSuite {
 
   import PcapCodec._
 
-  "Pcap codecs" should {
-    def bits =
-      BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel.nn)
-    "support reading an entire file and then decoding it all" in {
-      pending
-      pcapFile.decode(bits)
-      ()
-    }
+  def bits = BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel.nn)
 
-    "support reading the file header and then decoding each record, combining results via a monoid" in {
-      pending
-      val fileHeader = pcapHeader.decode(bits.take(28 * 8)).require.value
-      implicit val ordering = fileHeader.ordering
-
-      // Monoid that counts records
-      val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(28 * 8))
-
-      // Monoid that accumulates records
-      val (_, records) = pcapRecord.decodeAll(Vector(_))(Vector.empty, _ ++ _)(bits.drop(28 * 8))
-    }
-
-    // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
-    // See scodec-stream library at https://github.com/scodec/scodec-stream
+  test("support reading an entire file and then decoding it all".ignore) {
+    pcapFile.decode(bits)
   }
+
+  test("support reading the file header and then decoding each record, combining results via a monoid".ignore) {
+    val fileHeader = pcapHeader.decode(bits.take(28 * 8)).require.value
+    implicit val ordering = fileHeader.ordering
+
+    // Monoid that counts records
+    val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(28 * 8))
+
+    // Monoid that accumulates records
+    val (_, records) = pcapRecord.decodeAll(Vector(_))(Vector.empty, _ ++ _)(bits.drop(28 * 8))
+  }
+
+  // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
+  // See scodec-stream library at https://github.com/scodec/scodec-stream
 }

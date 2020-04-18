@@ -5,12 +5,10 @@ import scodec.codecs._
 
 class EncoderTest extends CodecSuite {
 
-  "encoders" should {
-    "support `as` transforms" in {
-      case class Foo(x: Int)
-      val a: Encoder[Int] = uint8
-      val b: Encoder[Foo] = a.as[Foo]
-      b.encode(Foo(255)) shouldBe Attempt.successful(hex"ff".bits)
-    }
+  test("as") {
+    case class Foo(x: Int)
+    val a: Encoder[Int] = uint8
+    val b: Encoder[Foo] = a.as[Foo]
+    assertEquals(b.encode(Foo(255)), Attempt.successful(hex"ff".bits))
   }
 }

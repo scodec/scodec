@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  scalaVersion := "0.22.0-RC1",
+  scalaVersion := "0.23.0-RC1",
   crossScalaVersions := List(scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
@@ -44,7 +44,7 @@ lazy val commonSettings = Seq(
         Nil
       case other => sys.error(s"Unsupported scala version: $other")
     }),
-  testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
+  testFrameworks += new TestFramework("munit.Framework"),
   releaseCrossBuild := true,
   mimaPreviousArtifacts := Set.empty
 ) ++ publishingSettings
@@ -141,13 +141,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies ++= Seq(
-      "org.scalatest" %%% "scalatest" % "3.1.1",
-      ("org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1")
-        .intransitive()
-        .withDottyCompat(scalaVersion.value),
-      ("org.scalacheck" %%% "scalacheck" % "1.14.3").withDottyCompat(scalaVersion.value)
-    )
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.2"
   )
   .dependsOn(core % "compile->compile")
 
@@ -158,9 +152,8 @@ lazy val unitTests = project
   .in(file("unitTests"))
   .settings(commonSettings: _*)
   .settings(
-    scalacOptions in Test += "-language:implicitConversions",
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.64" % "test"
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.65" % "test"
     ),
     scalacOptions in (Test, console) ++= List("-Xprint:typer")
   )

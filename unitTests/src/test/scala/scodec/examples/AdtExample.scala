@@ -10,12 +10,9 @@ class AdtExample extends CodecSuite {
   case class Woozle(count: Int, strength: Int) extends Sprocket
   case class Wocket(size: Int, inverted: Boolean) extends Sprocket
 
-  "ADT codec examples" should {
-    
-    "support derivation" in {
-      val codec = Codec[Sprocket]
-      val encodedWocket = codec.encode(Wocket(1, true)).require
-      assertBitsEqual(encodedWocket, 0x0100000001ff)
-    }
+  test("ADT codec example") {
+    val codec = Codec[Sprocket]
+    val encodedWocket = codec.encode(Wocket(1, true)).require
+    assertBitsEqual(encodedWocket, 0x0100000001ff)
   }
 }
