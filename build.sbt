@@ -14,7 +14,7 @@ lazy val commonSettings = Seq(
   organization := "org.scodec",
   organizationHomepage := Some(new URL("http://scodec.org")),
   licenses += ("Three-clause BSD-style", url(
-    "https://github.com/scodec/scodec/blob/master/LICENSE"
+    "https://github.com/scodec/scodec/blob/main/LICENSE"
   )),
   git.remoteRepo := "git@github.com:scodec/scodec.git",
   scmInfo := Some(
