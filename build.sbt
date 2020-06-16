@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  scalaVersion := "0.24.0-RC1",
+  scalaVersion := "0.25.0-RC1",
   crossScalaVersions := List(scalaVersion.value),
   scalacOptions ++= Seq(
     "-encoding",
@@ -141,7 +141,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.5"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.9"
   )
   .dependsOn(core % "compile->compile")
 

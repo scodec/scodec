@@ -44,6 +44,6 @@ object Iso extends IsoLowPriority {
   given product[A <: Tuple, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A) as Iso[A, B] =
     instance[A, B](fromTuple)(toTuple)
 
-  given singleton[A, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A *: Unit) as Iso[A, B] =
-    instance[A, B](a => fromTuple(a *: ()))(b => toTuple(b).head)
+  given singleton[A, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A *: EmptyTuple) as Iso[A, B] =
+    instance[A, B](a => fromTuple(a *: EmptyTuple))(b => toTuple(b).head)
 }

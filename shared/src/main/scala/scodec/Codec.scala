@@ -142,7 +142,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     * Lifts this codec in to a codec of a singleton tuple.
     * @group tuple
     */
-  final def tuple: Codec[A *: Unit] = xmap(_ *: (), _.head)
+  final def tuple: Codec[A *: EmptyTuple] = xmap(_ *: Tuple(), _.head)
 
   /**
     * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
@@ -384,16 +384,16 @@ object Codec extends EncoderFunctions, DecoderFunctions {
       * returned from applying `A` to `f`.
       * @group tuple
       */
-    inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: Unit]] = new Codec[Tuple.Concat[A, B *: Unit]] {
+    inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: EmptyTuple]] = new Codec[Tuple.Concat[A, B *: EmptyTuple]] {
       def sizeBound = codecA.sizeBound.atLeast
-      def encode(ab: Tuple.Concat[A, B *: Unit]) = {
+      def encode(ab: Tuple.Concat[A, B *: EmptyTuple]) = {
         val size = constValue[Tuple.Size[A]]
-        val (a, b) = ab.splitAt(size).asInstanceOf[(A, B *: Unit)]
+        val (a, b) = ab.splitAt(size).asInstanceOf[(A, B *: EmptyTuple)]
         encodeBoth(codecA, f(a))(a, b.head)
       }
       def decode(bv: BitVector) =
         codecA.decode(bv).flatMap { case DecodeResult(a, rem) =>
-          f(a).decode(rem).map(_.map(b => (a ++ (b *: ())): Tuple.Concat[A, B *: Unit]))
+          f(a).decode(rem).map(_.map(b => (a ++ (b *: EmptyTuple)): Tuple.Concat[A, B *: EmptyTuple]))
           // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         }
     }
@@ -419,7 +419,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
       * That is, this operator is a codec-level tuple append operation.
       * @group tuple
       */
-    inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: Unit]] = 
+    inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: EmptyTuple]] = 
       codecB ++ codecA.tuple
   }
 
@@ -562,7 +562,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   def fromTuple[A <: Tuple : Tuple.IsMappedBy[Codec]](a: A): Codec[Tuple.InverseMap[A, Codec]] = {
     def go[X <: Tuple](x: X): Codec[_ <: Tuple] = x match {
       case (hd: Codec[_]) *: tl => hd :: go(tl)
-      case () => codecs.provide(())
+      case EmptyTuple => codecs.provide(EmptyTuple)
     }
     go(a).asInstanceOf[Codec[Tuple.InverseMap[A, Codec]]]
   }
@@ -585,7 +585,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
             encHd ++ encTl
           }
         }
-      case _: Unit =>
+      case EmptyTuple =>
         Attempt.successful(BitVector.empty)
     }
 
@@ -597,7 +597,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           elems(i) = e
           decodeTuple[T, tl](rem, i + 1, elems)
         }
-      case _: Unit =>
+      case EmptyTuple =>
         Attempt.successful(DecodeResult(Tuple.fromProduct(elems).asInstanceOf[T], b))
     }
 
@@ -635,7 +635,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     inline erasedValue[A] match {
       case _: (hd *: tl) =>
         summonOne[Codec[hd]].sizeBound + sizeBoundElems[tl]
-      case _: Unit =>
+      case EmptyTuple =>
         SizeBound.exact(0)
     }
 
@@ -647,7 +647,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
             sizeBoundElems[p.MirroredElemTypes]
         }
         hdSize | sizeBoundCases[tl]
-      case _: Unit =>
+      case EmptyTuple =>
         SizeBound.exact(0)
     }
 
@@ -663,9 +663,9 @@ object Codec extends EncoderFunctions, DecoderFunctions {
                 encHd ++ encTl
               }
             }
-          case _: Unit => sys.error("not possible - label for product not available")
+          case EmptyTuple => sys.error("not possible - label for product not available")
         }
-      case _: Unit =>
+      case EmptyTuple =>
         Attempt.successful(BitVector.empty)
     }
 
@@ -681,9 +681,9 @@ object Codec extends EncoderFunctions, DecoderFunctions {
                   encodeElems[p.MirroredElemTypes, p.MirroredElemLabels](a, 0).mapErr(_.pushContext(hdLabelValue))
               }
             } else encodeCases[tl, tlLabels](a, ordinal, i + 1)
-          case _: Unit => sys.error("not possible - label for product not available")
+          case EmptyTuple => sys.error("not possible - label for product not available")
         }
-      case _: Unit => Attempt.successful(BitVector.empty)
+      case EmptyTuple => Attempt.successful(BitVector.empty)
     }
 
   private inline def decodeElems[A <: Tuple, L <: Tuple](b: BitVector, i: Int, elems: ArrayProduct): Attempt[DecodeResult[Any]] =
@@ -697,10 +697,10 @@ object Codec extends EncoderFunctions, DecoderFunctions {
               elems(i) = e
               decodeElems[tl, tlLabels](rem, i + 1, elems)
             }
-          case _: Unit =>
+          case EmptyTuple =>
             sys.error("not possible - label for product not available")
         }
-      case _: Unit =>
+      case EmptyTuple =>
         Attempt.successful(DecodeResult((), b))
     }
 
@@ -720,10 +720,10 @@ object Codec extends EncoderFunctions, DecoderFunctions {
                   decodeElems[p.MirroredElemTypes, p.MirroredElemLabels](b, 0, elems).mapErr(_.pushContext(hdLabelValue)).map(_.map(_ => p.fromProduct(elems)))
               }
             } else decodeCases[S, tl, tlLabels](b, ordinal, i + 1)
-          case _: Unit =>
+          case EmptyTuple =>
             sys.error("not possible - label for product not available")
         }
-      case _: Unit =>
+      case EmptyTuple =>
         Attempt.failure(Err.MatchingDiscriminatorNotFound(ordinal, Nil))
     }
 

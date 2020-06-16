@@ -12,7 +12,7 @@ object DropUnits {
       case Unit => T[tl]
       case _ => hd *: T[tl]
     }
-    case Unit => Unit
+    case EmptyTuple => EmptyTuple
   }
 
   inline def drop[A <: Tuple](a: A): T[A] = {
@@ -20,14 +20,14 @@ object DropUnits {
     // inline a match {
     //   case (_ *: t): (Unit *: tl) => drop[tl](t)
     //   case (h *: t): (hd *: tl) => h *: drop[tl](t)
-    //   case _: Unit => ()
+    //   case EmptyTuple => EmptyTuple
     // }
     inline erasedValue[A] match {
       case _: (Unit *: tl) => drop[tl](a.asInstanceOf[Unit *: tl].tail)
       case _: (hd *: tl) => 
         val at = a.asInstanceOf[hd *: tl]
         at.head *: drop[tl](at.tail)
-      case _: Unit => ()
+      case EmptyTuple => EmptyTuple
     }
   }.asInstanceOf[T[A]]
 
@@ -37,7 +37,7 @@ object DropUnits {
       case _: (hd *: tl) =>
         val t2 = t.asInstanceOf[NonEmptyTuple]
         t2.head.asInstanceOf[hd] *: insert[tl](t2.tail.asInstanceOf[T[tl]])
-      case _: Unit => ()
+      case EmptyTuple => EmptyTuple
     }
   }.asInstanceOf[A]
 }
