@@ -24,7 +24,7 @@ private trait IsoLowPriority {
 
   inline given productWithUnits[A <: Tuple, B](using 
     m: Mirror.ProductOf[B],
-    ev: m.MirroredElemTypes =:= DropUnits.T[A]
+    ev: m.MirroredElemTypes =:= DropUnits[A]
   ) as Iso[A, B] = 
     instance((a: A) => fromTuple(DropUnits.drop(a)))(b => DropUnits.insert(toTuple(b)))
 

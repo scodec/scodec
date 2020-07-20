@@ -373,7 +373,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   }
 
   extension tupleOpsNoParams on [A <: Tuple](codecA: Codec[A]) {
-    inline def dropUnits: Codec[DropUnits.T[A]] =
+    inline def dropUnits: Codec[DropUnits[A]] =
       codecA.xmap(a => DropUnits.drop(a), b => DropUnits.insert(b))
   }
 
