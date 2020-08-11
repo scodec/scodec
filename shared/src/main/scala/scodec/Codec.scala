@@ -402,18 +402,17 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     override def toString = s"lazily($c)"
   }
 
-  extension tupleOpsNoParams on [A <: Tuple](codecA: Codec[A]) {
+  extension [A <: Tuple](codecA: Codec[A])
     inline def dropUnits: Codec[DropUnits[A]] =
-      codecA.xmap(a => DropUnits.drop(a), b => DropUnits.insert(b))
-  }
+      codecA.xmap(a => codecs.DropUnits.drop(a), b => codecs.DropUnits.insert(b))
 
-  extension tupleOpsLeftAssociative on [A <: Tuple, B](codecA: Codec[A]) {
-    /**
-      * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
-      * the tuple `A` followed by the value `B`, where the latter is encoded/decoded with the codec
-      * returned from applying `A` to `f`.
-      * @group tuple
-      */
+  /**
+    * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
+    * the tuple `A` followed by the value `B`, where the latter is encoded/decoded with the codec
+    * returned from applying `A` to `f`.
+    * @group tuple
+    */
+  extension [A <: Tuple, B](codecA: Codec[A])
     inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: EmptyTuple]] = new Codec[Tuple.Concat[A, B *: EmptyTuple]] {
       def sizeBound = codecA.sizeBound.atLeast
       def encode(ab: Tuple.Concat[A, B *: EmptyTuple]) = {
@@ -427,16 +426,15 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         }
     }
-  }
 
-  extension tupleOpsRightAssociative on [A, B <: Tuple](codecB: Codec[B]) {
-    /**
-      * Builds a `Codec[A *: B]` from a `Codec[A]` and a `Codec[B]` where `B` is a tuple type.
-      * That is, this operator is a codec-level tuple prepend operation.
-      * @param codec codec to prepend
-      * @group tuple
-      */
-    def ::(codecA: Codec[A]): Codec[A *: B] =
+  /**
+    * Builds a `Codec[A *: B]` from a `Codec[A]` and a `Codec[B]` where `B` is a tuple type.
+    * That is, this operator is a codec-level tuple prepend operation.
+    * @param codec codec to prepend
+    * @group tuple
+    */
+  extension [A, B <: Tuple](codecA: Codec[A])
+    def ::(codecB: Codec[B]): Codec[A *: B] =
       new Codec[A *: B] {
         def sizeBound = codecA.sizeBound + codecB.sizeBound
         def encode(ab: A *: B) = encodeBoth(codecA, codecB)(ab.head, ab.tail)
@@ -444,22 +442,22 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         override def toString = s"$codecA :: $codecB"
       }
 
-    /**
-      * `codecB :+ codecA` returns a new codec that encodes/decodes the tuple `B` followed by an `A`.
-      * That is, this operator is a codec-level tuple append operation.
-      * @group tuple
-      */
-    inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: EmptyTuple]] = 
+  /**
+    * `codecB :+ codecA` returns a new codec that encodes/decodes the tuple `B` followed by an `A`.
+    * That is, this operator is a codec-level tuple append operation.
+    * @group tuple
+    */
+  extension [A, B <: Tuple](codecB: Codec[B])
+    inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: EmptyTuple]] =
       codecB ++ codecA.tuple
-  }
 
-  extension tupleBinaryOps on [A <: Tuple, B <: Tuple](codecA: Codec[A]) {
-    /**
-      * Builds a `Codec[A ++ B]` from a `Codec[A]` and a `Codec[B]` where `A` and `B` are tuples.
-      * That is, this operator is a codec-level tuple concat operation.
-      * @param codecA codec to concat
-      * @group tuple
-      */
+  /**
+    * Builds a `Codec[A ++ B]` from a `Codec[A]` and a `Codec[B]` where `A` and `B` are tuples.
+    * That is, this operator is a codec-level tuple concat operation.
+    * @param codecA codec to concat
+    * @group tuple
+    */
+  extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
     inline def ++(codecB: Codec[B]): Codec[Tuple.Concat[A, B]] =
       new Codec[Tuple.Concat[A, B]] {
         def sizeBound = codecA.sizeBound + codecB.sizeBound
@@ -474,12 +472,13 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         override def toString = s"$codecA :: $codecB"
       } 
 
-    /**
-      * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
-      * the tuple `A` followed by the tuple `B`, where the latter is encoded/decoded with the codec
-      * returned from applying `A` to `f`.
-      * @group tuple
-      */
+  /**
+    * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
+    * the tuple `A` followed by the tuple `B`, where the latter is encoded/decoded with the codec
+    * returned from applying `A` to `f`.
+    * @group tuple
+    */
+  extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
     inline def flatConcat(f: A => Codec[B]): Codec[Tuple.Concat[A, B]] = new Codec[Tuple.Concat[A, B]] {
       def sizeBound = codecA.sizeBound.atLeast
       def encode(ab: Tuple.Concat[A, B]) = {
@@ -492,29 +491,27 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           f(a).decode(rem).map(_.map(b => a ++ b))
         }
     }
-  }
 
-  extension on [A, B](b: Codec[B]) {
-    /**
-      * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
-      * For example, {{{uint8 :: utf8}}} has type `Codec[(Int, Int)]`.
-      * @group tuple
-      */
-    def ::(a: Codec[A]): Codec[(A, B)] =
+  /**
+    * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
+    * For example, {{{uint8 :: utf8}}} has type `Codec[(Int, Int)]`.
+    * @group tuple
+    */
+  extension [A, B](a: Codec[A])
+    def ::(b: Codec[B])(using DummyImplicit): Codec[(A, B)] =
       new Codec[(A, B)] {
         def sizeBound = a.sizeBound + b.sizeBound
         def encode(ab: (A, B)) = Codec.encodeBoth(a, b)(ab._1, ab._2)
         def decode(bv: BitVector) = Codec.decodeBoth(a, b)(bv)
         override def toString = s"$a :: $b"
       }
-  }
 
-  extension on [A, B <: Tuple](codecA: Codec[A]) {
-    /**
-      * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
-      * This allows later parts of a tuple codec to be dependent on earlier values.
-      * @group tuple
-      */
+  /**
+    * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
+    * This allows later parts of a tuple codec to be dependent on earlier values.
+    * @group tuple
+    */
+  extension [A, B <: Tuple](codecA: Codec[A])
     def flatPrepend(f: A => Codec[B]): Codec[A *: B] =
       new Codec[A *: B] {
         def sizeBound = codecA.sizeBound.atLeast
@@ -526,7 +523,6 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           } yield a *: l).decode(b)
         override def toString = s"flatPrepend($codecA, $f)"
       }
-  }
 
   implicit class DeriveSyntax[A <: Tuple](private val self: Codec[A]) extends AnyVal {
     /**
