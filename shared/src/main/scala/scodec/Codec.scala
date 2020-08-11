@@ -524,35 +524,34 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         override def toString = s"flatPrepend($codecA, $f)"
       }
 
-  implicit class DeriveSyntax[A <: Tuple](private val self: Codec[A]) extends AnyVal {
-    /**
-      * Supports building a `Codec[C]` where `C` is the tuple that results in removing
-      * the first `B` from `A`.
-      *
-      * Example usage: {{{
-       case class Flags(x: Boolean, y: Boolean, z: Boolean)
-       val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
-         conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
-       }
-       c.deriveElement { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
-     }}}
-      *
-      * This codec, the `Codec[A]`, is used for encoding/decoding. When decoding, the first value of type
-      * `A` is removed from the tuple.
-      *
-      * When encoding, the returned codec computes a `B` value using the supplied
-      * function and inserts the computed `B` in to the tuple `C`, yielding a tuple `A`. That tuple `A`
-      * is then encoded using the original codec.
-      *
-      * This method is called `deriveElement` because the value of type `B` is derived from the other elements
-      * of the tuple `A`.
-      *
-      * @tparam B type to remove from `A` and derive from the remaining elements
-      * @group tuple
-      */
-    inline def deriveElement[B](f: TupleWithout[A, B] => B): Codec[TupleWithout[A, B]] =
+  /**
+    * Supports building a `Codec[C]` where `C` is the tuple that results in removing
+    * the first `B` from `A`.
+    *
+    * Example usage: {{{
+      case class Flags(x: Boolean, y: Boolean, z: Boolean)
+      val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
+        conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
+      }
+      c.deriveElement { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
+    }}}
+    *
+    * This codec, the `Codec[A]`, is used for encoding/decoding. When decoding, the first value of type
+    * `A` is removed from the tuple.
+    *
+    * When encoding, the returned codec computes a `B` value using the supplied
+    * function and inserts the computed `B` in to the tuple `C`, yielding a tuple `A`. That tuple `A`
+    * is then encoded using the original codec.
+    *
+    * This method is called `deriveElement` because the value of type `B` is derived from the other elements
+    * of the tuple `A`.
+    *
+    * @tparam B type to remove from `A` and derive from the remaining elements
+    * @group tuple
+    */
+  extension [A <: Tuple, B](self: Codec[A])
+    inline def deriveElement(f: TupleWithout[A, B] => B): Codec[TupleWithout[A, B]] =
       self.xmap(a => remove[A, B](a), c => insert[A, B](c, f(c)))
-  }
 
   private inline def remove[A <: Tuple, B](a: A): TupleWithout[A, B] = {
     val i = constValue[TupleIndexOf[A, B]]
@@ -775,4 +774,8 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     def [A, B](fa: Codec[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = 
       fa.exmap(f, g)
   }
+
+  given [A] as AnyRef:
+    extension [B](self: Codec[A])
+      def as(using t: Transformer[A, B]): Codec[B] = t(self)
 }
