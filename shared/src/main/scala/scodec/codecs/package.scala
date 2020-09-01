@@ -139,7 +139,7 @@ package object codecs {
     * Encodes by returning the supplied byte vector if its length is `size` bytes, padding with zeroes if smaller than `size` bytes, returning error if greater;
     * decodes by taking `size * 8` bits from the supplied bit vector and converting to a byte vector.
     *
-    * @param size number of bits to encode/decode
+    * @param size number of bytes to encode/decode
     * @group bits
     */
   def bytes(size: Int): Codec[ByteVector] = new Codec[ByteVector] {
@@ -155,7 +155,7 @@ package object codecs {
     * Encodes by returning the supplied byte vector if its length is `size` bytes, otherwise returning error;
     * decodes by taking `size * 8` bits from the supplied bit vector and converting to a byte vector.
     *
-    * @param size number of bits to encode/decode
+    * @param size number of bytes to encode/decode
     * @group bits
     */
   def bytesStrict(size: Int): Codec[ByteVector] = new Codec[ByteVector] {
