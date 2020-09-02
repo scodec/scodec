@@ -141,7 +141,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.9"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.11"
   )
   .dependsOn(core % "compile->compile")
 
