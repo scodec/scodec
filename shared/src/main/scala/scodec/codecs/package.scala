@@ -1327,12 +1327,10 @@ package object codecs {
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
-            else
-              Attempt.failure(
-                Err(
-                  s"Insufficient number of elements: decoded ${xs.size} but should have decoded $cnt"
-                )
-              )
+            else {
+              val valueBits = valueCodec.sizeBound.exact.getOrElse(valueCodec.sizeBound.lowerBound)
+              Attempt.failure(Err.insufficientBits(cnt * valueBits, xs.size * valueBits))
+            }
         },
         xs => (xs.size, xs)
       )
@@ -1428,12 +1426,10 @@ package object codecs {
         {
           case (cnt, xs) =>
             if (xs.size == cnt) Attempt.successful(xs)
-            else
-              Attempt.failure(
-                Err(
-                  s"Insufficient number of elements: decoded ${xs.size} but should have decoded $cnt"
-                )
-              )
+            else {
+              val valueBits = valueCodec.sizeBound.exact.getOrElse(valueCodec.sizeBound.lowerBound)
+              Attempt.failure(Err.insufficientBits(cnt * valueBits, xs.size * valueBits))
+            }
         },
         xs => (xs.size, xs)
       )

@@ -73,7 +73,7 @@ class VectorCodecTest extends CodecSuite {
   test("fails decoding if < N elements decoded") {
     val codec = vectorOfN(provide(10), uint8)
     assertEquals(codec.decode(BitVector.low(8 * 5)), Attempt.failure(
-      Err("Insufficient number of elements: decoded 5 but should have decoded 10")
+      Err.insufficientBits(80, 40)
     ))
   }
 }
