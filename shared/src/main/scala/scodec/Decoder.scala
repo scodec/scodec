@@ -297,7 +297,7 @@ object Decoder extends DecoderFunctions {
   }
 
   given Transform[Decoder] {
-    def [A, B](fa: Decoder[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] = 
+    extension [A, B](fa: Decoder[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
       fa.emap(f)
   }
 
