@@ -33,7 +33,6 @@ package examples
 
 import scodec.bits._
 import codecs._
-import implicits._
 
 class DerivedCodecsExample extends CodecSuite {
 
