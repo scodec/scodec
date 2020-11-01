@@ -5,119 +5,89 @@ import com.typesafe.sbt.SbtGit.GitKeys.{gitCurrentBranch, gitHeadCommit}
 addCommandAlias("fmt", "; compile:scalafmt; test:scalafmt; scalafmtSbt")
 addCommandAlias("fmtCheck", "; compile:scalafmtCheck; test:scalafmtCheck; scalafmtSbtCheck")
 
-lazy val contributors = Seq(
-  "mpilquist" -> "Michael Pilquist",
-  "pchiusano" -> "Paul Chiusano"
+ThisBuild / baseVersion := "2.0"
+
+ThisBuild / organization := "org.scodec"
+ThisBuild / organizationName := "Scodec"
+
+ThisBuild / homepage := Some(url("https://github.com/scodec/scodec-bits"))
+ThisBuild / startYear := Some(2013)
+
+ThisBuild / crossScalaVersions := Seq("0.27.0-RC1")
+
+ThisBuild / strictSemVer := false
+
+ThisBuild / versionIntroduced := Map(
+  "0.27.0-RC1" -> "2.0.99"
 )
 
-lazy val commonSettings = Seq(
-  organization := "org.scodec",
-  organizationHomepage := Some(new URL("http://scodec.org")),
-  licenses += ("Three-clause BSD-style", url(
-    "https://github.com/scodec/scodec/blob/main/LICENSE"
-  )),
-  git.remoteRepo := "git@github.com:scodec/scodec.git",
-  scmInfo := Some(
-    ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")
-  ),
-  unmanagedResources in Compile ++= {
-    val base = baseDirectory.value
-    (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
-  },
-  scalaVersion := "0.25.0-RC1",
-  crossScalaVersions := List(scalaVersion.value),
-  scalacOptions ++= Seq(
-    "-encoding",
-    "UTF-8",
-    "-deprecation",
-    "-feature",
-    "-language:higherKinds",
-    "-unchecked",
-    "-Yexplicit-nulls"
-  ) ++
-    (scalaBinaryVersion.value match {
-      case v if v.startsWith("2.13") =>
-        List("-Xlint", "-Ywarn-unused")
-      case v if v.startsWith("2.12") =>
-        Nil
-      case v if v.startsWith("0.") =>
-        Nil
-      case other => sys.error(s"Unsupported scala version: $other")
-    }),
-  testFrameworks += new TestFramework("munit.Framework"),
-  releaseCrossBuild := true,
-  mimaPreviousArtifacts := Set.empty
-) ++ publishingSettings
+ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
 
-lazy val publishingSettings = Seq(
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (version.value.trim.endsWith("SNAPSHOT"))
-      Some("snapshots".at(nexus + "content/repositories/snapshots"))
-    else
-      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
-  },
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  pomIncludeRepository := { x => false },
-  pomExtra := (
-    <url>http://github.com/scodec/scodec</url>
-    <developers>
-      {
-      for ((username, name) <- contributors) yield <developer>
-        <id>{username}</id>
-        <name>{name}</name>
-        <url>http://github.com/{username}</url>
-      </developer>
-    }
-    </developers>
-  ),
-  pomPostProcess := { (node) =>
-    import scala.xml._
-    import scala.xml.transform._
-    def stripIf(f: Node => Boolean) = new RewriteRule {
-      override def transform(n: Node) =
-        if (f(n)) NodeSeq.Empty else n
-    }
-    val stripTestScope = stripIf(n => n.label == "dependency" && (n \ "scope").text == "test")
-    new RuleTransformer(stripTestScope).transform(node)(0)
-  }
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(
+  RefPredicate.Equals(Ref.Branch("main")),
+  RefPredicate.StartsWith(Ref.Tag("v"))
+)
+
+ThisBuild / githubWorkflowEnv ++= Map(
+  "SONATYPE_USERNAME" -> s"$${{ secrets.SONATYPE_USERNAME }}",
+  "SONATYPE_PASSWORD" -> s"$${{ secrets.SONATYPE_PASSWORD }}",
+  "PGP_SECRET" -> s"$${{ secrets.PGP_SECRET }}"
+)
+
+ThisBuild / githubWorkflowTargetTags += "v*"
+
+ThisBuild / githubWorkflowPublishPreamble +=
+  WorkflowStep.Run(
+    List("echo $PGP_SECRET | base64 -d | gpg --import"),
+    name = Some("Import signing key")
+  )
+
+ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("release")))
+
+ThisBuild / scmInfo := Some(
+  ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")
+)
+
+ThisBuild / licenses := List(
+  ("BSD-3-Clause", url("https://github.com/scodec/scodec/blob/main/LICENSE"))
+)
+
+ThisBuild / testFrameworks += new TestFramework("munit.Framework")
+
+ThisBuild / publishGithubUser := "mpilquist"
+ThisBuild / publishFullName := "Michael Pilquist"
+ThisBuild / developers ++= List(
+  "mpilquist" -> "Michael Pilquist",
+  "pchiusano" -> "Paul Chiusano"
+).map { case (username, fullName) =>
+  Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
+}
+
+ThisBuild / fatalWarningsInCI := false
+
+ThisBuild / mimaBinaryIssueFilters ++= Seq(
 )
 
 lazy val root = project
   .in(file("."))
   .aggregate(testkitJVM, coreJVM, unitTests)
-  .settings(commonSettings: _*)
-  .settings(
-    publishArtifact := false
-  )
+  .settings(noPublishSettings)
 
-lazy val core = crossProject(JVMPlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform)
   .in(file("."))
   .enablePlugins(BuildInfoPlugin)
-  .settings(commonSettings: _*)
+  .settings(dottyLibrarySettings)
+  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-core",
-    resolvers += Resolver.sonatypeRepo("snapshots"),
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "2.0.0-SNAPSHOT"
+      "org.scodec" %%% "scodec-bits" % "1.1.20"
     ),
     buildInfoPackage := "scodec",
     buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
-    scalacOptions in (Compile, doc) := {
-      val tagOrBranch = {
-        if (version.value.endsWith("SNAPSHOT")) gitCurrentBranch.value
-        else ("v" + version.value)
-      }
-      Seq(
-        "-groups",
-        "-implicits",
-        "-implicits-show-all",
-        "-sourcepath",
-        new File(baseDirectory.value, "../..").getCanonicalPath,
-        "-doc-source-url",
-        "https://github.com/scodec/scodec/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
-      )
+    Compile / unmanagedResources ++= {
+      val base = baseDirectory.value
+      (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
     }
   )
   .jvmSettings(
@@ -134,35 +104,34 @@ lazy val core = crossProject(JVMPlatform)
   )
 
 lazy val coreJVM = core.jvm
-// lazy val coreJS = core.js
 
-lazy val testkit = crossProject(JVMPlatform)
-  .in(file("testkit"))
-  .settings(commonSettings: _*)
+lazy val coreJS = core.js.settings(
+  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+)
+
+lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+  .settings(dottyLibrarySettings)
+  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.11"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.15"
   )
   .dependsOn(core % "compile->compile")
 
 lazy val testkitJVM = testkit.jvm
-// lazy val testkitJS = testkit.js
+lazy val testkitJS = testkit.js
 
 lazy val unitTests = project
-  .in(file("unitTests"))
-  .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.67" % "test"
-    ),
-    scalacOptions in (Test, console) ++= List("-Xprint:typer")
+    )
   )
   .dependsOn(testkitJVM % "test->compile")
-  .settings(publishArtifact := false)
+  .settings(noPublishSettings)
 
-lazy val benchmark: Project = project
-  .in(file("benchmark"))
+lazy val benchmark = project
   .dependsOn(coreJVM)
   .enablePlugins(JmhPlugin)
-  .settings(commonSettings: _*)
-  .settings(publishArtifact := false)
+  .settings(noPublishSettings)
+
