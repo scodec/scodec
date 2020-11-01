@@ -104,7 +104,7 @@ lazy val core = crossProject(JVMPlatform)
     )
   )
 
-lazy val coreJVM = core.jvm
+lazy val coreJVM = core.jvm.enablePlugins(SbtOsgi).settings(osgiSettings)
 
 //lazy val coreJS = core.js.settings(
 //  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
