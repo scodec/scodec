@@ -402,9 +402,10 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     override def toString = s"lazily($c)"
   }
 
-  extension [A <: Tuple](codecA: Codec[A])
+  extension [A <: Tuple](codecA: Codec[A]) {
     inline def dropUnits: Codec[DropUnits[A]] =
-      codecA.xmap(a => codecs.DropUnits.drop(a), b => codecs.DropUnits.insert(b))
+      codecA.xmap(a => DropUnits.drop(a), b => DropUnits.insert(b))
+  }
 
   /**
     * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
@@ -412,7 +413,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     * returned from applying `A` to `f`.
     * @group tuple
     */
-  extension [A <: Tuple, B](codecA: Codec[A])
+  extension [A <: Tuple, B](codecA: Codec[A]) {
     inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: EmptyTuple]] = new Codec[Tuple.Concat[A, B *: EmptyTuple]] {
       def sizeBound = codecA.sizeBound.atLeast
       def encode(ab: Tuple.Concat[A, B *: EmptyTuple]) = {
@@ -426,6 +427,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         }
     }
+  }
 
   /**
     * Builds a `Codec[A *: B]` from a `Codec[A]` and a `Codec[B]` where `B` is a tuple type.
@@ -433,7 +435,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     * @param codec codec to prepend
     * @group tuple
     */
-  extension [A, B <: Tuple](codecA: Codec[A])
+  extension [A, B <: Tuple](codecA: Codec[A]) {
     def ::(codecB: Codec[B]): Codec[A *: B] =
       new Codec[A *: B] {
         def sizeBound = codecA.sizeBound + codecB.sizeBound
@@ -441,15 +443,17 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         def decode(bv: BitVector) = decodeBoth(codecA, codecB)(bv).map(_.map(_ *: _))
         override def toString = s"$codecA :: $codecB"
       }
+  }
 
   /**
     * `codecB :+ codecA` returns a new codec that encodes/decodes the tuple `B` followed by an `A`.
     * That is, this operator is a codec-level tuple append operation.
     * @group tuple
     */
-  extension [A, B <: Tuple](codecB: Codec[B])
+  extension [A, B <: Tuple](codecB: Codec[B]) {
     inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: EmptyTuple]] =
       codecB ++ codecA.tuple
+  }
 
   /**
     * Builds a `Codec[A ++ B]` from a `Codec[A]` and a `Codec[B]` where `A` and `B` are tuples.
@@ -457,7 +461,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     * @param codecA codec to concat
     * @group tuple
     */
-  extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
+  extension [A <: Tuple, B <: Tuple](codecA: Codec[A]) {
     inline def ++(codecB: Codec[B]): Codec[Tuple.Concat[A, B]] =
       new Codec[Tuple.Concat[A, B]] {
         def sizeBound = codecA.sizeBound + codecB.sizeBound
@@ -470,7 +474,8 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           decodeBoth(codecA, codecB)(bv).map(_.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]]))
           // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         override def toString = s"$codecA :: $codecB"
-      } 
+      }
+  }
 
   /**
     * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
@@ -478,7 +483,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     * returned from applying `A` to `f`.
     * @group tuple
     */
-  extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
+  extension [A <: Tuple, B <: Tuple](codecA: Codec[A]) {
     inline def flatConcat(f: A => Codec[B]): Codec[Tuple.Concat[A, B]] = new Codec[Tuple.Concat[A, B]] {
       def sizeBound = codecA.sizeBound.atLeast
       def encode(ab: Tuple.Concat[A, B]) = {
@@ -491,13 +496,14 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           f(a).decode(rem).map(_.map(b => a ++ b))
         }
     }
+  }
 
   /**
     * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
     * For example, {{{uint8 :: utf8}}} has type `Codec[(Int, Int)]`.
     * @group tuple
     */
-  extension [A, B](a: Codec[A])
+  extension [A, B](a: Codec[A]) {
     def ::(b: Codec[B])(using DummyImplicit): Codec[(A, B)] =
       new Codec[(A, B)] {
         def sizeBound = a.sizeBound + b.sizeBound
@@ -505,13 +511,14 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         def decode(bv: BitVector) = Codec.decodeBoth(a, b)(bv)
         override def toString = s"$a :: $b"
       }
+  }
 
   /**
     * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
     * This allows later parts of a tuple codec to be dependent on earlier values.
     * @group tuple
     */
-  extension [A, B <: Tuple](codecA: Codec[A])
+  extension [A, B <: Tuple](codecA: Codec[A]) {
     def flatPrepend(f: A => Codec[B]): Codec[A *: B] =
       new Codec[A *: B] {
         def sizeBound = codecA.sizeBound.atLeast
@@ -523,6 +530,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           } yield a *: l).decode(b)
         override def toString = s"flatPrepend($codecA, $f)"
       }
+  }
 
   /**
     * Supports building a `Codec[C]` where `C` is the tuple that results in removing
@@ -549,9 +557,10 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     * @tparam B type to remove from `A` and derive from the remaining elements
     * @group tuple
     */
-  extension [A <: Tuple, B](self: Codec[A])
+  extension [A <: Tuple, B](self: Codec[A]) {
     inline def deriveElement(f: TupleWithout[A, B] => B): Codec[TupleWithout[A, B]] =
       self.xmap(a => remove[A, B](a), c => insert[A, B](c, f(c)))
+  }
 
   private inline def remove[A <: Tuple, B](a: A): TupleWithout[A, B] = {
     val i = constValue[TupleIndexOf[A, B]]
@@ -774,8 +783,4 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     def [A, B](fa: Codec[A]).exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = 
       fa.exmap(f, g)
   }
-
-  given [A] as AnyRef:
-    extension [B](self: Codec[A])
-      def as(using t: Transformer[A, B]): Codec[B] = t(self)
 }

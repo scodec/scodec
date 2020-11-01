@@ -134,7 +134,7 @@ object ChecksumCodec {
   def xor(length: Long, range: Decoder[Long], padding: Long): Codec[BitVector] =
     apply(
       length,
-      (bits: BitVector) => bits.grouped(length).foldLeft(BitVector.low(length))(_.xor(_)),
+      (bits: BitVector) => BitVector.GroupedOp(bits).grouped(length).foldLeft(BitVector.low(length))(_.xor(_)),
       range,
       padding
     )

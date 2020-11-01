@@ -73,7 +73,7 @@ lazy val root = project
   .aggregate(testkitJVM, coreJVM, unitTests)
   .settings(noPublishSettings)
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core = crossProject(JVMPlatform)
   .in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(dottyLibrarySettings)
@@ -83,6 +83,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.20"
     ),
+    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
     buildInfoPackage := "scodec",
     buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
     Compile / unmanagedResources ++= {
@@ -105,11 +106,11 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
 
 lazy val coreJVM = core.jvm
 
-lazy val coreJS = core.js.settings(
-  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
-)
+//lazy val coreJS = core.js.settings(
+//  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+//)
 
-lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+lazy val testkit = crossProject(JVMPlatform)
   .settings(dottyLibrarySettings)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
@@ -119,13 +120,14 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .dependsOn(core % "compile->compile")
 
 lazy val testkitJVM = testkit.jvm
-lazy val testkitJS = testkit.js
+//lazy val testkitJS = testkit.js
 
 lazy val unitTests = project
   .settings(
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.67" % "test"
-    )
+    ),
+    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
   )
   .dependsOn(testkitJVM % "test->compile")
   .settings(noPublishSettings)
