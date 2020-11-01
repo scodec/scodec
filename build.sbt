@@ -132,7 +132,7 @@ lazy val unitTests = project
   .dependsOn(testkitJVM % "test->compile")
   .settings(noPublishSettings)
 
-lazy val benchmark = project
+lazy val benchmarks = project
   .dependsOn(coreJVM)
   .enablePlugins(JmhPlugin)
   .settings(noPublishSettings)
