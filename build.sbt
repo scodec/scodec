@@ -70,7 +70,7 @@ ThisBuild / mimaBinaryIssueFilters ++= Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(testkitJVM, coreJVM, unitTests)
+  .aggregate(testkitJVM, coreJVM, unitTests, benchmarks)
   .settings(noPublishSettings)
 
 lazy val core = crossProject(JVMPlatform)
