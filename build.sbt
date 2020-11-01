@@ -153,7 +153,7 @@ lazy val unitTests = project
   .settings(commonSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.66" % "test"
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.67" % "test"
     ),
     scalacOptions in (Test, console) ++= List("-Xprint:typer")
   )
