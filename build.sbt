@@ -81,7 +81,7 @@ lazy val core = crossProject(JVMPlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.20"
+      "org.scodec" %%% "scodec-bits" % "1.1.21"
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
     buildInfoPackage := "scodec",
@@ -115,7 +115,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.15"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.16"
   )
   .dependsOn(core % "compile->compile")
 
