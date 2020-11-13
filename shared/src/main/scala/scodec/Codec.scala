@@ -174,6 +174,9 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     */
   final def tuple: Codec[A *: EmptyTuple] = xmap(_ *: Tuple(), _.head)
 
+  @deprecated("Use .tuple instead", "2.0.0")
+  final def hlist: Codec[A *: EmptyTuple] = tuple
+
   /**
     * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
     * decodes a unit followed by a `B` and discards the decoded unit.
