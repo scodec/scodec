@@ -10,7 +10,7 @@ ThisBuild / baseVersion := "2.0"
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
 
-ThisBuild / homepage := Some(url("https://github.com/scodec/scodec-bits"))
+ThisBuild / homepage := Some(url("https://github.com/scodec/scodec"))
 ThisBuild / startYear := Some(2013)
 
 ThisBuild / crossScalaVersions := Seq("3.0.0-M1", "3.0.0-M2")
@@ -18,33 +18,15 @@ ThisBuild / crossScalaVersions := Seq("3.0.0-M1", "3.0.0-M2")
 ThisBuild / strictSemVer := false
 
 ThisBuild / versionIntroduced := Map(
-  "0.27.0-RC1" -> "2.0.99",
   "3.0.0-M1" -> "2.0.99",
   "3.0.0-M2" -> "2.0.99",
 )
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
 
-ThisBuild / githubWorkflowPublishTargetBranches := Seq(
-  RefPredicate.Equals(Ref.Branch("main")),
-  RefPredicate.StartsWith(Ref.Tag("v"))
-)
+ThisBuild / spiewakCiReleaseSnapshots := true
 
-ThisBuild / githubWorkflowEnv ++= Map(
-  "SONATYPE_USERNAME" -> s"$${{ secrets.SONATYPE_USERNAME }}",
-  "SONATYPE_PASSWORD" -> s"$${{ secrets.SONATYPE_PASSWORD }}",
-  "PGP_SECRET" -> s"$${{ secrets.PGP_SECRET }}"
-)
-
-ThisBuild / githubWorkflowTargetTags += "v*"
-
-ThisBuild / githubWorkflowPublishPreamble +=
-  WorkflowStep.Run(
-    List("echo $PGP_SECRET | base64 -d | gpg --import"),
-    name = Some("Import signing key")
-  )
-
-ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("release")))
+ThisBuild / spiewakMainBranches := List("main")
 
 ThisBuild / scmInfo := Some(
   ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")
@@ -71,10 +53,10 @@ ThisBuild / mimaBinaryIssueFilters ++= Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(testkitJVM, coreJVM, unitTests, benchmarks)
-  .settings(noPublishSettings)
+  .aggregate(testkitJVM, testkitJS, coreJVM, coreJS, unitTests, benchmarks)
+  .enablePlugins(NoPublishPlugin, SonatypeCiRelease)
 
-lazy val core = crossProject(JVMPlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform)
   .in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(dottyLibrarySettings)
@@ -107,11 +89,11 @@ lazy val core = crossProject(JVMPlatform)
 
 lazy val coreJVM = core.jvm.enablePlugins(SbtOsgi).settings(osgiSettings)
 
-//lazy val coreJS = core.js.settings(
-//  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
-//)
+lazy val coreJS = core.js.settings(
+  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+)
 
-lazy val testkit = crossProject(JVMPlatform)
+lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .settings(dottyLibrarySettings)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
@@ -121,7 +103,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .dependsOn(core % "compile->compile")
 
 lazy val testkitJVM = testkit.jvm
-//lazy val testkitJS = testkit.js
+lazy val testkitJS = testkit.js
 
 lazy val unitTests = project
   .settings(
@@ -135,10 +117,9 @@ lazy val unitTests = project
     }
   )
   .dependsOn(testkitJVM % "test->compile")
-  .settings(noPublishSettings)
+  .enablePlugins(NoPublishPlugin)
 
 lazy val benchmarks = project
   .dependsOn(coreJVM)
-  .enablePlugins(JmhPlugin)
-  .settings(noPublishSettings)
+  .enablePlugins(JmhPlugin, NoPublishPlugin)
 
