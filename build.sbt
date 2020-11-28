@@ -13,13 +13,14 @@ ThisBuild / organizationName := "Scodec"
 ThisBuild / homepage := Some(url("https://github.com/scodec/scodec-bits"))
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("0.27.0-RC1", "3.0.0-M1")
+ThisBuild / crossScalaVersions := Seq("3.0.0-M1", "3.0.0-M2")
 
 ThisBuild / strictSemVer := false
 
 ThisBuild / versionIntroduced := Map(
   "0.27.0-RC1" -> "2.0.99",
-  "3.0.0-M1" -> "2.0.99"
+  "3.0.0-M1" -> "2.0.99",
+  "3.0.0-M2" -> "2.0.99",
 )
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
@@ -81,7 +82,7 @@ lazy val core = crossProject(JVMPlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.21"
+      "org.scodec" %%% "scodec-bits" % "1.1.22"
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
     buildInfoPackage := "scodec",
@@ -115,7 +116,7 @@ lazy val testkit = crossProject(JVMPlatform)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.18"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.19"
   )
   .dependsOn(core % "compile->compile")
 
