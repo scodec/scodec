@@ -129,6 +129,10 @@ lazy val unitTests = project
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.67" % "test"
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
+    scalacOptions ++= {
+      if (scalaVersion.value == "3.0.0-M2") Seq("-language:experimental.genericNumberLiterals")
+      else Nil
+    }
   )
   .dependsOn(testkitJVM % "test->compile")
   .settings(noPublishSettings)
