@@ -112,8 +112,10 @@ lazy val unitTests = project
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
     scalacOptions ++= {
-      if (scalaVersion.value == "3.0.0-M2") Seq("-language:experimental.genericNumberLiterals")
-      else Nil
+      if (VersionNumber(scalaVersion.value).matchesSemVer(SemanticSelector(">=3.0.0-M2")))
+        Seq("-language:experimental.genericNumberLiterals")
+      else
+        Nil
     }
   )
   .dependsOn(testkitJVM % "test->compile")
