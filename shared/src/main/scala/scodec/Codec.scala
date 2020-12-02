@@ -726,7 +726,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   given [A](using ccount: Codec[Int], ca: Codec[A]): Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
   given [A](using cguard: Codec[Boolean], ca: Codec[A]): Codec[Option[A]] = codecs.optional(cguard, ca)
 
-  given Transform[Codec] {
+  given Transform[Codec] with {
     extension [A, B](fa: Codec[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] =
       fa.exmap(f, g)
   }
