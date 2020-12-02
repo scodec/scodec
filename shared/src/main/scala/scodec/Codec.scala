@@ -123,7 +123,7 @@ import scala.collection.mutable
   * of the `derives Codec` clause. Derivation of a codec for a case class requires each element of the case class to
   * have an implicitly available codec of the corresponding type. In this case, each element was an `Int` and there is
   * an implicit `Codec[Int]` in the companion of `Codec`.
-  * 
+  *
   * Derived codecs include the name of each element in any errors produced when encoding/decoding the element.
   *
   * This works similarly for ADTs / sealed class hierarchies. The binary form is represented as a single
@@ -138,7 +138,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
 
   /**
    * Transforms this codec to a `Codec[B]` if `A` is isomorphic to `B`.
-   * 
+   *
    * This is most commonly used to convert a tuple codec to a case class:
    * @example {{{
    * case class Point(x: Int, y: Int, z: Int)
@@ -542,7 +542,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     go(a).asInstanceOf[Codec[Tuple.InverseMap[A, Codec]]]
   }
 
-  inline given derivedTuple[A <: Tuple] as Codec[A] = new Codec[A] {
+  inline given derivedTuple[A <: Tuple]: Codec[A] = new Codec[A] {
     def sizeBound = sizeBoundElems[A]
     def encode(t: A) = encodeTuple[A](t, 0)
     def decode(b: BitVector) = {
@@ -722,9 +722,9 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   given Codec[ByteVector] = codecs.variableSizeBytesLong(codecs.int64, codecs.bytes)
   given Codec[java.util.UUID] = codecs.uuid
 
-  given [A](using ccount: Codec[Int], ca: Codec[A]) as Codec[List[A]] = codecs.listOfN(ccount, ca)
-  given [A](using ccount: Codec[Int], ca: Codec[A]) as Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
-  given [A](using cguard: Codec[Boolean], ca: Codec[A]) as Codec[Option[A]] = codecs.optional(cguard, ca)
+  given [A](using ccount: Codec[Int], ca: Codec[A]): Codec[List[A]] = codecs.listOfN(ccount, ca)
+  given [A](using ccount: Codec[Int], ca: Codec[A]): Codec[Vector[A]] = codecs.vectorOfN(ccount, ca)
+  given [A](using cguard: Codec[Boolean], ca: Codec[A]): Codec[Option[A]] = codecs.optional(cguard, ca)
 
   given Transform[Codec] {
     extension [A, B](fa: Codec[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Codec[B] =
