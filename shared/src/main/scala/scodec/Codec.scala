@@ -255,10 +255,6 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
      }
    }}}
     *
-    * Note that when `B` is a tuple, this method is equivalent to using `flatPrepend` and
-    * `deriveElement`. That is,
-    * `a.consume(f)(g) === a.flatPrepend(f).deriveElement(g)`.
-    *
     * @group combinators
     */
   final def consume[B](f: A => Codec[B])(g: B => A): Codec[B] = new Codec[B] {
@@ -533,64 +529,6 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           } yield a *: l).decode(b)
         override def toString = s"flatPrepend($codecA, $f)"
       }
-  }
-
-  /**
-    * Supports building a `Codec[C]` where `C` is the tuple that results in removing
-    * the first `B` from `A`.
-    *
-    * Example usage: {{{
-      case class Flags(x: Boolean, y: Boolean, z: Boolean)
-      val c = (bool :: bool :: bool :: ignore(5)).flatPrepend { flgs =>
-        conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
-      }
-      c.deriveElement { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
-    }}}
-    *
-    * This codec, the `Codec[A]`, is used for encoding/decoding. When decoding, the first value of type
-    * `A` is removed from the tuple.
-    *
-    * When encoding, the returned codec computes a `B` value using the supplied
-    * function and inserts the computed `B` in to the tuple `C`, yielding a tuple `A`. That tuple `A`
-    * is then encoded using the original codec.
-    *
-    * This method is called `deriveElement` because the value of type `B` is derived from the other elements
-    * of the tuple `A`.
-    *
-    * @tparam B type to remove from `A` and derive from the remaining elements
-    * @group tuple
-    */
-  extension [A <: Tuple, B](self: Codec[A]) {
-    inline def deriveElement(f: TupleWithout[A, B] => B): Codec[TupleWithout[A, B]] =
-      self.xmap(a => remove[A, B](a), c => insert[A, B](c, f(c)))
-  }
-
-  private inline def remove[A <: Tuple, B](a: A): TupleWithout[A, B] = {
-    val i = constValue[TupleIndexOf[A, B]]
-    val prefix = a.take(i)
-    val j = constValue[S[TupleIndexOf[A, B]]]
-    val suffix = a.drop(j)
-    (prefix ++ suffix).asInstanceOf[TupleWithout[A, B]]
-  }
-
-  private inline def insert[A <: Tuple, B](c: TupleWithout[A, B], b: B): A = {
-    val i = constValue[TupleIndexOf[A, B]]
-    val (prefix, suffix) = c.splitAt(i)
-    (prefix ++ (b *: suffix)).asInstanceOf[A]
-  }
-
-  type TupleWithout[A <: Tuple, B] <: Tuple = A match {
-    case hd *: tl => hd match {
-      case B => tl
-      case _ => hd *: TupleWithout[tl, B]
-    }
-  }
-
-  type TupleIndexOf[A <: Tuple, B] <: Int = A match {
-    case hd *: tl => hd match {
-      case B => 0
-      case _ => S[TupleIndexOf[tl, B]]
-    }
   }
 
   /**

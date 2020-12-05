@@ -85,27 +85,7 @@ class TupleCodecTest extends CodecSuite {
     roundtrip(c, (1, 2, 3))
   }
 
-  test("support removing an element of an tuple codec by type") {
-    val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
-    val valuesWithFlags = flagsCodec.flatPrepend { flgs =>
-      conditional(flgs.x, uint8) ::
-        conditional(flgs.y, uint8) ::
-        conditional(flgs.z, uint8)
-    }
-    val values = valuesWithFlags.deriveElement {
-      case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined)
-    }
-    assertEquals(values.encode(None, None, None), Attempt.successful(bin"00000000"))
-    assertEquals(values.encode(Some(1), Some(2), Some(3)), Attempt.successful(
-      bin"11100000 00000001 00000010 00000011"
-    ))
-    assertEquals(values.encode(Some(1), None, Some(3)), Attempt.successful(
-      bin"10100000 00000001 00000011"
-    ))
-    roundtrip(values, (Some(1), Some(2), None))
-  }
-
-  test("support alternative to flatPrepend+derive pattern that avoids intermediate codec shape") {
+  test("consume") {
     val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
     val values = flagsCodec.consume { flgs =>
       conditional(flgs.x, uint8) :: conditional(flgs.y, uint8) :: conditional(flgs.z, uint8)
