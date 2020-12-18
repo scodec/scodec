@@ -98,7 +98,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.19"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.20"
   )
   .dependsOn(core % "compile->compile")
 
