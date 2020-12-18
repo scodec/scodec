@@ -50,17 +50,17 @@ private trait IsoLowPriority {
       def from(b: B) = f(b)
     }
 
-  given inverse[A, B](using iso: Iso[A, B]) as Iso[B, A] = iso.inverse
+  given inverse[A, B](using iso: Iso[A, B]): Iso[B, A] = iso.inverse
 
-  inline given productWithUnits[A <: Tuple, B](using 
+  inline given productWithUnits[A <: Tuple, B](using
     m: Mirror.ProductOf[B],
     ev: m.MirroredElemTypes =:= DropUnits[A]
-  ) as Iso[A, B] = 
+  ): Iso[A, B] =
     instance((a: A) => fromTuple(DropUnits.drop(a)))(b => DropUnits.insert(toTuple(b)))
 
   protected def toTuple[A, B <: Tuple](a: A)(using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): B =
     Tuple.fromProduct(a.asInstanceOf[Product]).asInstanceOf[B]
-  
+
   protected def fromTuple[A, B <: Tuple](b: B)(using m: Mirror.ProductOf[A], ev: m.MirroredElemTypes =:= B): A =
     m.fromProduct(b.asInstanceOf[Product]).asInstanceOf[A]
 }
@@ -69,11 +69,11 @@ private trait IsoLowPriority {
 object Iso extends IsoLowPriority {
 
   /** Identity iso. */
-  given id[A] as Iso[A, A] = instance[A, A](identity)(identity)
+  given id[A]: Iso[A, A] = instance[A, A](identity)(identity)
 
-  given product[A <: Tuple, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A) as Iso[A, B] =
+  given product[A <: Tuple, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A): Iso[A, B] =
     instance[A, B](fromTuple)(toTuple)
 
-  given singleton[A, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A *: EmptyTuple) as Iso[A, B] =
+  given singleton[A, B](using m: Mirror.ProductOf[B], ev: m.MirroredElemTypes =:= A *: EmptyTuple): Iso[A, B] =
     instance[A, B](a => fromTuple(a *: EmptyTuple))(b => toTuple(b).head)
 }

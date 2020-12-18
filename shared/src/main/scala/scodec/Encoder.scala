@@ -217,7 +217,7 @@ object Encoder extends EncoderFunctions {
     def encode(value: A) = f(value)
   }
 
-  given Transform[Encoder] {
+  given Transform[Encoder] with {
     extension [A, B](fa: Encoder[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] =
       fa.econtramap(g)
   }
