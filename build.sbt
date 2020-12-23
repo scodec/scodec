@@ -108,7 +108,7 @@ lazy val testkitJS = testkit.js
 lazy val unitTests = project
   .settings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.67" % "test"
+      "org.bouncycastle" % "bcpkix-jdk15on" % "1.68" % "test"
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
     scalacOptions ++= {
