@@ -1791,7 +1791,7 @@ package object codecs {
     * @group tuples
     */
   object ~ extends Serializable {
-    def unapply[A, B](t: (A, B)): Option[(A, B)] = Some(t)
+    def unapply[A, B](t: (A, B)): Some[(A, B)] = Some(t)
   }
 
   /**
