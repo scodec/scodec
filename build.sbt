@@ -64,7 +64,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.23"
+      "org.scodec" %%% "scodec-bits" % "1.1.24"
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
     buildInfoPackage := "scodec",
