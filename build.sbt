@@ -13,13 +13,13 @@ ThisBuild / organizationName := "Scodec"
 ThisBuild / homepage := Some(url("https://github.com/scodec/scodec"))
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.0.0-M3")
+ThisBuild / crossScalaVersions := Seq("3.0.0-M3", "3.0.0-RC1")
 
 ThisBuild / strictSemVer := false
 
 ThisBuild / versionIntroduced := Map(
-  "3.0.0-M2" -> "2.0.99",
   "3.0.0-M3" -> "2.0.99",
+  "3.0.0-RC1" -> "2.0.99"
 )
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
