@@ -183,7 +183,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group tuple
     */
-  final def dropLeft[B](codecB: Codec[B])(implicit ev: Unit =:= A): Codec[B] =
+  final def dropLeft[B](codecB: Codec[B])(using ev: Unit =:= A): Codec[B] =
     (this :: codecB).xmap[B]({ (_, b) => b }, b => (ev(()), b))
 
   /**
@@ -193,7 +193,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     * Operator alias of [[dropLeft]].
     * @group tuple
     */
-  final def ~>[B](codecB: Codec[B])(implicit ev: Unit =:= A): Codec[B] = dropLeft(codecB)
+  final def ~>[B](codecB: Codec[B])(using Unit =:= A): Codec[B] = dropLeft(codecB)
 
   /**
     * Assuming `B` is `Unit`, creates a `Codec[A]` that: encodes the `A` followed by a unit;
@@ -201,7 +201,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group tuple
     */
-  final def dropRight[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] =
+  final def dropRight[B](codecB: Codec[B])(using ev: Unit =:= B): Codec[A] =
    (this :: codecB).xmap[A]({ (a, _) => a }, a => (a, ev(())))
 
   /**
@@ -211,7 +211,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     * Operator alias of [[dropRight]].
     * @group tuple
     */
-  final def <~[B](codecB: Codec[B])(implicit ev: Unit =:= B): Codec[A] = dropRight(codecB)
+  final def <~[B](codecB: Codec[B])(using Unit =:= B): Codec[A] = dropRight(codecB)
 
   /**
     * Converts this to a `Codec[Unit]` that encodes using the specified zero value and
@@ -285,7 +285,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def upcast[B >: A](implicit tt: reflect.TypeTest[B, A]): Codec[B] = new Codec[B] {
+  final def upcast[B >: A](using reflect.TypeTest[B, A]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = b match {
       case a: A => self.encode(a)
@@ -303,7 +303,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def downcast[B <: A](implicit tt: reflect.TypeTest[A, B]): Codec[B] = new Codec[B] {
+  final def downcast[B <: A](using reflect.TypeTest[A, B]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(b)
     def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
