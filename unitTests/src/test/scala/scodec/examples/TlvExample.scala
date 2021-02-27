@@ -31,10 +31,10 @@
 package scodec
 package examples
 
-import scodec.bits._
-import codecs._
+import scodec.bits.*
+import codecs.*
 
-class TlvExample extends CodecSuite {
+class TlvExample extends CodecSuite:
   // Example of implementing type-length-value encodings.
   // See http://en.wikipedia.org/wiki/Type-length-value for more information on TLV.
   //
@@ -53,12 +53,11 @@ class TlvExample extends CodecSuite {
   //
   // Unrecognized commands must be decoded.
 
-  enum Command {
+  enum Command:
     case Go
     case Stop
     case TurnLeft(degress: Int)
     case TurnRight(degress: Int)
-  }
 
   case class UnrecognizedCommand(commandType: Int, data: BitVector)
 
@@ -98,4 +97,3 @@ class TlvExample extends CodecSuite {
     ))
     roundtrip(list(codec), List(Right(Command.TurnRight(180)), Right(Command.Go), Right(Command.Stop)))
   }
-}

@@ -31,10 +31,10 @@
 package scodec
 package examples
 
-import scodec.bits._
-import codecs._
+import scodec.bits.*
+import codecs.*
 
-class DerivedCodecsExample extends CodecSuite {
+class DerivedCodecsExample extends CodecSuite:
 
   test("enums - explicit") {
     enum Color derives Codec { case Red, Green, Blue }
@@ -56,18 +56,16 @@ class DerivedCodecsExample extends CodecSuite {
   case class Geiling(name: String, sprockets: Vector[Sprocket]) derives Codec
 
   sealed trait ColorT
-  object ColorT {
+  object ColorT:
     case object Red extends ColorT
     case object Yellow extends ColorT
     case object Green extends ColorT
 
     given Codec[ColorT] = mappedEnum(uint8, Red -> 0, Yellow -> 1, Green -> 2)
-  }
 
   case class Point(x: Int, y: Int, z: Int)
-  object Point {
+  object Point:
     given Codec[Point] = (uint8 :: uint8 :: uint8).as[Point]
-  }
 
   test("demonstrate deriving a codec for a case class") {
     // Codecs can be derived automatically for case classes where each component
@@ -107,4 +105,3 @@ class DerivedCodecsExample extends CodecSuite {
     assertEquals(Codec[ColorT].encode(ColorT.Green).require, hex"02".bits)
     assertEquals(Codec[Point].encode(Point(1, 2, 3)).require.size, 24L)
   }
-}

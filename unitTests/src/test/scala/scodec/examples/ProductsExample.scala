@@ -31,10 +31,10 @@
 package scodec
 package examples
 
-import scodec.bits._
-import codecs._
+import scodec.bits.*
+import codecs.*
 
-class ProductsExample extends CodecSuite {
+class ProductsExample extends CodecSuite:
 
   case class Woozle(count: Int, strength: Int) derives Codec
   case class Wocket(size: Int, inverted: Boolean) derives Codec
@@ -125,4 +125,3 @@ class ProductsExample extends CodecSuite {
     val v = (Some(1), Some(1L), Some("Hi"))
     assertEquals(codec.encode(v).require, bin"11100000" ++ hex"010000000000000001000000024869".bits)
   }
-}

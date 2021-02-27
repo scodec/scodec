@@ -96,17 +96,16 @@ trait Decoder[+A] { self =>
     */
   def complete: Decoder[A] = new Decoder[A] {
     def decode(bits: BitVector) = self.decode(bits).flatMap { result =>
-      if (result.remainder.isEmpty) Attempt.successful(result)
-      else {
+      if result.remainder.isEmpty then Attempt.successful(result)
+      else
         val rem = result.remainder
         Attempt.failure {
           val max = 512L
-          if (rem.sizeLessThan(max + 1)) {
+          if rem.sizeLessThan(max + 1) then
             val preview = rem.take(max)
             Err(s"${preview.size} bits remaining: 0x${preview.toHex}")
-          } else Err(s"more than $max bits remaining")
+          else Err(s"more than $max bits remaining")
         }
-      }
     }
   }
 
@@ -135,20 +134,17 @@ trait Decoder[+A] { self =>
     */
   final def decodeAll[B](
       f: A => B
-  )(zero: B, append: (B, B) => B)(buffer: BitVector): (Option[Err], B) = {
+  )(zero: B, append: (B, B) => B)(buffer: BitVector): (Option[Err], B) =
     var remaining = buffer
     var acc = zero
-    while (remaining.nonEmpty) {
-      decode(remaining) match {
+    while remaining.nonEmpty do
+      decode(remaining) match
         case Attempt.Successful(DecodeResult(a, newRemaining)) =>
           remaining = newRemaining
           acc = append(acc, f(a))
         case Attempt.Failure(cause) =>
           return (Some(cause), acc)
-      }
-    }
     (None, acc)
-  }
 
   /**
     * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
@@ -158,14 +154,14 @@ trait Decoder[+A] { self =>
     */
   def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(
       implicit factory: Factory[A2, F[A2]]
-  ): Attempt[DecodeResult[F[A2]]] = {
+  ): Attempt[DecodeResult[F[A2]]] =
     val bldr = factory.newBuilder
     var remaining = buffer
     var count = 0
     val maxCount = limit.getOrElse(Int.MaxValue)
     var error: Option[Err] = None
-    while (count < maxCount && remaining.nonEmpty) {
-      decode(remaining) match {
+    while count < maxCount && remaining.nonEmpty do
+      decode(remaining) match
         case Attempt.Successful(DecodeResult(value, rest)) =>
           bldr += value
           count += 1
@@ -173,10 +169,7 @@ trait Decoder[+A] { self =>
         case Attempt.Failure(err) =>
           error = Some(err.pushContext(count.toString))
           remaining = BitVector.empty
-      }
-    }
     Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
-  }
 }
 
 /**
@@ -185,7 +178,7 @@ trait Decoder[+A] { self =>
   * @groupname conv Conveniences
   * @groupprio conv 2
   */
-trait DecoderFunctions {
+trait DecoderFunctions:
 
   /**
     * Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`.
@@ -214,21 +207,17 @@ trait DecoderFunctions {
     * @group conv
     */
   final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
-    def decode(buffer: BitVector) = {
+    def decode(buffer: BitVector) =
       @annotation.tailrec
-      def go(rem: List[Decoder[A]], errs: List[Err]): Attempt[DecodeResult[A]] = rem match {
+      def go(rem: List[Decoder[A]], errs: List[Err]): Attempt[DecodeResult[A]] = rem match
         case Nil => Attempt.failure(Err(errs.reverse))
         case hd :: tl =>
-          hd.decode(buffer) match {
+          hd.decode(buffer) match
             case res @ Attempt.Successful(_) => res
             case Attempt.Failure(err)        => go(tl, err :: errs)
-          }
-      }
-      if (decoders.isEmpty) Attempt.failure(Err("no decoders provided"))
+      if decoders.isEmpty then Attempt.failure(Err("no decoders provided"))
       else go(decoders.toList, Nil)
-    }
   }
-}
 
 /**
   * Companion for [[Decoder]].
@@ -239,7 +228,7 @@ trait DecoderFunctions {
   * @groupname inst Typeclass Instances
   * @groupprio inst 3
   */
-object Decoder extends DecoderFunctions {
+object Decoder extends DecoderFunctions:
 
   inline def apply[A](using d: Decoder[A]): Decoder[A] = d
 
@@ -296,12 +285,9 @@ object Decoder extends DecoderFunctions {
     override def toString = s"modify"
   }
 
-  given Transform[Decoder] with {
+  given Transform[Decoder] with
     extension [A, B](fa: Decoder[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
       fa.emap(f)
-  }
 
-  implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal {
+  implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal:
     def as[B](using iso: Iso[A, B]): Decoder[B] = self.map(iso.to)
-  }
-}

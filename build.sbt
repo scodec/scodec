@@ -63,6 +63,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       "org.scodec" %%% "scodec-bits" % "1.1.24"
     ),
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
+    Test / scalacOptions := (Compile / scalacOptions).value,
     Compile / unmanagedResources ++= {
       val base = baseDirectory.value
       (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get

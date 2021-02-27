@@ -30,7 +30,7 @@
 
 package scodec
 
-class SizeBoundTest extends CodecSuite {
+class SizeBoundTest extends CodecSuite:
 
   test("support addition of bounds") {
     assertEquals(SizeBound.exact(1) + SizeBound.exact(2), SizeBound.exact(3))
@@ -62,4 +62,3 @@ class SizeBoundTest extends CodecSuite {
   test("prevent creation of non-sensical bounds") {
     intercept[IllegalArgumentException] { SizeBound(1, Some(0)) }
   }
-}

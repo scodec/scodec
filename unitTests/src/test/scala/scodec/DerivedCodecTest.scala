@@ -30,10 +30,10 @@
 
 package scodec
 
-import scodec.bits._
-import scodec.codecs._
+import scodec.bits.*
+import scodec.codecs.*
 
-class DerivedCodecTest extends CodecSuite {
+class DerivedCodecTest extends CodecSuite:
 
   sealed trait Parent derives Codec
   case class Foo(x: Int, y: Int, s: String) extends Parent derives Codec
@@ -88,4 +88,3 @@ class DerivedCodecTest extends CodecSuite {
   test("derivation of recursive ADTs") {
     roundtrip(Codec[Tree[Int]], Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
   }
-}

@@ -33,12 +33,12 @@ package examples
 
 import scodec.bits.ByteVector
 
-class UdpDatagramExample extends CodecSuite {
+class UdpDatagramExample extends CodecSuite:
 
   case class Datagram(sourcePort: Int, destinationPort: Int, checksum: Int, data: ByteVector)
 
-  object Datagram {
-    import scodec.codecs._
+  object Datagram:
+    import scodec.codecs.*
 
     given Codec[Datagram] = {
       ("source_port" | uint16) ::
@@ -49,9 +49,7 @@ class UdpDatagramExample extends CodecSuite {
             ("data" | bytes)
         )
     }.as[Datagram]
-  }
 
   test("Datagram codec") {
     roundtrip(Datagram(1234, 2345, 0, ByteVector.fill(0xff)(100)))
   }
-}

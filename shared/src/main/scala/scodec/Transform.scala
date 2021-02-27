@@ -31,7 +31,7 @@
 package scodec
 
 /** Typeclass that describes type constructors that support the `exmap` operation. */
-trait Transform[F[_]] {
+trait Transform[F[_]]:
 
   /**
     * Transforms supplied `F[A]` to an `F[B]` using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
@@ -76,4 +76,3 @@ trait Transform[F[_]] {
       a => Attempt.successful(f(a)),
       b => Attempt.fromOption(g(b), Err(s"widening failed: $b"))
     )
-}

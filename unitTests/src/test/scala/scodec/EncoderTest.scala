@@ -30,10 +30,10 @@
 
 package scodec
 
-import scodec.bits._
-import scodec.codecs._
+import scodec.bits.*
+import scodec.codecs.*
 
-class EncoderTest extends CodecSuite {
+class EncoderTest extends CodecSuite:
 
   test("as") {
     case class Foo(x: Int)
@@ -41,4 +41,3 @@ class EncoderTest extends CodecSuite {
     val b: Encoder[Foo] = a.as[Foo]
     assertEquals(b.encode(Foo(255)), Attempt.successful(hex"ff".bits))
   }
-}

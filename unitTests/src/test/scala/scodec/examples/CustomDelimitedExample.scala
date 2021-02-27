@@ -31,8 +31,8 @@
 package scodec
 package examples
 
-import scodec.bits._
-import scodec.codecs._
+import scodec.bits.*
+import scodec.codecs.*
 
 /**
   * Demonstrates a `List[A]` codec that:
@@ -40,7 +40,7 @@ import scodec.codecs._
   *  - surrounds the list with a leading 0x22 and trailing 0x22
   *  - list entires may not contain the specified reserved byte
   */
-class CustomDelimitedExample extends CodecSuite {
+class CustomDelimitedExample extends CodecSuite:
 
   def byteDelimited[A](value: Codec[A], delimiter: Byte): Codec[List[A]] = new Codec[List[A]] {
     def sizeBound = SizeBound.unknown
@@ -54,19 +54,16 @@ class CustomDelimitedExample extends CodecSuite {
           Attempt.successful(())
       } yield x ++ BitVector(delimiter) ++ y
     }
-    def decode(b: BitVector) = {
+    def decode(b: BitVector) =
       def go(acc: List[A], remainder: BitVector): Attempt[DecodeResult[List[A]]] =
         if (remainder.isEmpty) Attempt.successful(DecodeResult(acc.reverse, remainder))
-        else {
+        else
           val nextValue = remainder.bytes.takeWhile(_ != delimiter).bits
-          value.decode(nextValue) match {
+          value.decode(nextValue) match
             case Attempt.Successful(DecodeResult(a, newRemainder)) =>
               go(a :: acc, remainder.bytes.drop(nextValue.bytes.size + 1).bits)
             case f: Attempt.Failure => f
-          }
-        }
       go(Nil, b)
-    }
   }
 
   def quoted[A](inner: Codec[A]): Codec[A] = new Codec[A] {
@@ -107,4 +104,3 @@ class CustomDelimitedExample extends CodecSuite {
       )
     ))
   }
-}

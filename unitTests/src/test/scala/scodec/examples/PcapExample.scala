@@ -31,7 +31,7 @@
 package scodec
 package examples
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 import scodec.bits.BitVector
 
@@ -40,8 +40,8 @@ import scodec.bits.BitVector
   *
   * @see http://wiki.wireshark.org/Development/LibpcapFileFormat
   */
-object PcapCodec {
-  import scodec.codecs._
+object PcapCodec:
+  import scodec.codecs.*
 
   enum ByteOrdering { case BigEndian, LittleEndian }
 
@@ -92,9 +92,8 @@ object PcapCodec {
       timestampMicros: Long,
       includedLength: Long,
       originalLength: Long
-  ) {
+  ):
     def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
-  }
 
   def pcapRecordHeader(using ordering: ByteOrdering) = {
     ("ts_sec" | guint32) ::
@@ -114,11 +113,10 @@ object PcapCodec {
   case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
 
   val pcapFile = pcapHeader.flatZip(hdr => vector(pcapRecord(using hdr.ordering))).as[PcapFile]
-}
 
-class PcapExample extends CodecSuite {
+class PcapExample extends CodecSuite:
 
-  import PcapCodec._
+  import PcapCodec.*
 
   def bits = BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel.nn)
 
@@ -139,4 +137,3 @@ class PcapExample extends CodecSuite {
 
   // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
   // See scodec-stream library at https://github.com/scodec/scodec-stream
-}

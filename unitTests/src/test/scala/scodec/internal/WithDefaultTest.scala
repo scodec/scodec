@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2013, Scodec
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package scodec
+package internal
+
+import org.scalacheck.Prop.forAll
+import scodec.bits.BitVector
+import scodec.codecs.*
+
+class WithDefaultTest extends CodecSuite:
+
+  property("decode with fallback codec when opt codec returns none") {
+    forAll { (n: Int) =>
+      val codec = withDefault(conditional(false, int8), int32)
+      shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
+    }
+  }
+
+  property("return result of opt codec when it returns some from decode") {
+    forAll { (n: Int) =>
+      val codec = withDefault(conditional(true, int32), int8)
+      shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
+    }
+  }
+
+  property("return the default value when the opt codec returns none") {
+    forAll { (n: Int) =>
+      val codec = withDefaultValue(conditional(false, int8), n)
+      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(n)): @unchecked
+      assertEquals(rest, (BitVector.fromInt(n)))
+      assertEquals(b, n)
+    }
+  }
+
+  property("return result of opt codec when it returns some from decode") {
+    forAll { (n: Int) =>
+      val codec = withDefaultValue(conditional(true, int32), n)
+      shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
+    }
+  }

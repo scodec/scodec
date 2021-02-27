@@ -45,7 +45,7 @@ import scala.util.control.NonFatal
   * @groupname combinators Basic Combinators
   * @groupprio combinators 0
   */
-sealed abstract class Attempt[+A] extends Product, Serializable {
+sealed abstract class Attempt[+A] extends Product, Serializable:
 
   /** Maps the supplied function over the successful value, if present. */
   def map[B](f: A => B): Attempt[B]
@@ -99,10 +99,9 @@ sealed abstract class Attempt[+A] extends Product, Serializable {
 
   /** Converts to a try. */
   def toTry: Try[A]
-}
 
 /** Companion for [[Attempt]]. */
-object Attempt {
+object Attempt:
 
   /** Creates a successful attempt. */
   def successful[A](a: A): Attempt[A] = Successful(a)
@@ -112,11 +111,11 @@ object Attempt {
 
   /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt. */
   def guard(condition: => Boolean, err: String): Attempt[Unit] =
-    if (condition) successful(()) else failure(Err(err))
+    if condition then successful(()) else failure(Err(err))
 
   /** Creates a successful attempt if the condition succeeds otherwise create a unsuccessful attempt. */
   def guard(condition: => Boolean, err: => Err): Attempt[Unit] =
-    if (condition) successful(()) else failure(err)
+    if condition then successful(()) else failure(err)
 
   /** Creates a attempt from a try. */
   def fromTry[A](t: Try[A]): Attempt[A] = t.fold(e => failure(Err.fromThrowable(e)), successful)
@@ -134,7 +133,7 @@ object Attempt {
     e.fold(failure, successful)
 
   /** Successful attempt. */
-  final case class Successful[A](value: A) extends Attempt[A] {
+  final case class Successful[A](value: A) extends Attempt[A]:
     def map[B](f: A => B): Attempt[B] = Successful(f(value))
     def mapErr(f: Err => Err): Attempt[A] = this
     def flatMap[B](f: A => Attempt[B]): Attempt[B] = f(value)
@@ -149,10 +148,9 @@ object Attempt {
     def toOption: Some[A] = Some(value)
     def toEither: Right[Err, A] = Right(value)
     def toTry: Try[A] = scala.util.Success(value)
-  }
 
   /** Failed attempt. */
-  final case class Failure(cause: Err) extends Attempt[Nothing] {
+  final case class Failure(cause: Err) extends Attempt[Nothing]:
     def map[B](f: Nothing => B): Attempt[B] = this
     def mapErr(f: Err => Err): Attempt[Nothing] = Failure(f(cause))
     def flatMap[B](f: Nothing => Attempt[B]): Attempt[B] = this
@@ -161,10 +159,10 @@ object Attempt {
     def getOrElse[B >: Nothing](default: => B): B = default
     def orElse[B >: Nothing](fallback: => Attempt[B]) = fallback
     def recover[B >: Nothing](f: PartialFunction[Err, B]): Attempt[B] =
-      if (f.isDefinedAt(cause)) Attempt.successful(f(cause))
+      if f.isDefinedAt(cause) then Attempt.successful(f(cause))
       else this
     def recoverWith[B >: Nothing](f: PartialFunction[Err, Attempt[B]]): Attempt[B] =
-      if (f.isDefinedAt(cause)) f(cause)
+      if f.isDefinedAt(cause) then f(cause)
       else this
     def require: Nothing = throw new IllegalArgumentException(cause.messageWithContext)
     def isSuccessful: Boolean = false
@@ -172,5 +170,3 @@ object Attempt {
     def toEither: Left[Err, Nothing] = Left(cause)
     def toTry: Try[Nothing] =
       scala.util.Failure(new Exception(s"Error occurred: ${cause.messageWithContext}"))
-  }
-}

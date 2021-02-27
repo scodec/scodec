@@ -30,11 +30,11 @@
 
 package scodec
 
-import scodec.bits._
-import scodec.codecs._
+import scodec.bits.*
+import scodec.codecs.*
 import org.scalacheck.Prop.forAll
 
-class CodecTest extends CodecSuite {
+class CodecTest extends CodecSuite:
   sealed trait Parent
   case class Foo(x: Int, y: Int, s: String) extends Parent
   case class Bar(x: Int) extends Parent
@@ -136,33 +136,29 @@ class CodecTest extends CodecSuite {
     }
   }
 
-  {
-    val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
-    test("decodeOnly - decodes successfully") {
-      assertEquals(char8.decode(BitVector(0x61)), Attempt.successful(DecodeResult('a', BitVector.empty)))
-    }
-    test("fails to encode") {
-      assertEquals(char8.encode('a'), Attempt.failure(Err("encoding not supported")))
-    }
+  val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
+  test("decodeOnly - decodes successfully") {
+    assertEquals(char8.decode(BitVector(0x61)), Attempt.successful(DecodeResult('a', BitVector.empty)))
+  }
+  test("fails to encode") {
+     assertEquals(char8.encode('a'), Attempt.failure(Err("encoding not supported")))
   }
 
-  {
-    trait A
-    case class B(x: Int) extends A
-    case class C(x: Int) extends A
-    val codec: Codec[A] = uint8.xmap[B](B.apply, _.x).upcast[A]
-    test("upcast - roundtrip values of original type") {
-      roundtrip(codec, B(0))
-    }
-    test("upcast - return an error from encode if passed a different subtype of target type") {
-      assertEquals(codec.encode(C(0)).isFailure, true)
-    }
-    test("upcast - work in presence of nested objects/classes") {
-      object X { object Y }
-      val c = provide(X).upcast[Any]
-      assertEquals(c.encode(X), Attempt.successful(BitVector.empty))
-      assert(c.encode(X.Y).isFailure)
-    }
+  trait A
+  case class B(x: Int) extends A
+  case class C(x: Int) extends A
+  val codec: Codec[A] = uint8.xmap[B](B.apply, _.x).upcast[A]
+  test("upcast - roundtrip values of original type") {
+    roundtrip(codec, B(0))
+  }
+  test("upcast - return an error from encode if passed a different subtype of target type") {
+    assertEquals(codec.encode(C(0)).isFailure, true)
+  }
+  test("upcast - work in presence of nested objects/classes") {
+    object X { object Y }
+    val c = provide(X).upcast[Any]
+    assertEquals(c.encode(X), Attempt.successful(BitVector.empty))
+    assert(c.encode(X.Y).isFailure)
   }
 
   {
@@ -189,4 +185,3 @@ class CodecTest extends CodecSuite {
       assert(c.decodeValue(hex"01".bits).isFailure)
     }
   }
-}
