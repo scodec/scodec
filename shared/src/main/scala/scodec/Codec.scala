@@ -422,7 +422,8 @@ object Codec extends EncoderFunctions, DecoderFunctions {
       }
       def decode(bv: BitVector) =
         codecA.decode(bv).flatMap { case DecodeResult(a, rem) =>
-          f(a).decode(rem).map(_.map(b => (a ++ (b *: EmptyTuple))))
+          f(a).decode(rem).map(_.map(b => (a ++ (b *: EmptyTuple)): Tuple.Concat[A, B *: EmptyTuple]))
+          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         }
     }
   }
@@ -469,7 +470,8 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           encodeBoth(codecA, codecB)(prefix.asInstanceOf[A], suffix.asInstanceOf[B])
         }
         def decode(bv: BitVector) =
-          decodeBoth(codecA, codecB)(bv).map(_.map((a: A, b: B) => (a ++ b)))
+          decodeBoth(codecA, codecB)(bv).map(_.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]]))
+          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         override def toString = s"$codecA :: $codecB"
       }
   }
