@@ -30,7 +30,7 @@
 
 package scodec.codecs
 
-import scodec._
+import scodec.*
 import scodec.bits.{BitVector, ByteVector}
 
 /**

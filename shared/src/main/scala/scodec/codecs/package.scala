@@ -711,7 +711,7 @@ package object codecs {
     * @param bits constant bits
     * @group bits
     */
-  def constant[A: Integral](bits: A*): Codec[Unit] = constant(BitVector(bits: _*))
+  def constant[A: Integral](bits: A*): Codec[Unit] = constant(BitVector(bits*))
 
   /**
     * Codec that always encodes the specified bits and always decodes n bits, returning `()`, where n is the length of the
@@ -735,7 +735,7 @@ package object codecs {
     * @param bits constant bits
     * @group bits
     */
-  def constantLenient[A: Integral](bits: A*): Codec[Unit] = constantLenient(BitVector(bits: _*))
+  def constantLenient[A: Integral](bits: A*): Codec[Unit] = constantLenient(BitVector(bits*))
 
   /**
     * Codec that limits the number of bits the specified codec works with.
@@ -1319,8 +1319,8 @@ package object codecs {
     */
   def choice[A](codecs: Codec[A]*): Codec[A] =
     Codec(
-      Encoder.choiceEncoder(codecs: _*),
-      Decoder.choiceDecoder(codecs: _*)
+      Encoder.choiceEncoder(codecs*),
+      Decoder.choiceDecoder(codecs*)
     ).withToString(codecs.mkString("choice(", ", ", ")"))
 
   /**

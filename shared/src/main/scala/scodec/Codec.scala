@@ -30,8 +30,8 @@
 
 package scodec
 
-import scala.deriving._
-import scala.compiletime._
+import scala.deriving.*
+import scala.compiletime.*
 
 import scodec.bits.{BitVector, ByteVector}
 import scala.collection.mutable

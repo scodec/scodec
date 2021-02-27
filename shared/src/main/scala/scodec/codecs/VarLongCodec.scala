@@ -39,7 +39,7 @@ import scodec.bits.{BitVector, ByteOrdering}
 import scala.annotation.tailrec
 
 private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long] {
-  import VarLongCodec._
+  import VarLongCodec.*
 
   override def sizeBound = SizeBound.bounded(1L, 9L)
 

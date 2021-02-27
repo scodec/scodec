@@ -30,7 +30,7 @@
 
 package scodec
 
-import scala.compiletime._
+import scala.compiletime.*
 
 /** The tuple which is the result of removing all 'Unit' types from the tuple 'A'. */
 type DropUnits[A <: Tuple] <: Tuple = A match {

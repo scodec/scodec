@@ -13,14 +13,11 @@ ThisBuild / organizationName := "Scodec"
 ThisBuild / homepage := Some(url("https://github.com/scodec/scodec"))
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.0.0-M3", "3.0.0-RC1")
+ThisBuild / crossScalaVersions := Seq("3.0.0-RC1")
 
 ThisBuild / strictSemVer := false
 
-ThisBuild / versionIntroduced := Map(
-  "3.0.0-M3" -> "2.0.99",
-  "3.0.0-RC1" -> "2.0.99"
-)
+ThisBuild / versionIntroduced := Map.empty
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
 
@@ -58,7 +55,6 @@ lazy val root = project
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .in(file("."))
-  .enablePlugins(BuildInfoPlugin)
   .settings(dottyLibrarySettings)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
@@ -66,9 +62,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.24"
     ),
-    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
-    buildInfoPackage := "scodec",
-    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
+    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
     Compile / unmanagedResources ++= {
       val base = baseDirectory.value
       (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get

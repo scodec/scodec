@@ -32,7 +32,7 @@ package scodec.codecs
 
 import scala.collection.Factory
 
-import scodec._
+import scodec.*
 import scodec.bits.BitVector
 
 /**
