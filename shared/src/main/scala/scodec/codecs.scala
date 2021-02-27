@@ -1678,8 +1678,8 @@ object codecs:
     * @param cipherFactory factory to use for encryption/decryption
     * @group crypto
     */
-  def encrypted[A](codec: Codec[A])(using cipherFactory: CipherFactory): Codec[A] =
-    new CipherCodec(codec)(cipherFactory)
+  def encrypted[A](codec: Codec[A], cipherFactory: CipherFactory): Codec[A] =
+    new CipherCodec(codec, cipherFactory)
 
   /**
     * Codec that includes a signature of the encoded bits.
@@ -1705,8 +1705,8 @@ object codecs:
     */
   def fixedSizeSignature[A](
       size: Int
-  )(codec: Codec[A])(implicit signerFactory: SignerFactory): Codec[A] =
-    new SignatureCodec(codec, fixedSizeBytes(size.toLong, codecs.bits))(signerFactory)
+  )(codec: Codec[A], signerFactory: SignerFactory): Codec[A] =
+    new SignatureCodec(codec, fixedSizeBytes(size.toLong, codecs.bits), signerFactory)
 
   /**
     * Codec that includes a signature of the encoded bits.
@@ -1723,8 +1723,8 @@ object codecs:
     */
   def variableSizeSignature[A](
       size: Codec[Int]
-  )(codec: Codec[A])(implicit signerFactory: SignerFactory): Codec[A] =
-    new SignatureCodec(codec, variableSizeBytes(size, bits))(signerFactory)
+  )(codec: Codec[A], signerFactory: SignerFactory): Codec[A] =
+    new SignatureCodec(codec, variableSizeBytes(size, bits), signerFactory)
 
   /**
     * Codec that encodes/decodes certificates using their default encoding.

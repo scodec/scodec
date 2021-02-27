@@ -86,7 +86,7 @@ sealed trait MultiplexedCodec:
     */
   final def decode[F[_], A](dec: Decoder[A], deMux: BitVector => (BitVector, BitVector))(
       buffer: BitVector
-  )(implicit cbf: Factory[A, F[A]]): Attempt[DecodeResult[F[A]]] =
+  )(using cbf: Factory[A, F[A]]): Attempt[DecodeResult[F[A]]] =
     val builder = cbf.newBuilder
     var temp = deMux(buffer)
     var count = 0

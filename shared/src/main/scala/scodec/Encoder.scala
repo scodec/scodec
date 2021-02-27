@@ -145,7 +145,7 @@ trait Encoder[-A]:
 trait EncoderFunctions:
 
   /**
-   * Encodes the specified value using the implicit `Encoder[A]`.
+   * Encodes the specified value using the given `Encoder[A]`.
    * @group conv
    */
   final def encode[A](a: A)(using encA: Encoder[A]): Attempt[BitVector] =

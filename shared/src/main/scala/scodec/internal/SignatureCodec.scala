@@ -141,8 +141,8 @@ object SignatureFactory:
 
 
 /** @see [[fixedSizeSignature]] and [[variableSizeSignature]] */
-private[scodec] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector])(
-    implicit signerFactory: SignerFactory
+private[scodec] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector],
+    signerFactory: SignerFactory
 ) extends Codec[A]:
 
   override def sizeBound = codec.sizeBound + signatureCodec.sizeBound

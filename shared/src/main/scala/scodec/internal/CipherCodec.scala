@@ -40,7 +40,7 @@ import scodec.bits.BitVector
 /**
   * Represents the ability to create a `Cipher` for encryption or decryption.
   *
-  * Used in conjunction with [[encrypted]]. Typically provided implicitly to all encryption codecs in a larger codec.
+  * Used in conjunction with [[encrypted]].
   *
   * @group crypto
   */
@@ -113,7 +113,7 @@ object CipherFactory:
 
 
 /** @see [[encrypted]] */
-private[scodec] final class CipherCodec[A](codec: Codec[A])(implicit cipherFactory: CipherFactory)
+private[scodec] final class CipherCodec[A](codec: Codec[A], cipherFactory: CipherFactory)
     extends Codec[A]:
 
   override def sizeBound = SizeBound.unknown

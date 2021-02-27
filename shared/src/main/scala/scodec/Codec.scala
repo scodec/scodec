@@ -119,10 +119,10 @@ import scala.collection.mutable
   case class Point(x: Int, y: Int, z: Int) derives Codec
   Codec[Point].encode(Point(1, 2, 3))
  }}}
-  * In this example, no explicit codec was defined for `Point` and instead, an implicit one was derived as a result
+  * In this example, no explicit codec was defined for `Point` and instead, one was derived as a result
   * of the `derives Codec` clause. Derivation of a codec for a case class requires each element of the case class to
-  * have an implicitly available codec of the corresponding type. In this case, each element was an `Int` and there is
-  * an implicit `Codec[Int]` in the companion of `Codec`.
+  * have a given codec of the corresponding type. In this case, each element was an `Int` and there is
+  * a `Codec[Int]` given in the companion of `Codec`.
   *
   * Derived codecs include the name of each element in any errors produced when encoding/decoding the element.
   *

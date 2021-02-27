@@ -153,7 +153,7 @@ trait Decoder[+A] { self =>
     * @group conv
     */
   def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(
-      implicit factory: Factory[A2, F[A2]]
+      using factory: Factory[A2, F[A2]]
   ): Attempt[DecodeResult[F[A2]]] =
     val bldr = factory.newBuilder
     var remaining = buffer

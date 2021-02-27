@@ -49,12 +49,12 @@ class CipherCodecTest extends CodecSuite:
   private val iv = new IvParameterSpec(ByteVector.low(16).toArray)
 
   property("roundtrip with AES/ECB/PKCS5Padding") {
-    testWithCipherFactory(using CipherFactory("AES/ECB/PKCS5Padding", secretKey))
+    testWithCipherFactory(CipherFactory("AES/ECB/PKCS5Padding", secretKey))
   }
   property("roundtrip with AES/CBC/PKCS5Padding") {
-    testWithCipherFactory(using CipherFactory("AES/CBC/PKCS5Padding", secretKey, iv))
+    testWithCipherFactory(CipherFactory("AES/CBC/PKCS5Padding", secretKey, iv))
   }
 
-  protected def testWithCipherFactory(using CipherFactory) =
-    val codec = encrypted { int32 :: utf8 }
+  protected def testWithCipherFactory(cipherFactory: CipherFactory) =
+    val codec = encrypted(int32 :: utf8, cipherFactory)
     forAll((n: Int, s: String) => roundtrip(codec, (n, s)))
