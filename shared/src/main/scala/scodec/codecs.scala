@@ -557,7 +557,7 @@ object codecs:
   }
 
   /**
-    * String codec that uses the implicit `Charset` to perform encoding/decoding.
+    * String codec that uses the supplied `Charset` to perform encoding/decoding.
     *
     * This codec does not encode the size of the string in to the output. Hence, decoding
     * a vector that has additional data after the encoded string will result in
@@ -569,7 +569,7 @@ object codecs:
     * @param charset charset to use to convert strings to/from binary
     * @group values
     */
-  def string(implicit charset: Charset): Codec[String] = new StringCodec(charset)
+  def string(charset: Charset): Codec[String] = new StringCodec(charset)
 
   /**
     * String codec that uses the `US-ASCII` charset. See [[string]] for more information on `String` codecs.
@@ -604,23 +604,23 @@ object codecs:
   ).withToString("cstring")
 
   /**
-    * String codec that uses the implicit `Charset` and prefixes the encoded string by the byte size
+    * String codec that uses the given `Charset` and prefixes the encoded string by the byte size
     * in a 32-bit 2s complement big endian field.
     *
     * @param charset charset to use to convert strings to/from binary
     * @group values
     */
-  def string32(implicit charset: Charset): Codec[String] =
+  def string32(charset: Charset): Codec[String] =
     variableSizeBytes(int32, string(charset)).withToString(s"string32(${charset.displayName})")
 
   /**
-    * String codec that uses the implicit `Charset` and prefixes the encoded string by the byte size
+    * String codec that uses the given `Charset` and prefixes the encoded string by the byte size
     * in a 32-bit 2s complement little endian field.
     *
     * @param charset charset to use to convert strings to/from binary
     * @group values
     */
-  def string32L(implicit charset: Charset): Codec[String] =
+  def string32L(charset: Charset): Codec[String] =
     variableSizeBytes(int32L, string(charset)).withToString(s"string32(${charset.displayName})")
 
   /**
@@ -1504,13 +1504,13 @@ object codecs:
       ).withToString(s"listDelimited($delimiter, $valueCodec)")
 
   /**
-    * Combinator that chooses amongst two codecs based on an implicitly available byte ordering.
+    * Combinator that chooses amongst two codecs based on a given byte ordering.
     * @param big codec to use when big endian
     * @param little codec to use when little endian
     * @group combinators
     */
   def endiannessDependent[A](big: Codec[A], little: Codec[A])(
-      implicit ordering: ByteOrdering
+      using ordering: ByteOrdering
   ): Codec[A] =
     ordering match
       case ByteOrdering.BigEndian    => big
@@ -1668,7 +1668,7 @@ object codecs:
     * Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
     *
     * Encoding a value of type `A` is delegated to the specified codec and the resulting bit vector is encrypted
-    * with a cipher provided by the implicit [[CipherFactory]].
+    * with a cipher provided by the given [[CipherFactory]].
     *
     * Decoding first decrypts all of the remaining bits and then decodes the decrypted bits with the
     * specified codec. Successful decoding always returns no remaining bits, even if the specified
@@ -1678,7 +1678,7 @@ object codecs:
     * @param cipherFactory factory to use for encryption/decryption
     * @group crypto
     */
-  def encrypted[A](codec: Codec[A])(implicit cipherFactory: CipherFactory): Codec[A] =
+  def encrypted[A](codec: Codec[A])(using cipherFactory: CipherFactory): Codec[A] =
     new CipherCodec(codec)(cipherFactory)
 
   /**

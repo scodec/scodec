@@ -57,7 +57,7 @@ sealed abstract class Attempt[+A] extends Product, Serializable:
   def flatMap[B](f: A => Attempt[B]): Attempt[B]
 
   /** Converts an `Attempt[Attempt[X]]` in to an `Attempt[X]`. */
-  def flatten[B](implicit ev: A <:< Attempt[B]): Attempt[B]
+  def flatten[B](using A <:< Attempt[B]): Attempt[B]
 
   /** Transforms this attempt to a value of type `B` using the supplied functions. */
   def fold[B](ifFailure: Err => B, ifSuccessful: A => B): B
@@ -137,7 +137,7 @@ object Attempt:
     def map[B](f: A => B): Attempt[B] = Successful(f(value))
     def mapErr(f: Err => Err): Attempt[A] = this
     def flatMap[B](f: A => Attempt[B]): Attempt[B] = f(value)
-    def flatten[B](implicit ev: A <:< Attempt[B]): Attempt[B] = ev(value)
+    def flatten[B](using ev: A <:< Attempt[B]): Attempt[B] = ev(value)
     def fold[B](ifFailure: Err => B, ifSuccessful: A => B): B = ifSuccessful(value)
     def getOrElse[B >: A](default: => B): B = value
     def orElse[B >: A](fallback: => Attempt[B]) = this
@@ -154,7 +154,7 @@ object Attempt:
     def map[B](f: Nothing => B): Attempt[B] = this
     def mapErr(f: Err => Err): Attempt[Nothing] = Failure(f(cause))
     def flatMap[B](f: Nothing => Attempt[B]): Attempt[B] = this
-    def flatten[B](implicit ev: Nothing <:< Attempt[B]): Attempt[B] = this
+    def flatten[B](using ev: Nothing <:< Attempt[B]): Attempt[B] = this
     def fold[B](ifFailure: Err => B, ifSuccessful: Nothing => B): B = ifFailure(cause)
     def getOrElse[B >: Nothing](default: => B): B = default
     def orElse[B >: Nothing](fallback: => Attempt[B]) = fallback
