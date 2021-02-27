@@ -285,11 +285,11 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def upcast[B >: A](implicit ct: reflect.ClassTag[A]): Codec[B] = new Codec[B] {
+  final def upcast[B >: A](implicit tt: reflect.TypeTest[B, A]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = b match {
       case a: A => self.encode(a)
-      case _    => Attempt.failure(Err(s"not a value of type ${ct.runtimeClass.getSimpleName}"))
+      case _    => Attempt.failure(Err("not a value of desired type"))
     }
     def decode(bv: BitVector) = self.decode(bv)
     override def toString = self.toString
@@ -303,13 +303,13 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def downcast[B <: A](implicit ct: reflect.ClassTag[B]): Codec[B] = new Codec[B] {
+  final def downcast[B <: A](implicit tt: reflect.TypeTest[A, B]): Codec[B] = new Codec[B] {
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(b)
     def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
       result.value match {
         case b: B => Attempt.successful(DecodeResult(b, result.remainder))
-        case _    => Attempt.failure(Err(s"not a value of type ${ct.runtimeClass.getSimpleName}"))
+        case _    => Attempt.failure(Err("not a value of desired type"))
       }
     }
     override def toString = self.toString
@@ -535,8 +535,8 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     * Constructs a `Codec[(A, B, ..., N)]` from a tuple `(Codec[A], Codec[B], ..., Codec[N])`.
     */
   def fromTuple[A <: Tuple : Tuple.IsMappedBy[Codec]](a: A): Codec[Tuple.InverseMap[A, Codec]] = {
-    def go[X <: Tuple](x: X): Codec[_ <: Tuple] = x match {
-      case (hd: Codec[_]) *: tl => hd :: go(tl)
+    def go[X <: Tuple](x: X): Codec[? <: Tuple] = x match {
+      case hd *: tl => hd.asInstanceOf[Codec[?]] :: go(tl)
       case EmptyTuple => codecs.provide(EmptyTuple)
     }
     go(a).asInstanceOf[Codec[Tuple.InverseMap[A, Codec]]]

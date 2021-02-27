@@ -98,7 +98,7 @@ object ChecksumFactory {
   }
 
   private class XorSigner extends Signer {
-    var data: Array[Byte] = _
+    var data: Array[Byte] = null
 
     def update(data: Array[Byte]): Unit = this.data = data
     def sign: Array[Byte] = Array(data.reduce((b1, b2) => (b1 ^ b2).toByte))

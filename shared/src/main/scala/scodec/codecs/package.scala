@@ -1942,7 +1942,7 @@ package object codecs {
       def sizeBound = left.sizeBound | right.sizeBound
       def encode(e: Either[L, R]) = e.fold(left.encode, right.encode)
       def decode(b: BitVector) = right.decode(b).map(_.map(Right(_))).recoverWith {
-        case _: KnownDiscriminatorType[_]#UnknownDiscriminator => left.decode(b).map(_.map(Left(_)))
+        case _: KnownDiscriminatorType[?]#UnknownDiscriminator => left.decode(b).map(_.map(Left(_)))
       }
     }
 

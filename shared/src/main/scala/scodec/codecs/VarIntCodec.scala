@@ -34,7 +34,7 @@ package codecs
 import scodec.bits.{BitVector, ByteOrdering}
 
 private[codecs] final class VarIntCodec(ordering: ByteOrdering) extends Codec[Int] {
-  private[this] val long = new VarLongCodec(ordering).xmap(_.toInt, VarIntCodec.toPositiveLong)
+  private val long = new VarLongCodec(ordering).xmap(_.toInt, VarIntCodec.toPositiveLong)
 
   override def sizeBound =
     SizeBound.bounded(1L, 5L)

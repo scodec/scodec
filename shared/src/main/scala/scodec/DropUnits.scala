@@ -36,7 +36,7 @@ import scala.compiletime.*
 type DropUnits[A <: Tuple] <: Tuple = A match {
   case hd *: tl => hd match {
     case Unit => DropUnits[tl]
-    case _ => hd *: DropUnits[tl]
+    case ? => hd *: DropUnits[tl]
   }
   case EmptyTuple => EmptyTuple
 }
