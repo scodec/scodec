@@ -106,23 +106,19 @@ class DiscriminatorCodecTest extends CodecSuite {
   }
 
   test("support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy") {
-    enum Color {
+    enum Color:
       case Red, Green, Blue
-      case Reserved(value: Int)
-    }
+    case class Reserved(value: Int)
 
     val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
-    val reserved: Codec[Color.Reserved] = uint8.as[Color.Reserved]
-    val codec: Codec[Either[Color.Reserved, Color]] = choice(
-      nonReserved.xmapc(Right(_): Either[Color.Reserved, Color])(_.toOption.get),
-      reserved.xmapc(Left(_): Either[Color.Reserved, Color])(_.swap.toOption.get)
-    )
+    val reserved: Codec[Reserved] = uint8.as[Reserved]
+    val codec: Codec[Color | Reserved] = choice(nonReserved.upcast[Color | Reserved], reserved.upcast[Color | Reserved])
 
-    roundtrip(codec, Right(Color.Red))
-    roundtrip(codec, Right(Color.Green))
-    roundtrip(codec, Right(Color.Blue))
-    roundtrip(codec, Left(new Color.Reserved(255)))
-    roundtrip(codec, Left(new Color.Reserved(4)))
+    roundtrip(codec, Color.Red)
+    roundtrip(codec, Color.Green)
+    roundtrip(codec, Color.Blue)
+    roundtrip(codec, Reserved(255))
+    roundtrip(codec, Reserved(4))
   }
 
   test("support building a codec for an ADT") {
