@@ -422,8 +422,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
       }
       def decode(bv: BitVector) =
         codecA.decode(bv).flatMap { case DecodeResult(a, rem) =>
-          f(a).decode(rem).map(_.map(b => (a ++ (b *: EmptyTuple)): Tuple.Concat[A, B *: EmptyTuple]))
-          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
+          f(a).decode(rem).map(_.map(b => (a ++ (b *: EmptyTuple))))
         }
     }
   }
@@ -470,8 +469,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
           encodeBoth(codecA, codecB)(prefix.asInstanceOf[A], suffix.asInstanceOf[B])
         }
         def decode(bv: BitVector) =
-          decodeBoth(codecA, codecB)(bv).map(_.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]]))
-          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
+          decodeBoth(codecA, codecB)(bv).map(_.map((a: A, b: B) => (a ++ b)))
         override def toString = s"$codecA :: $codecB"
       }
   }
@@ -554,7 +552,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   private inline def encodeTuple[A <: Tuple](a: Any, i: Int): Attempt[BitVector] =
     inline erasedValue[A] match {
       case _: (hd *: tl) =>
-        val hdCodec = summonOne[Codec[hd]]
+        val hdCodec = summonInline[Codec[hd]]
         hdCodec.encode(a.asInstanceOf[Product].productElement(i).asInstanceOf[hd]).flatMap { encHd =>
           encodeTuple[tl](a, i + 1).map { encTl =>
             encHd ++ encTl
@@ -567,7 +565,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   private inline def decodeTuple[T <: Tuple, A <: Tuple](b: BitVector, i: Int, elems: Array[Any]): Attempt[DecodeResult[T]] =
     inline erasedValue[A] match {
       case _: (hd *: tl) =>
-        val hdCodec = summonOne[Codec[hd]]
+        val hdCodec = summonInline[Codec[hd]]
         hdCodec.decode(b).flatMap { case DecodeResult(e, rem) =>
           elems(i) = e
           decodeTuple[T, tl](rem, i + 1, elems)
@@ -585,7 +583,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     }
     def encode(a: A) = inline m match {
       case p: Mirror.ProductOf[A] =>
-        encodeElems[p.MirroredElemTypes, p.MirroredElemLabels](a, 0)
+        encodeElems[p.MirroredElemTypes, p.MirroredElemLabels](a.asInstanceOf[Product], 0)
       case s: Mirror.SumOf[A] =>
         val ordinal = s.ordinal(a)
         codecs.uint8.encode(ordinal).flatMap { enc =>
@@ -609,7 +607,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
   private inline def sizeBoundElems[A <: Tuple]: SizeBound =
     inline erasedValue[A] match {
       case _: (hd *: tl) =>
-        summonOne[Codec[hd]].sizeBound + sizeBoundElems[tl]
+        summonInline[Codec[hd]].sizeBound + sizeBoundElems[tl]
       case EmptyTuple =>
         SizeBound.exact(0)
     }
@@ -626,14 +624,14 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         SizeBound.exact(0)
     }
 
-  private inline def encodeElems[A <: Tuple, L <: Tuple](a: Any, i: Int): Attempt[BitVector] =
+  private inline def encodeElems[A <: Tuple, L <: Tuple](a: Product, i: Int): Attempt[BitVector] =
     inline erasedValue[A] match {
       case _: (hd *: tl) =>
         inline erasedValue[L] match {
           case _: (hdLabel *: tlLabels) =>
             val hdLabelValue = constValue[hdLabel].asInstanceOf[String]
-            val hdCodec = summonOne[Codec[hd]].withContext(hdLabelValue)
-            hdCodec.encode(a.asInstanceOf[Product].productElement(i).asInstanceOf[hd]).flatMap { encHd =>
+            val hdCodec = summonInline[Codec[hd]].withContext(hdLabelValue)
+            hdCodec.encode(a.productElement(i).asInstanceOf[hd]).flatMap { encHd =>
               encodeElems[tl, tlLabels](a, i + 1).map { encTl =>
                 encHd ++ encTl
               }
@@ -653,7 +651,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
               val hdLabelValue = constValue[hdLabel].asInstanceOf[String]
               summonFrom {
                 case p: Mirror.ProductOf[`hd`] =>
-                  encodeElems[p.MirroredElemTypes, p.MirroredElemLabels](a, 0).mapErr(_.pushContext(hdLabelValue))
+                  encodeElems[p.MirroredElemTypes, p.MirroredElemLabels](a.asInstanceOf[Product], 0).mapErr(_.pushContext(hdLabelValue))
               }
             } else encodeCases[tl, tlLabels](a, ordinal, i + 1)
           case EmptyTuple => sys.error("not possible - label for product not available")
@@ -667,7 +665,7 @@ object Codec extends EncoderFunctions, DecoderFunctions {
         inline erasedValue[L] match {
           case _: (hdLabel *: tlLabels) =>
             val hdLabelValue = constValue[hdLabel].asInstanceOf[String]
-            val hdCodec = summonOne[Codec[hd]].withContext(hdLabelValue)
+            val hdCodec = summonInline[Codec[hd]].withContext(hdLabelValue)
             hdCodec.decode(b).flatMap { case DecodeResult(e, rem) =>
               elems(i) = e
               decodeElems[tl, tlLabels](rem, i + 1, elems)
@@ -707,8 +705,6 @@ object Codec extends EncoderFunctions, DecoderFunctions {
     def productArity = arr.size
     def productElement(n: Int) = arr(n)
   }
-
-  private inline def summonOne[A]: A = summonFrom { case a: A => a }
 
   given Codec[Byte] = codecs.byte
   given Codec[Short] = codecs.short16
