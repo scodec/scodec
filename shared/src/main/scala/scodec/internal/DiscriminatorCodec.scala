@@ -230,7 +230,7 @@ final class DiscriminatorCodec[A, B] private[scodec] (
 private[scodec] object DiscriminatorCodec:
 
   /** Provides an injection between `A` and `R` and a `Codec[R]`. */
-  private[scodec] final case class Prism[A, R](
+  private[scodec] case class Prism[A, R](
       preview: A => Option[R],
       review: R => A,
       repCodec: Codec[R]
@@ -239,4 +239,4 @@ private[scodec] object DiscriminatorCodec:
   /**
     * Maps a discrimination tag to a prism that supports encoding/decoding a value of type `A`.
     */
-  private[scodec] final case class Case[A, B, R](tag: B, prism: Prism[A, R])
+  private[scodec] case class Case[A, B, R](tag: B, prism: Prism[A, R])
