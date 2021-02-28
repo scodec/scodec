@@ -79,14 +79,14 @@ object PcapCodec:
       network: Long
   )
 
-  val pcapHeader = {
+  val pcapHeader: Codec[PcapHeader] = {
     detectByteOrdering {
       ("version_major" | guint16) ::
-        ("version_minor" | guint16) ::
-        ("thiszone" | gint32) ::
-        ("sigfigs" | guint32) ::
-        ("snaplen" | guint32) ::
-        ("network" | guint32)
+      ("version_minor" | guint16) ::
+      ("thiszone"      | gint32) ::
+      ("sigfigs"       | guint32) ::
+      ("snaplen"       | guint32) ::
+      ("network"       | guint32)
     }
   }.as[PcapHeader]
 
@@ -98,11 +98,11 @@ object PcapCodec:
   ):
     def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
 
-  def pcapRecordHeader(using ordering: ByteOrdering) = {
-    ("ts_sec" | guint32) ::
-      ("ts_usec" | guint32) ::
-      ("incl_len" | guint32) ::
-      ("orig_len" | guint32)
+  def pcapRecordHeader(using ByteOrdering): Codec[PcapRecordHeader] = {
+    ("ts_sec"   | guint32) ::
+    ("ts_usec"  | guint32) ::
+    ("incl_len" | guint32) ::
+    ("orig_len" | guint32)
   }.as[PcapRecordHeader]
 
   case class PcapRecord(header: PcapRecordHeader, data: BitVector)
