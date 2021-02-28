@@ -38,18 +38,18 @@ Introduction
 The primary abstraction is a [`Codec[A]`](shared/src/main/scala/scodec/Codec.scala), which supports encoding a value of type `A` to a
 `BitVector` and decoding a `BitVector` to a value of type `A`.
 
-The [`codecs`](shared/src/main/scala/scodec/codecs/package.scala) package provides a number of predefined codecs and combinators.
+The [`codecs`](shared/src/main/scala/scodec/codecs.scala) objects provides a number of predefined codecs and combinators.
 
 ```scala
-    import scodec._
-    import scodec.bits._
-    import codecs._
+    import scodec.*
+    import scodec.bits.*
+    import scodec.codecs.*
 
     // Create a codec for an 8-bit unsigned int followed by an 8-bit unsigned int followed by a 16-bit unsigned int
-    val firstCodec = uint8 ~ uint8 ~ uint16
+    val firstCodec = uint8 :: uint8 :: uint16
 
     // Decode a bit vector using that codec
-    val result: Attempt[DecodeResult[(Int ~ Int ~ Int)]] = firstCodec.decode(hex"102a03ff".bits)
+    val result: Attempt[DecodeResult[(Int :: Int :: Int)]] = firstCodec.decode(hex"102a03ff".bits)
     // Successful(DecodeResult(((16, 42), 1023), BitVector(empty)))
 
     // Sum the result
@@ -84,7 +84,7 @@ Codecs can also be derived, resulting in usage like:
     // Successful(DecodeResult(Point(-5, 10, 1), BitVector(empty)))
 ```
 
-New codecs can be created by either implementing the `Codec` trait or by passing an encoder function and decoder function to the `Codec` apply method. Typically, new codecs are created by applying one or more combinators to existing codecs.
+New codecs can be created by either implementing the `Codec` trait though typically new codecs are created by applying one or more combinators to existing codecs.
 
 See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](http://scodec.org/api/). Especially:
  - [`Codec`](http://scodec.org/api/scodec-core/1.11.1/#scodec.Codec)
