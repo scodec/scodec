@@ -204,5 +204,5 @@ object Encoder extends EncoderFunctions:
     extension [A, B](fa: Encoder[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Encoder[B] =
       fa.econtramap(g)
 
-  implicit class AsSyntax[A](private val self: Encoder[A]) extends AnyVal:
-    def as[B](using iso: Iso[A, B]): Encoder[B] = self.contramap(iso.from)
+  extension [A](encoder: Encoder[A])
+    def as[B](using iso: Iso[A, B]): Encoder[B] = encoder.contramap(iso.from)

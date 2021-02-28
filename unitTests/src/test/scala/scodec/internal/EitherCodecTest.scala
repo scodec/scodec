@@ -48,7 +48,7 @@ class EitherCodecTest extends CodecSuite:
 
   property("roundtrip (2)") {
     // locally override Arbitrary[Int] to fit in 8 bytes unsigned
-    implicit val arb: Arbitrary[Int] = Arbitrary(Gen.choose(0, 255))
+    given Arbitrary[Int] = Arbitrary(Gen.choose(0, 255))
     val c = either(bool(8), uint8, utf8)
     forAll((e: Either[Int, String]) => roundtrip(c, e))
   }

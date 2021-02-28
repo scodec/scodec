@@ -289,5 +289,5 @@ object Decoder extends DecoderFunctions:
     extension [A, B](fa: Decoder[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
       fa.emap(f)
 
-  implicit class AsSyntax[A](private val self: Decoder[A]) extends AnyVal:
-    def as[B](using iso: Iso[A, B]): Decoder[B] = self.map(iso.to)
+  extension [A](decoder: Decoder[A])
+    def as[B](using iso: Iso[A, B]): Decoder[B] = decoder.map(iso.to)

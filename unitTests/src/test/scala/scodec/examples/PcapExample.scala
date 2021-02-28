@@ -57,6 +57,9 @@ object PcapCodec:
       }
   )
 
+  private def detectByteOrdering[A <: Tuple](f: ByteOrdering ?=> Codec[A]): Codec[ByteOrdering *: A] =
+    byteOrdering.flatPrepend(ordering => f(using ordering))
+
   def gint16(using ordering: ByteOrdering): Codec[Int] =
     if (ordering == ByteOrdering.BigEndian) int16 else int16L
   def guint16(using ordering: ByteOrdering): Codec[Int] =
@@ -77,7 +80,7 @@ object PcapCodec:
   )
 
   val pcapHeader = {
-    ("magic_number" | byteOrdering).flatPrepend { implicit ordering =>
+    detectByteOrdering {
       ("version_major" | guint16) ::
         ("version_minor" | guint16) ::
         ("thiszone" | gint32) ::
@@ -126,7 +129,7 @@ class PcapExample extends CodecSuite:
 
   test("support reading the file header and then decoding each record, combining results via a monoid".ignore) {
     val fileHeader = pcapHeader.decode(bits.take(28 * 8)).require.value
-    implicit val ordering = fileHeader.ordering
+    given ByteOrdering = fileHeader.ordering
 
     // Monoid that counts records
     val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(28 * 8))

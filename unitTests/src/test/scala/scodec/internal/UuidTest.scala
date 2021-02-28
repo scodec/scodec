@@ -39,7 +39,7 @@ import scodec.codecs.*
 
 class UuidTest extends CodecSuite:
 
-  implicit val arbitraryUuid: Arbitrary[UUID] = Arbitrary(UUID.randomUUID.nn)
+  given Arbitrary[UUID] = Arbitrary(UUID.randomUUID.nn)
 
   property("roundtrip") {
     forAll((u: UUID) => roundtrip(uuid, u))

@@ -160,7 +160,7 @@ final class DiscriminatorCodec[A, B] private[scodec] (
   def typecase[R <: A: ClassTag](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] =
     subcaseO(tag)(a => if matchesClass[R](a) then Some(a.asInstanceOf[R]) else None)(cr)
 
-  private def matchesClass[R](a: A)(implicit ctr: ClassTag[R]) =
+  private def matchesClass[R](a: A)(using ctr: ClassTag[R]) =
     val clazz = ctr match
       case ClassTag.Byte    => classOf[java.lang.Byte]
       case ClassTag.Char    => classOf[java.lang.Character]

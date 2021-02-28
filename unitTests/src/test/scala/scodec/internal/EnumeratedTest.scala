@@ -47,7 +47,7 @@ class EnumeratedTest extends CodecSuite:
     val GIGA = Value
 
   val codec = enumerated(int32, SIPrefix)
-  implicit def generator: Arbitrary[SIPrefix.Value] = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
+  given Arbitrary[SIPrefix.Value] = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
 
   property("roundtrip") {
     forAll((v: SIPrefix.Value) => roundtrip(codec, v))

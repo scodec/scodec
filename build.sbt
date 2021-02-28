@@ -93,7 +93,8 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.22"
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.22",
+    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future"
   )
   .dependsOn(core % "compile->compile")
 
@@ -105,13 +106,14 @@ lazy val unitTests = project
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.68" % "test"
     ),
-    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration"),
+    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
     scalacOptions ++= {
       if (VersionNumber(scalaVersion.value).matchesSemVer(SemanticSelector(">=3.0.0-M2")))
         Seq("-language:experimental.genericNumberLiterals")
       else
         Nil
-    }
+    },
+    Test / scalacOptions := (Compile / scalacOptions).value,
   )
   .dependsOn(testkitJVM % "test->compile")
   .enablePlugins(NoPublishPlugin)
