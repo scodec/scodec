@@ -134,7 +134,8 @@ import scala.collection.mutable
   * @groupname tuple Tuple Support
   * @groupprio tuple 11
   */
-trait Codec[A] extends Encoder[A], Decoder[A] { self =>
+trait Codec[A] extends Encoder[A], Decoder[A]:
+  self =>
 
   /**
    * Transforms this codec to a `Codec[B]` if `A` is isomorphic to `B`.
@@ -152,21 +153,19 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
     * @group combinators
     */
-  final def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B] {
+  final def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.econtramap(g).encode(b)
     def decode(buffer: BitVector) = self.emap(f).decode(buffer)
-  }
 
   /**
     * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
     * @group combinators
     */
-  final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B] {
+  final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(g(b))
     def decode(buffer: BitVector) = self.decode(buffer).map(_.map(f))
-  }
 
   /**
     * Lifts this codec in to a codec of a singleton tuple.
@@ -225,7 +224,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
     * @group tuple
     */
-  final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)] {
+  final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)]:
     def sizeBound: SizeBound = self.sizeBound.atLeast
     override def encode(t: (A, B)) = Codec.encodeBoth(self, f(t._1))(t._1, t._2)
     override def decode(buffer: BitVector) =
@@ -233,7 +232,6 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
         a <- self
         b <- f(a)
       yield (a, b)).decode(buffer)
-  }
 
   /**
     * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
@@ -257,7 +255,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def consume[B](f: A => Codec[B])(g: B => A): Codec[B] = new Codec[B] {
+  final def consume[B](f: A => Codec[B])(g: B => A): Codec[B] = new Codec[B]:
     def sizeBound = self.sizeBound.atLeast
     def encode(b: B) =
       val a = g(b)
@@ -270,7 +268,6 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
         a <- self
         b <- f(a)
       yield b).decode(bv)
-  }
 
   final override def complete: Codec[A] = Codec(this, super.complete)
 
@@ -284,14 +281,13 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def upcast[B >: A](using reflect.TypeTest[B, A]): Codec[B] = new Codec[B] {
+  final def upcast[B >: A](using reflect.TypeTest[B, A]): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = b match
       case a: A => self.encode(a)
       case _    => Attempt.failure(Err("not a value of desired type"))
     def decode(bv: BitVector) = self.decode(bv)
     override def toString = self.toString
-  }
 
   /**
     * Safely lifts this codec to a codec of a subtype.
@@ -301,7 +297,7 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
     *
     * @group combinators
     */
-  final def downcast[B <: A](using reflect.TypeTest[A, B]): Codec[B] = new Codec[B] {
+  final def downcast[B <: A](using reflect.TypeTest[A, B]): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
     def encode(b: B) = self.encode(b)
     def decode(bv: BitVector) = self.decode(bv).flatMap { result =>
@@ -310,39 +306,34 @@ trait Codec[A] extends Encoder[A], Decoder[A] { self =>
         case _    => Attempt.failure(Err("not a value of desired type"))
     }
     override def toString = self.toString
-  }
 
   /**
     * Creates a new codec that is functionally equivalent to this codec but pushes the specified
     * context string in to any errors returned from encode or decode.
     * @group combinators
     */
-  final def withContext(context: String): Codec[A] = new Codec[A] {
+  final def withContext(context: String): Codec[A] = new Codec[A]:
     def sizeBound: SizeBound = self.sizeBound
     override def encode(a: A) = self.encode(a).mapErr(_.pushContext(context))
     override def decode(buffer: BitVector) = self.decode(buffer).mapErr(_.pushContext(context))
     override def toString = s"$context($self)"
-  }
 
   /**
     * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
     * @group combinators
     */
-  final def withToString(str: => String): Codec[A] = new Codec[A] {
+  final def withToString(str: => String): Codec[A] = new Codec[A]:
     override def sizeBound: SizeBound = self.sizeBound
     override def encode(a: A) = self.encode(a)
     override def decode(buffer: BitVector) = self.decode(buffer)
     override def toString = str
-  }
 
   override def decodeOnly[AA >: A]: Codec[AA] =
     val sup = super.decodeOnly[AA]
-    new Codec[AA] {
+    new Codec[AA]:
       def sizeBound = self.sizeBound
       def encode(a: AA) = sup.encode(a)
       def decode(bits: BitVector) = sup.decode(bits)
-    }
-}
 
 /**
   * Companion for [[Codec]].
@@ -367,21 +358,19 @@ object Codec extends EncoderFunctions, DecoderFunctions:
   def apply[A](
       encoder: A => Attempt[BitVector],
       decoder: BitVector => Attempt[DecodeResult[A]]
-  ): Codec[A] = new Codec[A] {
+  ): Codec[A] = new Codec[A]:
     override def sizeBound: SizeBound = SizeBound.unknown
     override def encode(a: A) = encoder(a)
     override def decode(bits: BitVector) = decoder(bits)
-  }
 
   /**
     * Creates a codec from an encoder and a decoder.
     * @group ctor
     */
-  def apply[A](encoder: Encoder[A], decoder: Decoder[A]): Codec[A] = new Codec[A] {
+  def apply[A](encoder: Encoder[A], decoder: Decoder[A]): Codec[A] = new Codec[A]:
     override def sizeBound: SizeBound = encoder.sizeBound
     override def encode(a: A) = encoder.encode(a)
     override def decode(bits: BitVector) = decoder.decode(bits)
-  }
 
   /**
     * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
@@ -389,13 +378,12 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     *
     * @group ctor
     */
-  def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A] {
+  def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A]:
     @annotation.threadUnsafe lazy val c: Codec[A] = codec
     def sizeBound = c.sizeBound
     def encode(a: A) = c.encode(a)
     def decode(b: BitVector) = c.decode(b)
     override def toString = s"lazily($c)"
-  }
 
   extension [A <: Tuple](codecA: Codec[A])
     inline def dropUnits: Codec[DropUnits[A]] =
@@ -408,7 +396,7 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     * @group tuple
     */
   extension [A <: Tuple, B](codecA: Codec[A])
-    inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: EmptyTuple]] = new Codec[Tuple.Concat[A, B *: EmptyTuple]] {
+    inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: EmptyTuple]] = new Codec[Tuple.Concat[A, B *: EmptyTuple]]:
       def sizeBound = codecA.sizeBound.atLeast
       def encode(ab: Tuple.Concat[A, B *: EmptyTuple]) =
         val size = constValue[Tuple.Size[A]]
@@ -419,7 +407,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
           f(a).decode(rem).map(_.map(b => (a ++ (b *: EmptyTuple)): Tuple.Concat[A, B *: EmptyTuple]))
           // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         }
-    }
 
   /**
     * Builds a `Codec[A *: B]` from a `Codec[A]` and a `Codec[B]` where `B` is a tuple type.
@@ -429,12 +416,11 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     */
   extension [A, B <: Tuple](codecA: Codec[A])
     def ::(codecB: Codec[B]): Codec[A *: B] =
-      new Codec[A *: B] {
+      new Codec[A *: B]:
         def sizeBound = codecA.sizeBound + codecB.sizeBound
         def encode(ab: A *: B) = encodeBoth(codecA, codecB)(ab.head, ab.tail)
         def decode(bv: BitVector) = decodeBoth(codecA, codecB)(bv).map(_.map(_ *: _))
         override def toString = s"$codecA :: $codecB"
-      }
 
   /**
     * `codecB :+ codecA` returns a new codec that encodes/decodes the tuple `B` followed by an `A`.
@@ -453,7 +439,7 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     */
   extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
     inline def ++(codecB: Codec[B]): Codec[Tuple.Concat[A, B]] =
-      new Codec[Tuple.Concat[A, B]] {
+      new Codec[Tuple.Concat[A, B]]:
         def sizeBound = codecA.sizeBound + codecB.sizeBound
         def encode(ab: Tuple.Concat[A, B]) =
           inline val sizeA = constValue[Tuple.Size[A]]
@@ -463,7 +449,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
           decodeBoth(codecA, codecB)(bv).map(_.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]]))
           // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         override def toString = s"$codecA :: $codecB"
-      }
 
   /**
     * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
@@ -472,7 +457,7 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     * @group tuple
     */
   extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
-    inline def flatConcat(f: A => Codec[B]): Codec[Tuple.Concat[A, B]] = new Codec[Tuple.Concat[A, B]] {
+    inline def flatConcat(f: A => Codec[B]): Codec[Tuple.Concat[A, B]] = new Codec[Tuple.Concat[A, B]]:
       def sizeBound = codecA.sizeBound.atLeast
       def encode(ab: Tuple.Concat[A, B]) =
         val size = constValue[Tuple.Size[A]]
@@ -482,7 +467,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
         codecA.decode(bv).flatMap { case DecodeResult(a, rem) =>
           f(a).decode(rem).map(_.map(b => a ++ b))
         }
-    }
 
   /**
     * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
@@ -491,12 +475,11 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     */
   extension [A, B](a: Codec[A])
     def ::(b: Codec[B])(using DummyImplicit): Codec[(A, B)] =
-      new Codec[(A, B)] {
+      new Codec[(A, B)]:
         def sizeBound = a.sizeBound + b.sizeBound
         def encode(ab: (A, B)) = Codec.encodeBoth(a, b)(ab._1, ab._2)
         def decode(bv: BitVector) = Codec.decodeBoth(a, b)(bv)
         override def toString = s"$a :: $b"
-      }
 
   /**
     * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
@@ -505,7 +488,7 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     */
   extension [A, B <: Tuple](codecA: Codec[A])
     def flatPrepend(f: A => Codec[B]): Codec[A *: B] =
-      new Codec[A *: B] {
+      new Codec[A *: B]:
         def sizeBound = codecA.sizeBound.atLeast
         def encode(ab: A *: B) = encodeBoth(codecA, f(ab.head))(ab.head, ab.tail)
         def decode(b: BitVector) =
@@ -514,7 +497,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
             l <- f(a)
           yield a *: l).decode(b)
         override def toString = s"flatPrepend($codecA, $f)"
-      }
 
   /**
     * Constructs a `Codec[(A, B, ..., N)]` from a tuple `(Codec[A], Codec[B], ..., Codec[N])`.
@@ -525,13 +507,12 @@ object Codec extends EncoderFunctions, DecoderFunctions:
       case EmptyTuple => codecs.provide(EmptyTuple)
     go(a).asInstanceOf[Codec[Tuple.InverseMap[A, Codec]]]
 
-  inline given derivedTuple[A <: Tuple]: Codec[A] = new Codec[A] {
+  inline given derivedTuple[A <: Tuple]: Codec[A] = new Codec[A]:
     def sizeBound = sizeBoundElems[A]
     def encode(t: A) = encodeTuple[A](t, 0)
     def decode(b: BitVector) =
       inline val size = constValue[Tuple.Size[A]]
       decodeTuple[A, A](b, 0, new Array[Any](size))
-  }
 
   private inline def encodeTuple[A <: Tuple](a: Any, i: Int): Attempt[BitVector] =
     inline erasedValue[A] match
@@ -556,7 +537,7 @@ object Codec extends EncoderFunctions, DecoderFunctions:
       case EmptyTuple =>
         Attempt.successful(DecodeResult(Tuple.fromArray(elems).asInstanceOf[T], b))
 
-  inline def derived[A](using m: Mirror.Of[A]): Codec[A] = new Codec[A] {
+  inline def derived[A](using m: Mirror.Of[A]): Codec[A] = new Codec[A]:
     def sizeBound = inline m match
       case p: Mirror.ProductOf[A] =>
         sizeBoundElems[p.MirroredElemTypes]
@@ -581,7 +562,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
         codecs.uint8.decode(b).flatMap { case DecodeResult(ordinal, rem) =>
           decodeCases[A, s.MirroredElemTypes, s.MirroredElemLabels](rem, ordinal, 0)
         }
-  }
 
   private inline def sizeBoundElems[A <: Tuple]: SizeBound =
     inline erasedValue[A] match
