@@ -68,7 +68,7 @@ class CodecTest extends CodecSuite:
     uint8.tuple.as[Bar].as[Int]
   }
 
-  test("as - supports implicitly dropping unit values from a tuple") {
+  test("as - supports automatically dropping unit values from a tuple") {
     val c = (uint2 :: uint2 :: ignore(4) :: utf8_32).as[Foo]
     roundtrip(c, Foo(1, 2, "Hi"))
   }
