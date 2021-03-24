@@ -58,7 +58,7 @@ class ProductsExample extends CodecSuite:
   test("demonstrate tuple generation") {
     // You can summon tuple codecs directly
     val codec = Codec[(Int, Int, Boolean)]
-    assertBitsEqual(codec.encode(1, 2, true).require, 0x00000001_00000002_ff)
+    assertBitsEqual(codec.encode(1, 2, true).require, hex"00000001_00000002_ff".bits)
   }
 
   test("demonstrate use of flatPrepend to encode a dependency on a field") {

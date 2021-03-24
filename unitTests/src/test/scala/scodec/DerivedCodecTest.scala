@@ -63,7 +63,7 @@ class DerivedCodecTest extends CodecSuite:
   }
 
   test("derivation of case class codecs") {
-    assertBitsEqual(Codec[Foo].encode(Foo(1, 2, "Hello")).require, 0x00000001000000020000000548656c6c6f)
+    assertBitsEqual(Codec[Foo].encode(Foo(1, 2, "Hello")).require, hex"00000001000000020000000548656c6c6f".bits)
   }
 
   test("derivation of nested case class codecs, where component codecs are derived as well") {

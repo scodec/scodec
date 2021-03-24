@@ -52,7 +52,7 @@ class PaddedFixedSizeCodecTest extends CodecSuite:
   test("paddedFixedSizeBytes - failed padCodec encode only reported if used") {
     assertBitsEqual(paddedFixedSizeBytes(1, uint8, codecs.fail(Err("bad pad")))
       .encode(12)
-      .require, 0x0c)
+      .require, hex"0c".bits)
   }
 
   test("paddedFixedSizeBytes - report failed padCodec encode") {
@@ -62,9 +62,9 @@ class PaddedFixedSizeCodecTest extends CodecSuite:
 
   test("paddedFixedSizeBytes - support pkcs5/pkcs7 style padding") {
     val codec = paddedFixedSizeBytesDependent(4, uint8, n => constant(n / 8))
-    assertBitsEqual(codec.encode(0).require, 0x00030303)
+    assertBitsEqual(codec.encode(0).require, hex"00030303".bits)
     roundtripAll(codec, Seq(0, 1, 255))
-    assertEquals(codec.decode(0x00040404), Attempt.failure(
+    assertEquals(codec.decode(hex"00040404".bits), Attempt.failure(
       Err("expected constant BitVector(8 bits, 0x03) but got BitVector(8 bits, 0x04)")
         .pushContext("padding")
     ))
@@ -77,9 +77,9 @@ class PaddedFixedSizeCodecTest extends CodecSuite:
   }
 
   test("paddedFixedSizeBits - pad appropriately on encode") {
-    assertBitsEqual(paddedFixedSizeBits(8, uint8, ones).encode(12).require, 0x0c)
-    assertBitsEqual(paddedFixedSizeBits(16, uint8, ones).encode(12).require, 0x0cff)
-    assertBitsEqual(paddedFixedSizeBits(24, uint8, ones).encode(12).require, 0x0cffff)
+    assertBitsEqual(paddedFixedSizeBits(8, uint8, ones).encode(12).require, hex"0c".bits)
+    assertBitsEqual(paddedFixedSizeBits(16, uint8, ones).encode(12).require, hex"0cff".bits)
+    assertBitsEqual(paddedFixedSizeBits(24, uint8, ones).encode(12).require, hex"0cffff".bits)
   }
 
   test("paddedFixedSizeBits - encode fails if padding does not exactly fill") {
@@ -92,31 +92,31 @@ class PaddedFixedSizeCodecTest extends CodecSuite:
   }
 
   test("paddedFixedSizeBits - decode validate remainder") {
-    assertEquals(paddedFixedSizeBits(8, uint8, ones).decode(0x0c).require.value, 12)
-    assertEquals(paddedFixedSizeBits(24, uint8, ones).decode(0x0cffff).require.value, 12)
+    assertEquals(paddedFixedSizeBits(8, uint8, ones).decode(hex"0c".bits).require.value, 12)
+    assertEquals(paddedFixedSizeBits(24, uint8, ones).decode(hex"0cffff".bits).require.value, 12)
   }
 
   test("paddedFixedSizeBits - decode ignores remainder") {
     assertEquals(paddedFixedSizeBits(24, uint8, constantLenient(hex"ff"))
-      .decode(0x0c0000)
+      .decode(hex"0c0000".bits)
       .require
       .value, 12)
     assertEquals(paddedFixedSizeBits(11, uint8, constantLenient(hex"ff"))
-      .decode(0x0c0000)
+      .decode(hex"0c0000".bits)
       .require
       .value, 12)
   }
 
   test("paddedFixedSizeBits - decode fails if remaining bits do not match pad") {
-    assertEquals(paddedFixedSizeBits(8, uint8, ones).decode(0x0c).require.value, 12)
-    assertEquals(paddedFixedSizeBits(9, uint8, ones).decode(0x0c00), Attempt.failure(
+    assertEquals(paddedFixedSizeBits(8, uint8, ones).decode(hex"0c".bits).require.value, 12)
+    assertEquals(paddedFixedSizeBits(9, uint8, ones).decode(hex"0c00".bits), Attempt.failure(
       Err.insufficientBits(8, 1).pushContext("padding")
     ))
-    assertEquals(paddedFixedSizeBits(16, uint8, ones).decode(0x0c00), Attempt.failure(
+    assertEquals(paddedFixedSizeBits(16, uint8, ones).decode(hex"0c00".bits), Attempt.failure(
       Err("expected constant BitVector(8 bits, 0xff) but got BitVector(8 bits, 0x00)")
         .pushContext("padding")
     ))
-    assertEquals(paddedFixedSizeBits(24, uint8, ones).decode(0x0cff11), Attempt.failure(
+    assertEquals(paddedFixedSizeBits(24, uint8, ones).decode(hex"0cff11".bits), Attempt.failure(
       Err("expected constant BitVector(8 bits, 0xff) but got BitVector(8 bits, 0x11)")
         .pushContext("padding")
     ))
@@ -134,5 +134,5 @@ class PaddedFixedSizeCodecTest extends CodecSuite:
   test("paddedFixedSizeBits - support pkcs5/pkcs7 style padding") {
     assertBitsEqual(paddedFixedSizeBitsDependent(32, uint8, n => constant(n))
       .encode(0)
-      .require, 0x00181818)
+      .require, hex"00181818".bits)
   }

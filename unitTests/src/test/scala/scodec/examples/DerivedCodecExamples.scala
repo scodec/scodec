@@ -39,13 +39,13 @@ class DerivedCodecsExample extends CodecSuite:
   test("enums - explicit") {
     enum Color derives Codec { case Red, Green, Blue }
     val c = mappedEnum(uint8, Color.Red -> 10, Color.Green -> 20, Color.Blue -> 30)
-    assertBitsEqual(c.encode(Color.Green).require, 0x14)
+    assertBitsEqual(c.encode(Color.Green).require, hex"14".bits)
   }
 
   test("enums - derived") {
     enum Color derives Codec { case Red, Green, Blue }
     val c = Codec[Color]
-    assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, 0x000102)
+    assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, hex"000102".bits)
   }
 
   sealed trait Sprocket derives Codec
