@@ -29,16 +29,26 @@
  */
 
 package scodec
+package codecs
 
+import org.scalacheck.Prop.forAll
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class OptionalCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  property("produce the target value on true") {
+    forAll { (n: Int) =>
+      val codec = optional(provide(true), int32)
+      shouldDecodeFullyTo(codec, BitVector.fromInt(n), Some(n))
+    }
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  property("produce none on false") {
+    forAll { (n: Int) =>
+      val codec = optional(provide(false), int32)
+      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(n)): @unchecked
+
+      assertEquals(rest, BitVector.fromInt(n))
+      assertEquals(b, None)
+    }
+  }

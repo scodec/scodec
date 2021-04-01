@@ -29,16 +29,16 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import java.util.UUID
+import org.scalacheck.Arbitrary
+import org.scalacheck.Prop.forAll
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class UuidTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  given Arbitrary[UUID] = Arbitrary(UUID.randomUUID.nn)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  property("roundtrip") {
+    forAll((u: UUID) => roundtrip(uuid, u))
+  }

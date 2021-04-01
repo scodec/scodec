@@ -29,16 +29,37 @@
  */
 
 package scodec
+package codecs
+
+import java.nio.{ByteBuffer, CharBuffer}
+import java.nio.charset.Charset
+import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class StringCodec(charset: Charset) extends Codec[String]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  override def sizeBound = SizeBound.unknown
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def encode(str: String) =
+    val encoder = charset.newEncoder.nn
+    val buffer = CharBuffer.wrap(str).nn
+    try Attempt.successful(BitVector(encoder.encode(buffer).nn))
+    catch
+      case (_: MalformedInputException | _: UnmappableCharacterException) =>
+        Attempt.failure(
+          Err(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'")
+        )
+
+  override def decode(buffer: BitVector) =
+    val decoder = charset.newDecoder.nn
+    try
+      val asBuffer = ByteBuffer.wrap(buffer.toByteArray)
+      Attempt.successful(DecodeResult(decoder.decode(asBuffer).toString, BitVector.empty))
+    catch
+      case (_: MalformedInputException | _: UnmappableCharacterException) =>
+        Attempt.failure(
+          Err(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'")
+        )
+
+  override def toString = charset.displayName.nn

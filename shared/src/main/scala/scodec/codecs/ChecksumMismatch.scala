@@ -29,16 +29,16 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
-
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
-
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+/** Indicates a checksum over `bits` did not match the expected value. */
+case class ChecksumMismatch(
+    bits: BitVector,
+    expected: BitVector,
+    actual: BitVector,
+    context: List[String] = Nil
+) extends Err:
+  def message: String = s"checksum mismatch for bits: $bits, expected: $expected, actual: $actual"
+  def pushContext(ctx: String): Err = copy(context = ctx :: context)

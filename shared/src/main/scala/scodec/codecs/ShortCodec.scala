@@ -29,16 +29,41 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.{BitVector, ByteOrdering}
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class ShortCodec(bits: Int, signed: Boolean, ordering: ByteOrdering)
+    extends Codec[Short]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  require(
+    bits > 0 && bits <= (if signed then 16 else 15),
+    "bits must be in range [1, 16] for signed and [1, 15] for unsigned"
+  )
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  val MaxValue = ((1 << (if signed then (bits - 1) else bits)) - 1).toShort
+  val MinValue = (if signed then -(1 << (bits - 1)) else 0).toShort
+
+  private val bitsL = bits.toLong
+
+  private def description = s"$bits-bit ${if signed then "signed" else "unsigned"} short"
+
+  override def sizeBound = SizeBound.exact(bits.toLong)
+
+  override def encode(s: Short) =
+    if s > MaxValue then
+      Attempt.failure(Err(s"$s is greater than maximum value $MaxValue for $description"))
+    else if s < MinValue then
+      Attempt.failure(Err(s"$s is less than minimum value $MinValue for $description"))
+    else
+      Attempt.successful(BitVector.fromShort(s, bits, ordering))
+
+  override def decode(buffer: BitVector) =
+    if buffer.sizeGreaterThanOrEqual(bitsL) then
+      Attempt.successful(
+        DecodeResult(buffer.take(bitsL).toShort(signed, ordering), buffer.drop(bitsL))
+      )
+    else
+      Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
+
+  override def toString = description

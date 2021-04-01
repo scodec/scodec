@@ -29,16 +29,46 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class PaddedVarAlignedCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("roundtrip") {
+    roundtrip(paddedVarAlignedBytes(uint8, utf8, 4), "ab")
+    roundtrip(paddedVarAlignedBytes(uint8, utf8, 4), "abcde")
+    roundtrip(paddedVarAlignedBytes(uint16, ascii, 8), "a")
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("pad to the correct length") {
+    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
+      .encode("a")
+      .require, hex"0161000000".bits)
+    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
+      .encode("aaa")
+      .require, hex"0361616100".bits)
+    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
+      .encode("aaaa")
+      .require, hex"461616161".bits)
+  }
+
+  test("pad on a multiplier") {
+    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 3)
+      .encode("aaa")
+      .require, hex"03616161".bits)
+    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 3)
+      .encode("aaaa")
+      .require, hex"04616161610000".bits)
+  }
+
+  test("ignore padded") {
+    assertEquals(paddedVarAlignedBytes(uint8, utf8, 4)
+      .decode(hex"0161000000".bits)
+      .require
+      .value, "a")
+    assertEquals(paddedVarAlignedBytes(uint8, utf8, 4)
+      .decode(hex"0361616100".bits)
+      .require
+      .value, "aaa")
+  }

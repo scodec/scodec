@@ -29,16 +29,17 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
 /**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
+  * Codec that provides a constant value from decode and ignores the value to encode.
+  *
+  * Useful as a combinator with [[DiscriminatorCodec]].
   */
-case class DecodeResult[+A](value: A, remainder: BitVector):
-
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
-
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+private[scodec] final class ProvideCodec[A](value: A) extends Codec[A]:
+  override def sizeBound = SizeBound.exact(0)
+  override def encode(a: A) = Attempt.successful(BitVector.empty)
+  override def decode(bv: BitVector) = Attempt.successful(DecodeResult(value, bv))
+  override def toString = s"provide($value)"

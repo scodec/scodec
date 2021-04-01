@@ -29,16 +29,30 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class ConditionalCodec[A](included: Boolean, codec: => Codec[A])
+    extends Codec[Option[A]]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  private lazy val evaluatedCodec = codec
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def sizeBound = if included then evaluatedCodec.sizeBound else SizeBound.exact(0)
+
+  override def encode(a: Option[A]) =
+    a.filter(_ => included) match
+      case None    => Attempt.successful(BitVector.empty)
+      case Some(a) => evaluatedCodec.encode(a)
+
+  override def decode(buffer: BitVector) =
+    if included then
+      evaluatedCodec.decode(buffer).map {
+        _.map(result => Some(result))
+      }
+    else
+      Attempt.successful(DecodeResult(None, buffer))
+
+  override def toString =
+    if included then s"conditional(true, $evaluatedCodec)" else "conditional(false, ?)"
+

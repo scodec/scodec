@@ -29,16 +29,19 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class ListCodec[A](codec: Codec[A], limit: Option[Int] = None)
+    extends Codec[List[A]]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  def sizeBound = limit match
+    case None      => SizeBound.unknown
+    case Some(lim) => codec.sizeBound * lim.toLong
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  def encode(list: List[A]) = codec.encodeAll(list)
+
+  def decode(buffer: BitVector) = codec.collect[List, A](buffer, limit)
+
+  override def toString = s"list($codec)"

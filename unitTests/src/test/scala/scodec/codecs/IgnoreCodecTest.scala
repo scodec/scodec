@@ -29,16 +29,17 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class IgnoreCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  // The scalatest ignore method shadows this
+  def ign(size: Int) = scodec.codecs.ignore(size.toLong)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("roundtrip") {
+    val codec = ign(2) ~> uint4 <~ ign(2)
+    assertEquals(codec.decode(BitVector(0xff)), Attempt.successful(DecodeResult(15, BitVector.empty)))
+    assertEquals(codec.encode(15), Attempt.successful(BitVector(0x3c)))
+  }

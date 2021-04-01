@@ -29,16 +29,16 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class FailCodec[A](encErr: Err, decErr: Err) extends Codec[A]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  override def sizeBound = SizeBound.unknown
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def encode(a: A) = Attempt.failure(encErr)
+
+  override def decode(b: BitVector) = Attempt.failure(decErr)
+
+  override def toString = "fail"

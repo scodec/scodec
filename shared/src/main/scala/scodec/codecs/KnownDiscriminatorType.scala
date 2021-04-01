@@ -29,16 +29,13 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+/** Mixin for codecs/decoders that are known to discriminate by values of type `D`. */
+trait KnownDiscriminatorType[D]:
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
-
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
-
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  /** Error raised when an unknown discriminator is encountered when decoding. */
+  case class UnknownDiscriminator(discriminator: D, context: List[String]) extends Err:
+    def this(discriminator: D) = this(discriminator, Nil)
+    def message = s"Unknown discriminator $discriminator"
+    def pushContext(ctx: String) = copy(context = ctx :: context)

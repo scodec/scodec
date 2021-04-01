@@ -29,16 +29,28 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class VariableSizeDelimitedCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("encode value followed by delimiter") {
+    assertEquals(variableSizeDelimited(constant(0), utf8, 8).encode("test"), Attempt.successful(
+      BitVector('t', 'e', 's', 't', 0)
+    ))
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("decode value followed by delimiter") {
+    val buffer = BitVector('t', 'e', 's', 't', 0)
+    assertEquals(variableSizeDelimited(constant(0), ascii, 8).decode(buffer), Attempt.successful(
+      DecodeResult("test", BitVector.empty)
+    ))
+  }
+
+  test("decode value followed by delimiter with remainder") {
+    val buffer = BitVector('t', 'e', 's', 't', 0, 1, 2, 3)
+    assertEquals(variableSizeDelimited(constant(0), ascii, 8).decode(buffer), Attempt.successful(
+      DecodeResult("test", BitVector(1, 2, 3))
+    ))
+  }

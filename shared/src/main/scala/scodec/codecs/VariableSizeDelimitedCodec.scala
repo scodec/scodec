@@ -29,16 +29,53 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class VariableSizeDelimitedCodec[A](
+    delimiterCodec: Codec[Unit],
+    valueCodec: Codec[A],
+    multipleValueSize: Long = 0L
+) extends Codec[A]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  val delimiter = delimiterCodec.encode(()).require
+  val segmentSize = valueCodec.sizeBound.exact.getOrElse(multipleValueSize)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  require(
+    segmentSize > 0,
+    "valueCodec must have an exact sizeBound or you need to specify multipleValueSize"
+  )
+
+  require(
+    delimiterCodec.sizeBound.lowerBound >= segmentSize,
+    "delimiterCodec cannot be smaller than the sizeBound of the valueCodec"
+  )
+
+  def sizeBound = delimiterCodec.sizeBound.atLeast
+
+  override def encode(a: A) =
+    for
+      encA <- valueCodec.encode(a)
+    yield encA ++ delimiter
+
+  override def decode(buffer: BitVector) =
+    val index = findDelimiterIndex(buffer)
+    if index != -1 then
+      val valueBuffer = buffer.take(index)
+      val remainder = buffer.drop(index + delimiter.size)
+      valueCodec.decode(valueBuffer).map(decodeResult => decodeResult.mapRemainder(_ ++ remainder))
+    else
+      Attempt.failure(Err(s"expected delimiter $delimiterCodec"))
+
+  private def findDelimiterIndex(buffer: BitVector): Long =
+    var offset = 0L
+    while
+      if buffer.drop(offset).startsWith(delimiter) then
+        return offset
+      offset += segmentSize
+      offset < buffer.size
+    do ()
+    -1
+
+  override def toString = s"VariableSizeDelimited($delimiterCodec, $valueCodec, $multipleValueSize)"

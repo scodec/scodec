@@ -29,16 +29,32 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class VariableSizeCodec[A](
+    sizeCodec: Codec[Long],
+    valueCodec: Codec[A],
+    sizePadding: Long
+) extends Codec[A]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  private val decoder = sizeCodec.flatMap(sz => codecs.fixedSizeBits(sz - sizePadding, valueCodec))
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  def sizeBound = sizeCodec.sizeBound.atLeast
+
+  override def encode(a: A) =
+    for
+      encA <- valueCodec.encode(a)
+      encSize <- sizeCodec.encode(encA.size + sizePadding).mapErr { e =>
+        fail(a, e.messageWithContext)
+      }
+    yield encSize ++ encA
+
+  private def fail(a: A, msg: String): Err =
+    Err.General(s"failed to encode size of [$a]: $msg", List("size"))
+
+  override def decode(buffer: BitVector) =
+    decoder.decode(buffer)
+
+  override def toString = s"variableSizeBits($sizeCodec, $valueCodec)"

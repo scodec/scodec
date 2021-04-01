@@ -29,16 +29,61 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class ConditionalCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("not evaluate if condition is false when encoding") {
+    var called = false
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+    def retCodec: Codec[String] =
+      called = true
+      ascii
+
+    val result = conditional(false, retCodec).encode(Some("00"))
+
+    assert(!called)
+    assertEquals(result, Attempt.successful(BitVector.empty))
+  }
+
+  test("evaluate if condition is true when encoding") {
+    var called = false
+
+    def retCodec: Codec[String] =
+      called = true
+      ascii
+
+    val result = conditional(true, retCodec).encode(Some("00"))
+
+    assert(called)
+    assertEquals(result, Attempt.successful(hex"3030".bits))
+  }
+
+  test("not evaluate if condition is false when decoding") {
+    var called = false
+
+    def retCodec: Codec[String] =
+      called = true
+      ascii
+
+    val result = conditional(false, retCodec).decode(hex"3030".bits)
+
+    assert(!called)
+    assertEquals(result, Attempt.successful(DecodeResult(None, hex"3030".bits)))
+  }
+
+  test("evaluate if condition is true when decoding") {
+    var called = false
+
+    def retCodec: Codec[String] =
+      called = true
+      ascii
+
+    val result = conditional(true, retCodec).decode(hex"3030".bits)
+
+    assert(called)
+    assertEquals(result, Attempt.successful(DecodeResult(Some("00"), BitVector.empty)))
+  }
+

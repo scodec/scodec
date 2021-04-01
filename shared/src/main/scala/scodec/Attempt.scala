@@ -39,11 +39,6 @@ import scala.util.control.NonFatal
   * An `Attempt` is either an `Attempt.Successful` or an `Attempt.Failure`. Attempts can be created
   * by calling `Attempt.successful` or `Attempt.failure`, as well as converting from an `Option` via
   * `fromOption`.
-  *
-  * @groupname Ungrouped Members
-  * @groupprio 1
-  * @groupname combinators Basic Combinators
-  * @groupprio combinators 0
   */
 sealed abstract class Attempt[+A] extends Product, Serializable:
 

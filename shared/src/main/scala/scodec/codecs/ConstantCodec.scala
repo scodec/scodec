@@ -29,16 +29,25 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class ConstantCodec(constant: BitVector, validate: Boolean = true)
+    extends Codec[Unit]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  override def sizeBound = SizeBound.exact(constant.size)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def encode(ignore: Unit) =
+    Attempt.successful(constant)
+
+  override def decode(buffer: BitVector) =
+    if validate then
+      buffer.acquire(constant.size) match
+        case Left(_) => Attempt.failure(Err.insufficientBits(constant.size, buffer.size))
+        case Right(b) =>
+          if b == constant then Attempt.successful(DecodeResult((), buffer.drop(constant.size)))
+          else Attempt.failure(Err(s"expected constant $constant but got $b"))
+    else Attempt.successful(DecodeResult((), buffer.drop(constant.size)))
+
+  override def toString = s"constant($constant)"

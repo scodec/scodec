@@ -29,16 +29,21 @@
  */
 
 package scodec
+package codecs
 
+import java.util.UUID
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] object UuidCodec extends Codec[UUID]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  private val mkUUID: (Long, Long) => UUID = new UUID(_, _)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override val sizeBound = codecs.int64.sizeBound * 2L
+
+  override def encode(u: UUID) =
+    Codec.encodeBoth(codecs.int64, codecs.int64)(u.getMostSignificantBits, u.getLeastSignificantBits)
+
+  override def decode(bits: BitVector) =
+    Codec.decodeBothCombine(codecs.int64, codecs.int64)(bits)(mkUUID)
+
+  override def toString = "uuid"

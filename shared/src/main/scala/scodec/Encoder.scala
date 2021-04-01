@@ -36,12 +36,6 @@ import scodec.bits.BitVector
 
 /**
   * Supports encoding a value of type `A` to a `BitVector`.
-  *
-  * @groupname primary Primary Members
-  * @groupprio primary 0
-  *
-  * @groupname combinators Basic Combinators
-  * @groupprio combinators 10
   */
 trait Encoder[-A]:
  self =>
@@ -51,20 +45,16 @@ trait Encoder[-A]:
     *
     * @param value value to encode
     * @return error or binary encoding of the value
-    * @group primary
     */
   def encode(value: A): Attempt[BitVector]
 
   /**
     * Provides a bound on the size of successfully encoded values.
-    *
-    * @group primary
     */
   def sizeBound: SizeBound
 
   /**
     * Converts this encoder to an `Encoder[B]` using the supplied `B => A`.
-    * @group combinators
     */
   def contramap[B](f: B => A): Encoder[B] = new Encoder[B]:
     def sizeBound = self.sizeBound
@@ -74,7 +64,6 @@ trait Encoder[-A]:
     * Converts this encoder to an `Encoder[B]` using the supplied partial
     * function from `B` to `A`. The encoding will fail for any `B` that
     * `f` maps to `None`.
-    * @group combinators
     */
   def pcontramap[B](f: B => Option[A]): Encoder[B] = new Encoder[B]:
     def sizeBound = self.sizeBound
@@ -83,7 +72,6 @@ trait Encoder[-A]:
 
   /**
     * Converts this encoder to an `Encoder[B]` using the supplied `B => Attempt[A]`.
-    * @group combinators
     */
   def econtramap[B](f: B => Attempt[A]): Encoder[B] = new Encoder[B]:
     def sizeBound = self.sizeBound
@@ -91,7 +79,6 @@ trait Encoder[-A]:
 
   /**
     * Converts this encoder to a new encoder that compacts the generated bit vector before returning it
-    * @group combinators
     */
   def compact: Encoder[A] = new Encoder[A]:
     def sizeBound = self.sizeBound
@@ -99,13 +86,11 @@ trait Encoder[-A]:
 
   /**
     * Gets this as an `Encoder`.
-    * @group combinators
     */
   def asEncoder: Encoder[A] = this
 
   /**
     * Converts this to a codec that fails decoding with an error.
-    * @group combinators
     */
   def encodeOnly: Codec[A @uncheckedVariance] = new Codec[A]:
     def sizeBound = self.sizeBound
@@ -114,7 +99,6 @@ trait Encoder[-A]:
 
   /**
     * Encodes all elements of the specified sequence and concatenates the results, or returns the first encountered error.
-    * @group conv
     */
   def encodeAll(as: Iterable[A]): Attempt[BitVector] =
     val buf = new collection.mutable.ArrayBuffer[BitVector](as.size)
@@ -137,23 +121,17 @@ trait Encoder[-A]:
 
 /**
   * Provides functions for working with encoders.
-  *
-  * @groupname conv Conveniences
-  * @groupprio conv 2
-  *
   */
 trait EncoderFunctions:
 
   /**
    * Encodes the specified value using the given `Encoder[A]`.
-   * @group conv
    */
   final def encode[A](a: A)(using encA: Encoder[A]): Attempt[BitVector] =
     encA.encode(a)
 
   /**
     * Encodes the specified values, one after the other, to a bit vector using the specified encoders.
-    * @group conv
     */
   final def encodeBoth[A, B](encA: Encoder[A], encB: Encoder[B])(a: A, b: B): Attempt[BitVector] =
     for
@@ -164,7 +142,6 @@ trait EncoderFunctions:
   /**
     * Creates an encoder that encodes with each of the specified encoders, returning
     * the first successful result.
-    * @group conv
     */
   final def choiceEncoder[A](encoders: Encoder[A]*): Encoder[A] = new Encoder[A]:
     def sizeBound = SizeBound.choice(encoders.map(_.sizeBound))
@@ -181,12 +158,6 @@ trait EncoderFunctions:
 
 /**
   * Companion for [[Encoder]].
-  *
-  * @groupname ctor Constructors
-  * @groupprio ctor 1
-  *
-  * @groupname inst Typeclass Instances
-  * @groupprio inst 3
   */
 object Encoder extends EncoderFunctions:
 
@@ -194,7 +165,6 @@ object Encoder extends EncoderFunctions:
 
   /**
     * Creates an encoder from the specified function.
-    * @group ctor
     */
   def apply[A](f: A => Attempt[BitVector]): Encoder[A] = new Encoder[A]:
     def sizeBound = SizeBound.unknown

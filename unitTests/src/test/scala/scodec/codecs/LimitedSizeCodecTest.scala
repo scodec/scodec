@@ -29,16 +29,28 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class LimitedSizeCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("roundtrip") {
+    roundtrip(limitedSizeBits(32, utf8), "test")
+    roundtrip(limitedSizeBits(8, uint8), 12)
+    roundtrip(limitedSizeBits(16, uint8), 12)
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("not pad") {
+    assertEquals(limitedSizeBits(16, uint8).encode(12).require, BitVector(hex"0c"))
+  }
+
+  test("fail encoding when value is too large to be encoded by size codec") {
+    val encoded = utf8.encode("test").require
+    assertEquals(limitedSizeBits(32, utf8).decode(encoded ++ BitVector.low(48)), Attempt.successful(
+      DecodeResult("test", BitVector.low(48))
+    ))
+    assertEquals(limitedSizeBits(24, utf8).encode("test"), Attempt.failure(
+      Err("[test] requires 32 bits but field is limited to 24 bits")
+    ))
+  }

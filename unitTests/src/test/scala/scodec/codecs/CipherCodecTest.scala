@@ -29,16 +29,31 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import javax.crypto.KeyGenerator
+import javax.crypto.spec.IvParameterSpec
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+import scodec.bits.ByteVector
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+import org.scalacheck.Prop.forAll
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+class CipherCodecTest extends CodecSuite:
+
+  private val secretKey =
+    val keyGen = KeyGenerator.getInstance("AES").nn
+    keyGen.init(128)
+    keyGen.generateKey.nn
+
+  private val iv = new IvParameterSpec(ByteVector.low(16).toArray)
+
+  property("roundtrip with AES/ECB/PKCS5Padding") {
+    testWithCipherFactory(CipherFactory("AES/ECB/PKCS5Padding", secretKey))
+  }
+  property("roundtrip with AES/CBC/PKCS5Padding") {
+    testWithCipherFactory(CipherFactory("AES/CBC/PKCS5Padding", secretKey, iv))
+  }
+
+  protected def testWithCipherFactory(cipherFactory: CipherFactory) =
+    val codec = encrypted(int32 :: utf8, cipherFactory)
+    forAll((n: Int, s: String) => roundtrip(codec, (n, s)))

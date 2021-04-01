@@ -56,12 +56,12 @@ import scala.collection.mutable
   * See the [[codecs]] package object for pre-defined codecs for many common data types and combinators for building larger
   * codecs out of smaller ones.
   *
-  * == Tuple Codecs ==
+  * ## Tuple Codecs
   *
   * The `::` operator supports combining a `Codec[A]` and a `Codec[B]` in to a `Codec[(A, B)]`.
   *
   * For example: {{{
-   val codec: Codec[(Int, Int, Int)] = uint8 :: uint8 :: uint8}}}
+   val codec: Codec[(Int, Int, Int)] = uint8 :: uint8 :: uint8
  }}}
   *
   * There are various methods on `Codec` that only work on `Codec[A]` for some `A <: Tuple`. Besides the aforementioned
@@ -76,7 +76,7 @@ import scala.collection.mutable
   val point: Codec[Point] = threeInts.as[Point]
  }}}
   *
-  * === flatZip ===
+  * ### flatZip
   *
   * Sometimes when combining codecs, a latter codec depends on a formerly decoded value.
   * The `flatZip` method is important in these types of situations -- it represents a dependency between
@@ -94,7 +94,7 @@ import scala.collection.mutable
   * Note: there is a combinator that expresses this pattern more succinctly -- `variableSizeBytes(uint8, bytes)`.
   *
  *
-  * === flatPrepend ===
+  * ### flatPrepend
   *
   * When the function passed to `flatZip` returns a `Codec[B]` where `B <: Tuple`, you end up creating
   * right nested tuples instead of a extending the arity of a single tuple. To do the latter, there's
@@ -111,7 +111,7 @@ import scala.collection.mutable
   *
   * There are similar methods for flat appending and flat concating.
   *
-  * == Derived Codecs ==
+  * ## Derived Codecs
   *
   * Codecs for case classes and sealed class hierarchies can often be automatically derived.
   *
@@ -130,9 +130,6 @@ import scala.collection.mutable
   * unsigned 8-bit integer representing the ordinal of the sum, followed by the derived form of the product.
   *
   * Full examples are available in the test directory of this project.
-  *
-  * @groupname tuple Tuple Support
-  * @groupprio tuple 11
   */
 trait Codec[A] extends Encoder[A], Decoder[A]:
   self =>
@@ -151,7 +148,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
 
   /**
     * Transforms using two functions, `A => Attempt[B]` and `B => Attempt[A]`.
-    * @group combinators
     */
   final def exmap[B](f: A => Attempt[B], g: B => Attempt[A]): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
@@ -160,7 +156,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
 
   /**
     * Transforms using the isomorphism described by two functions, `A => B` and `B => A`.
-    * @group combinators
     */
   final def xmap[B](f: A => B, g: B => A): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
@@ -169,7 +164,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
 
   /**
     * Lifts this codec in to a codec of a singleton tuple.
-    * @group tuple
     */
   final def tuple: Codec[A *: EmptyTuple] = xmap(_ *: Tuple(), _.head)
 
@@ -180,7 +174,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
     * Assuming `A` is `Unit`, creates a `Codec[B]` that: encodes the unit followed by a `B`;
     * decodes a unit followed by a `B` and discards the decoded unit.
     *
-    * @group tuple
     */
   final def dropLeft[B](codecB: Codec[B])(using ev: Unit =:= A): Codec[B] =
     (this :: codecB).xmap[B]({ (_, b) => b }, b => (ev(()), b))
@@ -190,15 +183,12 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
     * decodes a unit followed by a `B` and discards the decoded unit.
     *
     * Operator alias of [[dropLeft]].
-    * @group tuple
     */
   final def ~>[B](codecB: Codec[B])(using Unit =:= A): Codec[B] = dropLeft(codecB)
 
   /**
     * Assuming `B` is `Unit`, creates a `Codec[A]` that: encodes the `A` followed by a unit;
     * decodes an `A` followed by a unit and discards the decoded unit.
-    *
-    * @group tuple
     */
   final def dropRight[B](codecB: Codec[B])(using ev: Unit =:= B): Codec[A] =
    (this :: codecB).xmap[A]({ (a, _) => a }, a => (a, ev(())))
@@ -208,21 +198,17 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
     * decodes an `A` followed by a unit and discards the decoded unit.
     *
     * Operator alias of [[dropRight]].
-    * @group tuple
     */
   final def <~[B](codecB: Codec[B])(using Unit =:= B): Codec[A] = dropRight(codecB)
 
   /**
     * Converts this to a `Codec[Unit]` that encodes using the specified zero value and
     * decodes a unit value when this codec decodes an `A` successfully.
-    *
-    * @group combinators
     */
   final def unit(zero: A): Codec[Unit] = xmap[Unit](_ => (), _ => zero)
 
   /**
     * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
-    * @group tuple
     */
   final def flatZip[B](f: A => Codec[B]): Codec[(A, B)] = new Codec[(A, B)]:
     def sizeBound: SizeBound = self.sizeBound.atLeast
@@ -236,7 +222,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
   /**
     * Returns a new codec that encodes/decodes a value of type `(A, B)` where the codec of `B` is dependent on `A`.
     * Operator alias for [[flatZip]].
-    * @group tuple
     */
   final def >>~[B](f: A => Codec[B]): Codec[(A, B)] = flatZip(f)
 
@@ -252,8 +237,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
        case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
      }
    }}}
-    *
-    * @group combinators
     */
   final def consume[B](f: A => Codec[B])(g: B => A): Codec[B] = new Codec[B]:
     def sizeBound = self.sizeBound.atLeast
@@ -278,8 +261,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
     *
     * When a subtype of `B` that is not a subtype of `A` is passed to encode,
     * an encoding error is returned.
-    *
-    * @group combinators
     */
   final def upcast[B >: A](using reflect.TypeTest[B, A]): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
@@ -294,8 +275,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
     *
     * When a supertype of `B` that is not a supertype of `A` is decoded,
     * an decoding error is returned.
-    *
-    * @group combinators
     */
   final def downcast[B <: A](using reflect.TypeTest[A, B]): Codec[B] = new Codec[B]:
     def sizeBound: SizeBound = self.sizeBound
@@ -310,7 +289,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
   /**
     * Creates a new codec that is functionally equivalent to this codec but pushes the specified
     * context string in to any errors returned from encode or decode.
-    * @group combinators
     */
   final def withContext(context: String): Codec[A] = new Codec[A]:
     def sizeBound: SizeBound = self.sizeBound
@@ -320,7 +298,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
 
   /**
     * Creates a new codec that is functionally equivalent to this codec but returns the specified string from `toString`.
-    * @group combinators
     */
   final def withToString(str: => String): Codec[A] = new Codec[A]:
     override def sizeBound: SizeBound = self.sizeBound
@@ -337,15 +314,6 @@ trait Codec[A] extends Encoder[A], Decoder[A]:
 
 /**
   * Companion for [[Codec]].
-  *
-  * @groupname ctor Constructors
-  * @groupprio ctor 1
-  *
-  * @groupname conv Conveniences
-  * @groupprio conv 2
-  *
-  * @groupname inst Supporting Instances
-  * @groupprio inst 3
   */
 object Codec extends EncoderFunctions, DecoderFunctions:
 
@@ -353,7 +321,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
 
   /**
     * Creates a codec from encoder and decoder functions.
-    * @group ctor
     */
   def apply[A](
       encoder: A => Attempt[BitVector],
@@ -365,7 +332,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
 
   /**
     * Creates a codec from an encoder and a decoder.
-    * @group ctor
     */
   def apply[A](encoder: Encoder[A], decoder: Decoder[A]): Codec[A] = new Codec[A]:
     override def sizeBound: SizeBound = encoder.sizeBound
@@ -375,8 +341,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
   /**
     * Provides a `Codec[A]` that delegates to a lazily evaluated `Codec[A]`.
     * Typically used to consruct codecs for recursive structures.
-    *
-    * @group ctor
     */
   def lazily[A](codec: => Codec[A]): Codec[A] = new Codec[A]:
     @annotation.threadUnsafe lazy val c: Codec[A] = codec
@@ -393,7 +357,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
     * the tuple `A` followed by the value `B`, where the latter is encoded/decoded with the codec
     * returned from applying `A` to `f`.
-    * @group tuple
     */
   extension [A <: Tuple, B](codecA: Codec[A])
     inline def flatAppend(f: A => Codec[B]): Codec[Tuple.Concat[A, B *: EmptyTuple]] = new Codec[Tuple.Concat[A, B *: EmptyTuple]]:
@@ -412,7 +375,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     * Builds a `Codec[A *: B]` from a `Codec[A]` and a `Codec[B]` where `B` is a tuple type.
     * That is, this operator is a codec-level tuple prepend operation.
     * @param codec codec to prepend
-    * @group tuple
     */
   extension [A, B <: Tuple](codecA: Codec[A])
     def ::(codecB: Codec[B]): Codec[A *: B] =
@@ -425,7 +387,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
   /**
     * `codecB :+ codecA` returns a new codec that encodes/decodes the tuple `B` followed by an `A`.
     * That is, this operator is a codec-level tuple append operation.
-    * @group tuple
     */
   extension [A, B <: Tuple](codecB: Codec[B])
     inline def :+(codecA: Codec[A]): Codec[Tuple.Concat[B, A *: EmptyTuple]] =
@@ -435,7 +396,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     * Builds a `Codec[A ++ B]` from a `Codec[A]` and a `Codec[B]` where `A` and `B` are tuples.
     * That is, this operator is a codec-level tuple concat operation.
     * @param codecA codec to concat
-    * @group tuple
     */
   extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
     inline def ++(codecB: Codec[B]): Codec[Tuple.Concat[A, B]] =
@@ -454,7 +414,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
     * When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
     * the tuple `A` followed by the tuple `B`, where the latter is encoded/decoded with the codec
     * returned from applying `A` to `f`.
-    * @group tuple
     */
   extension [A <: Tuple, B <: Tuple](codecA: Codec[A])
     inline def flatConcat(f: A => Codec[B]): Codec[Tuple.Concat[A, B]] = new Codec[Tuple.Concat[A, B]]:
@@ -471,7 +430,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
   /**
     * When called on a `Codec[A]` where `A` is not a tuple, creates a new codec that encodes/decodes a tuple of `(B, A)`.
     * For example, {{{uint8 :: utf8}}} has type `Codec[(Int, Int)]`.
-    * @group tuple
     */
   extension [A, B](a: Codec[A])
     def ::(b: Codec[B])(using DummyImplicit): Codec[(A, B)] =
@@ -484,7 +442,6 @@ object Codec extends EncoderFunctions, DecoderFunctions:
   /**
     * Creates a new codec that encodes/decodes a tuple of `A :: B` given a function `A => Codec[B]`.
     * This allows later parts of a tuple codec to be dependent on earlier values.
-    * @group tuple
     */
   extension [A, B <: Tuple](codecA: Codec[A])
     def flatPrepend(f: A => Codec[B]): Codec[A *: B] =

@@ -29,16 +29,20 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class IgnoreCodec(bits: Long) extends Codec[Unit]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  override def sizeBound = SizeBound.exact(bits)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def encode(unit: Unit) =
+    Attempt.successful(BitVector.low(bits))
+
+  override def decode(buffer: BitVector) =
+    buffer.acquire(bits) match
+      case Left(_)  => Attempt.failure(Err.insufficientBits(bits, buffer.size))
+      case Right(_) => Attempt.successful(DecodeResult((), buffer.drop(bits)))
+
+  override def toString = s"ignore($bits bits)"

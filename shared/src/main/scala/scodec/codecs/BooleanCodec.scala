@@ -29,16 +29,19 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] object BooleanCodec extends Codec[Boolean]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  override def sizeBound = SizeBound.exact(1)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def encode(b: Boolean) =
+    Attempt.successful(if b then BitVector.high(1) else BitVector.low(1))
+
+  override def decode(buffer: BitVector) =
+    if buffer.isEmpty then Attempt.failure(Err.insufficientBits(1, 0))
+    else Attempt.successful(DecodeResult(buffer.head, buffer.tail))
+
+  override def toString = "bool"

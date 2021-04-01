@@ -29,16 +29,30 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class FixedSizeCodec[A](size: Long, codec: Codec[A]) extends Codec[A]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  override def sizeBound = SizeBound.exact(size)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  override def encode(a: A) =
+    for
+      encoded <- codec.encode(a)
+      result <-
+        if encoded.size > size then
+          Attempt.failure(
+            Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
+          )
+        else
+          Attempt.successful(encoded.padTo(size))
+    yield result
+
+  override def decode(buffer: BitVector) =
+    if buffer.sizeGreaterThanOrEqual(size) then
+      codec.decode(buffer.take(size)).map(res => DecodeResult(res.value, buffer.drop(size)))
+    else
+      Attempt.failure(Err.insufficientBits(size, buffer.size))
+
+  override def toString = s"fixedSizeBits($size, $codec)"

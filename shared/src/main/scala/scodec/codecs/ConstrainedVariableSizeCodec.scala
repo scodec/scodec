@@ -29,16 +29,47 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class ConstrainedVariableSizeCodec[A](
+    sizeCodec: Codec[Long],
+    valueCodec: Codec[A],
+    minSize: Long,
+    maxSize: Long
+) extends Codec[A]:
+  require(minSize < maxSize)
+  require(minSize > -1)
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  val minSizeBits = minSize * 8
+  val maxSizeBits = maxSize * 8
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  private def checkBoundaries(sz: Long) = minSizeBits <= sz && sz <= maxSizeBits
+
+  private val decoder = sizeCodec.flatMap { sz =>
+    if checkBoundaries(sz) then
+      codecs.fixedSizeBits(sz, valueCodec).complete
+    else
+      codecs.fail[A](Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
+  }
+
+  def sizeBound = sizeCodec.sizeBound.atLeast
+
+  override def encode(a: A) = valueCodec.complete.encode(a).flatMap { enc =>
+    val sz = enc.size
+
+    if checkBoundaries(sz) then
+      sizeCodec.encode(sz).map(_ ++ enc).mapErr(e => failMsg(a, e.messageWithContext))
+    else
+      Attempt.failure(Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
+
+  }
+
+  private def failMsg(a: A, msg: String): Err =
+    Err.General(s"failed to encode size of [$a]: $msg", List("size"))
+
+  override def decode(buffer: BitVector) =
+    decoder.decode(buffer)
+
+  override def toString = s"constrainedVariableSizeBits($sizeCodec, $valueCodec)"

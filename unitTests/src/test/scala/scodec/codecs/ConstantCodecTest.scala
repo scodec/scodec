@@ -29,16 +29,20 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class ConstantCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("constant - fail to decode when codec does not match") {
+    assertEquals(constant(1).decode(hex"02".bits), Attempt.failure(
+      Err("expected constant BitVector(8 bits, 0x01) but got BitVector(8 bits, 0x02)")
+    ))
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("constantLenient - not fail to decode when codec does not match") {
+    assertEquals(constantLenient(1).decode(hex"02".bits), Attempt.successful(
+      DecodeResult((), BitVector.empty)
+    ))
+  }

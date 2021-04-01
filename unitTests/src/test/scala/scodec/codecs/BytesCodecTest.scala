@@ -29,16 +29,22 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class BytesCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("roundtrip when input size match") { roundtrip(bytes(8), hex"0102030405060708") }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("pad with zero when encoding with less bytes than expected") {
+    assertEquals(bytes(8).encode(hex"0101010101").require, BitVector(hex"0101010101000000"))
+  }
+
+  test("return an error when encoding with more bytes than expected") {
+    assertEquals(bytes(8).encode(hex"010203040506070809"), Attempt.failure(
+      Err(
+        "[BitVector(72 bits, 0x010203040506070809)] requires 72 bits but field is fixed size of 64 bits"
+      )
+    ))
+  }

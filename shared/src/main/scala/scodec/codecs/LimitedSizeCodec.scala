@@ -29,16 +29,27 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class LimitedSizeCodec[A](limit: Long, codec: Codec[A]) extends Codec[A]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  def sizeBound =
+    val sz = codec.sizeBound
+    val ub = sz.upperBound.map(_.min(limit)).getOrElse(limit)
+    SizeBound.bounded(sz.lowerBound, ub)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  def encode(a: A) =
+    codec.encode(a).flatMap { enc =>
+      if enc.size > limit then
+        Attempt.failure(Err(s"[$a] requires ${enc.size} bits but field is limited to $limit bits"))
+      else Attempt.successful(enc)
+    }
+
+  def decode(b: BitVector) =
+    codec.decode(b.take(limit)).map { res =>
+      DecodeResult(res.value, res.remainder ++ b.drop(limit))
+    }
+
+  override def toString = s"limitedSizeBits($limit, $codec)"

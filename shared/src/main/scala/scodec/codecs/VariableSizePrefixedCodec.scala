@@ -29,16 +29,36 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class VariableSizePrefixedCodec[A, B](
+    sizeCodec: Codec[Long],
+    prefixCodec: Codec[A],
+    valueCodec: Codec[B],
+    sizePadding: Long
+) extends Codec[(A, B)]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  private val decoder = sizeCodec.flatMap { sz =>
+    prefixCodec :: codecs.fixedSizeBits(sz - sizePadding, valueCodec)
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  def sizeBound = sizeCodec.sizeBound.atLeast + prefixCodec.sizeBound
+
+  override def encode(ab: (A, B)) =
+    for
+      encA <- prefixCodec.encode(ab._1)
+      encB <- valueCodec.encode(ab._2)
+      encSize <- sizeCodec.encode(encB.size + sizePadding).mapErr { e =>
+        fail(ab._2, e.messageWithContext)
+      }
+    yield encSize ++ encA ++ encB
+
+  private def fail(b: B, msg: String): Err =
+    Err(s"[$b] is too long to be encoded: $msg")
+
+  override def decode(buffer: BitVector) =
+    decoder.decode(buffer)
+
+  override def toString = s"variableSizePrefixedBits($sizeCodec, $prefixCodec, $valueCodec)"

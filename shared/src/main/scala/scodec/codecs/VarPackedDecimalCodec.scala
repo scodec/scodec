@@ -29,16 +29,28 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+import scala.annotation.tailrec
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+private[scodec] object VarPackedDecimalCodec extends Codec[Long]:
+  override def sizeBound = SizeBound.bounded(1L, 9L)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  def encode(i: Long): Attempt[BitVector] =
+    if i < 0 then Attempt.failure(Err("VarPackedDecimal cannot encode negative longs"))
+    else runEncoding(i, Attempt.successful(BitVector.empty))
+
+  def decode(buffer: BitVector): Attempt[DecodeResult[Long]] = runDecoding(buffer, 0L)
+
+  @tailrec
+  private def runDecoding(buffer: BitVector, value: Long): Attempt[DecodeResult[Long]] =
+    if buffer.isEmpty then Attempt.successful(DecodeResult(value, buffer))
+    else if buffer.sizeLessThan(4) then Attempt.failure(Err.InsufficientBits(4L, buffer.size, Nil))
+    else runDecoding(buffer.drop(4), value * 10 + buffer.take(4).toInt(false))
+
+  @tailrec
+  private def runEncoding(value: Long, acc: Attempt[BitVector]): Attempt[BitVector] =
+    if value < 10L then codecs.uint(4).encode(value.toInt).flatMap(x => acc.map(x ++ _))
+    else runEncoding(value / 10, codecs.uint(4).encode((value % 10).toInt).flatMap(x => acc.map(x ++ _)))

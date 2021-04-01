@@ -29,16 +29,21 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+private[scodec] final class RecoverCodec(target: Codec[Unit], lookahead: Boolean)
+    extends Codec[Boolean]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  def sizeBound = target.sizeBound
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  def encode(a: Boolean) = if a then target.encode(()) else Attempt.successful(BitVector.empty)
+
+  def decode(buffer: BitVector) =
+    target.decode(buffer) match
+      case Attempt.Successful(DecodeResult(_, rest)) =>
+        Attempt.successful(DecodeResult(true, if lookahead then buffer else rest))
+      case _: Attempt.Failure => Attempt.successful(DecodeResult(false, buffer))
+
+  override def toString = if lookahead then s"lookahead($target)" else s"recover($target)"

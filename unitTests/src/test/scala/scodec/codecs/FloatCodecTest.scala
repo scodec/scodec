@@ -29,16 +29,27 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
+import org.scalacheck.Prop.forAll
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class FloatCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  test("float - roundtrip") {
+    forAll((n: Float) => roundtrip(float, n))
+  }
+  test("floatL - roundtrip") {
+    forAll((n: Float) => roundtrip(floatL, n))
+  }
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  property("support endianness correctly") {
+    forAll { (n: Float) =>
+      assertEquals(floatL.decode(float.encode(n).require.reverseByteOrder).require.value, n)
+      assertEquals(float.decode(floatL.encode(n).require.reverseByteOrder).require.value, n)
+    }
+  }
+
+  test("return an error when decoding with too few bits") {
+    assertEquals(float.decode(BitVector.low(8)), Attempt.failure(Err.insufficientBits(32, 8)))
+  }

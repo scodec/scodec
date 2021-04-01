@@ -29,16 +29,27 @@
  */
 
 package scodec
+package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class FailCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  // The scalatest fail method shadows this
+  def fl[A](e: Err) = scodec.codecs.fail[A](e)
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("always fail encoding") {
+    assertEquals(fl(Err("err")).encode(()), Attempt.failure(Err("err")))
+  }
+
+  test("always fail decoding") {
+    assertEquals(fl(Err("err")).decode(BitVector.low(1024)), Attempt.failure(Err("err")))
+  }
+
+  test("example usefulness") {
+    val codec: Codec[(Int, String)] = int32.flatZip { x =>
+      if (x % 2 == 0) fixedSizeBytes(x / 2L, ascii) else fl(Err("must be even"))
+    }
+    assertEquals(codec.encode((4, "Hi")).isSuccessful, true)
+    assertEquals(codec.encode((1, "Hi")), Attempt.failure(Err("must be even")))
+  }

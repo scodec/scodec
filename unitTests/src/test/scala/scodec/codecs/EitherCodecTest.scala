@@ -29,16 +29,31 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+import org.scalacheck.*
+import org.scalacheck.Prop.forAll
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+class EitherCodecTest extends CodecSuite:
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  test("roundtrip (1)") {
+    val c = either(bool(8), uint8, utf8)
+    roundtrip(c, Left(0))
+    roundtrip(c, Left(255))
+    roundtrip(c, Right("hello, world"))
+  }
+
+  property("roundtrip (2)") {
+    // locally override Arbitrary[Int] to fit in 8 bytes unsigned
+    given Arbitrary[Int] = Arbitrary(Gen.choose(0, 255))
+    val c = either(bool(8), uint8, utf8)
+    forAll((e: Either[Int, String]) => roundtrip(c, e))
+  }
+
+  test("encode") {
+    val c = either(bool(8), uint8, ascii)
+    assertEquals(c.encode(Left(255)), Attempt.successful(bin"00000000 11111111"))
+    assertEquals(c.encode(Right("hi")), Attempt.successful(hex"ff 68 69".toBitVector))
+  }

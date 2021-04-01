@@ -29,16 +29,33 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.Prop.forAll
+import scodec.bits.*
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class EnumeratedTest extends CodecSuite:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  object SIPrefix extends Enumeration:
+    type SIPrefix = Value
+    val DEKA = Value
+    val HECTO = Value
+    val KILO = Value
+    val MEGA = Value
+    val GIGA = Value
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  val codec = enumerated(int32, SIPrefix)
+  given Arbitrary[SIPrefix.Value] = Arbitrary(Gen.oneOf(SIPrefix.values.toSeq))
+
+  property("roundtrip") {
+    forAll((v: SIPrefix.Value) => roundtrip(codec, v))
+  }
+
+  property("roundtrip with combinators") {
+    forAll((i: Int, v: SIPrefix.Value) => roundtrip(int32 :: codec, (i, v)))
+  }
+
+  test("fail for an invalid id") {
+    assert(codec.decode(hex"000000FF".bits).isFailure)
+  }

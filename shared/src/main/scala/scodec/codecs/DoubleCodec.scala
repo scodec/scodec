@@ -29,16 +29,29 @@
  */
 
 package scodec
+package codecs
 
-import scodec.bits.BitVector
+import java.nio.ByteBuffer
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+import scodec.bits.{BitVector, ByteOrdering}
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+private[scodec] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Double]:
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  private val byteOrder = ordering.toJava
+
+  override def sizeBound = SizeBound.exact(64)
+
+  override def encode(value: Double) =
+    val buffer = ByteBuffer.allocate(8).order(byteOrder).putDouble(value).nn
+    buffer.flip()
+    Attempt.successful(BitVector.view(buffer))
+
+  override def decode(buffer: BitVector) =
+    buffer.acquire(64) match
+      case Left(_) => Attempt.failure(Err.insufficientBits(64, buffer.size))
+      case Right(b) =>
+        Attempt.successful(
+          DecodeResult(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble, buffer.drop(64))
+        )
+
+  override def toString = "double"

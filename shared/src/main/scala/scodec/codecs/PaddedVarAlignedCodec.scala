@@ -29,16 +29,37 @@
  */
 
 package scodec
+package codecs
 
+import scodec.{Codec, Err}
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
-  */
-case class DecodeResult[+A](value: A, remainder: BitVector):
+class PaddedVarAlignedCodec[A](
+    sizeCodec: Codec[Long],
+    valueCodec: Codec[A],
+    multipleForPadding: Long
+) extends Codec[A]:
 
-  /** Maps the supplied function over the decoded value. */
-  def map[B](f: A => B): DecodeResult[B] = DecodeResult(f(value), remainder)
+  def calculatePadding(i: Long): Long =
+    (multipleForPadding - (i % multipleForPadding)) % multipleForPadding
 
-  /** Maps the supplied function over the remainder. */
-  def mapRemainder(f: BitVector => BitVector): DecodeResult[A] = DecodeResult(value, f(remainder))
+  val decoder = for
+    size <- sizeCodec
+    a <- codecs.fixedSizeBits(size, valueCodec)
+    _ <- codecs.ignore(calculatePadding(size))
+  yield a
+
+  def sizeBound = sizeCodec.sizeBound.atLeast
+
+  override def encode(a: A) =
+    for
+      encA <- valueCodec.encode(a)
+      padsize = calculatePadding(encA.size)
+      encSize <- sizeCodec.encode(encA.size).mapErr(e => fail(a, e.messageWithContext))
+    yield encSize ++ encA ++ BitVector.fill(padsize)(false)
+
+  private def fail(a: A, msg: String): Err =
+    Err.General(s"failed to encode size of [$a]: $msg", List("size"))
+
+  override def decode(buffer: BitVector) =
+    decoder.decode(buffer)
