@@ -34,7 +34,7 @@ package codecs
 import scodec.bits.BitVector
 import scala.annotation.tailrec
 
-private[scodec] final class PaddedFixedSizeCodec[A](
+private[codecs] final class PaddedFixedSizeCodec[A](
     size: Long,
     codec: Codec[A],
     padCodec: Long => Codec[Unit]

@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class RecoverCodec(target: Codec[Unit], lookahead: Boolean)
+private[codecs] final class RecoverCodec(target: Codec[Unit], lookahead: Boolean)
     extends Codec[Boolean]:
 
   def sizeBound = target.sizeBound

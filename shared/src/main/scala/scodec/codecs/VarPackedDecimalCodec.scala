@@ -35,7 +35,7 @@ import scodec.bits.BitVector
 
 import scala.annotation.tailrec
 
-private[scodec] object VarPackedDecimalCodec extends Codec[Long]:
+private[codecs] object VarPackedDecimalCodec extends Codec[Long]:
   override def sizeBound = SizeBound.bounded(1L, 9L)
 
   def encode(i: Long): Attempt[BitVector] =

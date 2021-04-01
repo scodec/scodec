@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class LimitedSizeCodec[A](limit: Long, codec: Codec[A]) extends Codec[A]:
+private[codecs] final class LimitedSizeCodec[A](limit: Long, codec: Codec[A]) extends Codec[A]:
 
   def sizeBound =
     val sz = codec.sizeBound

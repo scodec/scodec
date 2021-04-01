@@ -38,7 +38,7 @@ import scodec.bits.{BitVector, ByteOrdering}
 
 import scala.annotation.tailrec
 
-private[scodec] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long]:
+private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long]:
   import VarLongCodec.*
 
   override def sizeBound = SizeBound.bounded(1L, 9L)
@@ -119,7 +119,8 @@ private[scodec] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
         runDecodingLE(buffer.drop(8L), nextByte, nextValue)
     else
       Attempt.successful(DecodeResult(value, buffer))
-object VarLongCodec:
+
+private object VarLongCodec:
   private val RelevantDataBits = 0x7FL
   private val MoreBytesMask = ~RelevantDataBits.toInt
   private val MostSignificantBit = 0x80

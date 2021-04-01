@@ -38,7 +38,7 @@ import scodec.bits.BitVector
   *
   * Useful as a combinator with [[DiscriminatorCodec]].
   */
-private[scodec] final class ProvideCodec[A](value: A) extends Codec[A]:
+private[codecs] final class ProvideCodec[A](value: A) extends Codec[A]:
   override def sizeBound = SizeBound.exact(0)
   override def encode(a: A) = Attempt.successful(BitVector.empty)
   override def decode(bv: BitVector) = Attempt.successful(DecodeResult(value, bv))

@@ -35,7 +35,7 @@ import java.nio.ByteBuffer
 
 import scodec.bits.{BitVector, ByteOrdering}
 
-private[scodec] final class FloatCodec(ordering: ByteOrdering) extends Codec[Float]:
+private[codecs] final class FloatCodec(ordering: ByteOrdering) extends Codec[Float]:
 
   private val byteOrder = ordering.toJava
 

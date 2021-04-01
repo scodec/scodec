@@ -39,7 +39,7 @@ import scodec.bits.BitVector
 /**
   * Codec that supports encoding and decoding of [[java.security.cert.Certificate]]s using their default encoding.
   */
-private[scodec] final class CertificateCodec(certType: String) extends Codec[Certificate]:
+private[codecs] final class CertificateCodec(certType: String) extends Codec[Certificate]:
 
   def sizeBound = SizeBound.unknown
 

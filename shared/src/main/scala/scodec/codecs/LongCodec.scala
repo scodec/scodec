@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.{BitVector, ByteOrdering}
 
-private[scodec] final class LongCodec(bits: Int, signed: Boolean, ordering: ByteOrdering)
+private[codecs] final class LongCodec(bits: Int, signed: Boolean, ordering: ByteOrdering)
     extends Codec[Long]:
 
   require(

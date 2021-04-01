@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class ConditionalCodec[A](included: Boolean, codec: => Codec[A])
+private[codecs] final class ConditionalCodec[A](included: Boolean, codec: => Codec[A])
     extends Codec[Option[A]]:
 
   private lazy val evaluatedCodec = codec

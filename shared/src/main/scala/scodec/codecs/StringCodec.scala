@@ -37,7 +37,7 @@ import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
 
 import scodec.bits.BitVector
 
-private[scodec] final class StringCodec(charset: Charset) extends Codec[String]:
+private[codecs] final class StringCodec(charset: Charset) extends Codec[String]:
 
   override def sizeBound = SizeBound.unknown
 

@@ -35,7 +35,7 @@ import java.util.zip.{DataFormatException, Inflater}
 
 import scodec.bits.{BitVector, ByteVector}
 
-private[scodec] class ZlibCodec[A](
+private[codecs] class ZlibCodec[A](
     codec: Codec[A],
     level: Int,
     strategy: Int,

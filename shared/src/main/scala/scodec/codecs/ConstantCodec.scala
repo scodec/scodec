@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class ConstantCodec(constant: BitVector, validate: Boolean = true)
+private[codecs] final class ConstantCodec(constant: BitVector, validate: Boolean = true)
     extends Codec[Unit]:
 
   override def sizeBound = SizeBound.exact(constant.size)

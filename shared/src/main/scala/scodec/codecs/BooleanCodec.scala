@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] object BooleanCodec extends Codec[Boolean]:
+private[codecs] object BooleanCodec extends Codec[Boolean]:
 
   override def sizeBound = SizeBound.exact(1)
 

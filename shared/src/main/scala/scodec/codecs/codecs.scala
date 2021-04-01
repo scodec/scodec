@@ -1553,7 +1553,7 @@ def encrypted[A](codec: Codec[A], cipherFactory: CipherFactory): Codec[A] =
 def fixedSizeSignature[A](
     size: Int
 )(codec: Codec[A], signerFactory: SignerFactory): Codec[A] =
-  new SignatureCodec(codec, fixedSizeBytes(size.toLong, codecs.bits), signerFactory)
+  new SignatureCodec(codec, fixedSizeBytes(size.toLong, bits), signerFactory)
 
 /**
   * Codec that includes a signature of the encoded bits.
@@ -1676,7 +1676,7 @@ def discriminatorFallback[L, R](left: Codec[L], right: Codec[R]): Codec[Either[L
   * @return
   */
 def enumerated(discriminator: Codec[Int], enumeration: Enumeration) =
-  scodec.codecs.mappedEnum(
+  mappedEnum(
     discriminator,
     (enumeration.values: Set[enumeration.Value]).map(e => e -> e.id).toMap
   ) // https://github.com/scala/bug/issues/10906

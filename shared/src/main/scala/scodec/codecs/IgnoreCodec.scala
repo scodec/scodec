@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class IgnoreCodec(bits: Long) extends Codec[Unit]:
+private[codecs] final class IgnoreCodec(bits: Long) extends Codec[Unit]:
 
   override def sizeBound = SizeBound.exact(bits)
 

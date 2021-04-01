@@ -34,7 +34,7 @@ package codecs
 import scodec.{Codec, Err}
 import scodec.bits.BitVector
 
-class PaddedVarAlignedCodec[A](
+private class PaddedVarAlignedCodec[A](
     sizeCodec: Codec[Long],
     valueCodec: Codec[A],
     multipleForPadding: Long

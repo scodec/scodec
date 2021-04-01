@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.*
 
-private[scodec] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteOrdering) extends Codec[Int]:
+private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteOrdering) extends Codec[Int]:
 
   require(
     bits > 0 && bits <= (if signed then 32 else 31),

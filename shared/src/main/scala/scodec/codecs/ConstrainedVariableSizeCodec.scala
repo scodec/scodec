@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class ConstrainedVariableSizeCodec[A](
+private[codecs] final class ConstrainedVariableSizeCodec[A](
     sizeCodec: Codec[Long],
     valueCodec: Codec[A],
     minSize: Long,

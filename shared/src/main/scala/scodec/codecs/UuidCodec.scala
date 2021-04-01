@@ -34,7 +34,7 @@ package codecs
 import java.util.UUID
 import scodec.bits.BitVector
 
-private[scodec] object UuidCodec extends Codec[UUID]:
+private[codecs] object UuidCodec extends Codec[UUID]:
 
   private val mkUUID: (Long, Long) => UUID = new UUID(_, _)
 

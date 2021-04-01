@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class VariableSizeDelimitedCodec[A](
+private[codecs] final class VariableSizeDelimitedCodec[A](
     delimiterCodec: Codec[Unit],
     valueCodec: Codec[A],
     multipleValueSize: Long = 0L

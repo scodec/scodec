@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.{BitVector, ByteOrdering}
 
-private[scodec] final class VarIntCodec(ordering: ByteOrdering) extends Codec[Int]:
+private[codecs] final class VarIntCodec(ordering: ByteOrdering) extends Codec[Int]:
   private val long = new VarLongCodec(ordering).xmap(_.toInt, VarIntCodec.toPositiveLong)
 
   override def sizeBound =
@@ -46,7 +46,8 @@ private[scodec] final class VarIntCodec(ordering: ByteOrdering) extends Codec[In
     long.decode(buffer)
 
   override def toString = "variable-length integer"
-object VarIntCodec:
+
+private object VarIntCodec:
   private val NegativeIntSignBit = Int.MaxValue.toLong + 1L
 
   // toLong left-pads with `1` if the int is negative which cannot be encoded by

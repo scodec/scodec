@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[Byte]:
+private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[Byte]:
 
   require(
     bits > 0 && bits <= (if signed then 8 else 7),

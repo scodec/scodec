@@ -126,7 +126,7 @@ object DeMultiplexer:
       case i if (i % delimiter.size) == 0 => (bits.take(i), bits.drop(i + delimiter.size))
       case i                              => delimited(bits, delimiter, i + delimiter.size)
 
-private[scodec] class VectorMultiplexedCodec[A](
+private[codecs] class VectorMultiplexedCodec[A](
     mux: (BitVector, BitVector) => BitVector,
     deMux: BitVector => (BitVector, BitVector),
     codec: Codec[A]
@@ -139,7 +139,7 @@ private[scodec] class VectorMultiplexedCodec[A](
 
   override def toString: String = s"vectorMultiplexed($codec, $mux, $deMux)"
 
-private[scodec] class ListMultiplexedCodec[A](
+private[codecs] class ListMultiplexedCodec[A](
     mux: (BitVector, BitVector) => BitVector,
     deMux: BitVector => (BitVector, BitVector),
     codec: Codec[A]

@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[scodec] final class ListCodec[A](codec: Codec[A], limit: Option[Int] = None)
+private[codecs] final class ListCodec[A](codec: Codec[A], limit: Option[Int] = None)
     extends Codec[List[A]]:
 
   def sizeBound = limit match

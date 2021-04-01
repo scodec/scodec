@@ -110,7 +110,7 @@ object CipherFactory:
 
 
 /** @see [[encrypted]] */
-private[scodec] final class CipherCodec[A](codec: Codec[A], cipherFactory: CipherFactory)
+private[codecs] final class CipherCodec[A](codec: Codec[A], cipherFactory: CipherFactory)
     extends Codec[A]:
 
   override def sizeBound = SizeBound.unknown
