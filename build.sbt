@@ -48,6 +48,8 @@ ThisBuild / fatalWarningsInCI := false
 ThisBuild / mimaBinaryIssueFilters ++= Seq(
 )
 
+ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+
 lazy val root = project
   .in(file("."))
   .aggregate(testkitJVM, testkitJS, coreJVM, coreJS, unitTests, benchmarks)
