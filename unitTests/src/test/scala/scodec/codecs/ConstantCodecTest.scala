@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class ConstantCodecTest extends CodecSuite {
+class ConstantCodecTest extends CodecSuite:
 
   test("constant - fail to decode when codec does not match") {
     assertEquals(constant(1).decode(hex"02".bits), Attempt.failure(
@@ -46,4 +46,3 @@ class ConstantCodecTest extends CodecSuite {
       DecodeResult((), BitVector.empty)
     ))
   }
-}

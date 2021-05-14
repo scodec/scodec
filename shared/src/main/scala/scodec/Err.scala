@@ -38,7 +38,7 @@ package scodec
   * This type is not sealed so that codecs can return domain specific
   * subtypes and dispatch on those subtypes.
   */
-trait Err {
+trait Err:
 
   /** Gets a description of the error. */
   def message: String
@@ -52,46 +52,42 @@ trait Err {
 
   /** Gets a description of the error with the context identifiers prefixing the message. */
   def messageWithContext: String =
-    (if (context.isEmpty) "" else context.mkString("", "/", ": ")) + message
+    (if context.isEmpty then "" else context.mkString("", "/", ": ")) + message
 
   /** Returns a new error with the specified context identifier pushed in to the context stack. */
   def pushContext(ctx: String): Err
 
   override def toString = messageWithContext
-}
 
 /** Companion for [[Err]]. */
-object Err {
+object Err:
 
-  final case class General(message: String, context: List[String]) extends Err {
+  case class General(message: String, context: List[String]) extends Err:
     def this(message: String) = this(message, Nil)
     def pushContext(ctx: String) = copy(context = ctx :: context)
-  }
 
-  final case class InsufficientBits(needed: Long, have: Long, context: List[String]) extends Err {
+  case class InsufficientBits(needed: Long, have: Long, context: List[String]) extends Err:
     def this(needed: Long, have: Long) = this(needed, have, Nil)
     def message = s"cannot acquire $needed bits from a vector that contains $have bits"
     def pushContext(ctx: String) = copy(context = ctx :: context)
-  }
 
-  final case class MatchingDiscriminatorNotFound[A](a: A, context: List[String]) extends Err {
+  case class MatchingDiscriminatorNotFound[A](a: A, context: List[String]) extends Err:
     def this(a: A) = this(a, Nil)
     def message = s"could not find matching case for $a"
     def pushContext(ctx: String) = copy(context = ctx :: context)
-  }
 
-  final case class Composite(errs: List[Err], context: List[String]) extends Err {
+  case class Composite(errs: List[Err], context: List[String]) extends Err:
     def this(errs: List[Err]) = this(errs, Nil)
     def message: String = errs.map(_.message).mkString("composite errors (", ",", ")")
     def push(err: Err) = copy(errs = err :: errs)
     def pushContext(ctx: String): Err = copy(context = ctx :: context)
-  }
 
   def apply(message: String): Err = new General(message)
+
   def apply(errs: List[Err]): Err = new Composite(errs)
-  def fromThrowable(t: Throwable): Err = {
+
+  def fromThrowable(t: Throwable): Err =
     val m = t.getMessage
-    new General(if (m == null) t.getClass.getSimpleName.nn else m)
-  }
+    new General(if m == null then t.getClass.getSimpleName.nn else m)
+
   def insufficientBits(needed: Long, have: Long): Err = new InsufficientBits(needed, have)
-}

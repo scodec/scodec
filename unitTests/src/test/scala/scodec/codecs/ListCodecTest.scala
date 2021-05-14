@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class ListCodecTest extends CodecSuite {
+class ListCodecTest extends CodecSuite:
 
   test("limit decoding to the specified number of records") {
     val codec = listOfN(provide(10), uint8)
@@ -61,4 +61,3 @@ class ListCodecTest extends CodecSuite {
       Err.insufficientBits(80, 40)
     ))
   }
-}

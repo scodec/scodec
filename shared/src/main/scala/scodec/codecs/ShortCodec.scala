@@ -34,33 +34,32 @@ package codecs
 import scodec.bits.{BitVector, ByteOrdering}
 
 private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: ByteOrdering)
-    extends Codec[Short] {
+    extends Codec[Short]:
 
   require(
-    bits > 0 && bits <= (if (signed) 16 else 15),
+    bits > 0 && bits <= (if signed then 16 else 15),
     "bits must be in range [1, 16] for signed and [1, 15] for unsigned"
   )
 
-  val MaxValue = ((1 << (if (signed) (bits - 1) else bits)) - 1).toShort
-  val MinValue = (if (signed) -(1 << (bits - 1)) else 0).toShort
+  val MaxValue = ((1 << (if signed then (bits - 1) else bits)) - 1).toShort
+  val MinValue = (if signed then -(1 << (bits - 1)) else 0).toShort
 
   private val bitsL = bits.toLong
 
-  private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} short"
+  private def description = s"$bits-bit ${if signed then "signed" else "unsigned"} short"
 
   override def sizeBound = SizeBound.exact(bits.toLong)
 
   override def encode(s: Short) =
-    if (s > MaxValue) {
+    if s > MaxValue then
       Attempt.failure(Err(s"$s is greater than maximum value $MaxValue for $description"))
-    } else if (s < MinValue) {
+    else if s < MinValue then
       Attempt.failure(Err(s"$s is less than minimum value $MinValue for $description"))
-    } else {
+    else
       Attempt.successful(BitVector.fromShort(s, bits, ordering))
-    }
 
   override def decode(buffer: BitVector) =
-    if (buffer.sizeGreaterThanOrEqual(bitsL))
+    if buffer.sizeGreaterThanOrEqual(bitsL) then
       Attempt.successful(
         DecodeResult(buffer.take(bitsL).toShort(signed, ordering), buffer.drop(bitsL))
       )
@@ -68,4 +67,3 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
       Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
 
   override def toString = description
-}

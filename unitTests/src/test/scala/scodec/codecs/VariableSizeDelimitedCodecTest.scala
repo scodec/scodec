@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class VariableSizeDelimitedCodecTest extends CodecSuite {
+class VariableSizeDelimitedCodecTest extends CodecSuite:
 
   test("encode value followed by delimiter") {
     assertEquals(variableSizeDelimited(constant(0), utf8, 8).encode("test"), Attempt.successful(
@@ -54,4 +54,3 @@ class VariableSizeDelimitedCodecTest extends CodecSuite {
       DecodeResult("test", BitVector(1, 2, 3))
     ))
   }
-}

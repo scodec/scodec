@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class BooleanCodecTest extends CodecSuite {
+class BooleanCodecTest extends CodecSuite:
 
   test("bool - roundtrip") { roundtripAll(bool, List(true, false)) }
   test("bool - encode") {
@@ -73,4 +73,3 @@ class BooleanCodecTest extends CodecSuite {
   test("bool(n) - return an error when decoding with too few bits") {
     assertEquals(bool(8).decode(BitVector.low(4)), Attempt.failure(Err.insufficientBits(8, 4)))
   }
-}

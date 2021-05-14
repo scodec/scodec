@@ -34,20 +34,19 @@ package codecs
 import scodec.bits.BitVector
 
 private[codecs] final class ConditionalCodec[A](included: Boolean, codec: => Codec[A])
-    extends Codec[Option[A]] {
+    extends Codec[Option[A]]:
 
   private lazy val evaluatedCodec = codec
 
-  override def sizeBound = if (included) evaluatedCodec.sizeBound else SizeBound.exact(0)
+  override def sizeBound = if included then evaluatedCodec.sizeBound else SizeBound.exact(0)
 
   override def encode(a: Option[A]) =
-    a.filter(_ => included) match {
+    a.filter(_ => included) match
       case None    => Attempt.successful(BitVector.empty)
       case Some(a) => evaluatedCodec.encode(a)
-    }
 
   override def decode(buffer: BitVector) =
-    if (included)
+    if included then
       evaluatedCodec.decode(buffer).map {
         _.map(result => Some(result))
       }
@@ -55,6 +54,5 @@ private[codecs] final class ConditionalCodec[A](included: Boolean, codec: => Cod
       Attempt.successful(DecodeResult(None, buffer))
 
   override def toString =
-    if (included) s"conditional(true, $evaluatedCodec)" else "conditional(false, ?)"
+    if included then s"conditional(true, $evaluatedCodec)" else "conditional(false, ?)"
 
-}

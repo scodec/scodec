@@ -34,7 +34,7 @@ package codecs
 import org.scalacheck.Prop.forAll
 import scodec.bits.BitVector
 
-class RecoverCodecTest extends CodecSuite {
+class RecoverCodecTest extends CodecSuite:
 
   property("recover - always code a value for true value") {
     forAll { (i: Int) =>
@@ -63,7 +63,7 @@ class RecoverCodecTest extends CodecSuite {
   property("recover - decode a false when target codec fails to decode") {
     forAll { (i: Int) =>
       val codec = recover(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty)
+      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty): @unchecked
       assert(rest.isEmpty)
       assert(!b)
     }
@@ -71,12 +71,11 @@ class RecoverCodecTest extends CodecSuite {
 
   property("recover - decode the wrong value as false and backtrack") {
     forAll { (i1: Int, i2: Int) =>
-      if (i1 != i2 && i1 >= 0 && i2 >= 0) {
+      if (i1 != i2 && i1 >= 0 && i2 >= 0)
         val codec = recover(constant(BitVector.fromInt(i1)))
-        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(i2))
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(i2)): @unchecked
         assertEquals(rest, BitVector.fromInt(i2))
         assert(!b)
-      }
     }
   }
 
@@ -107,7 +106,7 @@ class RecoverCodecTest extends CodecSuite {
   property("lookahead - decode a false when target codec fails to decode") {
     forAll { (i: Int) =>
       val codec = lookahead(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty)
+      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.empty): @unchecked
       assert(rest.isEmpty)
       assert(!b)
     }
@@ -115,12 +114,10 @@ class RecoverCodecTest extends CodecSuite {
 
   property("lookahead - decode the wrong value as false and backtrack") {
     forAll { (i1: Int, i2: Int) =>
-      if (i1 != i2 && i1 >= 0 && i2 >= 0) {
+      if (i1 != i2 && i1 >= 0 && i2 >= 0)
         val codec = lookahead(constant(BitVector.fromInt(i1)))
-        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(i2))
+        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(i2)): @unchecked
         assertEquals(rest, BitVector.fromInt(i2))
         assert(!b)
-      }
     }
   }
-}

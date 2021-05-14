@@ -31,12 +31,12 @@
 package scodec
 package codecs
 
-import org.scalacheck._
+import org.scalacheck.*
 import Prop.forAll
 import scodec.bits.ByteVector
 
 /** Test the Fletcher checksum functionality. */
-class FletcherChecksumTest extends CodecSuite {
+class FletcherChecksumTest extends CodecSuite:
 
   /**
     *  http://en.wikipedia.org/wiki/Fletcher's_checksum
@@ -63,10 +63,8 @@ class FletcherChecksumTest extends CodecSuite {
     forAll(Gen.posNum[Int])((n: Int) => pattern(n, 0, Array(0x0, 0x0)))
   }
 
-  private def pattern(n: Int, delta: Int, expected: Array[Byte]): Unit = {
+  private def pattern(n: Int, delta: Int, expected: Array[Byte]): Unit =
     val signer = ChecksumFactory.fletcher16.newSigner
     signer.update(ByteVector.fill(3L * n + delta)(0xAA).toArray)
     assert(signer.verify(expected))
     ()
-  }
-}

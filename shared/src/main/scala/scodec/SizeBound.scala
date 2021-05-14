@@ -37,7 +37,7 @@ package scodec
   * @param lowerBound Minimum number of bits
   * @param upperBound Maximum number of bits
   */
-case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
+case class SizeBound(lowerBound: Long, upperBound: Option[Long]):
   require(lowerBound >= 0)
   require(upperBound.getOrElse(0L) >= 0)
   require(upperBound.getOrElse(lowerBound) >= lowerBound)
@@ -45,10 +45,9 @@ case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
   /**
     * Returns the exact size of the encoded bits. Defined when the lower bound is equal to the upper bound.
     */
-  def exact: Option[Long] = upperBound match {
+  def exact: Option[Long] = upperBound match
     case Some(u) if lowerBound == u => upperBound
     case _                          => None
-  }
 
   /** Returns a new bound with the upper bound removed. */
   def atLeast: SizeBound = copy(upperBound = None)
@@ -70,18 +69,16 @@ case class SizeBound(lowerBound: Long, upperBound: Option[Long]) {
       that: SizeBound
   )(lop: (Long, Long) => Long, uop: (Long, Long) => Long): SizeBound = SizeBound(
     lowerBound = lop(lowerBound, that.lowerBound),
-    upperBound = for { x <- upperBound; y <- that.upperBound } yield uop(x, y)
+    upperBound = for  x <- upperBound; y <- that.upperBound  yield uop(x, y)
   )
 
-  override def toString = upperBound match {
+  override def toString = upperBound match
     case Some(u) if lowerBound == u => u.toString
     case Some(u)                    => s"[$lowerBound, $u]"
     case None                       => s"[$lowerBound, ∞)"
-  }
-}
 
 /** Companion for [[SizeBound]]. */
-object SizeBound {
+object SizeBound:
 
   /** Creates a bound for an exact size. */
   def exact(size: Long): SizeBound = SizeBound(size, Some(size))
@@ -100,5 +97,4 @@ object SizeBound {
 
   /** Returns the union of all of the specified bounds, or an exact 0 size if the specified collection is empty. */
   def choice(bounds: Iterable[SizeBound]): SizeBound =
-    if (bounds.isEmpty) SizeBound.exact(0) else bounds.reduce(_ | _)
-}
+    if bounds.isEmpty then SizeBound.exact(0) else bounds.reduce(_ | _)

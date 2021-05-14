@@ -64,10 +64,6 @@ import DiscriminatorCodec.{Case, Prism}
   * value codec. For example, `framing(new CodecTransformation { def apply[X](c: Codec[X]) = variableSizeBytes(uint8, c) })`.
   *
   * @see [[discriminated]]
-  * @group combinators
-  *
-  * @groupname discriminator Discriminator Support
-  * @groupprio discriminator 1
   *
   * @param by codec that encodec/decodes the tag value
   * @param cases cases, ordered from highest priority to lowest priority, that handle subsets of `A`
@@ -87,7 +83,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     cases: Vector[Case[A, B, Any]],
     framing: [x] => Codec[x] => Codec[x]
 ) extends Codec[A]
-    with KnownDiscriminatorType[B] {
+    with KnownDiscriminatorType[B]:
 
   /**
     * $methodCaseCombinator
@@ -97,7 +93,6 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * @param toRep $paramToRep
     * @param fromRep $paramFromRep
     * @param cr $paramCr
-    * @group discriminator
     */
   def caseO[R](
       tag: B
@@ -112,7 +107,6 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * @param toRep $paramToRepPartial
     * @param fromRep $paramFromRep
     * @param cr $paramCr
-    * @group discriminator
     */
   def caseP[R](
       tag: B
@@ -126,7 +120,6 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * @param tag $paramTag
     * @param toRep $paramToRep
     * @param cr $paramCr
-    * @group discriminator
     */
   def subcaseO[R <: A](tag: B)(toRep: A => Option[R])(cr: Codec[R]): DiscriminatorCodec[A, B] =
     caseO(tag)(toRep)((r: R) => r)(cr)
@@ -138,7 +131,6 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * @param tag $paramTag
     * @param toRep $paramToRepPartial
     * @param cr $paramCr
-    * @group discriminator
     */
   def subcaseP[R <: A](
       tag: B
@@ -155,13 +147,12 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * @tparam R $typeR
     * @param tag $paramTag
     * @param cr $paramCr
-    * @group discriminator
     */
   def typecase[R <: A: ClassTag](tag: B, cr: Codec[R]): DiscriminatorCodec[A, B] =
-    subcaseO(tag)(a => if (matchesClass[R](a)) Some(a.asInstanceOf[R]) else None)(cr)
+    subcaseO(tag)(a => if matchesClass[R](a) then Some(a.asInstanceOf[R]) else None)(cr)
 
-  private def matchesClass[R](a: A)(implicit ctr: ClassTag[R]) = {
-    val clazz = ctr match {
+  private def matchesClass[R](a: A)(using ctr: ClassTag[R]) =
+    val clazz = ctr match
       case ClassTag.Byte    => classOf[java.lang.Byte]
       case ClassTag.Char    => classOf[java.lang.Character]
       case ClassTag.Short   => classOf[java.lang.Short]
@@ -171,23 +162,20 @@ final class DiscriminatorCodec[A, B] private[codecs] (
       case ClassTag.Double  => classOf[java.lang.Double]
       case ClassTag.Boolean => classOf[java.lang.Boolean]
       case ct               => ct.runtimeClass
-    }
     clazz.isAssignableFrom(a.getClass)
-  }
 
   def singleton[R <: A](tag: B, value: R): DiscriminatorCodec[A, B] =
-    subcaseP(tag) { case v if value == v => v }(provide(value))
+    subcaseP(tag) { case v if value == v => v }(codecs.provide(value))
 
   private def appendCase[R](c: Case[A, B, R]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](by, cases :+ c.asInstanceOf[Case[A, B, Any]], framing)
 
-  private val matcher: B => Attempt[Case[A, B, Any]] = {
+  private val matcher: B => Attempt[Case[A, B, Any]] =
     def errOrCase(b: B, opt: Option[Case[A, B, Any]]) =
       Attempt.fromOption(opt, new UnknownDiscriminator(b))
     // we reverse the cases so earlier cases 'win' in event of overlap
     val tbl = cases.reverse.map(kase => kase.tag -> kase).toMap
     b => errOrCase(b, tbl.get(b))
-  }
 
   /**
     * Replaces the current framing logic with the specified codec transformation.
@@ -195,7 +183,6 @@ final class DiscriminatorCodec[A, B] private[codecs] (
     * Every representative codec is wrapped with the framing logic when encoding/decoding.
     *
     * @param framing new framing logic
-    * @group discriminator
     */
   def framing(framing: [x] => Codec[x] => Codec[x]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](by, cases, framing)
@@ -203,7 +190,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
   def sizeBound =
     by.sizeBound + SizeBound.choice(cases.map(c => framing(c.prism.repCodec).sizeBound))
 
-  def encode(a: A) = {
+  def encode(a: A) =
     val itr = cases.iterator
       .flatMap { k =>
         k.prism
@@ -217,25 +204,23 @@ final class DiscriminatorCodec[A, B] private[codecs] (
           .map(List(_))
           .getOrElse(List())
       }
-    if (itr.hasNext) itr.next
+    if itr.hasNext then itr.next
     else Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
-  }
 
   def decode(bits: BitVector) =
-    (for {
+    (for
       b <- by
       k <- Decoder.liftAttempt(matcher(b))
       r <- framing(k.prism.repCodec)
-    } yield k.prism.review(r)).decode(bits)
+    yield k.prism.review(r)).decode(bits)
 
   override def toString = s"discriminated($by)"
-}
 
 /** Companion for [[Discriminator]]. */
-private[codecs] object DiscriminatorCodec {
+private[codecs] object DiscriminatorCodec:
 
   /** Provides an injection between `A` and `R` and a `Codec[R]`. */
-  private[codecs] final case class Prism[A, R](
+  private[codecs] case class Prism[A, R](
       preview: A => Option[R],
       review: R => A,
       repCodec: Codec[R]
@@ -244,5 +229,4 @@ private[codecs] object DiscriminatorCodec {
   /**
     * Maps a discrimination tag to a prism that supports encoding/decoding a value of type `A`.
     */
-  private[codecs] final case class Case[A, B, R](tag: B, prism: Prism[A, R])
-}
+  private[codecs] case class Case[A, B, R](tag: B, prism: Prism[A, R])

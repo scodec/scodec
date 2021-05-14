@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class ConstrainedVariableSizeCodecTest extends CodecSuite {
+class ConstrainedVariableSizeCodecTest extends CodecSuite:
 
   test("roundtrip") {
     roundtripAll(
@@ -85,4 +85,3 @@ class ConstrainedVariableSizeCodecTest extends CodecSuite {
     assertEquals(constrainedVariableSizeBytes(uint16, utf8, 2).decode(hex"00 18 30 30 30".bits), Attempt
       .Failure(Err("Size out of bounds: 0 <= 24 <= 16 is not true")))
   }
-}

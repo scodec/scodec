@@ -33,9 +33,9 @@ package codecs
 
 import org.scalacheck.{Arbitrary, Gen}
 import Arbitrary.arbitrary
-import scodec.bits._
+import scodec.bits.*
 
-class VectorCodecTest extends CodecSuite {
+class VectorCodecTest extends CodecSuite:
 
   test("performance") {
     val codec = vector(int32).complete
@@ -106,4 +106,3 @@ class VectorCodecTest extends CodecSuite {
       Err.insufficientBits(80, 40)
     ))
   }
-}

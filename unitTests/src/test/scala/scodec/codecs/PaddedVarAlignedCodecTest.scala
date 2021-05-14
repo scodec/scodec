@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class PaddedVarAlignedCodecTest extends CodecSuite {
+class PaddedVarAlignedCodecTest extends CodecSuite:
 
   test("roundtrip") {
     roundtrip(paddedVarAlignedBytes(uint8, utf8, 4), "ab")
@@ -44,32 +44,31 @@ class PaddedVarAlignedCodecTest extends CodecSuite {
   test("pad to the correct length") {
     assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
       .encode("a")
-      .require, 0x0161000000)
+      .require, hex"0161000000".bits)
     assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
       .encode("aaa")
-      .require, 0x0361616100)
+      .require, hex"0361616100".bits)
     assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
       .encode("aaaa")
-      .require, 0x461616161)
+      .require, hex"461616161".bits)
   }
 
   test("pad on a multiplier") {
     assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 3)
       .encode("aaa")
-      .require, 0x03616161)
+      .require, hex"03616161".bits)
     assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 3)
       .encode("aaaa")
-      .require, 0x04616161610000)
+      .require, hex"04616161610000".bits)
   }
 
   test("ignore padded") {
     assertEquals(paddedVarAlignedBytes(uint8, utf8, 4)
-      .decode(0x0161000000)
+      .decode(hex"0161000000".bits)
       .require
       .value, "a")
     assertEquals(paddedVarAlignedBytes(uint8, utf8, 4)
-      .decode(0x0361616100)
+      .decode(hex"0361616100".bits)
       .require
       .value, "aaa")
   }
-}

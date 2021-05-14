@@ -38,7 +38,7 @@ private[codecs] final class ConstrainedVariableSizeCodec[A](
     valueCodec: Codec[A],
     minSize: Long,
     maxSize: Long
-) extends Codec[A] {
+) extends Codec[A]:
   require(minSize < maxSize)
   require(minSize > -1)
 
@@ -48,11 +48,10 @@ private[codecs] final class ConstrainedVariableSizeCodec[A](
   private def checkBoundaries(sz: Long) = minSizeBits <= sz && sz <= maxSizeBits
 
   private val decoder = sizeCodec.flatMap { sz =>
-    if (checkBoundaries(sz)) {
-      fixedSizeBits(sz, valueCodec).complete
-    } else {
-      fail[A](Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
-    }
+    if checkBoundaries(sz) then
+      codecs.fixedSizeBits(sz, valueCodec).complete
+    else
+      codecs.fail[A](Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
   }
 
   def sizeBound = sizeCodec.sizeBound.atLeast
@@ -60,7 +59,7 @@ private[codecs] final class ConstrainedVariableSizeCodec[A](
   override def encode(a: A) = valueCodec.complete.encode(a).flatMap { enc =>
     val sz = enc.size
 
-    if (checkBoundaries(sz))
+    if checkBoundaries(sz) then
       sizeCodec.encode(sz).map(_ ++ enc).mapErr(e => failMsg(a, e.messageWithContext))
     else
       Attempt.failure(Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
@@ -74,4 +73,3 @@ private[codecs] final class ConstrainedVariableSizeCodec[A](
     decoder.decode(buffer)
 
   override def toString = s"constrainedVariableSizeBits($sizeCodec, $valueCodec)"
-}

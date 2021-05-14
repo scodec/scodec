@@ -28,13 +28,13 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package scodec.codecs
+package scodec
+package codecs
 
 import org.scalacheck.{Arbitrary, Gen}
-import scodec._
-import scodec.bits._
+import scodec.bits.*
 
-class MultiplexedCodecTest extends CodecSuite {
+class MultiplexedCodecTest extends CodecSuite:
 
   val codec = listDelimited(BitVector(' '), ascii)
   val bits = ascii.encode("i am delimited").require
@@ -88,4 +88,3 @@ class MultiplexedCodecTest extends CodecSuite {
     println("Roundtrip averages:")
     sizes.zip(averages).foreach { case (s, average) => println(s"  $s - $average") }
   }
-}

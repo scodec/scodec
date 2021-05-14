@@ -34,7 +34,7 @@ package codecs
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
 
-class VarIntCodecTest extends CodecSuite {
+class VarIntCodecTest extends CodecSuite:
   def check(low: Int, high: Int, size: Long)(codec: Codec[Int]) =
     forAll(Gen.choose(low, high)) { n =>
       assertEquals(codec.encode(n).map(_.bytes.size), Attempt.successful(size))
@@ -55,4 +55,3 @@ class VarIntCodecTest extends CodecSuite {
   test("vintL - use 4 bytes for ints <= 28 bits")(check(2097152, 268435455, 4)(vintL))
   test("vintL - use 5 bytes for ints <= 32 bits")(check(268435456, Int.MaxValue, 5)(vintL))
   test("vintL - use 5 bytes for negative ints")(check(Int.MinValue, -1, 5)(vintL))
-}

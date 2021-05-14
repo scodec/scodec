@@ -28,15 +28,15 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package scodec.codecs
+package scodec
+package codecs
 
-import scodec._
 import scodec.bits.{BitVector, ByteVector}
 
 /**
   * Provides methods to create a "checksum codec" (encodes a bit-range to a bit-checksum and decodes bits to a bit-range).
   */
-object ChecksumCodec {
+object ChecksumCodec:
 
   /**
     * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
@@ -155,11 +155,9 @@ object ChecksumCodec {
       expected: BitVector,
       actual: BitVector,
       context: List[String] = Nil
-  ) extends Err {
+  ) extends Err:
 
     def message: String = s"checksum mismatch for bits: $bits, expected: $expected, actual: $actual"
 
     def pushContext(ctx: String): Err = copy(context = ctx :: context)
-  }
 
-}

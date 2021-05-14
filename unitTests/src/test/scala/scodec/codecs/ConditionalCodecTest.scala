@@ -28,20 +28,19 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package scodec.codecs
+package scodec
+package codecs
 
-import scodec._
-import scodec.bits._
+import scodec.bits.*
 
-class ConditionalCodecTest extends CodecSuite {
+class ConditionalCodecTest extends CodecSuite:
 
   test("not evaluate if condition is false when encoding") {
     var called = false
 
-    def retCodec: Codec[String] = {
+    def retCodec: Codec[String] =
       called = true
       ascii
-    }
 
     val result = conditional(false, retCodec).encode(Some("00"))
 
@@ -52,10 +51,9 @@ class ConditionalCodecTest extends CodecSuite {
   test("evaluate if condition is true when encoding") {
     var called = false
 
-    def retCodec: Codec[String] = {
+    def retCodec: Codec[String] =
       called = true
       ascii
-    }
 
     val result = conditional(true, retCodec).encode(Some("00"))
 
@@ -66,10 +64,9 @@ class ConditionalCodecTest extends CodecSuite {
   test("not evaluate if condition is false when decoding") {
     var called = false
 
-    def retCodec: Codec[String] = {
+    def retCodec: Codec[String] =
       called = true
       ascii
-    }
 
     val result = conditional(false, retCodec).decode(hex"3030".bits)
 
@@ -80,10 +77,9 @@ class ConditionalCodecTest extends CodecSuite {
   test("evaluate if condition is true when decoding") {
     var called = false
 
-    def retCodec: Codec[String] = {
+    def retCodec: Codec[String] =
       called = true
       ascii
-    }
 
     val result = conditional(true, retCodec).decode(hex"3030".bits)
 
@@ -91,4 +87,3 @@ class ConditionalCodecTest extends CodecSuite {
     assertEquals(result, Attempt.successful(DecodeResult(Some("00"), BitVector.empty)))
   }
 
-}

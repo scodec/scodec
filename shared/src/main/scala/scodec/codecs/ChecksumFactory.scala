@@ -39,7 +39,7 @@ import scodec.bits.ByteVector
 /**
   * Creates checksum implementations of [[SignerFactory]].
   */
-object ChecksumFactory {
+object ChecksumFactory:
 
   /** Creates a `java.security.Digest` factory for the specified algorithm. */
   def digest(algorithm: String): SignerFactory = new ChecksumFactory {
@@ -47,9 +47,8 @@ object ChecksumFactory {
   }
 
   /** Signer factory that does not have a distinct verifier. */
-  private trait ChecksumFactory extends SignerFactory {
+  private trait ChecksumFactory extends SignerFactory:
     def newVerifier: Signer = newSigner
-  }
 
   /** Fletcher-16 checksum. */
   val fletcher16: SignerFactory = new ChecksumFactory {
@@ -72,14 +71,13 @@ object ChecksumFactory {
   }
 
   /** `java.security.Digest` implementation of Signer. */
-  private class DigestSigner(impl: MessageDigest) extends Signer {
+  private class DigestSigner(impl: MessageDigest) extends Signer:
     def update(data: Array[Byte]): Unit = impl.update(data)
     def sign: Array[Byte] = impl.digest.nn
     def verify(signature: Array[Byte]): Boolean = MessageDigest.isEqual(impl.digest(), signature)
-  }
 
   /** http://en.wikipedia.org/wiki/Fletcher's_checksum */
-  private class Fletcher16Checksum extends Signer {
+  private class Fletcher16Checksum extends Signer:
     var checksum = (0, 0)
     def update(data: Array[Byte]): Unit =
       checksum = data.foldLeft(checksum) { (p, b) =>
@@ -88,20 +86,16 @@ object ChecksumFactory {
       }
     def sign: Array[Byte] = Array(checksum._1.asInstanceOf[Byte], checksum._2.asInstanceOf[Byte])
     def verify(signature: Array[Byte]): Boolean = Arrays.equals(sign, signature)
-  }
 
   /** `java.util.zip.Checksum` implementation of Signer. */
-  private class ZipChecksumSigner(impl: Checksum) extends Signer {
+  private class ZipChecksumSigner(impl: Checksum) extends Signer:
     def update(data: Array[Byte]): Unit = impl.update(data, 0, data.length)
     def sign: Array[Byte] = ByteVector.fromLong(impl.getValue()).drop(4).toArray
     def verify(signature: Array[Byte]): Boolean = MessageDigest.isEqual(sign, signature)
-  }
 
-  private class XorSigner extends Signer {
-    var data: Array[Byte] = _
+  private class XorSigner extends Signer:
+    var data: Array[Byte] = null
 
     def update(data: Array[Byte]): Unit = this.data = data
     def sign: Array[Byte] = Array(data.reduce((b1, b2) => (b1 ^ b2).toByte))
     def verify(signature: Array[Byte]): Boolean = sign.sameElements(signature)
-  }
-}

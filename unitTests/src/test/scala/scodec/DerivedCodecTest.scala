@@ -30,10 +30,10 @@
 
 package scodec
 
-import scodec.bits._
-import scodec.codecs._
+import scodec.bits.*
+import scodec.codecs.*
 
-class DerivedCodecTest extends CodecSuite {
+class DerivedCodecTest extends CodecSuite:
 
   sealed trait Parent derives Codec
   case class Foo(x: Int, y: Int, s: String) extends Parent derives Codec
@@ -63,7 +63,7 @@ class DerivedCodecTest extends CodecSuite {
   }
 
   test("derivation of case class codecs") {
-    assertBitsEqual(Codec[Foo].encode(Foo(1, 2, "Hello")).require, 0x00000001000000020000000548656c6c6f)
+    assertBitsEqual(Codec[Foo].encode(Foo(1, 2, "Hello")).require, hex"00000001000000020000000548656c6c6f".bits)
   }
 
   test("derivation of nested case class codecs, where component codecs are derived as well") {
@@ -88,4 +88,3 @@ class DerivedCodecTest extends CodecSuite {
   test("derivation of recursive ADTs") {
     roundtrip(Codec[Tree[Int]], Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
   }
-}

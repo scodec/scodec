@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class TupleCodecTest extends CodecSuite {
+class TupleCodecTest extends CodecSuite:
 
   case class Foo(x: Int, y: Int, s: String)
   case class Bar(x: Int)
@@ -99,4 +99,3 @@ class TupleCodecTest extends CodecSuite {
     ))
     roundtrip(values, (Some(1), Some(2), None))
   }
-}

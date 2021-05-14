@@ -33,24 +33,22 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[codecs] final class ByteAlignedCodec[A](codec: Codec[A]) extends Codec[A] {
+private[codecs] final class ByteAlignedCodec[A](codec: Codec[A]) extends Codec[A]:
 
-  private def padAmount(size: Long) = {
+  private def padAmount(size: Long) =
     val mod = size % 8
-    if (mod == 0) 0 else 8 - mod
-  }
+    if mod == 0 then 0 else 8 - mod
 
-  def sizeBound = {
+  def sizeBound =
     val sz = codec.sizeBound
     val lb = sz.lowerBound + padAmount(sz.lowerBound)
     val ub = sz.upperBound.map(ub => ub + padAmount(ub))
     SizeBound(lb, ub)
-  }
 
   def encode(a: A) =
     codec.encode(a).map { enc =>
       val pad = padAmount(enc.size)
-      if (pad == 0) enc
+      if pad == 0 then enc
       else enc.padTo(enc.size + pad)
     }
 
@@ -58,9 +56,8 @@ private[codecs] final class ByteAlignedCodec[A](codec: Codec[A]) extends Codec[A
     codec.decode(b).map { res =>
       val taken = b.size - res.remainder.size
       val pad = padAmount(taken)
-      if (pad == 0) res
+      if pad == 0 then res
       else DecodeResult(res.value, res.remainder.drop(pad))
     }
 
   override def toString = s"byteAligned($codec)"
-}

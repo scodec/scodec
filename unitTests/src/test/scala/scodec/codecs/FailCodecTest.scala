@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-class FailCodecTest extends CodecSuite {
+class FailCodecTest extends CodecSuite:
 
   // The scalatest fail method shadows this
   def fl[A](e: Err) = scodec.codecs.fail[A](e)
@@ -53,4 +53,3 @@ class FailCodecTest extends CodecSuite {
     assertEquals(codec.encode((4, "Hi")).isSuccessful, true)
     assertEquals(codec.encode((1, "Hi")), Attempt.failure(Err("must be even")))
   }
-}

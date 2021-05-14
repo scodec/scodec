@@ -33,9 +33,9 @@ package codecs
 
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
-import scodec.bits._
+import scodec.bits.*
 
-class PackedDecimalCodecTest extends CodecSuite {
+class PackedDecimalCodecTest extends CodecSuite:
   def check(low: Long, high: Long, size: Long)(codec: Codec[Long]) =
     forAll(Gen.choose(low, high)) { n =>
       assertEquals(codec.encode(n).map(_.bytes.size), Attempt.successful(size))
@@ -72,4 +72,3 @@ class PackedDecimalCodecTest extends CodecSuite {
       Attempt.successful(DecodeResult(10323L, BitVector.empty))
     )
   }
-}

@@ -31,10 +31,10 @@
 package scodec
 package examples
 
-import scodec.bits._
-import codecs._
+import scodec.bits.*
+import codecs.*
 
-class AdtExample extends CodecSuite {
+class AdtExample extends CodecSuite:
 
   sealed trait Sprocket derives Codec
   case class Woozle(count: Int, strength: Int) extends Sprocket
@@ -43,6 +43,5 @@ class AdtExample extends CodecSuite {
   test("ADT codec example") {
     val codec = Codec[Sprocket]
     val encodedWocket = codec.encode(Wocket(1, true)).require
-    assertBitsEqual(encodedWocket, 0x0100000001ff)
+    assertBitsEqual(encodedWocket, hex"0100000001ff".bits)
   }
-}

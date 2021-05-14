@@ -32,10 +32,10 @@ package scodec
 package examples
 
 import scodec.bits.{BitVector, ByteVector}
-import scodec.codecs._
+import scodec.codecs.*
 
 // Define MPEG codecs
-object MpegCodecs {
+object MpegCodecs:
 
   // Define case classes that describe MPEG packets
   //
@@ -52,10 +52,9 @@ object MpegCodecs {
       scramblingControl: Int,
       adaptationFieldControl: Int,
       continuityCounter: Int
-  ) {
+  ):
     def adaptationFieldIncluded: Boolean = adaptationFieldControl >= 2
     def payloadIncluded: Boolean = adaptationFieldControl == 1 || adaptationFieldControl == 3
-  }
 
   case class AdaptationFieldFlags(
       discontinuity: Boolean,
@@ -121,11 +120,10 @@ object MpegCodecs {
         ("payload" | conditional(hdr.payloadIncluded, bytes(184)))
     }
   }.as[MpegPacket]
-}
 
-class MpegPacketExample extends CodecSuite {
+class MpegPacketExample extends CodecSuite:
 
-  import MpegCodecs._
+  import MpegCodecs.*
 
   test("MpegPacket codec") {
     val pkt = MpegPacket(
@@ -137,4 +135,3 @@ class MpegPacketExample extends CodecSuite {
     val decoded = packetCodec.decode(encoded).require.value
     assertEquals(decoded, pkt)
   }
-}

@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class VariableSizeCodecTest extends CodecSuite {
+class VariableSizeCodecTest extends CodecSuite:
 
   test("roundtrip") {
     roundtripAll(variableSizeBits(uint8, utf8), Seq("", "test"))
@@ -81,4 +81,3 @@ class VariableSizeCodecTest extends CodecSuite {
       bin"00000001 10000000"
     ))
   }
-}

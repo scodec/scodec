@@ -33,34 +33,31 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[Byte] {
+private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[Byte]:
 
   require(
-    bits > 0 && bits <= (if (signed) 8 else 7),
+    bits > 0 && bits <= (if signed then 8 else 7),
     "bits must be in range [1, 8] for signed and [1, 7] for unsigned"
   )
 
-  val MaxValue = ((1 << (if (signed) (bits - 1) else bits)) - 1).toByte
-  val MinValue = (if (signed) -(1 << (bits - 1)) else 0).toByte
+  private val MaxValue = ((1 << (if signed then (bits - 1) else bits)) - 1).toByte
+  private val MinValue = (if signed then -(1 << (bits - 1)) else 0).toByte
 
-  private def description = s"$bits-bit ${if (signed) "signed" else "unsigned"} byte"
+  private def description = s"$bits-bit ${if signed then "signed" else "unsigned"} byte"
 
   override def sizeBound = SizeBound.exact(bits.toLong)
 
   override def encode(b: Byte) =
-    if (b > MaxValue) {
+    if b > MaxValue then
       Attempt.failure(Err(s"$b is greater than maximum value $MaxValue for $description"))
-    } else if (b < MinValue) {
+    else if b < MinValue then
       Attempt.failure(Err(s"$b is less than minimum value $MinValue for $description"))
-    } else {
+    else
       Attempt.successful(BitVector.fromByte(b, bits))
-    }
 
   override def decode(buffer: BitVector) =
-    buffer.acquire(bits.toLong) match {
+    buffer.acquire(bits.toLong) match
       case Left(_)  => Attempt.failure(Err.insufficientBits(bits.toLong, buffer.size))
       case Right(b) => Attempt.successful(DecodeResult(b.toByte(signed), buffer.drop(bits.toLong)))
-    }
 
   override def toString = description
-}

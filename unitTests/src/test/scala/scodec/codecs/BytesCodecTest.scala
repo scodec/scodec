@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class BytesCodecTest extends CodecSuite {
+class BytesCodecTest extends CodecSuite:
 
   test("roundtrip when input size match") { roundtrip(bytes(8), hex"0102030405060708") }
 
@@ -48,4 +48,3 @@ class BytesCodecTest extends CodecSuite {
       )
     ))
   }
-}

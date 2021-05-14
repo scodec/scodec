@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.{BitVector, ByteVector}
 
-class StringCodecTest extends CodecSuite {
+class StringCodecTest extends CodecSuite:
 
   test("ascii - roundtrip") {
     roundtripAll(ascii, Seq("test", "", "with\ttabs"))
@@ -88,4 +88,3 @@ class StringCodecTest extends CodecSuite {
       Err("UTF-8 cannot decode string from '0xf4ffffff'")
     ))
   }
-}

@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-class IgnoreCodecTest extends CodecSuite {
+class IgnoreCodecTest extends CodecSuite:
 
   // The scalatest ignore method shadows this
   def ign(size: Int) = scodec.codecs.ignore(size.toLong)
@@ -43,4 +43,3 @@ class IgnoreCodecTest extends CodecSuite {
     assertEquals(codec.decode(BitVector(0xff)), Attempt.successful(DecodeResult(15, BitVector.empty)))
     assertEquals(codec.encode(15), Attempt.successful(BitVector(0x3c)))
   }
-}

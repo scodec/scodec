@@ -38,26 +38,24 @@ import scodec.bits.{BitVector, ByteOrdering}
 
 import scala.annotation.tailrec
 
-private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long] {
-  import VarLongCodec._
+private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long]:
+  import VarLongCodec.*
 
   override def sizeBound = SizeBound.bounded(1L, 9L)
 
-  override def encode(i: Long) = {
+  override def encode(i: Long) =
     require(i >= 0, "VarLong cannot encode negative longs")
     val buffer = ByteBuffer.allocate(9).order(ByteOrder.BIG_ENDIAN).nn
-    val encoder = if (ordering == BigEndian) BEEncoder else LEEncoder
+    val encoder = if ordering == BigEndian then BEEncoder else LEEncoder
     val written = encoder(i, buffer)
     buffer.flip()
     val relevantBits = BitVector.view(buffer).take(written.toLong)
-    val bits = if (ordering == BigEndian) relevantBits else relevantBits.reverseByteOrder
+    val bits = if ordering == BigEndian then relevantBits else relevantBits.reverseByteOrder
     Attempt.successful(bits)
-  }
 
-  override def decode(buffer: BitVector) = {
-    val decoder = if (ordering == BigEndian) BEDecoder else LEDecoder
+  override def decode(buffer: BitVector) =
+    val decoder = if ordering == BigEndian then BEDecoder else LEDecoder
     decoder(buffer)
-  }
 
   override def toString = "variable-length integer"
 
@@ -67,23 +65,21 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
 
   @tailrec
   private def runEncodingBE(value: Long, buffer: ByteBuffer, size: Int): Int =
-    if ((value & MoreBytesMask) != 0) {
+    if (value & MoreBytesMask) != 0 then
       buffer.put((value & RelevantDataBits | MostSignificantBit).toByte)
       runEncodingBE(value >>> BitsPerByte, buffer, size + 8)
-    } else {
+    else
       buffer.put(value.toByte)
       size
-    }
 
   @tailrec
   private def runEncodingLE(value: Long, buffer: ByteBuffer, size: Int, msbMask: Int): Int =
-    if ((value & MoreBytesMask) != 0) {
+    if (value & MoreBytesMask) != 0 then
       buffer.put((value & RelevantDataBits | msbMask).toByte)
       runEncodingLE(value >>> BitsPerByte, buffer, size + 8, MostSignificantBit)
-    } else {
+    else
       buffer.put((value | msbMask).toByte)
       size
-    }
 
   private val BEDecoder = (buffer: BitVector) =>
     runDecodingBE(buffer, MostSignificantBit.toByte, 0L, 0)
@@ -98,17 +94,15 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
       value: Long,
       shift: Int
   ): Attempt[DecodeResult[Long]] =
-    if ((byte & MostSignificantBit) != 0) {
-      if (buffer.sizeLessThan(8L)) {
+    if (byte & MostSignificantBit) != 0 then
+      if buffer.sizeLessThan(8L) then
         Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
-      } else {
+      else
         val nextByte = buffer.take(8L).toByte(false)
         val nextValue = value | (nextByte & RelevantDataBits) << shift
         runDecodingBE(buffer.drop(8L), nextByte, nextValue, shift + BitsPerByte)
-      }
-    } else {
+    else
       Attempt.successful(DecodeResult(value, buffer))
-    }
 
   @tailrec
   private def runDecodingLE(
@@ -116,21 +110,18 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
       byte: Byte,
       value: Long
   ): Attempt[DecodeResult[Long]] =
-    if ((byte & MostSignificantBit) != 0) {
-      if (buffer.sizeLessThan(8L)) {
+    if (byte & MostSignificantBit) != 0 then
+      if buffer.sizeLessThan(8L) then
         Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
-      } else {
+      else
         val nextByte = buffer.take(8L).toByte(false)
         val nextValue = (value << BitsPerByte) | (nextByte & RelevantDataBits)
         runDecodingLE(buffer.drop(8L), nextByte, nextValue)
-      }
-    } else {
+    else
       Attempt.successful(DecodeResult(value, buffer))
-    }
-}
-object VarLongCodec {
+
+private object VarLongCodec:
   private val RelevantDataBits = 0x7FL
   private val MoreBytesMask = ~RelevantDataBits.toInt
   private val MostSignificantBit = 0x80
   private val BitsPerByte = 7
-}

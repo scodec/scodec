@@ -35,13 +35,13 @@ import java.util.zip.{DataFormatException, Inflater}
 
 import scodec.bits.{BitVector, ByteVector}
 
-private[scodec] class ZlibCodec[A](
+private[codecs] class ZlibCodec[A](
     codec: Codec[A],
     level: Int,
     strategy: Int,
     nowrap: Boolean,
     chunkSize: Int
-) extends Codec[A] {
+) extends Codec[A]:
 
   def sizeBound = SizeBound.unknown
 
@@ -58,34 +58,29 @@ private[scodec] class ZlibCodec[A](
       b: BitVector,
       chunkSize: Int
   ): Either[DataFormatException, DecodeResult[ByteVector]] =
-    if (b.isEmpty) Right(DecodeResult(b.bytes, b))
-    else {
+    if b.isEmpty then Right(DecodeResult(b.bytes, b))
+    else
       val arr = b.bytes.toArray
 
       val inflater = new Inflater(false)
-      try {
+      try
         inflater.setInput(arr)
-        try {
+        try
           val buffer = new Array[Byte](chunkSize.min(arr.length))
           def loop(acc: ByteVector): ByteVector =
-            if (inflater.finished || inflater.needsInput) acc
-            else {
+            if inflater.finished || inflater.needsInput then acc
+            else
               val count = inflater.inflate(buffer)
               loop(acc ++ ByteVector(buffer, 0, count))
-            }
           val inflated = loop(ByteVector.empty)
-          if (inflater.finished) Right(DecodeResult(inflated, b.drop(inflater.getBytesRead * 8)))
+          if inflater.finished then Right(DecodeResult(inflated, b.drop(inflater.getBytesRead * 8)))
           else
             Left(
               new DataFormatException(
                 "Insufficient data -- inflation reached end of input without completing inflation - " + inflated
               )
             )
-        } catch {
+        catch
           case e: DataFormatException => Left(e)
-        }
-      } finally {
+      finally
         inflater.end()
-      }
-    }
-}

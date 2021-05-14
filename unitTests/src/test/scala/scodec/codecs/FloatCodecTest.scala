@@ -34,7 +34,7 @@ package codecs
 import scodec.bits.BitVector
 import org.scalacheck.Prop.forAll
 
-class FloatCodecTest extends CodecSuite {
+class FloatCodecTest extends CodecSuite:
 
   test("float - roundtrip") {
     forAll((n: Float) => roundtrip(float, n))
@@ -53,4 +53,3 @@ class FloatCodecTest extends CodecSuite {
   test("return an error when decoding with too few bits") {
     assertEquals(float.decode(BitVector.low(8)), Attempt.failure(Err.insufficientBits(32, 8)))
   }
-}

@@ -28,14 +28,14 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package scodec.codecs
+package scodec
+package codecs
 
-import scodec._
-import scodec.bits._
+import scodec.bits.*
 
 import org.scalacheck.Prop.forAll
 
-class ChecksumCodecTest extends CodecSuite {
+class ChecksumCodecTest extends CodecSuite:
 
   def xor(length: Long) =
     (bits: BitVector) => BitVector.GroupedOp(bits).grouped(length).foldLeft(BitVector.low(length))(_.xor(_))
@@ -89,4 +89,3 @@ class ChecksumCodecTest extends CodecSuite {
     val codec = checksummed(utf8_32, crc32c, swap(codecs.bits(32) :: codecs.bits))
     assertEquals(codec.encode("hello world").require, hex"edbbac630000000b68656c6c6f20776f726c64".bits)
   }
-}

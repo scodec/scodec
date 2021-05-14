@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class LimitedSizeCodecTest extends CodecSuite {
+class LimitedSizeCodecTest extends CodecSuite:
 
   test("roundtrip") {
     roundtrip(limitedSizeBits(32, utf8), "test")
@@ -54,4 +54,3 @@ class LimitedSizeCodecTest extends CodecSuite {
       Err("[test] requires 32 bits but field is limited to 24 bits")
     ))
   }
-}

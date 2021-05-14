@@ -35,7 +35,7 @@ import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
 import scodec.bits.BitVector
 
-class LongCodecTest extends CodecSuite {
+class LongCodecTest extends CodecSuite:
   def check(low: Long, high: Long)(f: Long => Unit) =
     forAll(Gen.choose(low, high))(n => f(n))
 
@@ -80,4 +80,3 @@ class LongCodecTest extends CodecSuite {
   test("return an error when decoding with too few bits") {
     assertEquals(uint32.decode(BitVector.low(8)), Attempt.failure(Err.insufficientBits(32, 8)))
   }
-}

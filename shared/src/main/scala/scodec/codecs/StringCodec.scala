@@ -37,34 +37,29 @@ import java.nio.charset.{MalformedInputException, UnmappableCharacterException}
 
 import scodec.bits.BitVector
 
-private[codecs] final class StringCodec(charset: Charset) extends Codec[String] {
+private[codecs] final class StringCodec(charset: Charset) extends Codec[String]:
 
   override def sizeBound = SizeBound.unknown
 
-  override def encode(str: String) = {
+  override def encode(str: String) =
     val encoder = charset.newEncoder.nn
     val buffer = CharBuffer.wrap(str).nn
     try Attempt.successful(BitVector(encoder.encode(buffer).nn))
-    catch {
+    catch
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
         Attempt.failure(
           Err(s"${charset.displayName} cannot encode character '${buffer.charAt(0)}'")
         )
-    }
-  }
 
-  override def decode(buffer: BitVector) = {
+  override def decode(buffer: BitVector) =
     val decoder = charset.newDecoder.nn
-    try {
+    try
       val asBuffer = ByteBuffer.wrap(buffer.toByteArray)
       Attempt.successful(DecodeResult(decoder.decode(asBuffer).toString, BitVector.empty))
-    } catch {
+    catch
       case (_: MalformedInputException | _: UnmappableCharacterException) =>
         Attempt.failure(
           Err(s"${charset.displayName} cannot decode string from '0x${buffer.toByteVector.toHex}'")
         )
-    }
-  }
 
   override def toString = charset.displayName.nn
-}

@@ -34,7 +34,7 @@ package codecs
 import org.scalacheck.Prop.forAll
 import scodec.bits.BitVector
 
-class WithDefaultTest extends CodecSuite {
+class WithDefaultTest extends CodecSuite:
 
   property("decode with fallback codec when opt codec returns none") {
     forAll { (n: Int) =>
@@ -53,7 +53,7 @@ class WithDefaultTest extends CodecSuite {
   property("return the default value when the opt codec returns none") {
     forAll { (n: Int) =>
       val codec = withDefaultValue(conditional(false, int8), n)
-      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(n))
+      val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(n)): @unchecked
       assertEquals(rest, (BitVector.fromInt(n)))
       assertEquals(b, n)
     }
@@ -65,4 +65,3 @@ class WithDefaultTest extends CodecSuite {
       shouldDecodeFullyTo(codec, BitVector.fromInt(n), n)
     }
   }
-}

@@ -31,7 +31,7 @@
 package scodec
 package examples
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 
 import scodec.bits.BitVector
 
@@ -40,8 +40,8 @@ import scodec.bits.BitVector
   *
   * @see http://wiki.wireshark.org/Development/LibpcapFileFormat
   */
-object PcapCodec {
-  import scodec.codecs._
+object PcapCodec:
+  import scodec.codecs.*
 
   enum ByteOrdering { case BigEndian, LittleEndian }
 
@@ -56,6 +56,9 @@ object PcapCodec {
         }
       }
   )
+
+  private def detectByteOrdering[A <: Tuple](f: ByteOrdering ?=> Codec[A]): Codec[ByteOrdering *: A] =
+    byteOrdering.flatPrepend(ordering => f(using ordering))
 
   def gint16(using ordering: ByteOrdering): Codec[Int] =
     if (ordering == ByteOrdering.BigEndian) int16 else int16L
@@ -76,14 +79,14 @@ object PcapCodec {
       network: Long
   )
 
-  val pcapHeader = {
-    ("magic_number" | byteOrdering).flatPrepend { implicit ordering =>
+  val pcapHeader: Codec[PcapHeader] = {
+    detectByteOrdering {
       ("version_major" | guint16) ::
-        ("version_minor" | guint16) ::
-        ("thiszone" | gint32) ::
-        ("sigfigs" | guint32) ::
-        ("snaplen" | guint32) ::
-        ("network" | guint32)
+      ("version_minor" | guint16) ::
+      ("thiszone"      | gint32) ::
+      ("sigfigs"       | guint32) ::
+      ("snaplen"       | guint32) ::
+      ("network"       | guint32)
     }
   }.as[PcapHeader]
 
@@ -92,15 +95,14 @@ object PcapCodec {
       timestampMicros: Long,
       includedLength: Long,
       originalLength: Long
-  ) {
+  ):
     def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
-  }
 
-  def pcapRecordHeader(using ordering: ByteOrdering) = {
-    ("ts_sec" | guint32) ::
-      ("ts_usec" | guint32) ::
-      ("incl_len" | guint32) ::
-      ("orig_len" | guint32)
+  def pcapRecordHeader(using ByteOrdering): Codec[PcapRecordHeader] = {
+    ("ts_sec"   | guint32) ::
+    ("ts_usec"  | guint32) ::
+    ("incl_len" | guint32) ::
+    ("orig_len" | guint32)
   }.as[PcapRecordHeader]
 
   case class PcapRecord(header: PcapRecordHeader, data: BitVector)
@@ -114,11 +116,10 @@ object PcapCodec {
   case class PcapFile(header: PcapHeader, records: Vector[PcapRecord])
 
   val pcapFile = pcapHeader.flatZip(hdr => vector(pcapRecord(using hdr.ordering))).as[PcapFile]
-}
 
-class PcapExample extends CodecSuite {
+class PcapExample extends CodecSuite:
 
-  import PcapCodec._
+  import PcapCodec.*
 
   def bits = BitVector.fromMmap(new java.io.FileInputStream(new java.io.File("/path/to/pcap")).getChannel.nn)
 
@@ -128,7 +129,7 @@ class PcapExample extends CodecSuite {
 
   test("support reading the file header and then decoding each record, combining results via a monoid".ignore) {
     val fileHeader = pcapHeader.decode(bits.take(28 * 8)).require.value
-    implicit val ordering = fileHeader.ordering
+    given ByteOrdering = fileHeader.ordering
 
     // Monoid that counts records
     val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(28 * 8))
@@ -139,4 +140,3 @@ class PcapExample extends CodecSuite {
 
   // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
   // See scodec-stream library at https://github.com/scodec/scodec-stream
-}

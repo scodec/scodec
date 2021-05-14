@@ -33,29 +33,26 @@ package codecs
 
 import scodec.bits.BitVector
 
-private[codecs] final class FixedSizeStrictCodec[A](size: Long, codec: Codec[A]) extends Codec[A] {
+private[codecs] final class FixedSizeStrictCodec[A](size: Long, codec: Codec[A]) extends Codec[A]:
 
   override def sizeBound = SizeBound.exact(size)
 
   override def encode(a: A) =
-    for {
+    for
       encoded <- codec.encode(a)
-      result <- {
-        if (encoded.size != size)
+      result <-
+        if encoded.size != size then
           Attempt.failure(
             Err(s"[$a] requires ${encoded.size} bits but field is fixed size of exactly $size bits")
           )
         else
           Attempt.successful(encoded.padTo(size))
-      }
-    } yield result
+    yield result
 
   override def decode(buffer: BitVector) =
-    if (buffer.size == size) {
+    if buffer.size == size then
       codec.decode(buffer.take(size)).map(res => DecodeResult(res.value, buffer.drop(size)))
-    } else {
+    else
       Attempt.failure(Err(s"expected exactly $size bits but got ${buffer.size} bits"))
-    }
 
   override def toString = s"fixedSizeBitsStrict($size, $codec)"
-}

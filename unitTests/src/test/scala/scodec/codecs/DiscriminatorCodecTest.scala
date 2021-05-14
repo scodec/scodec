@@ -31,7 +31,7 @@
 package scodec
 package codecs
 
-class DiscriminatorCodecTest extends CodecSuite {
+class DiscriminatorCodecTest extends CodecSuite:
 
   test("support building a codec using typecases") {
     val codec =
@@ -89,10 +89,9 @@ class DiscriminatorCodecTest extends CodecSuite {
   }
 
   test("support building a codec for an enumeration with preserved reserved values") {
-    enum Color {
+    enum Color:
       case Red, Green, Blue
       case Reserved(value: Int)
-    }
 
     val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
     val reserved: Codec[Color.Reserved] = uint8.as[Color.Reserved]
@@ -106,30 +105,25 @@ class DiscriminatorCodecTest extends CodecSuite {
   }
 
   test("support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy") {
-    enum Color {
+    enum Color:
       case Red, Green, Blue
-      case Reserved(value: Int)
-    }
+    case class Reserved(value: Int)
 
     val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
-    val reserved: Codec[Color.Reserved] = uint8.as[Color.Reserved]
-    val codec: Codec[Either[Color.Reserved, Color]] = choice(
-      nonReserved.xmapc(Right.apply)(_.toOption.get).upcast[Either[Color.Reserved, Color]],
-      reserved.xmapc(Left.apply)(_.swap.toOption.get).upcast[Either[Color.Reserved, Color]]
-    )
+    val reserved: Codec[Reserved] = uint8.as[Reserved]
+    val codec: Codec[Color | Reserved] = choice(nonReserved.upcast[Color | Reserved], reserved.upcast[Color | Reserved])
 
-    roundtrip(codec, Right(Color.Red))
-    roundtrip(codec, Right(Color.Green))
-    roundtrip(codec, Right(Color.Blue))
-    roundtrip(codec, Left(new Color.Reserved(255)))
-    roundtrip(codec, Left(new Color.Reserved(4)))
+    roundtrip(codec, Color.Red)
+    roundtrip(codec, Color.Green)
+    roundtrip(codec, Color.Blue)
+    roundtrip(codec, Reserved(255))
+    roundtrip(codec, Reserved(4))
   }
 
   test("support building a codec for an ADT") {
-    enum Direction {
+    enum Direction:
       case Stay
       case Go(units: Int)
-    }
 
     val codec =
       discriminated[Direction].by(uint8).singleton(0, Direction.Stay).typecase(1, int32.as[Direction.Go])
@@ -139,10 +133,9 @@ class DiscriminatorCodecTest extends CodecSuite {
   }
 
   test("support building a codec for recusive ADTs - e.g., trees") {
-    enum Tree {
+    enum Tree:
       case Node(l: Tree, r: Tree)
       case Leaf(n: Int)
-    }
     import Tree.{Node, Leaf}
 
     def treeCodec: Codec[Tree] = lazily {
@@ -188,4 +181,3 @@ class DiscriminatorCodecTest extends CodecSuite {
 
     roundtrip(list(codec), List(Stay, Go(1), Annotate("Hello"), Go(2), Stay))
   }
-}

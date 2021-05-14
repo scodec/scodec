@@ -33,7 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-class VariableSizePrefixedCodecTest extends CodecSuite {
+class VariableSizePrefixedCodecTest extends CodecSuite:
 
   test("roundtrip") {
     roundtripAll(variableSizePrefixedBits(uint8, int32, utf8), Seq(2 -> "", 3 -> "test"))
@@ -69,4 +69,3 @@ class VariableSizePrefixedCodecTest extends CodecSuite {
     assertEquals(variableSizePrefixedBytes(uint8, int32, uint8, 1).encode(1 -> 0).map(_.take(8)), Attempt
       .successful(BitVector(0x02)))
   }
-}

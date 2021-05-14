@@ -31,9 +31,9 @@
 package scodec
 package codecs
 
-import scodec.bits._
+import scodec.bits.*
 
-class ByteAlignedCodecTest extends CodecSuite {
+class ByteAlignedCodecTest extends CodecSuite:
 
   test("roundtrip") {
     roundtrip(byteAligned(int32), Int.MaxValue)
@@ -56,4 +56,3 @@ class ByteAlignedCodecTest extends CodecSuite {
   test("compute size bounds appropriately") {
     assertEquals(byteAligned(listOfN(uint(4), uint8)).sizeBound, SizeBound.atLeast(8))
   }
-}
