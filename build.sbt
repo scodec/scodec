@@ -55,8 +55,6 @@ lazy val root = project
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .in(file("."))
-  .settings(dottyLibrarySettings)
-  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
@@ -89,8 +87,6 @@ lazy val coreJS = core.js.settings(
 )
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform)
-  .settings(dottyLibrarySettings)
-  .settings(dottyJsSettings(ThisBuild / crossScalaVersions))
   .settings(
     name := "scodec-testkit",
     libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.26",
