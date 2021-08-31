@@ -89,7 +89,7 @@ lazy val coreJS = core.js.settings(
 lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.27",
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.29",
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future"
   )
   .dependsOn(core % "compile->compile")
