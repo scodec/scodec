@@ -117,9 +117,12 @@ class ProductsExample extends CodecSuite:
     // components, say Xi, resulting in a Codec[(X0, ..., Xi-1, Xi+1, ..., Xn)],
     // while keeping the binary effect of Xi (that is, the encoding/decoding of Xi should still occur).
     val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
-    val codec = flagsCodec.consume { flgs =>
+    val flagsAndFields = flagsCodec.flatPrepend { flgs =>
       conditional(flgs.x, uint8) :: conditional(flgs.y, int64) :: conditional(flgs.z, utf8_32)
-    } { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
+    }
+    val codec = flagsAndFields.derive[Flags].from {
+      case x :: y :: z :: HNil => Flags(x.isDefined, y.isDefined, z.isDefined)
+    }
     // In this example, we are deriving X0 for the tuple (X0, X1, X2, X3), but unlike consume,
     // derive works with any tuple component -- not just the head.
     val v = (Some(1), Some(1L), Some("Hi"))
