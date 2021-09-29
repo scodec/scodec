@@ -58,9 +58,10 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.27"
+      "org.scodec" %%% "scodec-bits" % "1.1.29"
     ),
-    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
+    scalacOptions := scalacOptions.value
+      .filterNot(_ == "-source:3.0-migration") :+ "-source:future",
     Test / scalacOptions := (Compile / scalacOptions).value,
     Compile / unmanagedResources ++= {
       val base = baseDirectory.value
@@ -102,8 +103,10 @@ lazy val unitTests = project
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.69" % "test"
     ),
-    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
-    Test / scalacOptions := (Compile / scalacOptions).value,
+    scalacOptions := scalacOptions.value.filterNot(
+      _ == "-source:3.0-migration"
+    ) :+ "-source:future",
+    Test / scalacOptions := (Compile / scalacOptions).value
   )
   .dependsOn(testkitJVM % "test->compile")
   .enablePlugins(NoPublishPlugin)
@@ -111,4 +114,3 @@ lazy val unitTests = project
 lazy val benchmarks = project
   .dependsOn(coreJVM)
   .enablePlugins(JmhPlugin, NoPublishPlugin)
-
