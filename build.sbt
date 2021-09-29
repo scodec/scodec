@@ -13,7 +13,7 @@ ThisBuild / organizationName := "Scodec"
 ThisBuild / homepage := Some(url("https://github.com/scodec/scodec"))
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.0.1")
+ThisBuild / crossScalaVersions := Seq("3.0.2")
 
 ThisBuild / strictSemVer := false
 
@@ -58,9 +58,10 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.27"
+      "org.scodec" %%% "scodec-bits" % "1.1.29"
     ),
-    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
+    scalacOptions := scalacOptions.value
+      .filterNot(_ == "-source:3.0-migration") :+ "-source:future",
     Test / scalacOptions := (Compile / scalacOptions).value,
     Compile / unmanagedResources ++= {
       val base = baseDirectory.value
@@ -89,7 +90,7 @@ lazy val coreJS = core.js.settings(
 lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.27",
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.29",
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future"
   )
   .dependsOn(core % "compile->compile")
@@ -102,8 +103,10 @@ lazy val unitTests = project
     libraryDependencies ++= Seq(
       "org.bouncycastle" % "bcpkix-jdk15on" % "1.69" % "test"
     ),
-    scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future",
-    Test / scalacOptions := (Compile / scalacOptions).value,
+    scalacOptions := scalacOptions.value.filterNot(
+      _ == "-source:3.0-migration"
+    ) :+ "-source:future",
+    Test / scalacOptions := (Compile / scalacOptions).value
   )
   .dependsOn(testkitJVM % "test->compile")
   .enablePlugins(NoPublishPlugin)
@@ -111,4 +114,3 @@ lazy val unitTests = project
 lazy val benchmarks = project
   .dependsOn(coreJVM)
   .enablePlugins(JmhPlugin, NoPublishPlugin)
-
