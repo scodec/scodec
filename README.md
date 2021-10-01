@@ -110,7 +110,7 @@ There are various examples in the test directory, including codecs for:
 The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
 quality codecs for the above examples.
 
-The [bmsg](https://github.com/lktkorg/bmsg) library has a codec for the Bitcoin Cash and Bitcoin Core network protocol.
+The [bitcoin-scodec](https://github.com/yzernik/bitcoin-scodec) library has a codec for the Bitcoin network protocol.
 
 The [scodec-msgpack](https://github.com/pocketberserker/scodec-msgpack) library provides
 codecs for [MessagePack](http://msgpack.org/).
