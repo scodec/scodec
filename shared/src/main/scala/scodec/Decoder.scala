@@ -6,7 +6,7 @@ import scodec.bits.BitVector
 
 import shapeless.Lazy
 
-import scodec.compat._
+import scodec.compatInternal._
 
 /**
   * Supports decoding a value of type `A` from a `BitVector`.

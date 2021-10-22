@@ -1,5 +1,5 @@
 package scodec
 
-private[scodec] object compat {
+private[scodec] object compatInternal {
   type Factory[-A, +C] = scala.collection.Factory[A, C]
 }

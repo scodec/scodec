@@ -24,7 +24,7 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  crossScalaVersions := List("2.12.10", "2.13.1"),
+  crossScalaVersions := List("2.12.11", "2.13.6"),
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8",
