@@ -137,7 +137,9 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     },
     mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
-      ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
+      ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry"),
+      ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.compat.FactoryOps"),
+      ProblemFilters.exclude[MissingClassProblem]("scodec.compat$FactoryOps")
     )
   )
 
