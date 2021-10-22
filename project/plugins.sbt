@@ -1,10 +1,6 @@
 resolvers += "Sonatype Public".at("https://oss.sonatype.org/content/groups/public/")
 
-val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.0.0")
-
-addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
-
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "1.7.1")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-osgi" % "0.9.5")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.13")
