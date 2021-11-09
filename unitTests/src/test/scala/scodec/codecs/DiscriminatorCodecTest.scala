@@ -49,7 +49,7 @@ class DiscriminatorCodecTest extends CodecSuite:
 
   test("support building a codec using partial functions and subtyping") {
     val codec =
-      discriminated[Any]
+      discriminated[Matchable]
         .by(uint8)
         .subcaseP[Int](0) { case i: Int => i }(int32)
         .subcaseP[Boolean](1) { case b: Boolean => b }(bool)
@@ -62,7 +62,7 @@ class DiscriminatorCodecTest extends CodecSuite:
 
   test("support building a codec using A => Option[B] and subtyping") {
     val codec =
-      discriminated[Any]
+      discriminated[Matchable]
         .by(uint8)
         .subcaseO[Int](0) { v =>
           v match { case i: Int => Some(i); case _ => None }

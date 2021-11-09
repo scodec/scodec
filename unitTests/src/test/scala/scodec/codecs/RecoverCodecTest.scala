@@ -39,10 +39,11 @@ class RecoverCodecTest extends CodecSuite:
   property("recover - always code a value for true value") {
     forAll { (i: Int) =>
       val codec = recover(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b2, rest)) = for {
-        bits <- codec.encode(true)
-        result <- codec.decode(bits)
-      } yield result
+      val Attempt.Successful(DecodeResult(b2, rest)) =
+        (for
+          bits <- codec.encode(true)
+          result <- codec.decode(bits)
+        yield result): @unchecked
       assert(rest.isEmpty)
       assert(b2)
     }
@@ -51,10 +52,11 @@ class RecoverCodecTest extends CodecSuite:
   property("recover - always code an empty vector for false value") {
     forAll { (i: Int) =>
       val codec = recover(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b2, rest)) = for {
-        bits <- codec.encode(false)
-        result <- codec.decode(bits)
-      } yield result
+      val Attempt.Successful(DecodeResult(b2, rest)) = 
+        (for
+          bits <- codec.encode(false)
+          result <- codec.decode(bits)
+        yield result): @unchecked
       assert(rest.isEmpty)
       assert(!b2)
     }
@@ -82,10 +84,11 @@ class RecoverCodecTest extends CodecSuite:
   property("lookahead - always code a value for true value") {
     forAll { (i: Int) =>
       val codec = lookahead(constant(BitVector.fromInt(i)))
-      val Attempt.Successful((encoded, DecodeResult(b2, rest))) = for {
-        bits <- codec.encode(true)
-        result <- codec.decode(bits)
-      } yield (bits, result)
+      val Attempt.Successful((encoded, DecodeResult(b2, rest))) = 
+        (for
+          bits <- codec.encode(true)
+          result <- codec.decode(bits)
+        yield (bits, result)): @unchecked
       assertEquals(rest, encoded)
       assert(b2)
     }
@@ -94,10 +97,11 @@ class RecoverCodecTest extends CodecSuite:
   property("lookahead - always code an empty vector for false value") {
     forAll { (i: Int) =>
       val codec = lookahead(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b2, rest)) = for {
-        bits <- codec.encode(false)
-        result <- codec.decode(bits)
-      } yield result
+      val Attempt.Successful(DecodeResult(b2, rest)) = 
+        (for
+          bits <- codec.encode(false)
+          result <- codec.decode(bits)
+        yield result): @unchecked
       assert(rest.isEmpty)
       assert(!b2)
     }
