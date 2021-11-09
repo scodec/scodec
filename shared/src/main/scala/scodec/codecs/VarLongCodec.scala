@@ -44,14 +44,15 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
   override def sizeBound = SizeBound.bounded(1L, 9L)
 
   override def encode(i: Long) =
-    require(i >= 0, "VarLong cannot encode negative longs")
-    val buffer = ByteBuffer.allocate(9).order(ByteOrder.BIG_ENDIAN).nn
-    val encoder = if ordering == BigEndian then BEEncoder else LEEncoder
-    val written = encoder(i, buffer)
-    buffer.flip()
-    val relevantBits = BitVector.view(buffer).take(written.toLong)
-    val bits = if ordering == BigEndian then relevantBits else relevantBits.reverseByteOrder
-    Attempt.successful(bits)
+    if i < 0 then Attempt.failure(Err("VarLong cannot encode negative longs"))
+    else
+      val buffer = ByteBuffer.allocate(9).order(ByteOrder.BIG_ENDIAN).nn
+      val encoder = if ordering == BigEndian then BEEncoder else LEEncoder
+      val written = encoder(i, buffer)
+      buffer.flip()
+      val relevantBits = BitVector.view(buffer).take(written.toLong)
+      val bits = if ordering == BigEndian then relevantBits else relevantBits.reverseByteOrder
+      Attempt.successful(bits)
 
   override def decode(buffer: BitVector) =
     val decoder = if ordering == BigEndian then BEDecoder else LEDecoder

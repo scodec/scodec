@@ -61,3 +61,5 @@ class VarLongCodecTest extends CodecSuite:
   test("vlongL - use 7 bytes for longs <= 49 bits")(check(4398046511104L, 562949953421311L, 7)(vlongL))
   test("vlongL - use 8 bytes for longs <= 56 bits")(check(562949953421312L, 72057594037927935L, 8)(vlongL))
   test("vlongL - use 9 bytes for longs <= 63 bits")(check(72057594037927936L, Long.MaxValue, 9)(vlongL))
+
+  test("vlong - negative")(assert(vlong.encode(-1).isFailure))
