@@ -111,17 +111,3 @@ class ProductsExample extends CodecSuite:
     } { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
     assertEquals(codec.encode(Some(1), Some(1L), Some("Hi")).require, bin"11100000" ++ hex"010000000000000001000000024869".bits)
   }
-
-  test("demonstrate use of derive as an alternative to consume") {
-    // Sometimes, we have a Codec[(X0, X1, ..., Xn)] and we need to remove one of the
-    // components, say Xi, resulting in a Codec[(X0, ..., Xi-1, Xi+1, ..., Xn)],
-    // while keeping the binary effect of Xi (that is, the encoding/decoding of Xi should still occur).
-    val flagsCodec = (bool :: bool :: bool :: ignore(5)).as[Flags]
-    val codec = flagsCodec.consume { flgs =>
-      conditional(flgs.x, uint8) :: conditional(flgs.y, int64) :: conditional(flgs.z, utf8_32)
-    } { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
-    // In this example, we are deriving X0 for the tuple (X0, X1, X2, X3), but unlike consume,
-    // derive works with any tuple component -- not just the head.
-    val v = (Some(1), Some(1L), Some("Hi"))
-    assertEquals(codec.encode(v).require, bin"11100000" ++ hex"010000000000000001000000024869".bits)
-  }
