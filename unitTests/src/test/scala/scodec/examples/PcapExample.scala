@@ -128,14 +128,14 @@ class PcapExample extends CodecSuite:
   }
 
   test("support reading the file header and then decoding each record, combining results via a monoid".ignore) {
-    val fileHeader = pcapHeader.decode(bits.take(28 * 8)).require.value
+    val fileHeader = pcapHeader.decode(bits.take(24 * 8)).require.value
     given ByteOrdering = fileHeader.ordering
 
     // Monoid that counts records
-    val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(28 * 8))
+    val (_, recordCount) = pcapRecord.decodeAll(_ => 1)(0, _ + _)(bits.drop(24 * 8))
 
     // Monoid that accumulates records
-    val (_, records) = pcapRecord.decodeAll(Vector(_))(Vector.empty, _ ++ _)(bits.drop(28 * 8))
+    val (_, records) = pcapRecord.decodeAll(Vector(_))(Vector.empty, _ ++ _)(bits.drop(24 * 8))
   }
 
   // Alternatively, don't pre-load all bytes... read each record header individually and use included size field to read more bytes
