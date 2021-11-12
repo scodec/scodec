@@ -1,7 +1,8 @@
 scodec
 ======
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scodec/scodec?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Discord](https://img.shields.io/discord/632277896739946517.svg?label=&logo=discord&logoColor=ffffff&color=404244&labelColor=6A7EC2)](https://discord.gg/wKn3cpfRVz)
+[![Maven Central](https://img.shields.io/maven-central/v/org.scodec/scodec-core_2.13)](https://maven-badges.herokuapp.com/maven-central/org.scodec/scodec-core_2.13)
 
 Scala combinator library for working with binary data.
 
@@ -30,7 +31,7 @@ Administrative
 
 This project is licensed under a [3-clause BSD license](LICENSE).
 
-The [scodec channel on Gitter](https://gitter.im/scodec/scodec) is a good place to go for help. Also consider using the [scodec tag on StackOverflow](http://stackoverflow.com/questions/tagged/scodec).
+The [scodec channel on Typelevel Discord](https://discord.gg/wKn3cpfRVz) is a good place to go for help.
 
 Introduction
 ------------
@@ -94,7 +95,7 @@ Ecosystem
 ---------
 
 Many libraries have support for scodec:
-  - [FS2](https://github.com/functional-streams-for-scala)
+  - [FS2](https://github.com/typelevel/fs2)
   - [Circe](https://github.com/circe/circe)
   - [Refined](https://github.com/fthomas/refined)
 
@@ -107,8 +108,12 @@ There are various examples in the test directory, including codecs for:
  - [MPEG Packets](unitTests/src/test/scala/scodec/examples/MpegPacketExample.scala)
  - [libpcap Files](unitTests/src/test/scala/scodec/examples/PcapExample.scala)
 
-The [scodec-protocols](https://github.com/scodec/scodec-protocols) has production
+The [protocols](https://github.com/typelevel/fs2/tree/main/protocols) module of fs2 has production
 quality codecs for the above examples.
+
+The [skunk](https://github.com/tpolecat/skunk) database library uses scodec to communicate with Postgres.
+
+The [hippo](https://github.com/indoorvivants/hippo) project uses scodec to parse .hprof files.
 
 The [bitcoin-scodec](https://github.com/yzernik/bitcoin-scodec) library has a codec for the Bitcoin network protocol.
 
@@ -127,12 +132,15 @@ If you're creating your own `Codec` instances scodec publishes some of its own t
 Getting Binaries
 ----------------
 
-See the [releases page on the website](http://scodec.org/releases/).
+```scala
+libraryDependencies += "org.scodec" %%% "scodec-core" % 
+  (if (scalaVersion.value.startsWith("2.")) "1.11.9" else "2.1.0")
+```
 
 Building
 --------
 
-This project uses sbt and requires node.js to be installed in order to run Scala.js tests. To build, run `sbt publish-local`.
+This project uses sbt and requires node.js to be installed in order to run Scala.js tests. To build, run `sbt publishLocal`.
 
 Code of Conduct
 ---------------
