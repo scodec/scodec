@@ -33,8 +33,6 @@ ThisBuild / licenses := List(
   ("BSD-3-Clause", url("https://github.com/scodec/scodec/blob/main/LICENSE"))
 )
 
-ThisBuild / testFrameworks += new TestFramework("munit.Framework")
-
 ThisBuild / publishGithubUser := "mpilquist"
 ThisBuild / publishFullName := "Michael Pilquist"
 ThisBuild / developers ++= List(
@@ -69,7 +67,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     }
   )
   .jvmSettings(
-    OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
     mimaPreviousArtifacts := {
       List().map { pv =>
         organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
@@ -81,7 +78,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     )
   )
 
-lazy val coreJVM = core.jvm.enablePlugins(SbtOsgi).settings(osgiSettings)
+lazy val coreJVM = core.jvm
 
 lazy val coreJS = core.js.settings(
   scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
