@@ -19,7 +19,7 @@ ThisBuild / strictSemVer := false
 
 ThisBuild / versionIntroduced := Map.empty
 
-ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8")
+ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
 ThisBuild / spiewakCiReleaseSnapshots := true
 
