@@ -15,8 +15,6 @@ ThisBuild / startYear := Some(2013)
 
 ThisBuild / crossScalaVersions := Seq("3.1.0")
 
-ThisBuild / strictSemVer := false
-
 ThisBuild / versionIntroduced := Map.empty
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
