@@ -58,7 +58,10 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   )
 
 lazy val coreJS = core.js.settings(
-  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule)),
+  mimaBinaryIssueFilters ++= Seq(
+    ProblemFilters.exclude[MissingClassProblem]("scodec.codecs.ZlibCodec")
+  )
 )
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform)
