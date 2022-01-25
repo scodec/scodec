@@ -30,8 +30,7 @@
 
 package scodec
 
-/**
-  * Describes an error.
+/** Describes an error.
   *
   * An error has a message and a list of context identifiers that provide insight into where an error occurs in a large structure.
   *
@@ -43,8 +42,7 @@ trait Err:
   /** Gets a description of the error. */
   def message: String
 
-  /**
-    * Gets a stack of context identifiers.
+  /** Gets a stack of context identifiers.
     *
     * The head of the list is the outermost (i.e., least specific) identifier.
     */

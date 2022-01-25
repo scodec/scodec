@@ -46,9 +46,9 @@ class VectorCodecTest extends CodecSuite:
         sizes.map { size =>
           val vec = definedSamples(Gen.listOfN(size, arbitrary[Int]).map(_.toVector)).head
           val (encoded, encodeTime) = time(codec.encode(vec).require)
-          //println(s"$trial - encoding $size took $encodeTime")
+          // println(s"$trial - encoding $size took $encodeTime")
           val (decoded, decodeTime) = time(codec.decode(encoded).require.value)
-          //println(s"$trial - decoding $size took $decodeTime")
+          // println(s"$trial - decoding $size took $decodeTime")
           assertEquals(decoded, vec)
           encodeTime + decodeTime
         }
@@ -75,34 +75,49 @@ class VectorCodecTest extends CodecSuite:
   test("include index of problematic value when an error occurs during encoding") {
     val codec = vector(uint8).complete
     val result = codec.encode(Vector(0, 1, -1))
-    assertEquals(result, Attempt.failure(
-      Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2")
-    ))
+    assertEquals(
+      result,
+      Attempt.failure(
+        Err("-1 is less than minimum value 0 for 8-bit unsigned integer").pushContext("2")
+      )
+    )
   }
 
   test("vectorOfN - limit decoding to the specified number of records") {
     val codec = vectorOfN(provide(10), uint8)
     val buffer = BitVector.low(8 * 100)
-    assertEquals(codec.decode(buffer), Attempt.successful(
-      DecodeResult(Vector.fill(10)(0), BitVector.low(8 * 90))
-    ))
+    assertEquals(
+      codec.decode(buffer),
+      Attempt.successful(
+        DecodeResult(Vector.fill(10)(0), BitVector.low(8 * 90))
+      )
+    )
   }
 
   test("support encoding size before vector contents") {
     val codec = vectorOfN(int32, uint8)
-    assertEquals(codec.encode((1 to 10).toVector), Attempt.successful(
-      hex"0000000a0102030405060708090a".bits
-    ))
+    assertEquals(
+      codec.encode((1 to 10).toVector),
+      Attempt.successful(
+        hex"0000000a0102030405060708090a".bits
+      )
+    )
   }
 
   test("support not encoding size before vector contents") {
     val codec = vectorOfN(provide(10), uint8)
-    assertEquals(codec.encode((1 to 10).toVector), Attempt.successful(hex"102030405060708090a".bits))
+    assertEquals(
+      codec.encode((1 to 10).toVector),
+      Attempt.successful(hex"102030405060708090a".bits)
+    )
   }
 
   test("fails decoding if < N elements decoded") {
     val codec = vectorOfN(provide(10), uint8)
-    assertEquals(codec.decode(BitVector.low(8 * 5)), Attempt.failure(
-      Err.insufficientBits(80, 40)
-    ))
+    assertEquals(
+      codec.decode(BitVector.low(8 * 5)),
+      Attempt.failure(
+        Err.insufficientBits(80, 40)
+      )
+    )
   }

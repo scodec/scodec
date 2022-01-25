@@ -34,8 +34,7 @@ package examples
 import scodec.bits.*
 import scodec.codecs.*
 
-/**
-  * Demonstrates a `List[A]` codec that:
+/** Demonstrates a `List[A]` codec that:
   *  - separates list entries with a specified reserved byte
   *  - surrounds the list with a leading 0x22 and trailing 0x22
   *  - list entires may not contain the specified reserved byte
@@ -48,10 +47,11 @@ class CustomDelimitedExample extends CodecSuite:
       for {
         x <- acc
         y <- value.encode(a)
-        _ <- if (y.bytes.containsSlice(ByteVector(delimiter)))
-          Attempt.failure(Err(s"encoded form of $a contained reserved delimiter $delimiter"))
-        else
-          Attempt.successful(())
+        _ <-
+          if (y.bytes.containsSlice(ByteVector(delimiter)))
+            Attempt.failure(Err(s"encoded form of $a contained reserved delimiter $delimiter"))
+          else
+            Attempt.successful(())
       } yield x ++ BitVector(delimiter) ++ y
     }
     def decode(b: BitVector) =
@@ -87,20 +87,23 @@ class CustomDelimitedExample extends CodecSuite:
     val payload =
       hex"22053a613a93213a3af50320004290290060293a503a09783a362e35353935373a932122".bits
     val result = codec.decode(payload)
-    assertEquals(result, Attempt.successful(
-      DecodeResult(
-        List(
-          hex"05",
-          hex"61",
-          hex"9321",
-          hex"",
-          hex"f5032000429029006029",
-          hex"50",
-          hex"0978",
-          hex"362e3535393537",
-          hex"9321"
-        ),
-        BitVector.empty
+    assertEquals(
+      result,
+      Attempt.successful(
+        DecodeResult(
+          List(
+            hex"05",
+            hex"61",
+            hex"9321",
+            hex"",
+            hex"f5032000429029006029",
+            hex"50",
+            hex"0978",
+            hex"362e3535393537",
+            hex"9321"
+          ),
+          BitVector.empty
+        )
       )
-    ))
+    )
   }

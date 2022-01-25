@@ -81,45 +81,44 @@ object MpegCodecs:
   )
 
   val tsHeaderCodec: Codec[TransportStreamHeader] = fixedSizeBytes(
-    4, {
-      ("syncByte" | constant(0x47)) ~> (
-        ("transportStringIndicator" | bool) ::
-        ("payloadUnitStartIndicator" | bool) ::
-        ("transportPriority" | bool) ::
-        ("pid" | uint(13)) ::
-        ("scramblingControl" | uint2) ::
-        ("adaptationFieldControl" | uint2) ::
-        ("continuityCounter" | uint4))
-    }
+    4,
+    ("syncByte" | constant(0x47)) ~> (("transportStringIndicator" | bool) ::
+      ("payloadUnitStartIndicator" | bool) ::
+      ("transportPriority" | bool) ::
+      ("pid" | uint(13)) ::
+      ("scramblingControl" | uint2) ::
+      ("adaptationFieldControl" | uint2) ::
+      ("continuityCounter" | uint4))
   ).as[TransportStreamHeader]
 
   val adaptationFieldFlagsCodec: Codec[AdaptationFieldFlags] = fixedSizeBytes(
-    1, {
-      ("discontinuity" | bool) ::
-        ("randomAccess" | bool) ::
-        ("priority" | bool) ::
-        ("pcrFlag" | bool) ::
-        ("opcrFlag" | bool) ::
-        ("splicingPointFlag" | bool) ::
-        ("transportPrivateDataFlag" | bool) ::
-        ("adaptationFieldExtension" | bool)
-    }
+    1,
+    ("discontinuity" | bool) ::
+      ("randomAccess" | bool) ::
+      ("priority" | bool) ::
+      ("pcrFlag" | bool) ::
+      ("opcrFlag" | bool) ::
+      ("splicingPointFlag" | bool) ::
+      ("transportPrivateDataFlag" | bool) ::
+      ("adaptationFieldExtension" | bool)
   ).as[AdaptationFieldFlags]
 
-  val adaptationFieldCodec: Codec[AdaptationField] = {
-    ("adaptation_flags" | adaptationFieldFlagsCodec).flatPrepend { flags =>
-      ("pcr" | conditional(flags.pcrFlag, bits(48))) ::
-        ("opcr" | conditional(flags.opcrFlag, bits(48))) ::
-        ("spliceCountdown" | conditional(flags.splicingPointFlag, int8))
-    }
-  }.as[AdaptationField]
+  val adaptationFieldCodec: Codec[AdaptationField] =
+    ("adaptation_flags" | adaptationFieldFlagsCodec)
+      .flatPrepend { flags =>
+        ("pcr" | conditional(flags.pcrFlag, bits(48))) ::
+          ("opcr" | conditional(flags.opcrFlag, bits(48))) ::
+          ("spliceCountdown" | conditional(flags.splicingPointFlag, int8))
+      }
+      .as[AdaptationField]
 
-  val packetCodec: Codec[MpegPacket] = {
-    ("header" | tsHeaderCodec).flatPrepend { hdr =>
-      ("adaptation_field" | conditional(hdr.adaptationFieldIncluded, adaptationFieldCodec)) ::
-        ("payload" | conditional(hdr.payloadIncluded, bytes(184)))
-    }
-  }.as[MpegPacket]
+  val packetCodec: Codec[MpegPacket] =
+    ("header" | tsHeaderCodec)
+      .flatPrepend { hdr =>
+        ("adaptation_field" | conditional(hdr.adaptationFieldIncluded, adaptationFieldCodec)) ::
+          ("payload" | conditional(hdr.payloadIncluded, bytes(184)))
+      }
+      .as[MpegPacket]
 
 class MpegPacketExample extends CodecSuite:
 

@@ -37,8 +37,7 @@ import javax.crypto.{BadPaddingException, Cipher, IllegalBlockSizeException}
 
 import scodec.bits.BitVector
 
-/**
-  * Represents the ability to create a `Cipher` for encryption or decryption.
+/** Represents the ability to create a `Cipher` for encryption or decryption.
   *
   * Used in conjunction with [[encrypted]].
   */
@@ -50,13 +49,11 @@ trait CipherFactory:
   /** Creates a cipher initialized for decryption. */
   def newDecryptCipher: Cipher
 
-/**
-  * Companion for [[CipherFactory]].
+/** Companion for [[CipherFactory]].
   */
 object CipherFactory:
 
-  /**
-    * Creates a cipher factory for the specified transformation (via `Cipher.getInstance(transformation)`)
+  /** Creates a cipher factory for the specified transformation (via `Cipher.getInstance(transformation)`)
     * and using the specified functions for initializing for encryption and decryption respectively.
     */
   def apply(
@@ -66,8 +63,7 @@ object CipherFactory:
   ): CipherFactory =
     new SimpleCipherFactory(transformation, initForEncryption, initForDecryption)
 
-  /**
-    * Creates a cipher factory for the specified transformation (via `Cipher.getInstance(transformation)`).
+  /** Creates a cipher factory for the specified transformation (via `Cipher.getInstance(transformation)`).
     *
     * Ciphers are initialized with the specified key only.
     */
@@ -78,8 +74,7 @@ object CipherFactory:
       _.init(Cipher.DECRYPT_MODE, key)
     )
 
-  /**
-    * Creates a cipher factory for the specified transformation (via `Cipher.getInstance(transformation)`).
+  /** Creates a cipher factory for the specified transformation (via `Cipher.getInstance(transformation)`).
     *
     * Ciphers are initialized with the specified key and algorithm parameter specification.
     */
@@ -107,7 +102,6 @@ object CipherFactory:
       val cipher = newCipher
       initForDecryption(cipher)
       cipher
-
 
 /** @see [[encrypted]] */
 private[codecs] final class CipherCodec[A](codec: Codec[A], cipherFactory: CipherFactory)

@@ -55,8 +55,7 @@ private[codecs] final class VariableSizeDelimitedCodec[A](
   def sizeBound = delimiterCodec.sizeBound.atLeast
 
   override def encode(a: A) =
-    for
-      encA <- valueCodec.encode(a)
+    for encA <- valueCodec.encode(a)
     yield encA ++ delimiter
 
   override def decode(buffer: BitVector) =
@@ -65,17 +64,17 @@ private[codecs] final class VariableSizeDelimitedCodec[A](
       val valueBuffer = buffer.take(index)
       val remainder = buffer.drop(index + delimiter.size)
       valueCodec.decode(valueBuffer).map(decodeResult => decodeResult.mapRemainder(_ ++ remainder))
-    else
-      Attempt.failure(Err(s"expected delimiter $delimiterCodec"))
+    else Attempt.failure(Err(s"expected delimiter $delimiterCodec"))
 
   private def findDelimiterIndex(buffer: BitVector): Long =
     var offset = 0L
+    // format: off
     while
-      if buffer.drop(offset).startsWith(delimiter) then
-        return offset
+      if buffer.drop(offset).startsWith(delimiter) then return offset
       offset += segmentSize
       offset < buffer.size
     do ()
     -1
+    // format: on
 
   override def toString = s"VariableSizeDelimited($delimiterCodec, $valueCodec, $multipleValueSize)"

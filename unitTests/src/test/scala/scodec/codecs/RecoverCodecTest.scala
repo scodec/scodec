@@ -52,7 +52,7 @@ class RecoverCodecTest extends CodecSuite:
   property("recover - always code an empty vector for false value") {
     forAll { (i: Int) =>
       val codec = recover(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b2, rest)) = 
+      val Attempt.Successful(DecodeResult(b2, rest)) =
         (for
           bits <- codec.encode(false)
           result <- codec.decode(bits)
@@ -75,7 +75,8 @@ class RecoverCodecTest extends CodecSuite:
     forAll { (i1: Int, i2: Int) =>
       if (i1 != i2 && i1 >= 0 && i2 >= 0)
         val codec = recover(constant(BitVector.fromInt(i1)))
-        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(i2)): @unchecked
+        val Attempt.Successful(DecodeResult(b, rest)) =
+          codec.decode(BitVector.fromInt(i2)): @unchecked
         assertEquals(rest, BitVector.fromInt(i2))
         assert(!b)
     }
@@ -84,7 +85,7 @@ class RecoverCodecTest extends CodecSuite:
   property("lookahead - always code a value for true value") {
     forAll { (i: Int) =>
       val codec = lookahead(constant(BitVector.fromInt(i)))
-      val Attempt.Successful((encoded, DecodeResult(b2, rest))) = 
+      val Attempt.Successful((encoded, DecodeResult(b2, rest))) =
         (for
           bits <- codec.encode(true)
           result <- codec.decode(bits)
@@ -97,7 +98,7 @@ class RecoverCodecTest extends CodecSuite:
   property("lookahead - always code an empty vector for false value") {
     forAll { (i: Int) =>
       val codec = lookahead(constant(BitVector.fromInt(i)))
-      val Attempt.Successful(DecodeResult(b2, rest)) = 
+      val Attempt.Successful(DecodeResult(b2, rest)) =
         (for
           bits <- codec.encode(false)
           result <- codec.decode(bits)
@@ -120,7 +121,8 @@ class RecoverCodecTest extends CodecSuite:
     forAll { (i1: Int, i2: Int) =>
       if (i1 != i2 && i1 >= 0 && i2 >= 0)
         val codec = lookahead(constant(BitVector.fromInt(i1)))
-        val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(i2)): @unchecked
+        val Attempt.Successful(DecodeResult(b, rest)) =
+          codec.decode(BitVector.fromInt(i2)): @unchecked
         assertEquals(rest, BitVector.fromInt(i2))
         assert(!b)
     }

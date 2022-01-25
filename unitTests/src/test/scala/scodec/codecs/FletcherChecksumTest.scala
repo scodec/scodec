@@ -38,8 +38,7 @@ import scodec.bits.ByteVector
 /** Test the Fletcher checksum functionality. */
 class FletcherChecksumTest extends CodecSuite:
 
-  /**
-    *  http://en.wikipedia.org/wiki/Fletcher's_checksum
+  /**  http://en.wikipedia.org/wiki/Fletcher's_checksum
     *
     *  "Example calculation of the Fletcher-16 checksum"
     */
@@ -55,7 +54,7 @@ class FletcherChecksumTest extends CodecSuite:
 
   property("0xAA * (3N + 1) => Array(0xAA, 0xAA)") {
     forAll(Gen.posNum[Int]) { (n: Int) =>
-      pattern(n, 1, Array(0xAA.asInstanceOf[Byte], 0xAA.asInstanceOf[Byte]))
+      pattern(n, 1, Array(0xaa.asInstanceOf[Byte], 0xaa.asInstanceOf[Byte]))
     }
   }
 
@@ -65,6 +64,6 @@ class FletcherChecksumTest extends CodecSuite:
 
   private def pattern(n: Int, delta: Int, expected: Array[Byte]): Unit =
     val signer = ChecksumFactory.fletcher16.newSigner
-    signer.update(ByteVector.fill(3L * n + delta)(0xAA).toArray)
+    signer.update(ByteVector.fill(3L * n + delta)(0xaa).toArray)
     assert(signer.verify(expected))
     ()

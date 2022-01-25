@@ -86,4 +86,3 @@ class ConditionalCodecTest extends CodecSuite:
     assert(called)
     assertEquals(result, Attempt.successful(DecodeResult(Some("00"), BitVector.empty)))
   }
-

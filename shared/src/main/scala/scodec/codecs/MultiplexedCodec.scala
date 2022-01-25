@@ -35,15 +35,13 @@ import scala.collection.Factory
 
 import scodec.bits.BitVector
 
-/**
-  * A trait that enables custom handling for encoding/decoding sequences.
+/** A trait that enables custom handling for encoding/decoding sequences.
   */
 sealed trait MultiplexedCodec:
 
   def sizeBound: SizeBound = SizeBound.unknown
 
-  /**
-    * Encodes all elements of the specified sequence and combines the results using `mux`, or returns the first encountered error.
+  /** Encodes all elements of the specified sequence and combines the results using `mux`, or returns the first encountered error.
     *
     * @param enc element encoder
     * @param mux multiplexing function
@@ -69,11 +67,9 @@ sealed trait MultiplexedCodec:
           val half = size / 2
           mux(merge(offset, half), merge(offset + half, half + (if size % 2 == 0 then 0 else 1)))
       Attempt.successful(merge(0, buf.size))
-    else
-      Attempt.failure(failure.nn) // FIXME .nn shouldn't be necessary here
+    else Attempt.failure(failure.nn) // FIXME .nn shouldn't be necessary here
 
-  /**
-    * Repeatedly decodes values of type `A` and returns a collection of the specified type.
+  /** Repeatedly decodes values of type `A` and returns a collection of the specified type.
     * Uses `deMux` repeatedly to obtain the stream of vectors to decode to a value of type `A`.
     * Terminates when the next stream to decode is empty or upon first decoding error.
     *
@@ -104,8 +100,7 @@ sealed trait MultiplexedCodec:
 
 object DeMultiplexer:
 
-  /**
-    * Returns a `(next, rest)` tuple where `next` is the prefix of the input preceding the first occurrence of `delimiter`.
+  /** Returns a `(next, rest)` tuple where `next` is the prefix of the input preceding the first occurrence of `delimiter`.
     *
     * Note: The search for `delimiter` is performed at `delimiter` sized intervals.
     *

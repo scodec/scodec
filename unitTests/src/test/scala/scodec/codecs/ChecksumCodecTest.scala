@@ -38,7 +38,8 @@ import org.scalacheck.Prop.forAll
 class ChecksumCodecTest extends CodecSuite:
 
   def xor(length: Long) =
-    (bits: BitVector) => BitVector.GroupedOp(bits).grouped(length).foldLeft(BitVector.low(length))(_.xor(_))
+    (bits: BitVector) =>
+      BitVector.GroupedOp(bits).grouped(length).foldLeft(BitVector.low(length))(_.xor(_))
 
   val codecSizeIncluded = checksummed(utf8_32, xor(8), peekVariableSizeBytes(int32) :: codecs.bits)
   val codecSizeExcluded =
@@ -59,27 +60,39 @@ class ChecksumCodecTest extends CodecSuite:
   }
 
   test("append checksum on encode") {
-    assertEquals(codecSizeIncluded
-      .encode("hello world")
-      .require, hex"0x0000000b68656c6c6f20776f726c642b".bits)
+    assertEquals(
+      codecSizeIncluded
+        .encode("hello world")
+        .require,
+      hex"0x0000000b68656c6c6f20776f726c642b".bits
+    )
   }
 
   test("verify (and remove) checksum on decode") {
-    assertEquals(codecSizeIncluded
-      .decode(hex"0x0000000b68656c6c6f20776f726c642b".bits)
-      .require
-      .value, "hello world")
-    assertEquals(codecSizeIncluded
-      .decode(hex"0x0000000b68656c6c6f20776f726c642b".bits)
-      .require
-      .remainder, BitVector.empty)
+    assertEquals(
+      codecSizeIncluded
+        .decode(hex"0x0000000b68656c6c6f20776f726c642b".bits)
+        .require
+        .value,
+      "hello world"
+    )
+    assertEquals(
+      codecSizeIncluded
+        .decode(hex"0x0000000b68656c6c6f20776f726c642b".bits)
+        .require
+        .remainder,
+      BitVector.empty
+    )
   }
 
   test("fail decoding on checksum mismatch") {
-    assertEquals(codecSizeIncluded.decode(hex"0x0000000b68656c6c6f20776f726c6400".bits), Attempt
-      .failure(
-        ChecksumMismatch(hex"0x0000000b68656c6c6f20776f726c64".bits, hex"2b".bits, hex"00".bits)
-      ))
+    assertEquals(
+      codecSizeIncluded.decode(hex"0x0000000b68656c6c6f20776f726c6400".bits),
+      Attempt
+        .failure(
+          ChecksumMismatch(hex"0x0000000b68656c6c6f20776f726c64".bits, hex"2b".bits, hex"00".bits)
+        )
+    )
   }
 
   test("support putting the checksum before the data") {
@@ -87,5 +100,8 @@ class ChecksumCodecTest extends CodecSuite:
     def swap(c: Codec[(BitVector, BitVector)]): Codec[(BitVector, BitVector)] =
       c.xmap(_.swap, _.swap)
     val codec = checksummed(utf8_32, crc32c, swap(codecs.bits(32) :: codecs.bits))
-    assertEquals(codec.encode("hello world").require, hex"edbbac630000000b68656c6c6f20776f726c64".bits)
+    assertEquals(
+      codec.encode("hello world").require,
+      hex"edbbac630000000b68656c6c6f20776f726c64".bits
+    )
   }

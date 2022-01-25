@@ -46,7 +46,8 @@ class PackedDecimalCodecTest extends CodecSuite:
   }
 
   test("pbcd - decode") {
-    assertEquals(pbcd(6).decode(hex"010323".bits),
+    assertEquals(
+      pbcd(6).decode(hex"010323".bits),
       Attempt.successful(DecodeResult(10323L, BitVector.empty))
     )
   }
@@ -65,10 +66,12 @@ class PackedDecimalCodecTest extends CodecSuite:
   }
 
   test("lpbcd - decode") {
-    assertEquals(lpbcd(6).decode(hex"010323".bits),
+    assertEquals(
+      lpbcd(6).decode(hex"010323".bits),
       Attempt.successful(DecodeResult(10323L, BitVector.empty))
     )
-    assertEquals(lpbcd(5).decode(hex"010323".bits),
+    assertEquals(
+      lpbcd(5).decode(hex"010323".bits),
       Attempt.successful(DecodeResult(10323L, BitVector.empty))
     )
   }

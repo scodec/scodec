@@ -51,8 +51,12 @@ class ProductsExample extends CodecSuite:
     case class Foo(x: Int)
     object Foo { given Codec[Foo] = uint8.as[Foo] }
     case class Bar(f: Foo) derives Codec
-    assertEquals(Codec[Bar].encode(Bar(Foo(500))), Attempt.failure(
-      Err("500 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("f")))
+    assertEquals(
+      Codec[Bar].encode(Bar(Foo(500))),
+      Attempt.failure(
+        Err("500 is greater than maximum value 255 for 8-bit unsigned integer").pushContext("f")
+      )
+    )
   }
 
   test("demonstrate tuple generation") {
@@ -109,5 +113,8 @@ class ProductsExample extends CodecSuite:
     val codec = flagsCodec.consume { flgs =>
       conditional(flgs.x, uint8) :: conditional(flgs.y, int64) :: conditional(flgs.z, utf8_32)
     } { case (x, y, z) => Flags(x.isDefined, y.isDefined, z.isDefined) }
-    assertEquals(codec.encode(Some(1), Some(1L), Some("Hi")).require, bin"11100000" ++ hex"010000000000000001000000024869".bits)
+    assertEquals(
+      codec.encode(Some(1), Some(1L), Some("Hi")).require,
+      bin"11100000" ++ hex"010000000000000001000000024869".bits
+    )
   }

@@ -1,27 +1,15 @@
 import com.typesafe.tools.mima.core._
-import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
-import com.typesafe.sbt.SbtGit.GitKeys.{gitCurrentBranch, gitHeadCommit}
 
-addCommandAlias("fmt", "; compile:scalafmt; test:scalafmt; scalafmtSbt")
-addCommandAlias("fmtCheck", "; compile:scalafmtCheck; test:scalafmtCheck; scalafmtSbtCheck")
-
-ThisBuild / baseVersion := "2.0"
+ThisBuild / tlBaseVersion := "2.1"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
 
-ThisBuild / homepage := Some(url("https://github.com/scodec/scodec"))
 ThisBuild / startYear := Some(2013)
 
 ThisBuild / crossScalaVersions := Seq("3.1.0")
 
-ThisBuild / versionIntroduced := Map.empty
-
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
-
-ThisBuild / spiewakCiReleaseSnapshots := true
-
-ThisBuild / spiewakMainBranches := List("main")
 
 ThisBuild / scmInfo := Some(
   ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")
@@ -31,23 +19,27 @@ ThisBuild / licenses := List(
   ("BSD-3-Clause", url("https://github.com/scodec/scodec/blob/main/LICENSE"))
 )
 
-ThisBuild / publishGithubUser := "mpilquist"
-ThisBuild / publishFullName := "Michael Pilquist"
 ThisBuild / developers ++= List(
-  "pchiusano" -> "Paul Chiusano"
-).map { case (username, fullName) =>
-  Developer(username, fullName, s"@$username", url(s"https://github.com/$username"))
-}
-
-ThisBuild / fatalWarningsInCI := false
-
-ThisBuild / mimaBinaryIssueFilters ++= Seq(
+  tlGitHubDev("mpilquist", "Michael Pilquist"),
+  tlGitHubDev("pchiusano", "Paul Chiusano")
 )
 
-lazy val root = project
-  .in(file("."))
-  .aggregate(testkitJVM, testkitJS, coreJVM, coreJS, unitTests, benchmarks)
-  .enablePlugins(NoPublishPlugin, SonatypeCiReleasePlugin)
+ThisBuild / mimaBinaryIssueFilters ++= Seq(
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.IsoLowPriority.toTuple"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.IsoLowPriority.fromTuple"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$2"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$3"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$4"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$5"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$2"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$3"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$4"),
+  ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.codecs.codecs#package.zlib$default$5")
+)
+
+lazy val root = tlCrossRootProject.aggregate(testkit, core, unitTests, benchmarks)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform)
   .in(file("."))
@@ -64,19 +56,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
     }
   )
-  .jvmSettings(
-    mimaPreviousArtifacts := {
-      List().map { pv =>
-        organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
-      }.toSet
-    },
-    mimaBinaryIssueFilters ++= Seq(
-      ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
-      ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry")
-    )
-  )
-
-lazy val coreJVM = core.jvm
 
 lazy val coreJS = core.js.settings(
   scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
@@ -107,5 +86,5 @@ lazy val unitTests = project
   .enablePlugins(NoPublishPlugin)
 
 lazy val benchmarks = project
-  .dependsOn(coreJVM)
+  .dependsOn(core.jvm)
   .enablePlugins(JmhPlugin, NoPublishPlugin)

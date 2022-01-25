@@ -53,4 +53,8 @@ private[codecs] object VarPackedDecimalCodec extends Codec[Long]:
   @tailrec
   private def runEncoding(value: Long, acc: Attempt[BitVector]): Attempt[BitVector] =
     if value < 10L then codecs.uint(4).encode(value.toInt).flatMap(x => acc.map(x ++ _))
-    else runEncoding(value / 10, codecs.uint(4).encode((value % 10).toInt).flatMap(x => acc.map(x ++ _)))
+    else
+      runEncoding(
+        value / 10,
+        codecs.uint(4).encode((value % 10).toInt).flatMap(x => acc.map(x ++ _))
+      )

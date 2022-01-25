@@ -45,4 +45,3 @@ private[codecs] final class VectorCodec[A](codec: Codec[A], limit: Option[Int] =
   def decode(buffer: BitVector) = codec.collect[Vector, A](buffer, limit)
 
   override def toString = s"vector($codec)"
-

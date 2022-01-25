@@ -55,7 +55,7 @@ class LongCodecTest extends CodecSuite:
     check(0L, (1L << 32) - 1)((n: Long) => roundtrip(uint32L, n))
   }
 
-  test("ulong(n) - roundtrip") { 
+  test("ulong(n) - roundtrip") {
     assertEquals(ulong(13).encode(1), Attempt.successful(BitVector.low(13).set(12)))
   }
 
@@ -72,9 +72,12 @@ class LongCodecTest extends CodecSuite:
   }
 
   test("return an error when value to encode is out of legal range") {
-    assertEquals(uint32.encode(-1), Attempt.failure(
-      Err("-1 is less than minimum value 0 for 32-bit unsigned integer")
-    ))
+    assertEquals(
+      uint32.encode(-1),
+      Attempt.failure(
+        Err("-1 is less than minimum value 0 for 32-bit unsigned integer")
+      )
+    )
   }
 
   test("return an error when decoding with too few bits") {

@@ -51,7 +51,8 @@ abstract class CodecSuite extends ScalaCheckSuite:
   protected def roundtrip[A](codec: Codec[A], value: A)(using Location): Unit =
     val encoded = codec.encode(value)
     assert(encoded.isSuccessful)
-    val Attempt.Successful(DecodeResult(decoded, remainder)) = codec.decode(encoded.require): @unchecked
+    val Attempt.Successful(DecodeResult(decoded, remainder)) =
+      codec.decode(encoded.require): @unchecked
     assertBitsEqual(remainder, BitVector.empty)
     assert(decoded == value)
     ()
@@ -63,7 +64,9 @@ abstract class CodecSuite extends ScalaCheckSuite:
     val encoded = codec.encode(a)
     assert(encoded == Attempt.Failure(err))
 
-  protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A)(using Location) =
+  protected def shouldDecodeFullyTo[A](codec: Codec[A], buf: BitVector, expected: A)(using
+      Location
+  ) =
     val Attempt.Successful(DecodeResult(actual, rest)) = codec.decode(buf): @unchecked
     assertBitsEqual(rest, BitVector.empty)
     assert(actual == expected)

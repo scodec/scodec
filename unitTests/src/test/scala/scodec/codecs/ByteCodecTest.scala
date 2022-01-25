@@ -48,15 +48,24 @@ class ByteCodecTest extends CodecSuite:
   }
 
   test("return an error when value to encode is out of legal range") {
-    assertEquals(byte(7).encode(Byte.MaxValue), Attempt.failure(
-      Err("127 is greater than maximum value 63 for 7-bit signed byte")
-    ))
-    assertEquals(byte(7).encode(Byte.MinValue), Attempt.failure(
-      Err("-128 is less than minimum value -64 for 7-bit signed byte")
-    ))
-    assertEquals(ubyte(7).encode(-1), Attempt.failure(
-      Err("-1 is less than minimum value 0 for 7-bit unsigned byte")
-    ))
+    assertEquals(
+      byte(7).encode(Byte.MaxValue),
+      Attempt.failure(
+        Err("127 is greater than maximum value 63 for 7-bit signed byte")
+      )
+    )
+    assertEquals(
+      byte(7).encode(Byte.MinValue),
+      Attempt.failure(
+        Err("-128 is less than minimum value -64 for 7-bit signed byte")
+      )
+    )
+    assertEquals(
+      ubyte(7).encode(-1),
+      Attempt.failure(
+        Err("-1 is less than minimum value 0 for 7-bit unsigned byte")
+      )
+    )
   }
 
   test("return an error when decoding with too few bits") {
