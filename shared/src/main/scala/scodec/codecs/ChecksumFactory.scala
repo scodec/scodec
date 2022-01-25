@@ -36,8 +36,7 @@ import java.util.Arrays
 import java.util.zip.{Adler32, CRC32, Checksum}
 import scodec.bits.ByteVector
 
-/**
-  * Creates checksum implementations of [[SignerFactory]].
+/** Creates checksum implementations of [[SignerFactory]].
   */
 object ChecksumFactory:
 

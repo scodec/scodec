@@ -49,7 +49,7 @@ object Performance extends App:
   def time[A](desc: String)(f: => A): A =
     val start = System.nanoTime
     val res = f
-    val elapsed = (System.nanoTime - start)
+    val elapsed = System.nanoTime - start
     val elapsedInSeconds = elapsed / (1.second.toNanos.toDouble)
     val bitrate = bits.size / elapsedInSeconds
     val mbitrate = bitrate / (1024 * 1024)

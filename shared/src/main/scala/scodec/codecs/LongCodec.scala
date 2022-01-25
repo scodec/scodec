@@ -55,15 +55,13 @@ private[codecs] final class LongCodec(bits: Int, signed: Boolean, ordering: Byte
       Attempt.failure(Err(s"$i is greater than maximum value $MaxValue for $description"))
     else if i < MinValue then
       Attempt.failure(Err(s"$i is less than minimum value $MinValue for $description"))
-    else
-      Attempt.successful(BitVector.fromLong(i, bits, ordering))
+    else Attempt.successful(BitVector.fromLong(i, bits, ordering))
 
   override def decode(buffer: BitVector) =
     if buffer.sizeGreaterThanOrEqual(bitsL) then
       Attempt.successful(
         DecodeResult(buffer.take(bitsL).toLong(signed, ordering), buffer.drop(bitsL))
       )
-    else
-      Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
+    else Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
 
   override def toString = description

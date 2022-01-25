@@ -52,8 +52,7 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
       Attempt.failure(Err(s"$b is greater than maximum value $MaxValue for $description"))
     else if b < MinValue then
       Attempt.failure(Err(s"$b is less than minimum value $MinValue for $description"))
-    else
-      Attempt.successful(BitVector.fromByte(b, bits))
+    else Attempt.successful(BitVector.fromByte(b, bits))
 
   override def decode(buffer: BitVector) =
     buffer.acquire(bits.toLong) match

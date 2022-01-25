@@ -75,7 +75,8 @@ class TlvExample extends CodecSuite:
     }
 
     val commandCodec: Codec[Command] =
-      discriminated[Command].by(uint8)
+      discriminated[Command]
+        .by(uint8)
         .framing([x] => (c: Codec[x]) => variableSizeBytes(uint8, c))
         .singleton(0, Command.Go)
         .singleton(1, Command.Stop)
@@ -92,8 +93,14 @@ class TlvExample extends CodecSuite:
     roundtrip(codec, Right(Command.Stop))
     roundtrip(codec, Right(Command.TurnLeft(270)))
     roundtrip(codec, Right(Command.TurnRight(180)))
-    assertEquals(codec.decode(hex"0400".bits).require.value, Left(
-      UnrecognizedCommand(4, BitVector.empty)
-    ))
-    roundtrip(list(codec), List(Right(Command.TurnRight(180)), Right(Command.Go), Right(Command.Stop)))
+    assertEquals(
+      codec.decode(hex"0400".bits).require.value,
+      Left(
+        UnrecognizedCommand(4, BitVector.empty)
+      )
+    )
+    roundtrip(
+      list(codec),
+      List(Right(Command.TurnRight(180)), Right(Command.Go), Right(Command.Stop))
+    )
   }

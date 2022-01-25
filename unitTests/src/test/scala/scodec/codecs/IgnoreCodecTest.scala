@@ -40,6 +40,9 @@ class IgnoreCodecTest extends CodecSuite:
 
   test("roundtrip") {
     val codec = ign(2) ~> uint4 <~ ign(2)
-    assertEquals(codec.decode(BitVector(0xff)), Attempt.successful(DecodeResult(15, BitVector.empty)))
+    assertEquals(
+      codec.decode(BitVector(0xff)),
+      Attempt.successful(DecodeResult(15, BitVector.empty))
+    )
     assertEquals(codec.encode(15), Attempt.successful(BitVector(0x3c)))
   }

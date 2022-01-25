@@ -32,8 +32,7 @@ package scodec
 
 import scodec.bits.BitVector
 
-/**
-  * Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
+/** Result of a decoding operation, which consists of the decoded value and the remaining bits that were not consumed by decoding.
   */
 case class DecodeResult[+A](value: A, remainder: BitVector):
 

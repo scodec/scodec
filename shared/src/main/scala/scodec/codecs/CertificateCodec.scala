@@ -36,8 +36,7 @@ import java.security.cert.{Certificate, CertificateException, CertificateFactory
 
 import scodec.bits.BitVector
 
-/**
-  * Codec that supports encoding and decoding of [[java.security.cert.Certificate]]s using their default encoding.
+/** Codec that supports encoding and decoding of [[java.security.cert.Certificate]]s using their default encoding.
   */
 private[codecs] final class CertificateCodec(certType: String) extends Codec[Certificate]:
 

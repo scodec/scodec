@@ -66,7 +66,7 @@ class IntCodecTest extends CodecSuite:
   property("uint8 - roundtrip") {
     check(0, 255)((n: Int) => roundtrip(uint8, n))
   }
-  
+
   property("uint8L - roundtrip") {
     check(0, 255)((n: Int) => roundtrip(uint8L, n))
   }
@@ -120,15 +120,24 @@ class IntCodecTest extends CodecSuite:
   }
 
   test("return an error when value to encode is out of legal range") {
-    assertEquals(int16.encode(65536), Attempt.failure(
-      Err("65536 is greater than maximum value 32767 for 16-bit signed integer")
-    ))
-    assertEquals(int16.encode(-32769), Attempt.failure(
-      Err("-32769 is less than minimum value -32768 for 16-bit signed integer")
-    ))
-    assertEquals(uint16.encode(-1), Attempt.failure(
-      Err("-1 is less than minimum value 0 for 16-bit unsigned integer")
-    ))
+    assertEquals(
+      int16.encode(65536),
+      Attempt.failure(
+        Err("65536 is greater than maximum value 32767 for 16-bit signed integer")
+      )
+    )
+    assertEquals(
+      int16.encode(-32769),
+      Attempt.failure(
+        Err("-32769 is less than minimum value -32768 for 16-bit signed integer")
+      )
+    )
+    assertEquals(
+      uint16.encode(-1),
+      Attempt.failure(
+        Err("-1 is less than minimum value 0 for 16-bit unsigned integer")
+      )
+    )
   }
 
   test("return an error when decoding with too few bits") {

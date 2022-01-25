@@ -73,15 +73,24 @@ class ShortCodecTest extends CodecSuite:
   }
 
   test("return an error when value to encode is out of legal range") {
-    assertEquals(short(15).encode(Short.MaxValue), Attempt.failure(
-      Err("32767 is greater than maximum value 16383 for 15-bit signed short")
-    ))
-    assertEquals(short(15).encode(Short.MinValue), Attempt.failure(
-      Err("-32768 is less than minimum value -16384 for 15-bit signed short")
-    ))
-    assertEquals(ushort(15).encode(-1), Attempt.failure(
-      Err("-1 is less than minimum value 0 for 15-bit unsigned short")
-    ))
+    assertEquals(
+      short(15).encode(Short.MaxValue),
+      Attempt.failure(
+        Err("32767 is greater than maximum value 16383 for 15-bit signed short")
+      )
+    )
+    assertEquals(
+      short(15).encode(Short.MinValue),
+      Attempt.failure(
+        Err("-32768 is less than minimum value -16384 for 15-bit signed short")
+      )
+    )
+    assertEquals(
+      ushort(15).encode(-1),
+      Attempt.failure(
+        Err("-1 is less than minimum value 0 for 15-bit unsigned short")
+      )
+    )
   }
 
   test("return an error when decoding with too few bits") {

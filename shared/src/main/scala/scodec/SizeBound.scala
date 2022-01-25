@@ -30,8 +30,7 @@
 
 package scodec
 
-/**
-  * Bounds the size, in bits, of the binary encoding of a codec -- i.e., it provides a lower bound and an upper bound on the size
+/** Bounds the size, in bits, of the binary encoding of a codec -- i.e., it provides a lower bound and an upper bound on the size
   * of bit vectors returned as a result of encoding.
   *
   * @param lowerBound Minimum number of bits
@@ -42,8 +41,7 @@ case class SizeBound(lowerBound: Long, upperBound: Option[Long]):
   require(upperBound.getOrElse(0L) >= 0)
   require(upperBound.getOrElse(lowerBound) >= lowerBound)
 
-  /**
-    * Returns the exact size of the encoded bits. Defined when the lower bound is equal to the upper bound.
+  /** Returns the exact size of the encoded bits. Defined when the lower bound is equal to the upper bound.
     */
   def exact: Option[Long] = upperBound match
     case Some(u) if lowerBound == u => upperBound
@@ -69,7 +67,10 @@ case class SizeBound(lowerBound: Long, upperBound: Option[Long]):
       that: SizeBound
   )(lop: (Long, Long) => Long, uop: (Long, Long) => Long): SizeBound = SizeBound(
     lowerBound = lop(lowerBound, that.lowerBound),
-    upperBound = for  x <- upperBound; y <- that.upperBound  yield uop(x, y)
+    upperBound = for
+      x <- upperBound
+      y <- that.upperBound
+    yield uop(x, y)
   )
 
   override def toString = upperBound match

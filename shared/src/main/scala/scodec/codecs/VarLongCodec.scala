@@ -96,14 +96,12 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
       shift: Int
   ): Attempt[DecodeResult[Long]] =
     if (byte & MostSignificantBit) != 0 then
-      if buffer.sizeLessThan(8L) then
-        Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
+      if buffer.sizeLessThan(8L) then Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
       else
         val nextByte = buffer.take(8L).toByte(false)
         val nextValue = value | (nextByte & RelevantDataBits) << shift
         runDecodingBE(buffer.drop(8L), nextByte, nextValue, shift + BitsPerByte)
-    else
-      Attempt.successful(DecodeResult(value, buffer))
+    else Attempt.successful(DecodeResult(value, buffer))
 
   @tailrec
   private def runDecodingLE(
@@ -112,17 +110,15 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
       value: Long
   ): Attempt[DecodeResult[Long]] =
     if (byte & MostSignificantBit) != 0 then
-      if buffer.sizeLessThan(8L) then
-        Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
+      if buffer.sizeLessThan(8L) then Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
       else
         val nextByte = buffer.take(8L).toByte(false)
         val nextValue = (value << BitsPerByte) | (nextByte & RelevantDataBits)
         runDecodingLE(buffer.drop(8L), nextByte, nextValue)
-    else
-      Attempt.successful(DecodeResult(value, buffer))
+    else Attempt.successful(DecodeResult(value, buffer))
 
 private object VarLongCodec:
-  private val RelevantDataBits = 0x7FL
+  private val RelevantDataBits = 0x7fL
   private val MoreBytesMask = ~RelevantDataBits.toInt
   private val MostSignificantBit = 0x80
   private val BitsPerByte = 7

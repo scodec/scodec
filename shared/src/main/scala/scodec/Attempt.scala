@@ -33,8 +33,7 @@ package scodec
 import scala.util.Try
 import scala.util.control.NonFatal
 
-/**
-  * Right biased `Either[Err, A]`.
+/** Right biased `Either[Err, A]`.
   *
   * An `Attempt` is either an `Attempt.Successful` or an `Attempt.Failure`. Attempts can be created
   * by calling `Attempt.successful` or `Attempt.failure`, as well as converting from an `Option` via
@@ -63,15 +62,13 @@ sealed abstract class Attempt[+A] extends Product, Serializable:
   /** Returns this attempt if successful, otherwise the fallback attempt. */
   def orElse[B >: A](fallback: => Attempt[B]): Attempt[B]
 
-  /**
-    * If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
+  /** If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
     * a successful attempt is returned. If this attempt is successful or the supplied function is not defined
     * for the cause of the failure, this attempt is returned unmodified.
     */
   def recover[B >: A](f: PartialFunction[Err, B]): Attempt[B]
 
-  /**
-    * If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
+  /** If this attempt is a failure, and the supplied partial function is defined for the cause of the failure,
     * the result of applying that function is returned. If this attempt is successful or the supplied
     * function is not defined for the cause of the failure, this attempt is returned unmodified.
     */

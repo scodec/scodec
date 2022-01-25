@@ -33,7 +33,8 @@ package codecs
 
 import scodec.bits.*
 
-private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteOrdering) extends Codec[Int]:
+private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteOrdering)
+    extends Codec[Int]:
 
   require(
     bits > 0 && bits <= (if signed then 32 else 31),
@@ -54,15 +55,13 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteO
       Attempt.failure(Err(s"$i is greater than maximum value $MaxValue for $description"))
     else if i < MinValue then
       Attempt.failure(Err(s"$i is less than minimum value $MinValue for $description"))
-    else
-      Attempt.successful(BitVector.fromInt(i, bits, ordering))
+    else Attempt.successful(BitVector.fromInt(i, bits, ordering))
 
   override def decode(buffer: BitVector) =
     if buffer.sizeGreaterThanOrEqual(bitsL) then
       Attempt.successful(
         DecodeResult(buffer.take(bitsL).toInt(signed, ordering), buffer.drop(bitsL))
       )
-    else
-      Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
+    else Attempt.failure(Err.insufficientBits(bitsL, buffer.size))
 
   override def toString = description

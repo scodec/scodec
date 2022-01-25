@@ -34,9 +34,10 @@ import scala.compiletime.*
 
 /** The tuple which is the result of removing all 'Unit' types from the tuple 'A'. */
 type DropUnits[A <: Tuple] <: Tuple = A match
-  case hd *: tl => hd match
-    case Unit => DropUnits[tl]
-    case ? => hd *: DropUnits[tl]
+  case hd *: tl =>
+    hd match
+      case Unit => DropUnits[tl]
+      case ?    => hd *: DropUnits[tl]
   case EmptyTuple => EmptyTuple
 
 object DropUnits:
@@ -49,7 +50,7 @@ object DropUnits:
     //   case EmptyTuple => EmptyTuple
     (inline erasedValue[A] match
       case _: (Unit *: tl) => drop[tl](a.asInstanceOf[Unit *: tl].tail)
-      case _: (hd *: tl) => 
+      case _: (hd *: tl) =>
         val at = a.asInstanceOf[hd *: tl]
         at.head *: drop[tl](at.tail)
       case EmptyTuple => EmptyTuple

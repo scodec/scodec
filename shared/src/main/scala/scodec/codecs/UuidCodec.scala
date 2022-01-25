@@ -41,7 +41,10 @@ private[codecs] object UuidCodec extends Codec[UUID]:
   override val sizeBound = codecs.int64.sizeBound * 2L
 
   override def encode(u: UUID) =
-    Codec.encodeBoth(codecs.int64, codecs.int64)(u.getMostSignificantBits, u.getLeastSignificantBits)
+    Codec.encodeBoth(codecs.int64, codecs.int64)(
+      u.getMostSignificantBits,
+      u.getLeastSignificantBits
+    )
 
   override def decode(bits: BitVector) =
     Codec.decodeBothCombine(codecs.int64, codecs.int64)(bits)(mkUUID)

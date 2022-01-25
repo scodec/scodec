@@ -33,8 +33,7 @@ package codecs
 
 import scodec.bits.BitVector
 
-/**
-  * Codec that provides a constant value from decode and ignores the value to encode.
+/** Codec that provides a constant value from decode and ignores the value to encode.
   *
   * Useful as a combinator with [[DiscriminatorCodec]].
   */

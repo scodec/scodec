@@ -80,7 +80,13 @@ class DiscriminatorCodecTest extends CodecSuite:
   test("support building a codec for an enumeration") {
     enum Direction { case North, South, East, West }
 
-    val codec = mappedEnum(uint8, Direction.North -> 1, Direction.South -> 2, Direction.East -> 3, Direction.West -> 4)
+    val codec = mappedEnum(
+      uint8,
+      Direction.North -> 1,
+      Direction.South -> 2,
+      Direction.East -> 3,
+      Direction.West -> 4
+    )
 
     roundtrip(codec, Direction.North)
     roundtrip(codec, Direction.South)
@@ -93,7 +99,8 @@ class DiscriminatorCodecTest extends CodecSuite:
       case Red, Green, Blue
       case Reserved(value: Int)
 
-    val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
+    val nonReserved: Codec[Color] =
+      mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
     val reserved: Codec[Color.Reserved] = uint8.as[Color.Reserved]
     val codec: Codec[Color] = choice(nonReserved, reserved.upcast[Color])
 
@@ -104,14 +111,18 @@ class DiscriminatorCodecTest extends CodecSuite:
     roundtrip(codec, Color.Reserved(4))
   }
 
-  test("support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy") {
+  test(
+    "support building a codec for an enumeration with preserved reserved values, and reserved values are not in the type hierarchy"
+  ) {
     enum Color:
       case Red, Green, Blue
     case class Reserved(value: Int)
 
-    val nonReserved: Codec[Color] = mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
+    val nonReserved: Codec[Color] =
+      mappedEnum(uint8, Color.Red -> 1, Color.Green -> 2, Color.Blue -> 3)
     val reserved: Codec[Reserved] = uint8.as[Reserved]
-    val codec: Codec[Color | Reserved] = choice(nonReserved.upcast[Color | Reserved], reserved.upcast[Color | Reserved])
+    val codec: Codec[Color | Reserved] =
+      choice(nonReserved.upcast[Color | Reserved], reserved.upcast[Color | Reserved])
 
     roundtrip(codec, Color.Red)
     roundtrip(codec, Color.Green)
@@ -126,7 +137,10 @@ class DiscriminatorCodecTest extends CodecSuite:
       case Go(units: Int)
 
     val codec =
-      discriminated[Direction].by(uint8).singleton(0, Direction.Stay).typecase(1, int32.as[Direction.Go])
+      discriminated[Direction]
+        .by(uint8)
+        .singleton(0, Direction.Stay)
+        .typecase(1, int32.as[Direction.Go])
 
     roundtrip(codec, Direction.Stay)
     roundtrip(codec, Direction.Go(42))

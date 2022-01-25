@@ -33,13 +33,11 @@ package codecs
 
 import scodec.bits.{BitVector, ByteVector}
 
-/**
-  * Provides methods to create a "checksum codec" (encodes a bit-range to a bit-checksum and decodes bits to a bit-range).
+/** Provides methods to create a "checksum codec" (encodes a bit-range to a bit-checksum and decodes bits to a bit-range).
   */
 object ChecksumCodec:
 
-  /**
-    * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
     *
     * @param encoder encodes a bit-range to a bit-checksum
     * @param range decodes the size of a bit-range
@@ -60,8 +58,7 @@ object ChecksumCodec:
       )
     )
 
-  /**
-    * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
     *
     * @param encoder encodes a bit-range to a bit-checksum
     * @param range decodes the (un-padded) size of a bit-range
@@ -71,8 +68,7 @@ object ChecksumCodec:
   def apply(encoder: Encoder[BitVector], range: Decoder[Long], padding: Long): Codec[BitVector] =
     apply(encoder, range.map(_ + padding))
 
-  /**
-    * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
     *
     * @param encoder encodes a byte-range to a byte-checksum
     * @param range decodes the (un-padded) size of a byte-range
@@ -82,8 +78,7 @@ object ChecksumCodec:
   def apply(encoder: Encoder[ByteVector], range: Decoder[Int], padding: Int): Codec[BitVector] =
     apply(encoder.contramap[BitVector](_.bytes), range.map(8L * _), 8L * padding)
 
-  /**
-    * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
     *
     * @param length the bit-length of the checksum
     * @param f computes bit-checksum
@@ -106,8 +101,7 @@ object ChecksumCodec:
       padding
     )
 
-  /**
-    * Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to a bit-checksum and decodes bits to a bit-range.
     *
     * @param length the byte-length of the checksum
     * @param f computes byte-checksum
@@ -123,8 +117,7 @@ object ChecksumCodec:
   ): Codec[BitVector] =
     apply(8L * length, (bits: BitVector) => f(bits.bytes).bits, range.map(8L + _), 8L * padding)
 
-  /**
-    * Returns a codec that encodes a bit-range to an XORed bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to an XORed bit-checksum and decodes bits to a bit-range.
     *
     * @param length the bit-length of the checksum
     * @param range decodes the (un-padded) size of a bit-range
@@ -134,13 +127,13 @@ object ChecksumCodec:
   def xor(length: Long, range: Decoder[Long], padding: Long): Codec[BitVector] =
     apply(
       length,
-      (bits: BitVector) => BitVector.GroupedOp(bits).grouped(length).foldLeft(BitVector.low(length))(_.xor(_)),
+      (bits: BitVector) =>
+        BitVector.GroupedOp(bits).grouped(length).foldLeft(BitVector.low(length))(_.xor(_)),
       range,
       padding
     )
 
-  /**
-    * Returns a codec that encodes a bit-range to an XORed bit-checksum and decodes bits to a bit-range.
+  /** Returns a codec that encodes a bit-range to an XORed bit-checksum and decodes bits to a bit-range.
     *
     * @param length the byte-length of the checksum
     * @param range decodes the (un-padded) size of a byte-range
@@ -160,4 +153,3 @@ object ChecksumCodec:
     def message: String = s"checksum mismatch for bits: $bits, expected: $expected, actual: $actual"
 
     def pushContext(ctx: String): Err = copy(context = ctx :: context)
-

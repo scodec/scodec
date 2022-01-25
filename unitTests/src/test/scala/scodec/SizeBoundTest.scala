@@ -55,10 +55,13 @@ class SizeBoundTest extends CodecSuite:
   }
 
   test("support choice (i.e., ORing a collection of bounds together)") {
-    assertEquals(SizeBound.choice(List(SizeBound.exact(1), SizeBound.exact(2), SizeBound.exact(3))), SizeBound.bounded(1, 3))
+    assertEquals(
+      SizeBound.choice(List(SizeBound.exact(1), SizeBound.exact(2), SizeBound.exact(3))),
+      SizeBound.bounded(1, 3)
+    )
     assertEquals(SizeBound.choice(Nil), SizeBound.exact(0))
   }
 
   test("prevent creation of non-sensical bounds") {
-    intercept[IllegalArgumentException] { SizeBound(1, Some(0)) }
+    intercept[IllegalArgumentException](SizeBound(1, Some(0)))
   }

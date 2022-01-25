@@ -45,7 +45,10 @@ class DerivedCodecsExample extends CodecSuite:
   test("enums - derived") {
     enum Color derives Codec { case Red, Green, Blue }
     val c = Codec[Color]
-    assertBitsEqual((c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require, hex"000102".bits)
+    assertBitsEqual(
+      (c :: c :: c).encode(Color.Red, Color.Green, Color.Blue).require,
+      hex"000102".bits
+    )
   }
 
   sealed trait Sprocket derives Codec
@@ -93,7 +96,9 @@ class DerivedCodecsExample extends CodecSuite:
     assertEquals(Codec[Geiling].decode(encoded).require.value, ceil)
   }
 
-  test("demonstrate that derivation support does not interfere with manually authored given codecs in companions") {
+  test(
+    "demonstrate that derivation support does not interfere with manually authored given codecs in companions"
+  ) {
     assertEquals(Codec[ColorT].encode(ColorT.Green).require, hex"02".bits)
     assertEquals(Codec[Point].encode(Point(1, 2, 3)).require.size, 24L)
   }

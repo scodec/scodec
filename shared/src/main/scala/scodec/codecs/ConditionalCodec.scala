@@ -50,9 +50,7 @@ private[codecs] final class ConditionalCodec[A](included: Boolean, codec: => Cod
       evaluatedCodec.decode(buffer).map {
         _.map(result => Some(result))
       }
-    else
-      Attempt.successful(DecodeResult(None, buffer))
+    else Attempt.successful(DecodeResult(None, buffer))
 
   override def toString =
     if included then s"conditional(true, $evaluatedCodec)" else "conditional(false, ?)"
-

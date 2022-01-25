@@ -42,33 +42,54 @@ class PaddedVarAlignedCodecTest extends CodecSuite:
   }
 
   test("pad to the correct length") {
-    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
-      .encode("a")
-      .require, hex"0161000000".bits)
-    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
-      .encode("aaa")
-      .require, hex"0361616100".bits)
-    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 4)
-      .encode("aaaa")
-      .require, hex"461616161".bits)
+    assertBitsEqual(
+      paddedVarAlignedBytes(uint8, utf8, 4)
+        .encode("a")
+        .require,
+      hex"0161000000".bits
+    )
+    assertBitsEqual(
+      paddedVarAlignedBytes(uint8, utf8, 4)
+        .encode("aaa")
+        .require,
+      hex"0361616100".bits
+    )
+    assertBitsEqual(
+      paddedVarAlignedBytes(uint8, utf8, 4)
+        .encode("aaaa")
+        .require,
+      hex"461616161".bits
+    )
   }
 
   test("pad on a multiplier") {
-    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 3)
-      .encode("aaa")
-      .require, hex"03616161".bits)
-    assertBitsEqual(paddedVarAlignedBytes(uint8, utf8, 3)
-      .encode("aaaa")
-      .require, hex"04616161610000".bits)
+    assertBitsEqual(
+      paddedVarAlignedBytes(uint8, utf8, 3)
+        .encode("aaa")
+        .require,
+      hex"03616161".bits
+    )
+    assertBitsEqual(
+      paddedVarAlignedBytes(uint8, utf8, 3)
+        .encode("aaaa")
+        .require,
+      hex"04616161610000".bits
+    )
   }
 
   test("ignore padded") {
-    assertEquals(paddedVarAlignedBytes(uint8, utf8, 4)
-      .decode(hex"0161000000".bits)
-      .require
-      .value, "a")
-    assertEquals(paddedVarAlignedBytes(uint8, utf8, 4)
-      .decode(hex"0361616100".bits)
-      .require
-      .value, "aaa")
+    assertEquals(
+      paddedVarAlignedBytes(uint8, utf8, 4)
+        .decode(hex"0161000000".bits)
+        .require
+        .value,
+      "a"
+    )
+    assertEquals(
+      paddedVarAlignedBytes(uint8, utf8, 4)
+        .decode(hex"0361616100".bits)
+        .require
+        .value,
+      "aaa"
+    )
   }

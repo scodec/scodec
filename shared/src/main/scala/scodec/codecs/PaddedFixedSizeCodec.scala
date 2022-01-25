@@ -49,8 +49,7 @@ private[codecs] final class PaddedFixedSizeCodec[A](
           Attempt.failure(
             Err(s"[$a] requires ${encoded.size} bits but field is fixed size of $size bits")
           )
-        else if encoded.size == size then
-          Attempt.successful(encoded)
+        else if encoded.size == size then Attempt.successful(encoded)
         else
           val pc = padCodec(size - encoded.size)
           pc.encode(()) match
@@ -77,11 +76,10 @@ private[codecs] final class PaddedFixedSizeCodec[A](
           case Attempt.Successful(DecodeResult(res, rest)) =>
             val pc = padCodec(rest.size)
             @tailrec def validate(bits: BitVector): Attempt[DecodeResult[A]] =
-              if bits.isEmpty then
-                Attempt.successful(DecodeResult(res, buffer.drop(size)))
+              if bits.isEmpty then Attempt.successful(DecodeResult(res, buffer.drop(size)))
               else
                 pc.decode(bits) match
-                  case Attempt.Failure(err)                        => Attempt.failure(err.pushContext("padding"))
+                  case Attempt.Failure(err) => Attempt.failure(err.pushContext("padding"))
                   case Attempt.Successful(DecodeResult(_, remain)) => validate(remain)
             validate(rest)
 

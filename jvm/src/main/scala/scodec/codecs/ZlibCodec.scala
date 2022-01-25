@@ -80,7 +80,5 @@ private[codecs] class ZlibCodec[A](
                 "Insufficient data -- inflation reached end of input without completing inflation - " + inflated
               )
             )
-        catch
-          case e: DataFormatException => Left(e)
-      finally
-        inflater.end()
+        catch case e: DataFormatException => Left(e)
+      finally inflater.end()

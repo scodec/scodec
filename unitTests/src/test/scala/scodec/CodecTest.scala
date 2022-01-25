@@ -46,9 +46,18 @@ class CodecTest extends CodecSuite:
 
   test("complete") {
     val codec = codecs.bits(8)
-    assertEquals(codec.decode(hex"00112233".toBitVector), Attempt.successful(DecodeResult(hex"00".bits, hex"112233".bits)))
-    assertEquals(codec.complete.decode(hex"00112233".toBitVector), Attempt.failure(Err("24 bits remaining: 0x112233")))
-    assertEquals(codec.complete.decode(BitVector.fill(2000)(false)), Attempt.failure(Err("more than 512 bits remaining")))
+    assertEquals(
+      codec.decode(hex"00112233".toBitVector),
+      Attempt.successful(DecodeResult(hex"00".bits, hex"112233".bits))
+    )
+    assertEquals(
+      codec.complete.decode(hex"00112233".toBitVector),
+      Attempt.failure(Err("24 bits remaining: 0x112233"))
+    )
+    assertEquals(
+      codec.complete.decode(BitVector.fill(2000)(false)),
+      Attempt.failure(Err("more than 512 bits remaining"))
+    )
   }
 
   test("as - works with tuple codecs of 1 element") {
@@ -96,7 +105,10 @@ class CodecTest extends CodecSuite:
     assertEquals(oneDigit.encode(3), Attempt.successful(BitVector(0x03)))
     assertEquals(oneDigit.encode(10), Attempt.failure(Err("badd")))
     assertEquals(oneDigit.encode(30000000), Attempt.failure(Err("badd")))
-    assertEquals(oneDigit.decode(BitVector(0x05)), Attempt.successful(DecodeResult(5, BitVector.empty)))
+    assertEquals(
+      oneDigit.decode(BitVector(0x05)),
+      Attempt.successful(DecodeResult(5, BitVector.empty))
+    )
     assertEquals(oneDigit.decode(BitVector(0xff)), Attempt.failure(Err("badv")))
     assertEquals(oneDigit.decode(BitVector.empty), uint8.decode(BitVector.empty))
   }
@@ -138,10 +150,13 @@ class CodecTest extends CodecSuite:
 
   val char8: Codec[Char] = uint8.map[Char](_.asInstanceOf[Char]).decodeOnly
   test("decodeOnly - decodes successfully") {
-    assertEquals(char8.decode(BitVector(0x61)), Attempt.successful(DecodeResult('a', BitVector.empty)))
+    assertEquals(
+      char8.decode(BitVector(0x61)),
+      Attempt.successful(DecodeResult('a', BitVector.empty))
+    )
   }
   test("fails to encode") {
-     assertEquals(char8.encode('a'), Attempt.failure(Err("encoding not supported")))
+    assertEquals(char8.encode('a'), Attempt.failure(Err("encoding not supported")))
   }
 
   trait A
@@ -170,7 +185,9 @@ class CodecTest extends CodecSuite:
     test("downcast - roundtrip values of original type") {
       roundtrip(codec, B)
     }
-    test("downcast - return an error from decode if decoded value is a supertype of a different type") {
+    test(
+      "downcast - return an error from decode if decoded value is a supertype of a different type"
+    ) {
       assertEquals(codec.decode(hex"02".bits).isFailure, true)
     }
     test("downcast - work in presence of nested objects/classes") {

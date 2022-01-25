@@ -45,14 +45,12 @@ private[codecs] final class FixedSizeStrictCodec[A](size: Long, codec: Codec[A])
           Attempt.failure(
             Err(s"[$a] requires ${encoded.size} bits but field is fixed size of exactly $size bits")
           )
-        else
-          Attempt.successful(encoded.padTo(size))
+        else Attempt.successful(encoded.padTo(size))
     yield result
 
   override def decode(buffer: BitVector) =
     if buffer.size == size then
       codec.decode(buffer.take(size)).map(res => DecodeResult(res.value, buffer.drop(size)))
-    else
-      Attempt.failure(Err(s"expected exactly $size bits but got ${buffer.size} bits"))
+    else Attempt.failure(Err(s"expected exactly $size bits but got ${buffer.size} bits"))
 
   override def toString = s"fixedSizeBitsStrict($size, $codec)"

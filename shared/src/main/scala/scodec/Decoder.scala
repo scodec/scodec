@@ -34,44 +34,38 @@ import scala.collection.Factory
 
 import scodec.bits.BitVector
 
-/**
-  * Supports decoding a value of type `A` from a `BitVector`.
+/** Supports decoding a value of type `A` from a `BitVector`.
   */
 trait Decoder[+A] { self =>
 
-  /**
-    * Attempts to decode a value of type `A` from the specified bit vector.
+  /** Attempts to decode a value of type `A` from the specified bit vector.
     *
     * @param bits bits to decode
     * @return error if value could not be decoded or the remaining bits and the decoded value
     */
   def decode(bits: BitVector): Attempt[DecodeResult[A]]
 
-  /**
-    * Attempts to decode a value of type `A` from the specified bit vector and discards the remaining bits.
+  /** Attempts to decode a value of type `A` from the specified bit vector and discards the remaining bits.
     *
     * @param bits bits to decode
     * @return error if value could not be decoded or the decoded value
     */
   final def decodeValue(bits: BitVector): Attempt[A] = decode(bits).map(_.value)
 
-  /**
-    * Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
+  /** Converts this decoder to a `Decoder[B]` using the supplied `A => B`.
     */
   def map[B](f: A => B): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits).map(_.map(f))
   }
 
-  /**
-    * Converts this decoder to a `Decoder[B]` using the supplied `A => Decoder[B]`.
+  /** Converts this decoder to a `Decoder[B]` using the supplied `A => Decoder[B]`.
     */
   def flatMap[B](f: A => Decoder[B]): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) =
       self.decode(bits).flatMap(result => f(result.value).decode(result.remainder))
   }
 
-  /**
-    * Converts this decoder to a `Decoder[B]` using the supplied `A => Attempt[B]`.
+  /** Converts this decoder to a `Decoder[B]` using the supplied `A => Attempt[B]`.
     */
   def emap[B](f: A => Attempt[B]): Decoder[B] = new Decoder[B] {
     def decode(bits: BitVector) = self.decode(bits).flatMap { result =>
@@ -79,8 +73,7 @@ trait Decoder[+A] { self =>
     }
   }
 
-  /**
-    * Converts this decoder to a new decoder that fails decoding if there are remaining bits.
+  /** Converts this decoder to a new decoder that fails decoding if there are remaining bits.
     */
   def complete: Decoder[A] = new Decoder[A] {
     def decode(bits: BitVector) = self.decode(bits).flatMap { result =>
@@ -97,13 +90,11 @@ trait Decoder[+A] { self =>
     }
   }
 
-  /**
-    * Gets this as a `Decoder`.
+  /** Gets this as a `Decoder`.
     */
   def asDecoder: Decoder[A] = this
 
-  /**
-    * Converts this to a codec that fails encoding with an error.
+  /** Converts this to a codec that fails encoding with an error.
     */
   def decodeOnly[AA >: A]: Codec[AA] = new Codec[AA] {
     def sizeBound = SizeBound.unknown
@@ -111,8 +102,7 @@ trait Decoder[+A] { self =>
     def decode(bits: BitVector) = self.decode(bits)
   }
 
-  /**
-    * Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type
+  /** Repeatedly decodes values of type `A` from the specified vector, converts each value to a `B` and appends it to an accumulator of type
     * `B` using the supplied `zero` value and `append` function. Terminates when no more bits are available in the vector. Exits upon first decoding error.
     *
     * @return tuple consisting of the terminating error if any and the accumulated value
@@ -131,13 +121,12 @@ trait Decoder[+A] { self =>
           return (Some(cause), acc)
     (None, acc)
 
-  /**
-    * Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
+  /** Repeatedly decodes values of type `A` from the specified vector and returns a collection of the specified type.
     * Terminates when no more bits are available in the vector or when `limit` is defined and that many records have been
     * decoded. Exits upon first decoding error.
     */
-  def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(
-      using factory: Factory[A2, F[A2]]
+  def collect[F[_], A2 >: A](buffer: BitVector, limit: Option[Int])(using
+      factory: Factory[A2, F[A2]]
   ): Attempt[DecodeResult[F[A2]]] =
     val bldr = factory.newBuilder
     var remaining = buffer
@@ -156,21 +145,18 @@ trait Decoder[+A] { self =>
     Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
 }
 
-/**
-  * Provides functions for working with decoders.
+/** Provides functions for working with decoders.
   */
 trait DecoderFunctions:
 
-  /**
-    * Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`.
+  /** Decodes a tuple `(A, B)` by first decoding `A` and then using the remaining bits to decode `B`.
     */
   final def decodeBoth[A, B](decA: Decoder[A], decB: Decoder[B])(
       buffer: BitVector
   ): Attempt[DecodeResult[(A, B)]] =
     decodeBothCombine(decA, decB)(buffer)((a, b) => (a, b))
 
-  /**
-    * Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`.
+  /** Decodes a `C` by first decoding `A` and then using the remaining bits to decode `B`, then applying the decoded values to the specified function to generate a `C`.
     */
   final def decodeBothCombine[A, B, C](decA: Decoder[A], decB: Decoder[B])(
       buffer: BitVector
@@ -180,8 +166,7 @@ trait DecoderFunctions:
       decB.decode(aResult.remainder).map(bResult => bResult.map(b => f(aResult.value, b)))
     }
 
-  /**
-    * Creates a decoder that decodes with each of the specified decoders, returning
+  /** Creates a decoder that decodes with each of the specified decoders, returning
     * the first successful result.
     */
   final def choiceDecoder[A](decoders: Decoder[A]*): Decoder[A] = new Decoder[A] {
@@ -197,54 +182,47 @@ trait DecoderFunctions:
       else go(decoders.toList, Nil)
   }
 
-/**
-  * Companion for [[Decoder]].
+/** Companion for [[Decoder]].
   */
 object Decoder extends DecoderFunctions:
 
   inline def apply[A](using d: Decoder[A]): Decoder[A] = d
 
-  /**
-    * Creates a decoder from the specified function.
+  /** Creates a decoder from the specified function.
     */
   def apply[A](f: BitVector => Attempt[DecodeResult[A]]): Decoder[A] = new Decoder[A] {
     def decode(bits: BitVector) = f(bits)
   }
 
-  /**
-    * Creates a decoder that always decodes the specified value and returns the input bit vector unmodified.
+  /** Creates a decoder that always decodes the specified value and returns the input bit vector unmodified.
     */
   def pure[A](a: A): Decoder[A] = new Decoder[A] {
     def decode(bits: BitVector) = Attempt.successful(DecodeResult(a, bits))
     override def toString = s"const($a)"
   }
 
-  /**
-    * Lifts a value of `Attempt[A]` in to a `Decoder`.
+  /** Lifts a value of `Attempt[A]` in to a `Decoder`.
     */
   def liftAttempt[A](attempt: Attempt[A]): Decoder[A] = new Decoder[A] {
     def decode(b: BitVector) = attempt.map(a => DecodeResult(a, b))
     override def toString = s"constAttempt($attempt)"
   }
 
-  /**
-    * Gets a decoder that returns the input bit vector as its value and also returns the value as its remainder.
+  /** Gets a decoder that returns the input bit vector as its value and also returns the value as its remainder.
     */
   def get: Decoder[BitVector] = new Decoder[BitVector] {
     def decode(b: BitVector) = Attempt.successful(DecodeResult(b, b))
     override def toString = "get"
   }
 
-  /**
-    * Gets a decoder that ignores its input bit vector and sets the remainder to the specified value.
+  /** Gets a decoder that ignores its input bit vector and sets the remainder to the specified value.
     */
   def set(remainder: BitVector): Decoder[Unit] = new Decoder[Unit] {
     def decode(b: BitVector) = Attempt.successful(DecodeResult((), remainder))
     override def toString = s"set($remainder)"
   }
 
-  /**
-    * Gets a decoder that transforms the input bit vector with the specified function and returns the result as the remainder.
+  /** Gets a decoder that transforms the input bit vector with the specified function and returns the result as the remainder.
     */
   def modify(f: BitVector => BitVector): Decoder[Unit] = new Decoder[Unit] {
     def decode(b: BitVector) = Attempt.successful(DecodeResult((), f(b)))
@@ -252,8 +230,9 @@ object Decoder extends DecoderFunctions:
   }
 
   given Transform[Decoder] with
-    extension [A, B](fa: Decoder[A]) def exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
-      fa.emap(f)
+    extension [A, B](fa: Decoder[A])
+      def exmap(f: A => Attempt[B], g: B => Attempt[A]): Decoder[B] =
+        fa.emap(f)
 
   extension [A](decoder: Decoder[A])
     def as[B](using iso: Iso[A, B]): Decoder[B] = decoder.map(iso.to)

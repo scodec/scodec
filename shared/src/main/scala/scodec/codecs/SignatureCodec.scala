@@ -36,24 +36,21 @@ import java.security.cert.Certificate
 
 import scodec.bits.{BitVector, ByteVector}
 
-/**
-  * Represents the ability to create a "checksum" for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
+/** Represents the ability to create a "checksum" for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
   */
 trait Signer:
   def update(data: Array[Byte]): Unit
   def sign: Array[Byte]
   def verify(signature: Array[Byte]): Boolean
 
-/**
-  * Signer implementation for `java.security.Signature`
+/** Signer implementation for `java.security.Signature`
   */
 class SignatureSigner(impl: Signature) extends Signer:
   def update(data: Array[Byte]): Unit = impl.update(data)
   def sign: Array[Byte] = impl.sign.nn
   def verify(signature: Array[Byte]): Boolean = impl.verify(signature)
 
-/**
-  * Represents the ability to create a [[Signer]] for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
+/** Represents the ability to create a [[Signer]] for use with [[fixedSizeSignature]] and [[variableSizeSignature]].
   */
 trait SignerFactory:
 
@@ -63,8 +60,7 @@ trait SignerFactory:
   /** Creates a [[Signer]] initialized for verifying. */
   def newVerifier: Signer
 
-/**
-  * Create `java.security.Signature` implementations for [[SignerFactory]]
+/** Create `java.security.Signature` implementations for [[SignerFactory]]
   */
 object SignatureFactory:
 
@@ -135,9 +131,10 @@ object SignatureFactory:
       with SignatureFactorySigning
       with SignatureFactoryVerifying
 
-
 /** @see [[fixedSizeSignature]] and [[variableSizeSignature]] */
-private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: Codec[BitVector],
+private[codecs] final class SignatureCodec[A](
+    codec: Codec[A],
+    signatureCodec: Codec[BitVector],
     signerFactory: SignerFactory
 ) extends Codec[A]:
 
@@ -173,10 +170,8 @@ private[codecs] final class SignatureCodec[A](codec: Codec[A], signatureCodec: C
     val verifier = signerFactory.newVerifier
     verifier.update(data.toArray)
     try
-      if verifier.verify(signatureBytes.toArray) then
-        Attempt.successful(())
-      else
-        Attempt.failure(Err("Signature verification failed"))
+      if verifier.verify(signatureBytes.toArray) then Attempt.successful(())
+      else Attempt.failure(Err("Signature verification failed"))
     catch
       case e: SignatureException =>
         Attempt.failure(Err("Signature verification failed: " + e))

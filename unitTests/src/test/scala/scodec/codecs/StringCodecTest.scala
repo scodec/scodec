@@ -52,17 +52,20 @@ class StringCodecTest extends CodecSuite:
   }
 
   test("cstring - decode up to the first null-character") {
-    assertEquals(cstring.decode(ascii.encode("hello\u0000").require ++ BitVector.bit(true)),
+    assertEquals(
+      cstring.decode(ascii.encode("hello\u0000").require ++ BitVector.bit(true)),
       Attempt.successful(DecodeResult("hello", BitVector.bit(true)))
     )
   }
 
   test("cstring - fail decoding with an error when buffer contains bytes unsupported by charset") {
-    assertEquals(cstring.decode(ascii.encode("0123456789ABCDEF").require), Attempt.failure(
-      Err("Does not contain a 'NUL' termination byte.")
-    ))
+    assertEquals(
+      cstring.decode(ascii.encode("0123456789ABCDEF").require),
+      Attempt.failure(
+        Err("Does not contain a 'NUL' termination byte.")
+      )
+    )
   }
-
 
   test("utf8 - roundtrip") {
     roundtripAll(utf8, Seq("test", "", "with\ttabs", "withλ"))
@@ -78,13 +81,19 @@ class StringCodecTest extends CodecSuite:
 
   test("fail encoding with an error when string to encode contains chars unsupported by charset") {
     assertEquals(ascii.encode("λ"), Attempt.failure(Err("US-ASCII cannot encode character 'λ'")))
-    assertEquals(ascii.encode("Includes a λ"), Attempt.failure(
-      Err("US-ASCII cannot encode character 'λ'")
-    ))
+    assertEquals(
+      ascii.encode("Includes a λ"),
+      Attempt.failure(
+        Err("US-ASCII cannot encode character 'λ'")
+      )
+    )
   }
 
   test("fail decoding with an error when buffer contains bytes unsupported by charset") {
-    assertEquals(utf8.decode(BitVector(ByteVector.fromValidHex("0xf4ffffff"))), Attempt.failure(
-      Err("UTF-8 cannot decode string from '0xf4ffffff'")
-    ))
+    assertEquals(
+      utf8.decode(BitVector(ByteVector.fromValidHex("0xf4ffffff"))),
+      Attempt.failure(
+        Err("UTF-8 cannot decode string from '0xf4ffffff'")
+      )
+    )
   }
