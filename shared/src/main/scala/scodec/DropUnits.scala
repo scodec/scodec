@@ -37,7 +37,7 @@ type DropUnits[A <: Tuple] <: Tuple = A match
   case hd *: tl =>
     hd match
       case Unit => DropUnits[tl]
-      case ?    => hd *: DropUnits[tl]
+      case Any  => hd *: DropUnits[tl]
   case EmptyTuple => EmptyTuple
 
 object DropUnits:
