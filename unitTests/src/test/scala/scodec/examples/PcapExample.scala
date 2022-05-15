@@ -97,7 +97,7 @@ object PcapCodec:
       includedLength: Long,
       originalLength: Long
   ):
-    def timestamp: Double = timestampSeconds + (timestampMicros / (1.second.toMicros.toDouble))
+    def timestamp: Double = timestampSeconds + timestampMicros / 1.second.toMicros.toDouble
 
   def pcapRecordHeader(using ByteOrdering): Codec[PcapRecordHeader] = {
     ("ts_sec" | guint32) ::
@@ -111,7 +111,7 @@ object PcapCodec:
   def pcapRecord(using ordering: ByteOrdering) =
     ("record_header" | pcapRecordHeader)
       .flatZip { hdr =>
-        ("record_data" | bits(hdr.includedLength * 8))
+        "record_data" | bits(hdr.includedLength * 8)
       }
       .as[PcapRecord]
 

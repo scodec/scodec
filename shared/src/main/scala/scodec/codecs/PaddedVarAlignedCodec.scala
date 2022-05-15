@@ -41,7 +41,7 @@ private class PaddedVarAlignedCodec[A](
 ) extends Codec[A]:
 
   def calculatePadding(i: Long): Long =
-    (multipleForPadding - (i % multipleForPadding)) % multipleForPadding
+    (multipleForPadding - i % multipleForPadding) % multipleForPadding
 
   val decoder = for
     size <- sizeCodec

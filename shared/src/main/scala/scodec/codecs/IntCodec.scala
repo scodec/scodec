@@ -42,7 +42,7 @@ private[codecs] final class IntCodec(bits: Int, signed: Boolean, ordering: ByteO
   )
 
   private val MaxValue = (1 << (if signed then (bits - 1) else bits)) - 1
-  private val MinValue = if signed then -(1 << (bits - 1)) else 0
+  private val MinValue = if signed then -(1 << bits - 1) else 0
 
   private val bitsL = bits.toLong
 

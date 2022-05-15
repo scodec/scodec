@@ -48,7 +48,7 @@ class LongCodecTest extends CodecSuite:
   }
 
   property("uint32 - roundtrip") {
-    check(0, 1L << (32 - 1))((n: Long) => roundtrip(uint32, n))
+    check(0, 1L << 32 - 1)((n: Long) => roundtrip(uint32, n))
   }
 
   property("uint32L - roundtrip") {

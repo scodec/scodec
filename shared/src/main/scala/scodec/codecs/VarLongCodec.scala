@@ -113,7 +113,7 @@ private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[L
       if buffer.sizeLessThan(8L) then Attempt.failure(Err.InsufficientBits(8L, buffer.size, Nil))
       else
         val nextByte = buffer.take(8L).toByte(false)
-        val nextValue = (value << BitsPerByte) | (nextByte & RelevantDataBits)
+        val nextValue = value << BitsPerByte | nextByte & RelevantDataBits
         runDecodingLE(buffer.drop(8L), nextByte, nextValue)
     else Attempt.successful(DecodeResult(value, buffer))
 

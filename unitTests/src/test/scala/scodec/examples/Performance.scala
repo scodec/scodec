@@ -50,7 +50,7 @@ object Performance extends App:
     val start = System.nanoTime
     val res = f
     val elapsed = System.nanoTime - start
-    val elapsedInSeconds = elapsed / (1.second.toNanos.toDouble)
+    val elapsedInSeconds = elapsed / 1.second.toNanos.toDouble
     val bitrate = bits.size / elapsedInSeconds
     val mbitrate = bitrate / (1024 * 1024)
     println(f"$desc bitrate: $mbitrate%.3f Mbps - ${mbitrate / 8}%.3f MBps")

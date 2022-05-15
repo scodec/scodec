@@ -53,4 +53,4 @@ private object VarIntCodec:
   // toLong left-pads with `1` if the int is negative which cannot be encoded by
   // the VarLongCodec. This pads negative ints with `0` instead.
   private val toPositiveLong = (i: Int) =>
-    if i >= 0 then i.toLong else (i & Int.MaxValue) | NegativeIntSignBit
+    if i >= 0 then i.toLong else i & Int.MaxValue | NegativeIntSignBit

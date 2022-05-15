@@ -85,7 +85,7 @@ class RecoverCodecTest extends CodecSuite:
   property("lookahead - always code a value for true value") {
     forAll { (i: Int) =>
       val codec = lookahead(constant(BitVector.fromInt(i)))
-      val Attempt.Successful((encoded, DecodeResult(b2, rest))) =
+      val Attempt.Successful(encoded, DecodeResult(b2, rest)) =
         (for
           bits <- codec.encode(true)
           result <- codec.decode(bits)

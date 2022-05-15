@@ -53,7 +53,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
     Test / scalacOptions := (Compile / scalacOptions).value,
     Compile / unmanagedResources ++= {
       val base = baseDirectory.value
-      (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
+      (base / "NOTICE") +: (base / "LICENSE") +: (base / "licenses" * "LICENSE_*").get
     }
   )
 

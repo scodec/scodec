@@ -56,12 +56,12 @@ object ChecksumFactory:
 
   /** CRC-32 checksum. */
   val crc32: SignerFactory = new ChecksumFactory {
-    def newSigner = new ZipChecksumSigner(new CRC32())
+    def newSigner = new ZipChecksumSigner(new CRC32)
   }
 
   /** Adler-32 checksum. */
   val adler32: SignerFactory = new ChecksumFactory {
-    def newSigner = new ZipChecksumSigner(new Adler32())
+    def newSigner = new ZipChecksumSigner(new Adler32)
   }
 
   /** xor checksum. */

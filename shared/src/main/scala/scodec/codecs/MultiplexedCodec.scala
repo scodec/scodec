@@ -117,9 +117,9 @@ object DeMultiplexer:
       start: Long
   ): (BitVector, BitVector) =
     bits.indexOfSlice(delimiter, start) match
-      case -1                             => (bits, BitVector.empty)
-      case i if (i % delimiter.size) == 0 => (bits.take(i), bits.drop(i + delimiter.size))
-      case i                              => delimited(bits, delimiter, i + delimiter.size)
+      case -1                           => (bits, BitVector.empty)
+      case i if i % delimiter.size == 0 => (bits.take(i), bits.drop(i + delimiter.size))
+      case i                            => delimited(bits, delimiter, i + delimiter.size)
 
 private[codecs] class VectorMultiplexedCodec[A](
     mux: (BitVector, BitVector) => BitVector,

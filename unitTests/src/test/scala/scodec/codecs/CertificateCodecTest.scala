@@ -50,7 +50,7 @@ class CertificateCodecTest extends CodecSuite:
     val issuer = new X500Name("CN=Test")
     val serialNum = BigInt(1).bigInteger
     val notBefore = new Date(System.currentTimeMillis - 1000000)
-    val notAfter = new Date()
+    val notAfter = new Date
     val subject = issuer
     val bldr = new JcaX509v3CertificateBuilder(
       issuer,
