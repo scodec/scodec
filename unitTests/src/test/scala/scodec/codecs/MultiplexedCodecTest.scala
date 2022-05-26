@@ -82,7 +82,7 @@ class MultiplexedCodecTest extends CodecSuite:
         }
       }
       .drop(1) // drop first iteration to allow for JIT
-    val averages = results.reduceLeft((x, y) => (x.zip(y)).map { case (z, b) => z + b }).map {
+    val averages = results.reduceLeft((x, y) => x.zip(y).map { case (z, b) => z + b }).map {
       _ / results.size.toLong
     }
     println("Roundtrip averages:")
