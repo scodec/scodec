@@ -54,7 +54,7 @@ class WithDefaultTest extends CodecSuite:
     forAll { (n: Int) =>
       val codec = withDefaultValue(conditional(false, int8), n)
       val Attempt.Successful(DecodeResult(b, rest)) = codec.decode(BitVector.fromInt(n)): @unchecked
-      assertEquals(rest, (BitVector.fromInt(n)))
+      assertEquals(rest, BitVector.fromInt(n))
       assertEquals(b, n)
     }
   }
