@@ -54,7 +54,7 @@ class VectorCodecTest extends CodecSuite:
         }
       }
       .drop(1) // drop first iteration to allow for JIT
-    val avgs = results.reduceLeft((x, y) => (x.zip(y)).map { case (a, b) => a + b }).map {
+    val avgs = results.reduceLeft((x, y) => x.zip(y).map { case (a, b) => a + b }).map {
       _ / results.size.toLong
     }
     println("Roundtrip averages:")

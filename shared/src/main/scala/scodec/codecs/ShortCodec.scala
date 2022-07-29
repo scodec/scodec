@@ -41,7 +41,7 @@ private[codecs] final class ShortCodec(bits: Int, signed: Boolean, ordering: Byt
     "bits must be in range [1, 16] for signed and [1, 15] for unsigned"
   )
 
-  val MaxValue = ((1 << (if signed then (bits - 1) else bits)) - 1).toShort
+  val MaxValue = ((1 << (if signed then bits - 1 else bits)) - 1).toShort
   val MinValue = (if signed then -(1 << (bits - 1)) else 0).toShort
 
   private val bitsL = bits.toLong

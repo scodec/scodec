@@ -7,7 +7,7 @@ ThisBuild / organizationName := "Scodec"
 
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.1.2")
+ThisBuild / crossScalaVersions := Seq("3.1.3")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
@@ -46,7 +46,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.31"
+      "org.scodec" %%% "scodec-bits" % "1.1.34"
     ),
     scalacOptions := scalacOptions.value
       .filterNot(_ == "-source:3.0-migration") :+ "-source:future",
@@ -78,7 +78,7 @@ lazy val testkitJS = testkit.js
 lazy val unitTests = project
   .settings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk15on" % "1.70" % "test"
+      "org.bouncycastle" % "bcpkix-jdk18on" % "1.71" % "test"
     ),
     scalacOptions := scalacOptions.value.filterNot(
       _ == "-source:3.0-migration"
