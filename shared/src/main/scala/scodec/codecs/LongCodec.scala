@@ -41,7 +41,7 @@ private[codecs] final class LongCodec(bits: Int, signed: Boolean, ordering: Byte
     "bits must be in range [1, 64] for signed and [1, 63] for unsigned"
   )
 
-  val MaxValue = (1L << (if signed then (bits - 1) else bits)) - 1
+  val MaxValue = (1L << (if signed then bits - 1 else bits)) - 1
   val MinValue = if signed then -(1L << (bits - 1)) else 0
 
   private val bitsL = bits.toLong

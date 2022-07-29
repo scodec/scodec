@@ -111,7 +111,7 @@ object PcapCodec:
   def pcapRecord(using ordering: ByteOrdering) =
     ("record_header" | pcapRecordHeader)
       .flatZip { hdr =>
-        ("record_data" | bits(hdr.includedLength * 8))
+        "record_data" | bits(hdr.includedLength * 8)
       }
       .as[PcapRecord]
 
