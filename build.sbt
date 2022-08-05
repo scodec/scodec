@@ -78,6 +78,9 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
 
 lazy val testkitJVM = testkit.jvm
 lazy val testkitJS = testkit.js
+lazy val testkitNative = testkit.native.settings(
+  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.2.0").toMap
+)
 
 lazy val unitTests = project
   .settings(
