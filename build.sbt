@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.core._
 
-ThisBuild / tlBaseVersion := "2.1"
+ThisBuild / tlBaseVersion := "2.2"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
@@ -62,6 +62,10 @@ lazy val coreJS = core.js.settings(
   mimaBinaryIssueFilters ++= Seq(
     ProblemFilters.exclude[MissingClassProblem]("scodec.codecs.ZlibCodec")
   )
+)
+
+lazy val coreNative = core.native.settings(
+  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.2.0").toMap
 )
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
