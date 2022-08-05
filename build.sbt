@@ -41,12 +41,12 @@ ThisBuild / mimaBinaryIssueFilters ++= Seq(
 
 lazy val root = tlCrossRootProject.aggregate(testkit, core, unitTests, benchmarks)
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("."))
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.31"
+      "org.scodec" %%% "scodec-bits" % "1.1.34"
     ),
     scalacOptions := scalacOptions.value
       .filterNot(_ == "-source:3.0-migration") :+ "-source:future",
@@ -64,10 +64,10 @@ lazy val coreJS = core.js.settings(
   )
 )
 
-lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "0.7.29",
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "1.0.0-M6",
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future"
   )
   .dependsOn(core % "compile->compile")
