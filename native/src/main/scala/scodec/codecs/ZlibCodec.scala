@@ -48,4 +48,3 @@ private[codecs] class ZlibCodec[A](
   def encode(a: A) = ???
 
   def decode(b: BitVector) = ???
-
