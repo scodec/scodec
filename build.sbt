@@ -96,7 +96,8 @@ lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jsSettings(
     libraryDependencies ++= Seq(
-      ("org.scala-js" %%% "scalajs-java-securerandom" % "1.0.0" % Test).cross(CrossVersion.for3Use2_13)
+      ("org.scala-js" %%% "scalajs-java-securerandom" % "1.0.0" % Test)
+        .cross(CrossVersion.for3Use2_13)
     )
   )
   .dependsOn(testkit % "test->compile")
