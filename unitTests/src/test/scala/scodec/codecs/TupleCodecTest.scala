@@ -41,7 +41,7 @@ class TupleCodecTest extends CodecSuite:
   case class Flags(x: Boolean, y: Boolean, z: Boolean)
 
   test("support construction via :: operator") {
-    roundtrip((uint8 :: uint8 :: utf8), (1, 2, "test"))
+    roundtrip(uint8 :: uint8 :: utf8, (1, 2, "test"))
   }
 
   test("support conversion of tuple codec to a case class codec via as method") {

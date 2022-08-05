@@ -2,7 +2,8 @@ scodec
 ======
 
 [![Discord](https://img.shields.io/discord/632277896739946517.svg?label=&logo=discord&logoColor=ffffff&color=404244&labelColor=6A7EC2)](https://discord.gg/wKn3cpfRVz)
-[![Maven Central](https://img.shields.io/maven-central/v/org.scodec/scodec-core_2.13)](https://maven-badges.herokuapp.com/maven-central/org.scodec/scodec-core_2.13)
+[![Maven Central](https://img.shields.io/maven-central/v/org.scodec/scodec-core_3)](https://maven-badges.herokuapp.com/maven-central/org.scodec/scodec-core_3)
+[![javadoc](https://javadoc.io/badge2/org.scodec/scodec-core_3/javadoc.svg)](https://javadoc.io/doc/org.scodec/scodec-core_3)
 
 Scala combinator library for working with binary data.
 
@@ -87,9 +88,9 @@ Codecs can also be derived, resulting in usage like:
 
 New codecs can be created by either implementing the `Codec` trait though typically new codecs are created by applying one or more combinators to existing codecs.
 
-See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](http://scodec.org/api/). Especially:
- - [`Codec`](http://scodec.org/api/scodec-core/1.11.1/#scodec.Codec)
- - [`codecs` package](http://scodec.org/api/scodec-core/1.11.1/#scodec.codecs.package)
+See [the guide](http://scodec.org/guide/) for detailed documentation. Also, see [ScalaDoc](https://javadoc.io/doc/org.scodec/scodec-core_3). Especially:
+ - [`Codec`](https://javadoc.io/doc/org.scodec/scodec-core_3/latest/scodec/Codec.html)
+ - [`codecs` package](https://javadoc.io/doc/org.scodec/scodec-core_3/latest/scodec/codecs.html)
 
 Ecosystem
 ---------

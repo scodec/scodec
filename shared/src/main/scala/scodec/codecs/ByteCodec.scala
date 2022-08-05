@@ -40,7 +40,7 @@ private[codecs] final class ByteCodec(bits: Int, signed: Boolean) extends Codec[
     "bits must be in range [1, 8] for signed and [1, 7] for unsigned"
   )
 
-  private val MaxValue = ((1 << (if signed then (bits - 1) else bits)) - 1).toByte
+  private val MaxValue = ((1 << (if signed then bits - 1 else bits)) - 1).toByte
   private val MinValue = (if signed then -(1 << (bits - 1)) else 0).toByte
 
   private def description = s"$bits-bit ${if signed then "signed" else "unsigned"} byte"
