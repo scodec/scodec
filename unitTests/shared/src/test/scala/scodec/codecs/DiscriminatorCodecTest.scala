@@ -34,17 +34,19 @@ package codecs
 class DiscriminatorCodecTest extends CodecSuite:
 
   test("support building a codec using typecases") {
-    val codec =
-      discriminated[AnyVal]
-        .by(uint8)
-        .typecase(0, int32)
-        .typecase(1, bool)
+    if (sys.props("vm.name") ne null) {
+      val codec =
+        discriminated[AnyVal]
+          .by(uint8)
+          .typecase(0, int32)
+          .typecase(1, bool)
 
-    roundtrip(codec, true)
-    roundtrip(codec, false)
-    roundtrip(codec, 1)
-    roundtrip(codec, Int.MaxValue)
-    assertEquals(codec.sizeBound, SizeBound.bounded(9, 40))
+      roundtrip(codec, true)
+      roundtrip(codec, false)
+      roundtrip(codec, 1)
+      roundtrip(codec, Int.MaxValue)
+      assertEquals(codec.sizeBound, SizeBound.bounded(9, 40))
+    }
   }
 
   test("support building a codec using partial functions and subtyping") {

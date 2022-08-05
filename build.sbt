@@ -82,17 +82,24 @@ lazy val testkitNative = testkit.native.settings(
   tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.2.0").toMap
 )
 
-lazy val unitTests = project
+lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
-    libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk18on" % "1.71" % "test"
-    ),
     scalacOptions := scalacOptions.value.filterNot(
       _ == "-source:3.0-migration"
     ) :+ "-source:future",
     Test / scalacOptions := (Compile / scalacOptions).value
   )
-  .dependsOn(testkitJVM % "test->compile")
+  .jvmSettings(
+    libraryDependencies ++= Seq(
+      "org.bouncycastle" % "bcpkix-jdk18on" % "1.71" % Test
+    )
+  )
+  .jsSettings(
+    libraryDependencies ++= Seq(
+      ("org.scala-js" %%% "scalajs-java-securerandom" % "1.0.0" % Test).cross(CrossVersion.for3Use2_13)
+    )
+  )
+  .dependsOn(testkit % "test->compile")
   .enablePlugins(NoPublishPlugin)
 
 lazy val benchmarks = project
