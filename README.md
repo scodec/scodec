@@ -105,9 +105,9 @@ Examples
 
 There are various examples in the test directory, including codecs for:
 
- - [UDP Datagrams](unitTests/src/test/scala/scodec/examples/UdpDatagramExample.scala)
- - [MPEG Packets](unitTests/src/test/scala/scodec/examples/MpegPacketExample.scala)
- - [libpcap Files](unitTests/src/test/scala/scodec/examples/PcapExample.scala)
+ - [UDP Datagrams](unitTests/shared/src/test/scala/scodec/examples/UdpDatagramExample.scala)
+ - [MPEG Packets](unitTests/shared/src/test/scala/scodec/examples/MpegPacketExample.scala)
+ - [libpcap Files](unitTests/jvm/src/test/scala/scodec/examples/PcapExample.scala)
 
 The [protocols](https://github.com/typelevel/fs2/tree/main/protocols) module of fs2 has production
 quality codecs for the above examples.
