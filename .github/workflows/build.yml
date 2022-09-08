@@ -9,20 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scala: [2.12.11, 2.13.6]
+        scala: [2.12.16, 2.13.8]
     steps:
     - uses: actions/checkout@v2
     - uses: olafurpg/setup-scala@v5
       with:
         java-version: openjdk@1.11.0
     - name: Format Check
-      if: matrix.scala == '2.13.6'
+      if: matrix.scala == '2.13.8'
       run: sbt ++${{matrix.scala}} fmtCheck
     - name: JVM
       run: sbt ++${{matrix.scala}} unitTests/test
     - name: JS
-      if: matrix.scala == '2.13.6' || matrix.scala == '2.12.11'
+      if: matrix.scala == '2.13.8' || matrix.scala == '2.12.16'
       run: sbt ++${{matrix.scala}} coreJS/test
     - name: Mima
-      if: matrix.scala == '2.13.6' || matrix.scala == '2.12.11'
+      if: matrix.scala == '2.13.8' || matrix.scala == '2.12.16'
       run: sbt ++${{matrix.scala}} mimaReportBinaryIssues

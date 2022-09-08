@@ -24,7 +24,8 @@ lazy val commonSettings = Seq(
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  crossScalaVersions := List("2.12.11", "2.13.6"),
+  crossScalaVersions := List("2.12.16", "2.13.8"),
+  scalaVersion := "2.13.8",
   scalacOptions ++= Seq(
     "-encoding",
     "UTF-8",
@@ -87,13 +88,23 @@ lazy val publishingSettings = Seq(
 
 lazy val root = project
   .in(file("."))
-  .aggregate(testkitJVM, testkitJS, coreJVM, coreJS, unitTests)
+  .aggregate(
+    testkitJVM,
+    testkitJS,
+    testkitNative,
+    coreJVM,
+    coreJS,
+    coreNative,
+    unitTests.jvm,
+    unitTests.js,
+    unitTests.native
+  )
   .settings(commonSettings: _*)
   .settings(
     publishArtifact := false
   )
 
-lazy val core = crossProject(JVMPlatform, JSPlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(commonSettings: _*)
@@ -107,8 +118,8 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
       baseDirectory.value / "../shared/src/main" / dir
     },
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.14",
-      "com.chuusai" %%% "shapeless" % "2.3.3"
+      "org.scodec" %%% "scodec-bits" % "1.1.34",
+      "com.chuusai" %%% "shapeless" % "2.3.9"
     ),
     buildInfoPackage := "scodec",
     buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
@@ -145,24 +156,26 @@ lazy val core = crossProject(JVMPlatform, JSPlatform)
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
+lazy val coreNative = core.native
 
-lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testkit"))
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-testkit",
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % "1.14.3",
-      "org.scalatest" %%% "scalatest" % "3.1.1",
-      "org.scalatestplus" %%% "scalacheck-1-14" % "3.1.1.1"
+      "org.scalacheck" %%% "scalacheck" % "1.16.0",
+      "org.scalatest" %%% "scalatest" % "3.2.13",
+      "org.scalatestplus" %%% "scalacheck-1-16" % "3.2.13.0"
     )
   )
   .dependsOn(core % "compile->compile")
 
 lazy val testkitJVM = testkit.jvm
 lazy val testkitJS = testkit.js
+lazy val testkitNative = testkit.native
 
-lazy val unitTests = project
+lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("unitTests"))
   .settings(commonSettings: _*)
   .settings(
@@ -178,7 +191,7 @@ lazy val unitTests = project
                                )
                              else Nil)
   )
-  .dependsOn(testkitJVM % "test->compile")
+  .dependsOn(testkit % "test->compile")
   .settings(publishArtifact := false)
 
 lazy val benchmark: Project = project

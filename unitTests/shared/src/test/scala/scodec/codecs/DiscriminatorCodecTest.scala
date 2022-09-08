@@ -5,19 +5,21 @@ class DiscriminatorCodecTest extends CodecSuite {
 
   "the discriminator combinators" should {
 
-    "support building a codec using typecases" in {
-      val codec =
-        discriminated[AnyVal]
-          .by(uint8)
-          .typecase(0, int32)
-          .typecase(1, bool)
+    if (sys.props("java.vm.name") != "Scala.js" || sys.props("java.vm.name") != "Scala Native")
+      "support building a codec using typecases" in {
+        val codec =
+          discriminated[AnyVal]
+            .by(uint8)
+            .typecase(0, int32)
+            .typecase(1, bool)
 
-      roundtrip(codec, true)
-      roundtrip(codec, false)
-      roundtrip(codec, 1)
-      roundtrip(codec, Int.MaxValue)
-      codec.sizeBound shouldBe SizeBound.bounded(9, 40)
-    }
+        roundtrip(codec, true)
+        roundtrip(codec, false)
+        roundtrip(codec, 1)
+        roundtrip(codec, Int.MaxValue)
+        codec.sizeBound shouldBe SizeBound.bounded(9, 40)
+
+      }
 
     "support building a codec using partial functions and subtyping" in {
       val codec =
