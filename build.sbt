@@ -2,6 +2,8 @@ import com.typesafe.tools.mima.core._
 import com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit
 
 ThisBuild / tlBaseVersion := "1.11"
+ThisBuild / tlVersionIntroduced := Map("2.12" -> "1.11.4", "2.13" -> "1.11.4")
+ThisBuild / tlMimaPreviousVersions ~= (_.filterNot(Set("1.11.5", "1.11.6")))
 
 ThisBuild / developers := List(
   tlGitHubDev("mpilquist", "Michael Pilquist"),
@@ -22,12 +24,17 @@ ThisBuild / crossScalaVersions := List("2.12.16", "2.13.8")
 
 ThisBuild / tlCiReleaseBranches := List("series/1.11.x")
 
+ThisBuild / tlFatalWarnings := false
+
 lazy val commonSettings = Seq(
   Compile / unmanagedResources ++= {
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
   Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
+)
+lazy val commonJsSettings = Seq(
+  tlVersionIntroduced := Map("2.12" -> "1.11.5", "2.13" -> "1.11.5")
 )
 
 lazy val root = tlCrossRootProject.aggregate(testkit, core, unitTests)
@@ -53,6 +60,13 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       ProblemFilters.exclude[MissingClassProblem]("scodec.compat$FactoryOps")
     )
   )
+  .jsSettings(commonJsSettings)
+  .jsSettings(
+    mimaBinaryIssueFilters ++= Seq(
+      ProblemFilters.exclude[MissingClassProblem]("scodec.codecs.ZlibCodec"),
+      ProblemFilters.exclude[Problem]("scodec.codecs.package.zlib*")
+    )
+  )
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testkit"))
@@ -63,8 +77,10 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       "org.scalacheck" %%% "scalacheck" % "1.16.0",
       "org.scalatest" %%% "scalatest" % "3.2.13",
       "org.scalatestplus" %%% "scalacheck-1-16" % "3.2.13.0"
-    )
+    ),
+    tlMimaPreviousVersions ~= (_.filterNot(Set("1.11.4")))
   )
+  .jsSettings(commonJsSettings)
   .dependsOn(core % "compile->compile")
 
 lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
