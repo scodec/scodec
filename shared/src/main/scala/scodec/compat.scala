@@ -1,6 +1,6 @@
 package scodec
 
-import shapeless.{::, HNil, HList}
+import shapeless.{::, HList, HNil}
 
 /** Provides source level compatibility aliases that mimic Scala 3 tuples with Shapeless HLists. */
 object compat {

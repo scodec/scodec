@@ -228,9 +228,9 @@ trait Codec[A] extends GenCodec[A, A] { self =>
   final def hlist: Codec[A :: HNil] = xmap(_ :: HNil, _.head)
 
   /**
-   * Alias for `.hlist` - allows cross compilation with Scodec 2 / Scala 3.
-   * @group hlist
-   */
+    * Alias for `.hlist` - allows cross compilation with Scodec 2 / Scala 3.
+    * @group hlist
+    */
   final def tuple: Codec[A :: HNil] = hlist
 
   /**
