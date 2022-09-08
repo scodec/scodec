@@ -53,9 +53,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       "com.chuusai" %%% "shapeless" % "2.3.9"
     ),
     buildInfoPackage := "scodec",
-    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit)
-  )
-  .jvmSettings(
+    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
     mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry"),
