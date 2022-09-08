@@ -1,108 +1,36 @@
 import com.typesafe.tools.mima.core._
-import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
-import com.typesafe.sbt.SbtGit.GitKeys.{gitCurrentBranch, gitHeadCommit}
+import com.typesafe.sbt.SbtGit.GitKeys.gitHeadCommit
 
-addCommandAlias("fmt", "; compile:scalafmt; test:scalafmt; scalafmtSbt")
-addCommandAlias("fmtCheck", "; compile:scalafmtCheck; test:scalafmtCheck; scalafmtSbtCheck")
+ThisBuild / tlBaseVersion := "1.11"
 
-lazy val contributors = Seq(
-  "mpilquist" -> "Michael Pilquist",
-  "pchiusano" -> "Paul Chiusano"
+ThisBuild / developers := List(
+  tlGitHubDev("mpilquist", "Michael Pilquist"),
+  tlGitHubDev("pchiusano", "Paul Chiusano")
 )
 
+ThisBuild / organization := "org.scodec"
+ThisBuild / organizationHomepage := Some(new URL("http://scodec.org"))
+ThisBuild / licenses := List(
+  (
+    "Three-clause BSD-style",
+    url(
+      "https://github.com/scodec/scodec/blob/master/LICENSE"
+    )
+  )
+)
+ThisBuild / crossScalaVersions := List("2.12.16", "2.13.8")
+
+ThisBuild / tlCiReleaseBranches := List("series/1.11.x")
+
 lazy val commonSettings = Seq(
-  organization := "org.scodec",
-  organizationHomepage := Some(new URL("http://scodec.org")),
-  licenses += ("Three-clause BSD-style", url(
-    "https://github.com/scodec/scodec/blob/master/LICENSE"
-  )),
-  git.remoteRepo := "git@github.com:scodec/scodec.git",
-  scmInfo := Some(
-    ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")
-  ),
-  unmanagedResources in Compile ++= {
+  Compile / unmanagedResources ++= {
     val base = baseDirectory.value
     (base / "NOTICE") +: (base / "LICENSE") +: ((base / "licenses") * "LICENSE_*").get
   },
-  crossScalaVersions := List("2.12.16", "2.13.8"),
-  scalaVersion := "2.13.8",
-  scalacOptions ++= Seq(
-    "-encoding",
-    "UTF-8",
-    "-deprecation",
-    "-feature",
-    "-unchecked"
-  ) ++
-    (scalaBinaryVersion.value match {
-      case v if v.startsWith("2.13") =>
-        List("-Xlint", "-Ywarn-unused")
-      case v if v.startsWith("2.12") =>
-        Nil
-      case v if v.startsWith("2.11") =>
-        Nil
-      case v if v.startsWith("0.") =>
-        Nil
-      case other => sys.error(s"Unsupported scala version: $other")
-    }),
-  testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD"),
-  releaseCrossBuild := true,
-  mimaPreviousArtifacts := Set.empty
-) ++ publishingSettings
-
-lazy val publishingSettings = Seq(
-  publishTo := {
-    val nexus = "https://oss.sonatype.org/"
-    if (version.value.trim.endsWith("SNAPSHOT"))
-      Some("snapshots".at(nexus + "content/repositories/snapshots"))
-    else
-      Some("releases".at(nexus + "service/local/staging/deploy/maven2"))
-  },
-  publishMavenStyle := true,
-  publishArtifact in Test := false,
-  pomIncludeRepository := { x =>
-    false
-  },
-  pomExtra := (
-    <url>http://github.com/scodec/scodec</url>
-    <developers>
-      {for ((username, name) <- contributors) yield <developer>
-        <id>{username}</id>
-        <name>{name}</name>
-        <url>http://github.com/{username}</url>
-      </developer>}
-    </developers>
-  ),
-  pomPostProcess := { (node) =>
-    import scala.xml._
-    import scala.xml.transform._
-    def stripIf(f: Node => Boolean) = new RewriteRule {
-      override def transform(n: Node) =
-        if (f(n)) NodeSeq.Empty else n
-    }
-    val stripTestScope = stripIf { n =>
-      n.label == "dependency" && (n \ "scope").text == "test"
-    }
-    new RuleTransformer(stripTestScope).transform(node)(0)
-  }
+  Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 )
 
-lazy val root = project
-  .in(file("."))
-  .aggregate(
-    testkitJVM,
-    testkitJS,
-    testkitNative,
-    coreJVM,
-    coreJS,
-    coreNative,
-    unitTests.jvm,
-    unitTests.js,
-    unitTests.native
-  )
-  .settings(commonSettings: _*)
-  .settings(
-    publishArtifact := false
-  )
+lazy val root = tlCrossRootProject.aggregate(testkit, core, unitTests)
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("."))
@@ -110,42 +38,14 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(commonSettings: _*)
   .settings(
     name := "scodec-core",
-    unmanagedSourceDirectories in Compile += {
-      val dir = CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, v)) if v >= 13 => "scala-2.13+"
-        case _                       => "scala-2.12-"
-      }
-      baseDirectory.value / "../shared/src/main" / dir
-    },
     libraryDependencies ++= Seq(
       "org.scodec" %%% "scodec-bits" % "1.1.34",
       "com.chuusai" %%% "shapeless" % "2.3.9"
     ),
     buildInfoPackage := "scodec",
-    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit),
-    scalacOptions in (Compile, doc) := {
-      val tagOrBranch = {
-        if (version.value.endsWith("SNAPSHOT")) gitCurrentBranch.value
-        else ("v" + version.value)
-      }
-      Seq(
-        "-groups",
-        "-implicits",
-        "-implicits-show-all",
-        "-sourcepath",
-        new File(baseDirectory.value, "../..").getCanonicalPath,
-        "-doc-source-url",
-        "https://github.com/scodec/scodec/tree/" + tagOrBranch + "€{FILE_PATH}.scala"
-      )
-    }
+    buildInfoKeys := Seq[BuildInfoKey](version, scalaVersion, gitHeadCommit)
   )
   .jvmSettings(
-    OsgiKeys.exportPackage := Seq("!scodec.bits,scodec.*;version=${Bundle-Version}"),
-    mimaPreviousArtifacts := {
-      List("1.11.4").map { pv =>
-        organization.value % (normalizedName.value + "_" + scalaBinaryVersion.value) % pv
-      }.toSet
-    },
     mimaBinaryIssueFilters ++= Seq(
       ProblemFilters.exclude[MissingMethodProblem]("scodec.codecs.UuidCodec.codec"),
       ProblemFilters.exclude[MissingMethodProblem]("scodec.Attempt.toTry"),
@@ -153,10 +53,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       ProblemFilters.exclude[MissingClassProblem]("scodec.compat$FactoryOps")
     )
   )
-
-lazy val coreJVM = core.jvm
-lazy val coreJS = core.js
-lazy val coreNative = core.native
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testkit"))
@@ -170,10 +66,6 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     )
   )
   .dependsOn(core % "compile->compile")
-
-lazy val testkitJVM = testkit.jvm
-lazy val testkitJS = testkit.js
-lazy val testkitNative = testkit.native
 
 lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("unitTests"))
@@ -192,11 +84,10 @@ lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
                              else Nil)
   )
   .dependsOn(testkit % "test->compile")
-  .settings(publishArtifact := false)
+  .enablePlugins(NoPublishPlugin)
 
 lazy val benchmark: Project = project
   .in(file("benchmark"))
-  .dependsOn(coreJVM)
-  .enablePlugins(JmhPlugin)
+  .dependsOn(core.jvm)
+  .enablePlugins(JmhPlugin, NoPublishPlugin)
   .settings(commonSettings: _*)
-  .settings(publishArtifact := false)
