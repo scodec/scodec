@@ -3,9 +3,12 @@ package codecs
 
 class DiscriminatorCodecTest extends CodecSuite {
 
+  val isJS = Option(System.getProperty("java.vm.name")).contains("Scala.js")
+  val isNative = Option(System.getProperty("java.vm.name")).contains("Scala Native")
+
   "the discriminator combinators" should {
 
-    if (sys.props("java.vm.name") != "Scala.js" || sys.props("java.vm.name") != "Scala Native")
+    if (!isJS && !isNative)
       "support building a codec using typecases" in {
         val codec =
           discriminated[AnyVal]
