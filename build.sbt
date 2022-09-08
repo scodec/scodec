@@ -23,7 +23,7 @@ ThisBuild / licenses := List(
 ThisBuild / crossScalaVersions := List("2.12.16", "2.13.8")
 
 ThisBuild / tlCiReleaseBranches := List("series/1.11.x")
-
+ThisBuild / tlCiHeaderCheck := false
 ThisBuild / tlFatalWarnings := false
 
 lazy val commonSettings = Seq(
