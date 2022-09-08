@@ -12,6 +12,7 @@ ThisBuild / developers := List(
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationHomepage := Some(new URL("http://scodec.org"))
+ThisBuild / tlSonatypeUseLegacyHost := true
 ThisBuild / licenses := List(
   (
     "Three-clause BSD-style",
