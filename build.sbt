@@ -34,7 +34,10 @@ lazy val commonSettings = Seq(
   Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 )
 lazy val commonJsSettings = Seq(
-  tlVersionIntroduced := Map("2.12" -> "1.11.5", "2.13" -> "1.11.5")
+  tlVersionIntroduced := List("2.12", "2.13").map(_ -> "1.11.5").toMap
+)
+lazy val commonNativeSettings = Seq(
+  tlVersionIntroduced := List("2.12", "2.13").map(_ -> "1.11.10").toMap
 )
 
 lazy val root = tlCrossRootProject.aggregate(testkit, core, unitTests)
@@ -67,6 +70,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
       ProblemFilters.exclude[Problem]("scodec.codecs.package.zlib*")
     )
   )
+  .nativeSettings(commonNativeSettings)
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .in(file("testkit"))
@@ -81,6 +85,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     tlMimaPreviousVersions ~= (_.filterNot(Set("1.11.4")))
   )
   .jsSettings(commonJsSettings)
+  .nativeSettings(commonNativeSettings)
   .dependsOn(core % "compile->compile")
 
 lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
