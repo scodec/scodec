@@ -32,12 +32,9 @@ package scodec
 package codecs
 
 import java.util.UUID
-import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
 
 class UuidTest extends CodecSuite:
-
-  given Arbitrary[UUID] = Arbitrary(UUID.randomUUID.nn)
 
   property("roundtrip") {
     forAll((u: UUID) => roundtrip(uuid, u))
