@@ -7,7 +7,7 @@ ThisBuild / organizationName := "Scodec"
 
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.1.3")
+ThisBuild / crossScalaVersions := Seq("3.2.0")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
