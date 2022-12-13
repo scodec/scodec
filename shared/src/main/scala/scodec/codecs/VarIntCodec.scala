@@ -37,7 +37,7 @@ private[codecs] final class VarIntCodec(ordering: ByteOrdering) extends Codec[In
   private val long = new VarLongCodec(ordering).xmap(_.toInt, VarIntCodec.toPositiveLong)
 
   override def sizeBound =
-    SizeBound.bounded(1L, 5L)
+    SizeBound.bounded(8L, 40L)
 
   override def encode(i: Int) =
     long.encode(i)

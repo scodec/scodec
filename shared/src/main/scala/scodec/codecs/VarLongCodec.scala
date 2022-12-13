@@ -41,7 +41,7 @@ import scala.annotation.tailrec
 private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long]:
   import VarLongCodec.*
 
-  override def sizeBound = SizeBound.bounded(1L, 9L)
+  override def sizeBound = SizeBound.bounded(8L, 72L)
 
   override def encode(i: Long) =
     if i < 0 then Attempt.failure(Err("VarLong cannot encode negative longs"))
