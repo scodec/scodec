@@ -40,7 +40,7 @@ class VarLongCodecTest extends CodecSuite:
       assertEquals(codec.encode(n).map(_.bytes.size), Attempt.successful(size))
     }
 
-  test("vlong - roundtrip")(forAll(Gen.choose(0L, Long.MaxValue))(roundtrip(vlong, _)))
+  test("vlong - roundtrip")(forAll(Gen.choose(Long.MinValue, Long.MaxValue))(roundtrip(vlong, _)))
   test("vlong - use 1 byte for longs <= 7 bits")(check(0L, 127L, 1)(vlong))
   test("vlong - use 2 bytes for longs <= 14 bits")(check(128L, 16383L, 2)(vlong))
   test("vlong - use 3 bytes for longs <= 21 bits")(check(16384L, 2097151L, 3)(vlong))
@@ -56,8 +56,9 @@ class VarLongCodecTest extends CodecSuite:
   test("vlong - use 9 bytes for longs <= 63 bits")(
     check(72057594037927936L, Long.MaxValue, 9)(vlong)
   )
+  test("vlong - use 10 bytes for negative longs")(check(Long.MinValue, -1, 10)(vlong))
 
-  test("vlongL - roundtrip")(forAll(Gen.choose(0L, Long.MaxValue))(roundtrip(vlongL, _)))
+  test("vlongL - roundtrip")(forAll(Gen.choose(Long.MinValue, Long.MaxValue))(roundtrip(vlongL, _)))
   test("vlongL - use 1 byte for longs <= 7 bits")(check(0L, 127L, 1)(vlongL))
   test("vlongL - use 2 bytes for longs <= 14 bits")(check(128L, 16383L, 2)(vlongL))
   test("vlongL - use 3 bytes for longs <= 21 bits")(check(16384L, 2097151L, 3)(vlongL))
@@ -73,5 +74,4 @@ class VarLongCodecTest extends CodecSuite:
   test("vlongL - use 9 bytes for longs <= 63 bits")(
     check(72057594037927936L, Long.MaxValue, 9)(vlongL)
   )
-
-  test("vlong - negative")(assert(vlong.encode(-1).isFailure))
+  test("vlong - use 10 bytes for negative longs")(check(Long.MinValue, -1, 10)(vlongL))
