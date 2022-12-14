@@ -276,6 +276,30 @@ val vpbcd: Codec[Long] = VarPackedDecimalCodec
   */
 val vlongL: Codec[Long] = new VarLongCodec(ByteOrdering.LittleEndian)
 
+/** Codec for variable-length big-endian integers with zig-zag encoding for signed values.
+  * Encoding requires between 1 and 5 bytes, depending on the value.
+  * Smaller ints require less bytes.
+  */
+val zint: Codec[Int] = new VarIntZigZagCodec(ByteOrdering.BigEndian)
+
+/** Codec for variable-length little-endian integers with zig-zag encoding for signed values.
+  * Encoding requires between 1 and 5 bytes, depending on the value.
+  * Smaller ints require less bytes.
+  */
+val zintL: Codec[Int] = new VarIntZigZagCodec(ByteOrdering.LittleEndian)
+
+/** Codec for variable-length big-endian longs with zig-zag encoding for signed values.
+  * Encoding requires between 1 and 10 bytes, depending on the value.
+  * Smaller longs require less bytes.
+  */
+val zlong: Codec[Long] = new VarLongZigZagCodec(ByteOrdering.BigEndian)
+
+/** Codec for variable-length little-endian longs with zig-zag encoding for signed values.
+  * Encoding requires between 1 and 10 bytes, depending on the value.
+  * Smaller longs require less bytes.
+  */
+val zlongL: Codec[Long] = new VarLongZigZagCodec(ByteOrdering.LittleEndian)
+
 /** Codec for n-bit 2s complement bytes.
   * @param size number of bits (must be 0 < size <= 8)
   */
