@@ -41,24 +41,22 @@ import scala.annotation.tailrec
 private[codecs] final class VarLongCodec(ordering: ByteOrdering) extends Codec[Long]:
   import VarLongCodec.*
 
-  override def sizeBound = SizeBound.bounded(8L, 72L)
+  override val sizeBound: SizeBound = SizeBound.bounded(8L, 80L)
 
-  override def encode(i: Long) =
-    if i < 0 then Attempt.failure(Err("VarLong cannot encode negative longs"))
-    else
-      val buffer = ByteBuffer.allocate(9).order(ByteOrder.BIG_ENDIAN).nn
-      val encoder = if ordering == BigEndian then BEEncoder else LEEncoder
-      val written = encoder(i, buffer)
-      buffer.flip()
-      val relevantBits = BitVector.view(buffer).take(written.toLong)
-      val bits = if ordering == BigEndian then relevantBits else relevantBits.reverseByteOrder
-      Attempt.successful(bits)
+  override def encode(i: Long): Attempt[BitVector] =
+    val buffer = ByteBuffer.allocate(10).order(ByteOrder.BIG_ENDIAN).nn
+    val encoder = if ordering == BigEndian then BEEncoder else LEEncoder
+    val written = encoder(i, buffer)
+    buffer.flip()
+    val relevantBits = BitVector.view(buffer).take(written.toLong)
+    val bits = if ordering == BigEndian then relevantBits else relevantBits.reverseByteOrder
+    Attempt.successful(bits)
 
-  override def decode(buffer: BitVector) =
+  override def decode(buffer: BitVector): Attempt[DecodeResult[Long]] =
     val decoder = if ordering == BigEndian then BEDecoder else LEDecoder
     decoder(buffer)
 
-  override def toString = "variable-length integer"
+  override def toString = "variable-length long"
 
   private val BEEncoder = (value: Long, buffer: ByteBuffer) => runEncodingBE(value, buffer, 8)
 
