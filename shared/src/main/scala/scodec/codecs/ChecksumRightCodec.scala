@@ -12,10 +12,11 @@ final class ChecksumRightCodec[V](inner: Codec[V], bitSize: Int, compute: BitVec
     extends Codec[V]:
 
   def decode(bits: BitVector): Attempt[DecodeResult[V]] =
-    val (valueBits, expectedCrc) = bits.splitAt(bits.size - bitSize)
-    inner.decode(valueBits).flatMap { result =>
+    val (valueBits, maybeCrcBytes) = bits.splitAt(bits.size - bitSize)
+    inner.decode(valueBits).flatMap { case DecodeResult(value, remainder) =>
+      val (expectedCrc, nextBits) = (remainder ++ maybeCrcBytes).splitAt(bitSize)
       val actualCrc = compute(valueBits)
-      if (actualCrc == expectedCrc) Attempt.successful(result)
+      if (actualCrc == expectedCrc) Attempt.successful(DecodeResult(value, nextBits))
       else Attempt.failure(ChecksumMismatch(valueBits, expectedCrc, actualCrc))
     }
 
