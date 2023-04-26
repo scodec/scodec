@@ -1382,9 +1382,8 @@ def checksummed[A](
   override def toString = s"checksummed($target, $framing)"
 }
 
-/** Codec that adds checksum to the right of the target.
+/** Codec that supports checksum to the right of the target.
   * * For example: {{{
-  *    // Size of the string is included in the checksum
   *    val c = checksumRight(utf8, bitSize = 32, scodec.bits.crc.crc32)
   *  }}}
   *
