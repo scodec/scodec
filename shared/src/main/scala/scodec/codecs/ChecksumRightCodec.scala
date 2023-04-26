@@ -8,15 +8,19 @@ import scodec.SizeBound
 import scodec.bits.BitVector
 import scodec.codecs.ChecksumMismatch
 
-final class ChecksumRightCodec[V](inner: Codec[V], bitSize: Int, compute: BitVector => BitVector)
-    extends Codec[V]:
+private[codecs] final class ChecksumRightCodec[V](
+    inner: Codec[V],
+    bitSize: Int,
+    compute: BitVector => BitVector
+) extends Codec[V]:
 
   def decode(bits: BitVector): Attempt[DecodeResult[V]] =
-    val (valueBits, maybeCrcBytes) = bits.splitAt(bits.size - bitSize)
-    inner.decode(valueBits).flatMap { case DecodeResult(value, remainder) =>
+    val (noCrcBytes, maybeCrcBytes) = bits.splitAt(bits.size - bitSize)
+    inner.decode(noCrcBytes).flatMap { case DecodeResult(value, remainder) =>
+      val valueBits = noCrcBytes.dropRight(remainder.size)
       val (expectedCrc, nextBits) = (remainder ++ maybeCrcBytes).splitAt(bitSize)
       val actualCrc = compute(valueBits)
-      if (actualCrc == expectedCrc) Attempt.successful(DecodeResult(value, nextBits))
+      if (expectedCrc == actualCrc) Attempt.successful(DecodeResult(value, nextBits))
       else Attempt.failure(ChecksumMismatch(valueBits, expectedCrc, actualCrc))
     }
 
