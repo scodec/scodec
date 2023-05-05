@@ -91,7 +91,7 @@ lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk18on" % "1.72" % Test
+      "org.bouncycastle" % "bcpkix-jdk18on" % "1.73" % Test
     )
   )
   .jsSettings(
