@@ -7,11 +7,14 @@ import org.scalacheck.Prop.forAll
 
 final class ChecksumAppendCodecTest extends ChecksumCodecTestBase {
 
-  protected val checkSumString = new ChecksumAppendCodec(utf8, bitSize = 32, crc.crc32, true, identity)
+  protected val checkSumString =
+    new ChecksumAppendCodec(utf8, 32, crc.crc32, true, identity)
 
-  protected val checkSumLong = new ChecksumAppendCodec(int64, bitSize = 32, crc.crc32, true, identity)
+  protected val checkSumLong =
+    new ChecksumAppendCodec(int64, 32, crc.crc32, true, identity)
 
-  protected val checkSumLongFramed = new ChecksumAppendCodec(int64 :: int64, bitSize = 32, crc.crc32, true, _.dropRight(64))
+  protected val checkSumLongFramed =
+    new ChecksumAppendCodec(int64 :: int64, 32, crc.crc32, true, _.dropRight(64))
 
   test("framing") {
     forAll { (body: (Long, Long)) =>
