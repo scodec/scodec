@@ -71,7 +71,7 @@ lazy val coreNative = core.native.settings(
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "1.0.0-M7",
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "1.0.0-M8",
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future"
   )
   .dependsOn(core % "compile->compile")
