@@ -7,7 +7,7 @@ ThisBuild / organizationName := "Scodec"
 
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.2.2")
+ThisBuild / crossScalaVersions := Seq("3.3.1")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
@@ -91,7 +91,7 @@ lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .jvmSettings(
     libraryDependencies ++= Seq(
-      "org.bouncycastle" % "bcpkix-jdk18on" % "1.73" % Test
+      "org.bouncycastle" % "bcpkix-jdk18on" % "1.76" % Test
     )
   )
   .jsSettings(
