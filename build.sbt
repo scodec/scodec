@@ -15,6 +15,9 @@ ThisBuild / scmInfo := Some(
   ScmInfo(url("https://github.com/scodec/scodec"), "git@github.com:scodec/scodec.git")
 )
 
+// Disabled due to erroneous unused import warnings on scala.js
+ThisBuild / tlFatalWarnings := false
+
 ThisBuild / licenses := List(
   ("BSD-3-Clause", url("https://github.com/scodec/scodec/blob/main/LICENSE"))
 )
