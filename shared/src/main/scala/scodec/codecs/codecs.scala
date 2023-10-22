@@ -1382,6 +1382,38 @@ def checksummed[A](
   override def toString = s"checksummed($target, $framing)"
 }
 
+/** Codec that appends checksum to the target.
+  * * For example: {{{
+  *    val c = checksumAppend(utf8, bitSize = 32, scodec.bits.crc.crc32)
+  *  }}}
+  *
+  * @param target codec used for encoding/decoding values of type `A`
+  * @param checksum computes a checksum of the input
+  */
+def checksumAppend[A](
+    target: Codec[A],
+    bitSize: Int,
+    checksum: BitVector => BitVector,
+    validate: Boolean = true,
+    framing: BitVector => BitVector = identity
+): Codec[A] = new ChecksumAppendCodec(target, bitSize, checksum, validate, framing)
+
+/** Codec that prepends checksum to the target.
+  * * For example: {{{
+  *    val c = checksumPrepend(utf8, bitSize = 32, scodec.bits.crc.crc32)
+  *  }}}
+  *
+  * @param target codec used for encoding/decoding values of type `A`
+  * @param checksum computes a checksum of the input
+  */
+def checksumPrepend[A](
+    target: Codec[A],
+    bitSize: Int,
+    checksum: BitVector => BitVector,
+    validate: Boolean = true,
+    framing: BitVector => BitVector = identity
+): Codec[A] = new ChecksumPrependCodec(target, bitSize, checksum, validate, framing)
+
 /** Codec that encrypts and decrypts using a `javax.crypto.Cipher`.
   *
   * Encoding a value of type `A` is delegated to the specified codec and the resulting bit vector is encrypted
