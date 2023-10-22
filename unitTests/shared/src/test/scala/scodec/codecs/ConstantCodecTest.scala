@@ -52,3 +52,12 @@ class ConstantCodecTest extends CodecSuite:
       )
     )
   }
+
+  test("constantLenient - shoud NOT skip bytes, issue-463") {
+    assertEquals(
+      constantLenient(hex"cafe").decode(hex"ca".bits),
+      Attempt.failure(
+        Err.insufficientBits(needed = 16, have = 8)
+      )
+    )
+  }

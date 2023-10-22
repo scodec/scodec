@@ -112,14 +112,14 @@ class PaddedFixedSizeCodecTest extends CodecSuite:
 
   test("paddedFixedSizeBits - decode ignores remainder") {
     assertEquals(
-      paddedFixedSizeBits(24, uint8, constantLenient(hex"ff"))
+      paddedFixedSizeBits(24, uint8, ignore(8))
         .decode(hex"0c0000".bits)
         .require
         .value,
       12
     )
     assertEquals(
-      paddedFixedSizeBits(11, uint8, constantLenient(hex"ff"))
+      paddedFixedSizeBits(11, uint8, ignore(3))
         .decode(hex"0c0000".bits)
         .require
         .value,
