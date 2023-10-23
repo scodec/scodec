@@ -67,6 +67,10 @@ class StringCodecTest extends CodecSuite:
     )
   }
 
+  test("nulTerminatedString - roundtrip") {
+    roundtripAll(nulTerminatedString(utf8), Seq("test", "", "withλ"))
+  }
+
   test("utf8 - roundtrip") {
     roundtripAll(utf8, Seq("test", "", "with\ttabs", "withλ"))
   }

@@ -31,7 +31,6 @@
 package scodec
 
 import scala.util.Try
-import scala.util.control.NonFatal
 
 /** Right biased `Either[Err, A]`.
   *
