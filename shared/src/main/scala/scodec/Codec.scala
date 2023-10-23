@@ -34,7 +34,6 @@ import scala.deriving.*
 import scala.compiletime.*
 
 import scodec.bits.{BitVector, ByteVector}
-import scala.collection.mutable
 
 /** Supports encoding a value of type `A` to a `BitVector` and decoding a `BitVector` to a value of `A`.
   *

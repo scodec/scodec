@@ -461,19 +461,24 @@ val utf8 = string(Platform.utf8)
   * and decodes a string up to the next `NUL` termination byte.
   * It fails to decode if the bit vector ends before a `NUL` termination byte can be found.
   */
-val cstring: Codec[String] = filtered(
-  ascii,
-  new Codec[BitVector] {
-    val nul = BitVector.lowByte
-    override def sizeBound: SizeBound = SizeBound.unknown
-    override def encode(bits: BitVector): Attempt[BitVector] = Attempt.successful(bits ++ nul)
-    override def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] =
-      bits.bytes.indexOfSlice(nul.bytes) match {
-        case -1 => Attempt.failure(Err("Does not contain a 'NUL' termination byte."))
-        case i  => Attempt.successful(DecodeResult(bits.take(i * 8L), bits.drop(i * 8L + 8L)))
-      }
-  }
-).withToString("cstring")
+val cstring: Codec[String] = nulTerminatedString(ascii)
+
+/** String codec that encodes strings with a trailing `NUL` termination byte and decodes strings up to the next
+  * `NUL` termination byte.
+  * It fails to decode if the bit vector ends before a `NUL` termination byte can be found.
+  */
+def nulTerminatedString(stringCodec: Codec[String]): Codec[String] =
+  filtered(
+    stringCodec,
+    new Codec[BitVector]:
+      val nul = BitVector.lowByte
+      override def sizeBound: SizeBound = SizeBound.unknown
+      override def encode(bits: BitVector): Attempt[BitVector] = Attempt.successful(bits ++ nul)
+      override def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] =
+        bits.bytes.indexOfSlice(nul.bytes) match
+          case -1 => Attempt.failure(Err("Does not contain a 'NUL' termination byte."))
+          case i  => Attempt.successful(DecodeResult(bits.take(i * 8L), bits.drop(i * 8L + 8L)))
+  ).withToString(s"nulTerminatedString($stringCodec)")
 
 /** String codec that uses the given `Charset` and prefixes the encoded string by the byte size
   * in a 32-bit 2s complement big endian field.
