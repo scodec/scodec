@@ -33,7 +33,6 @@ package codecs
 
 import org.scalacheck.Gen
 import org.scalacheck.Prop.forAll
-import scodec.bits.{bin, hex}
 
 class VarLongZigZagCodecTest extends CodecSuite:
 
