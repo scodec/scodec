@@ -4,6 +4,7 @@ ThisBuild / tlBaseVersion := "2.2"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
+ThisBuild / tlSonatypeUseLegacyHost := true
 
 ThisBuild / startYear := Some(2013)
 
