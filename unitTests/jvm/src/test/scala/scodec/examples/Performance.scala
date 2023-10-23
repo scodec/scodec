@@ -61,7 +61,7 @@ object Performance extends App:
 
   for (i <- 1 to 20)
     var pids = Set.empty[Int]
-    val stats = time("pcap with mpeg decode") {
+    time("pcap with mpeg decode") {
       val pcapFile = PcapCodec.pcapFile.decode(bits).require.value
       pcapFile.records.foreach { record =>
         val mpeg = record.data.drop(22 * 8).drop(20 * 8)

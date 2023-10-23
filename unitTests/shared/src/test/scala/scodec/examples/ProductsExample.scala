@@ -91,6 +91,7 @@ class ProductsExample extends CodecSuite:
     }
 
     // The type of codec is Flags prepended to whatever tuple the body returned:
+    @annotation.nowarn("msg=unused")
     val codecTyped: Codec[(Flags, Option[Int], Option[Long], Option[String])] = codec
 
     val v = (Flags(true, true, true), Some(1), Some(1L), Some("Hi"))

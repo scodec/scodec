@@ -36,9 +36,6 @@ import org.scalacheck.Prop.forAll
 import scodec.bits.BitVector
 
 class ByteCodecTest extends CodecSuite:
-  def check(low: Byte, high: Byte)(f: (Byte) => Unit): Unit =
-    forAll(Gen.choose(low, high))(n => f(n))
-
   property("byte - roundtrip") {
     forAll((n: Byte) => roundtrip(byte, n))
   }
