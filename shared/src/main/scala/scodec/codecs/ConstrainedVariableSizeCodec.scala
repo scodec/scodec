@@ -52,7 +52,7 @@ private[codecs] final class ConstrainedVariableSizeCodec[A](
     else codecs.fail[A](Err(s"Size out of bounds: $minSizeBits <= $sz <= $maxSizeBits is not true"))
   }
 
-  def sizeBound = sizeCodec.sizeBound.atLeast
+  def sizeBound = sizeCodec.sizeBound + SizeBound.bounded(minSizeBits, maxSizeBits)
 
   override def encode(a: A) = valueCodec.complete.encode(a).flatMap { enc =>
     val sz = enc.size
