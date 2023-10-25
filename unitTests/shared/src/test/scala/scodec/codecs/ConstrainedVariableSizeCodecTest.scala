@@ -109,3 +109,10 @@ class ConstrainedVariableSizeCodecTest extends CodecSuite:
         .Failure(Err("Size out of bounds: 0 <= 24 <= 16 is not true"))
     )
   }
+
+  test("sizeBound") {
+    assertEquals(
+      constrainedVariableSizeBytes(uint8, utf8, 2, 10).sizeBound,
+      SizeBound.bounded(3 * 8, 11 * 8)
+    )
+  }
