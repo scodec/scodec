@@ -8,7 +8,7 @@ ThisBuild / tlSonatypeUseLegacyHost := true
 
 ThisBuild / startYear := Some(2013)
 
-ThisBuild / crossScalaVersions := Seq("3.3.3")
+ThisBuild / crossScalaVersions := Seq("3.4.1")
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("8"))
 
