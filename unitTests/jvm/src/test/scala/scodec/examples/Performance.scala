@@ -44,7 +44,7 @@ object Performance extends App:
     // Don't want the lazy IO penalty to skew results
     b.force
 
-  println(f"Size = ${(bits.size / 8 / (1024.0 * 1024.0))}%.3f MB")
+  println(f"Size = ${bits.size / 8 / (1024.0 * 1024.0)}%.3f MB")
 
   def time[A](desc: String)(f: => A): A =
     val start = System.nanoTime
