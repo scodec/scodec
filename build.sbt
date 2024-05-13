@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.core._
 
-ThisBuild / tlBaseVersion := "2.2"
+ThisBuild / tlBaseVersion := "2.3"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
@@ -66,7 +66,7 @@ lazy val coreJS = core.js.settings(
 )
 
 lazy val coreNative = core.native.settings(
-  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.2.0").toMap
+  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.3.0").toMap
 )
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
