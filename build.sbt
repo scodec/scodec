@@ -1,6 +1,6 @@
 import com.typesafe.tools.mima.core._
 
-ThisBuild / tlBaseVersion := "2.2"
+ThisBuild / tlBaseVersion := "2.3"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
@@ -47,7 +47,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.1.38"
+      "org.scodec" %%% "scodec-bits" % "1.2.0"
     ),
     scalacOptions := scalacOptions.value
       .filterNot(_ == "-source:3.0-migration") :+ "-source:future",
@@ -66,13 +66,13 @@ lazy val coreJS = core.js.settings(
 )
 
 lazy val coreNative = core.native.settings(
-  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.2.0").toMap
+  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.3.0").toMap
 )
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
     name := "scodec-testkit",
-    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "1.0.0-M11",
+    libraryDependencies += "org.scalameta" %%% "munit-scalacheck" % "1.0.0-RC1",
     scalacOptions := scalacOptions.value.filterNot(_ == "-source:3.0-migration") :+ "-source:future"
   )
   .dependsOn(core % "compile->compile")
@@ -80,7 +80,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
 lazy val testkitJVM = testkit.jvm
 lazy val testkitJS = testkit.js
 lazy val testkitNative = testkit.native.settings(
-  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.2.0").toMap
+  tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.3.0").toMap
 )
 
 lazy val unitTests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
