@@ -382,10 +382,10 @@ object Codec extends EncoderFunctions, DecoderFunctions:
           val (prefix, suffix) = ab.splitAt(sizeA)
           encodeBoth(codecA, codecB)(prefix.asInstanceOf[A], suffix.asInstanceOf[B])
         def decode(bv: BitVector) =
-          decodeBoth(codecA, codecB)(bv).map(
-            _.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]])
-          )
-          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
+        decodeBoth(codecA, codecB)(bv).map(
+          _.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]])
+        )
+        // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         override def toString = s"$codecA :: $codecB"
 
   /** When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
