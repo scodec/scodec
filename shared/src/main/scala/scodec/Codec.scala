@@ -385,7 +385,7 @@ object Codec extends EncoderFunctions, DecoderFunctions:
           decodeBoth(codecA, codecB)(bv).map(
             _.map((a: A, b: B) => (a ++ b).asInstanceOf[Tuple.Concat[A, B]])
           )
-          // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
+        // FIXME cast due to https://github.com/lampepfl/dotty/issues/8321
         override def toString = s"$codecA :: $codecB"
 
   /** When called on a `Codec[A]` for some `A <: Tuple`, returns a new codec that encodes/decodes
