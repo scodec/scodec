@@ -62,7 +62,7 @@ class StringCodecTest extends CodecSuite:
     assertEquals(
       cstring.decode(ascii.encode("0123456789ABCDEF").require),
       Attempt.failure(
-        Err("Does not contain a 'NUL' termination byte.")
+        Err.insufficientBits(17, 16)
       )
     )
   }

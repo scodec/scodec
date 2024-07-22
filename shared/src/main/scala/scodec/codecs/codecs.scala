@@ -476,7 +476,7 @@ def nulTerminatedString(stringCodec: Codec[String]): Codec[String] =
       override def encode(bits: BitVector): Attempt[BitVector] = Attempt.successful(bits ++ nul)
       override def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] =
         bits.bytes.indexOfSlice(nul.bytes) match
-          case -1 => Attempt.failure(Err("Does not contain a 'NUL' termination byte."))
+          case -1 => Attempt.failure(Err.insufficientBits(bits.bytes.size + 1, bits.bytes.size))
           case i  => Attempt.successful(DecodeResult(bits.take(i * 8L), bits.drop(i * 8L + 8L)))
   ).withToString(s"nulTerminatedString($stringCodec)")
 
