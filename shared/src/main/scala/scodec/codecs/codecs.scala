@@ -468,6 +468,7 @@ val cstring: Codec[String] = nulTerminatedString(ascii)
   * It fails to decode if the bit vector ends before a `NUL` termination byte can be found.
   */
 def nulTerminatedString(stringCodec: Codec[String]): Codec[String] =
+  val noNullFound = List("Does not contain a 'NUL' termination byte.")
   filtered(
     stringCodec,
     new Codec[BitVector]:
@@ -476,7 +477,7 @@ def nulTerminatedString(stringCodec: Codec[String]): Codec[String] =
       override def encode(bits: BitVector): Attempt[BitVector] = Attempt.successful(bits ++ nul)
       override def decode(bits: BitVector): Attempt[DecodeResult[BitVector]] =
         bits.bytes.indexOfSlice(nul.bytes) match
-          case -1 => Attempt.failure(Err.insufficientBits(bits.bytes.size + 1, bits.bytes.size))
+          case -1 => Attempt.failure(Err.InsufficientBits(bits.size + 8L, bits.size, noNullFound))
           case i  => Attempt.successful(DecodeResult(bits.take(i * 8L), bits.drop(i * 8L + 8L)))
   ).withToString(s"nulTerminatedString($stringCodec)")
 
