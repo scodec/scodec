@@ -32,7 +32,6 @@ package scodec
 package examples
 
 import scodec.bits.*
-import codecs.*
 
 class AdtExample extends CodecSuite:
 
