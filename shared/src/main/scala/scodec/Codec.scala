@@ -424,16 +424,19 @@ object Codec extends EncoderFunctions, DecoderFunctions:
       case s: Mirror.SumOf[A] =>
         inlineImplementations.SumCodec(s, componentCodecs)
 
+  // From https://github.com/scala/scala3/blob/ebbd685cfb02e1935afb9b4fd568643315825c57/docs/_docs/reference/contextual/derivation.md
   private inline def summonCodecInstances[T, Elems <: Tuple]: List[Codec[?]] =
     inline erasedValue[Elems] match
       case _: (elem *: elems) => deriveOrSummonCodec[T, elem] :: summonCodecInstances[T, elems]
       case _: EmptyTuple      => Nil
 
+  // From https://github.com/scala/scala3/blob/ebbd685cfb02e1935afb9b4fd568643315825c57/docs/_docs/reference/contextual/derivation.md
   private inline def deriveOrSummonCodec[T, Elem]: Codec[Elem] =
     inline erasedValue[Elem & Matchable] match
       case _: T => deriveCodecRecursive[T, Elem]
       case _    => summonInline[Codec[Elem]]
 
+  // From https://github.com/scala/scala3/blob/ebbd685cfb02e1935afb9b4fd568643315825c57/docs/_docs/reference/contextual/derivation.md
   private inline def deriveCodecRecursive[T, Elem]: Codec[Elem] =
     inline erasedValue[T & Matchable] match
       case _: Elem => error("infinite recursive derivation")
