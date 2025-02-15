@@ -4,7 +4,7 @@ ThisBuild / tlBaseVersion := "2.3"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
-ThisBuild / tlSonatypeUseLegacyHost := true
+ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
 
 ThisBuild / startYear := Some(2013)
 
@@ -68,6 +68,10 @@ lazy val coreJS = core.js.settings(
 lazy val coreNative = core.native.settings(
   tlVersionIntroduced ++= List("2.12", "2.13", "3").map(_ -> "2.3.0").toMap
 )
+
+// Needed for munit-scalacheck - see https://github.com/circe/circe/pull/2296
+ThisBuild / libraryDependencySchemes +=
+  "org.scala-native" %% "test-interface_native0.5" % VersionScheme.Always
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
