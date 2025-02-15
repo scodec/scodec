@@ -70,7 +70,7 @@ lazy val coreNative = core.native.settings(
 )
 
 // Needed for munit-scalacheck - see https://github.com/circe/circe/pull/2296
-ThisBuild / libraryDependencySchemes += 
+ThisBuild / libraryDependencySchemes +=
   "org.scala-native" %% "test-interface_native0.5" % VersionScheme.Always
 
 lazy val testkit = crossProject(JVMPlatform, JSPlatform, NativePlatform)
