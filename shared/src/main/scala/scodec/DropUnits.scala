@@ -41,26 +41,36 @@ type DropUnits[A <: Tuple] <: Tuple = A match
   case EmptyTuple => EmptyTuple
 
 object DropUnits:
+  // actually it should be InlineFoldR.Step[[T <: Tuple] =>> T => DropUnits[T]], but it leads to endless comipilation for scala 3.3.5 (https://github.com/scala/scala3/issues/23110)
+  object DropStep extends InlineFoldR.Step[[T <: Tuple] =>> T => Tuple]:
+    inline def apply[Elem, T <: Tuple](
+        acc: T => Tuple
+    ): (Elem *: T) => Tuple =
+      (elem: Elem *: T) =>
+        inline erasedValue[Elem & Matchable] match
+          case _: Unit => acc(elem.tail)
+          case _       => elem.head *: acc(elem.tail)
 
   inline def drop[A <: Tuple](a: A): DropUnits[A] =
-    // Ideally, the following would work:
-    // inline a match
-    //   case (_ *: t): (Unit *: tl) => drop[tl](t)
-    //   case (h *: t): (hd *: tl) => h *: drop[tl](t)
-    //   case EmptyTuple => EmptyTuple
-    (inline erasedValue[A] match
-      case _: (Unit *: tl) => drop[tl](a.asInstanceOf[Unit *: tl].tail)
-      case _: (hd *: tl) =>
-        val at = a.asInstanceOf[hd *: tl]
-        at.head *: drop[tl](at.tail)
-      case EmptyTuple => EmptyTuple
-    ).asInstanceOf[DropUnits[A]]
+    InlineFoldR
+      .fold[[T <: Tuple] =>> T => Tuple, A](
+        (_: EmptyTuple) => EmptyTuple,
+        DropStep
+      )(a).asInstanceOf[DropUnits[A]]
+
+  object InsertStep extends InlineFoldR.Step[[T <: Tuple] =>> DropUnits[T] => T]:
+    inline def apply[Elem, T <: Tuple](
+        acc: DropUnits[T] => T
+    ): DropUnits[Elem *: T] => Elem *: T = dropped =>
+      inline erasedValue[Elem & Matchable] match
+        case _: Unit => (().asInstanceOf[Elem]) *: acc(dropped.asInstanceOf[DropUnits[T]])
+        case _ =>
+          val droppedCast = dropped.asInstanceOf[Elem *: DropUnits[T]]
+          droppedCast.head *: acc(droppedCast.tail)
 
   inline def insert[A <: Tuple](t: DropUnits[A]): A =
-    (inline erasedValue[A] match
-      case _: (Unit *: tl) => (()) *: (insert[tl](t.asInstanceOf[DropUnits[tl]]))
-      case _: (hd *: tl) =>
-        val t2 = t.asInstanceOf[NonEmptyTuple]
-        t2.head.asInstanceOf[hd] *: insert[tl](t2.tail.asInstanceOf[DropUnits[tl]])
-      case EmptyTuple => EmptyTuple
-    ).asInstanceOf[A]
+    InlineFoldR
+      .fold[[T <: Tuple] =>> DropUnits[T] => T, A](
+        (_: EmptyTuple) => EmptyTuple,
+        InsertStep
+      )(t)
