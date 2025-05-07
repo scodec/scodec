@@ -56,7 +56,8 @@ object DropUnits:
       .fold[[T <: Tuple] =>> T => Tuple, A](
         (_: EmptyTuple) => EmptyTuple,
         DropStep
-      )(a).asInstanceOf[DropUnits[A]]
+      )(a)
+      .asInstanceOf[DropUnits[A]]
 
   object InsertStep extends InlineFoldR.Step[[T <: Tuple] =>> DropUnits[T] => T]:
     inline def apply[Elem, T <: Tuple](
