@@ -38,7 +38,7 @@ lazy val commonJsSettings = Seq(
   tlVersionIntroduced := List("2.12", "2.13").map(_ -> "1.11.5").toMap
 )
 lazy val commonNativeSettings = Seq(
-  tlVersionIntroduced := List("2.12", "2.13").map(_ -> "1.11.10").toMap
+  tlVersionIntroduced := List("2.12", "2.13").map(_ -> "1.11.11").toMap
 )
 
 ThisBuild / libraryDependencySchemes +=
