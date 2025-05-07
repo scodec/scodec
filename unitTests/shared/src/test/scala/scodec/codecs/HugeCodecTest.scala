@@ -31,8 +31,8 @@
 package scodec
 package codecs
 
-class FatCodecTest extends CodecSuite:
-  case class Fat(
+class HugeCodecTest extends CodecSuite:
+  case class Huge(
       v1: Int,
       v2: Int,
       v3: Int,
@@ -65,26 +65,26 @@ class FatCodecTest extends CodecSuite:
       v30: Int
   ) derives Codec
 
-  test("derivation of fat case class") {
+  test("derivation of huge case class") {
     roundtrip(
-      Codec[Fat],
-      Fat(
+      Codec[Huge],
+      Huge(
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
         26, 27, 28, 29, 30
       )
     )
   }
 
-  test("support dropping all Unit values out of a tuple codec") {
+  test("support dropping all Unit values out of a huge tuple codec") {
     def ign(size: Int) = scodec.codecs.ignore(size.toLong)
 
     val codec =
       (uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 :: uint8 ::
-        ign(8) :: uint8 :: ign(8)).dropUnits.as[Fat]
+        ign(8) :: uint8 :: ign(8)).dropUnits.as[Huge]
 
     roundtrip(
       codec,
-      Fat(
+      Huge(
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
         26, 27, 28, 29, 30
       )
