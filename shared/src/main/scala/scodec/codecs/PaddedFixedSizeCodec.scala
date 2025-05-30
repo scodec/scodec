@@ -69,10 +69,10 @@ private[codecs] final class PaddedFixedSizeCodec[A](
 
   override def decode(buffer: BitVector) =
     buffer.acquire(size) match
-      case Left(_) => Attempt.failure(Err.insufficientBits(size, buffer.size))
+      case Left(_)  => Attempt.failure(Err.insufficientBits(size, buffer.size))
       case Right(b) =>
         codec.decode(b) match
-          case e @ Attempt.Failure(_) => e
+          case e @ Attempt.Failure(_)                      => e
           case Attempt.Successful(DecodeResult(res, rest)) =>
             val pc = padCodec(rest.size)
             @tailrec def validate(bits: BitVector): Attempt[DecodeResult[A]] =

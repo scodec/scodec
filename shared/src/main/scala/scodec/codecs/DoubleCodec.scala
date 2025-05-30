@@ -48,7 +48,7 @@ private[codecs] final class DoubleCodec(ordering: ByteOrdering) extends Codec[Do
 
   override def decode(buffer: BitVector) =
     buffer.acquire(64) match
-      case Left(_) => Attempt.failure(Err.insufficientBits(64, buffer.size))
+      case Left(_)  => Attempt.failure(Err.insufficientBits(64, buffer.size))
       case Right(b) =>
         Attempt.successful(
           DecodeResult(ByteBuffer.wrap(b.toByteArray).order(byteOrder).getDouble, buffer.drop(64))
