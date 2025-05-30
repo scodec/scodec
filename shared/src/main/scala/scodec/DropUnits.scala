@@ -65,7 +65,7 @@ object DropUnits:
     ): DropUnits[Elem *: T] => Elem *: T = dropped =>
       inline erasedValue[Elem & Matchable] match
         case _: Unit => (().asInstanceOf[Elem]) *: acc(dropped.asInstanceOf[DropUnits[T]])
-        case _ =>
+        case _       =>
           val droppedCast = dropped.asInstanceOf[Elem *: DropUnits[T]]
           droppedCast.head *: acc(droppedCast.tail)
 
