@@ -4,7 +4,6 @@ ThisBuild / tlBaseVersion := "2.3"
 
 ThisBuild / organization := "org.scodec"
 ThisBuild / organizationName := "Scodec"
-ThisBuild / sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeLegacy
 
 ThisBuild / startYear := Some(2013)
 
