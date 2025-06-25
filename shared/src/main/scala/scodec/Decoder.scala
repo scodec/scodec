@@ -169,7 +169,7 @@ trait DecoderFunctions:
     def decode(buffer: BitVector) =
       @annotation.tailrec
       def go(rem: List[Decoder[A]], errs: List[Err]): Attempt[DecodeResult[A]] = rem match
-        case Nil => Attempt.failure(Err(errs.reverse))
+        case Nil      => Attempt.failure(Err(errs.reverse))
         case hd :: tl =>
           hd.decode(buffer) match
             case res @ Attempt.Successful(_) => res

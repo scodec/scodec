@@ -137,7 +137,7 @@ trait EncoderFunctions:
     def encode(a: A) =
       @annotation.tailrec
       def go(rem: List[Encoder[A]], errs: List[Err]): Attempt[BitVector] = rem match
-        case Nil => Attempt.failure(Err(errs.reverse))
+        case Nil      => Attempt.failure(Err(errs.reverse))
         case hd :: tl =>
           hd.encode(a) match
             case res @ Attempt.Successful(_) => res
