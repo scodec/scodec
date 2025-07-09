@@ -24,7 +24,9 @@ ThisBuild / developers ++= List(
   tlGitHubDev("pchiusano", "Paul Chiusano")
 )
 
-ThisBuild / resolvers += "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
+ThisBuild / resolvers += "central-snapshots".at(
+  "https://central.sonatype.com/repository/maven-snapshots/"
+)
 
 ThisBuild / mimaBinaryIssueFilters ++= Seq(
   ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.IsoLowPriority.toTuple"),
