@@ -101,5 +101,8 @@ class BigIntCodecTest extends CodecSuite:
   }
 
   test("return an error when decoding with too few bits") {
-    assertEquals(bigint(256).decode(BitVector.low(8)), Attempt.failure(Err.insufficientBits(256, 8)))
+    assertEquals(
+      bigint(256).decode(BitVector.low(8)),
+      Attempt.failure(Err.insufficientBits(256, 8))
+    )
   }
