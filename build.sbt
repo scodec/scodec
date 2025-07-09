@@ -24,6 +24,8 @@ ThisBuild / developers ++= List(
   tlGitHubDev("pchiusano", "Paul Chiusano")
 )
 
+ThisBuild / resolvers += "central-snapshots" at "https://central.sonatype.com/repository/maven-snapshots/"
+
 ThisBuild / mimaBinaryIssueFilters ++= Seq(
   ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.IsoLowPriority.toTuple"),
   ProblemFilters.exclude[DirectMissingMethodProblem]("scodec.IsoLowPriority.fromTuple"),
@@ -46,7 +48,7 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .settings(
     name := "scodec-core",
     libraryDependencies ++= Seq(
-      "org.scodec" %%% "scodec-bits" % "1.2.2"
+      "org.scodec" %%% "scodec-bits" % "1.2.3"
     ),
     scalacOptions := scalacOptions.value
       .filterNot(_ == "-source:3.0-migration") :+ "-source:future",

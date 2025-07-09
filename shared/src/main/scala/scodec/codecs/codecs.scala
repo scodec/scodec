@@ -67,10 +67,11 @@ import scodec.bits.*
   * For each codec of that form, the type is `Codec[Int]` or `Codec[Long]` depending on the specified size.
   * For example, `int32` supports 32-bit big-endian 2s complement signed integers, and uint16L supports 16-bit little-endian
   * unsigned integers.
-  * Note: `uint64[L]` are not provided because a 64-bit unsigned integer does not fit in to a `Long`.
   *
   * Additionally, methods of the form `[u]int[L](size: Int)` and `[u]long[L](size: Int)` exist to build arbitrarily
   * sized codecs, within the limitations of `Int` and `Long`.
+  *
+  * Arbitrarily large integers are supported via `[u]bigint[L](size: Int)` and `[u]bigint[L]`, both supplying a `Codec[BigInt]`.
   *
   * IEEE 754 floating point values are supported by the [[float]], [[floatL]], [[double]], and [[doubleL]] codecs.
   *
@@ -197,6 +198,10 @@ val uint24: Codec[Int] = new IntCodec(24, false, ByteOrdering.BigEndian)
   */
 val uint32: Codec[Long] = new LongCodec(32, false, ByteOrdering.BigEndian)
 
+/** Codec for 64-bit unsigned big-endian integers.
+  */
+val uint64: Codec[BigInt] = new BigIntCodec(64, false, ByteOrdering.BigEndian)
+
 /** Codec for 16-bit 2s complement little-endian shorts.
   */
 val short16L: Codec[Short] = new ShortCodec(16, true, ByteOrdering.LittleEndian)
@@ -244,6 +249,10 @@ val uint24L: Codec[Int] = new IntCodec(24, false, ByteOrdering.LittleEndian)
 /** Codec for 32-bit unsigned little-endian integers.
   */
 val uint32L: Codec[Long] = new LongCodec(32, false, ByteOrdering.LittleEndian)
+
+/** Codec for 64-bit unsigned big-endian integers.
+  */
+val uint64L: Codec[BigInt] = new BigIntCodec(64, false, ByteOrdering.LittleEndian)
 
 /** Codec for variable-length big-endian integers.
   * Encoding requires between 1 and 5 bytes, depending on the value.
@@ -340,6 +349,25 @@ def long(bits: Int): Codec[Long] = new LongCodec(bits, true, ByteOrdering.BigEnd
   */
 def ulong(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.BigEndian)
 
+/** Codec for unsized 2s complement big-endian integers that are represented with `BigInt`.
+  */
+val bigint: Codec[BigInt] = new UnsizedBigIntCodec(true, ByteOrdering.BigEndian)
+
+/** Codec for n-bit 2s complement big-endian integers that are represented with `BigInt`.
+  * @param size number of bits (must be greater than zero)
+  */
+def bigint(size: Int): Codec[BigInt] = new BigIntCodec(size, true, ByteOrdering.BigEndian)
+
+/** Codec for unsized unsigned big-endian integers that are represented with `BigInt`.
+  * @param size number of bits (must be greater than zero)
+  */
+val ubigint: Codec[BigInt] = new UnsizedBigIntCodec(false, ByteOrdering.BigEndian)
+
+/** Codec for n-bit unsigned big-endian integers that are represented with `BigInt`.
+  * @param size number of bits (must be greater than zero)
+  */
+def ubigint(size: Int): Codec[BigInt] = new BigIntCodec(size, false, ByteOrdering.BigEndian)
+
 /** Codec for n-bit 2s complement little-endian shorts.
   * @param size number of bits (must be 0 < size <= 16)
   */
@@ -369,6 +397,24 @@ def longL(bits: Int): Codec[Long] = new LongCodec(bits, true, ByteOrdering.Littl
   * @param bits number of bits (must be 0 < size <= 63)
   */
 def ulongL(bits: Int): Codec[Long] = new LongCodec(bits, false, ByteOrdering.LittleEndian)
+
+/** Codec for unsized 2s complement little-endian integers that are represented with `BigInt`.
+  */
+val bigintL: Codec[BigInt] = new UnsizedBigIntCodec(true, ByteOrdering.LittleEndian)
+
+/** Codec for n-bit 2s complement little-endian integers that are represented with `BigInt`.
+  * @param size number of bits (must be greater than zero)
+  */
+def bigintL(size: Int): Codec[BigInt] = new BigIntCodec(size, true, ByteOrdering.LittleEndian)
+
+/** Codec for unsized unsigned little-endian integers that are represented with `BigInt`.
+  */
+val ubigintL: Codec[BigInt] = new UnsizedBigIntCodec(false, ByteOrdering.LittleEndian)
+
+/** Codec for n-bit unsigned little-endian integers that are represented with `BigInt`.
+  * @param size number of bits (must be greater than zero)
+  */
+def ubigintL(size: Int): Codec[BigInt] = new BigIntCodec(size, false, ByteOrdering.LittleEndian)
 
 /** Codec for n-nibble packed decimal (BCD) integers that are represented with `Long`.
   * @param nibbles number of nibbles (4-bit chunks)
