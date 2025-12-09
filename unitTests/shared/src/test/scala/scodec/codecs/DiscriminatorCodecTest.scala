@@ -31,6 +31,8 @@
 package scodec
 package codecs
 
+import scala.annotation.nowarn
+
 class DiscriminatorCodecTest extends CodecSuite:
 
   test("support building a codec using typecases") {
@@ -187,6 +189,7 @@ class DiscriminatorCodecTest extends CodecSuite:
     val goCodec = int32.as[Go]
     val annotateCodec = ascii.as[Annotate]
 
+    @nowarn // FIXME https://github.com/scala/scala3/issues/24713
     val codec =
       discriminated[Direction]
         .by(uint8)
