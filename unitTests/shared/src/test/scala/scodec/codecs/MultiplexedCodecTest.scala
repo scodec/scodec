@@ -64,7 +64,7 @@ class MultiplexedCodecTest extends CodecSuite:
     val trials = 10
     val sizes = List(10, 100, 1000, 10000)
     val results = (1 to trials)
-      .map { trial =>
+      .map { _ =>
         sizes.map { size =>
           val vec = definedSamples(Gen.listOfN(size, Arbitrary.arbitrary[Int]).map {
             _.toVector
@@ -72,11 +72,9 @@ class MultiplexedCodecTest extends CodecSuite:
           val (encoded, encodeTime) = time {
             codec.encode(vec).require
           }
-          // println(s"$trial - encoding $size took $encodeTime")
           val (decoded, decodeTime) = time {
             codec.decode(encoded).require.value
           }
-          // println(s"$trial - decoding $size took $decodeTime")
           assertEquals(decoded, vec)
           encodeTime + decodeTime
         }

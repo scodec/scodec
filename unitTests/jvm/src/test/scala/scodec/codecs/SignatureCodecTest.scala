@@ -71,7 +71,7 @@ class SignatureCodecTest extends CodecSuite:
 
   protected def testFixedSizeSignature(size: Int)(sf: SignerFactory) =
     val codec = fixedSizeSignature(size)(int32 :: variableSizeBytes(int32, utf8), sf)
-    forAll((n: Int, s: String, x: Int) => roundtrip(codec, (n, s)))
+    forAll((n: Int, s: String) => roundtrip(codec, (n, s)))
 
   protected def testVariableSizeSignature(sf: SignerFactory) =
     val codec = variableSizeSignature(uint16)(int32 :: variableSizeBytes(int32, utf8), sf) :: int32

@@ -31,6 +31,7 @@
 package scodec
 package codecs
 
+import scala.annotation.nowarn
 import scala.math.{floor, log10}
 
 import java.nio.charset.Charset
@@ -1571,6 +1572,7 @@ extension (context: String) def |[A](codec: Codec[A]): Codec[A] = codec.withCont
   * There are a few variations on this syntax. See [[DiscriminatorCodec]] for details.
   */
 def discriminated[A]: NeedDiscriminatorCodec[A] = new NeedDiscriminatorCodec[A] {
+  @nowarn // FIXME https://github.com/scala/scala3/issues/24713
   final def by[B](discriminatorCodec: Codec[B]): DiscriminatorCodec[A, B] =
     new DiscriminatorCodec[A, B](discriminatorCodec, Vector(), [x] => (x: Codec[x]) => x)
 }

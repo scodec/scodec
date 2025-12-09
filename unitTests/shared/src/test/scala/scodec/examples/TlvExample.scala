@@ -31,6 +31,8 @@
 package scodec
 package examples
 
+import scala.annotation.nowarn
+
 import scodec.bits.*
 import codecs.*
 
@@ -74,6 +76,7 @@ class TlvExample extends CodecSuite:
         uint16.decode(b).orElse(uint8.decode(b))
     }
 
+    @nowarn // FIXME https://github.com/scala/scala3/issues/24713
     val commandCodec: Codec[Command] =
       discriminated[Command]
         .by(uint8)
