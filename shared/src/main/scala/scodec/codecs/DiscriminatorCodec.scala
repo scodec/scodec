@@ -197,7 +197,7 @@ final class DiscriminatorCodec[A, B] private[codecs] (
           .map(List(_))
           .getOrElse(List())
       }
-    if itr.hasNext then itr.next
+    if itr.hasNext then itr.next()
     else Attempt.failure(new Err.MatchingDiscriminatorNotFound(a))
 
   def decode(bits: BitVector) =

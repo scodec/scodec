@@ -139,7 +139,7 @@ trait Decoder[+A]:
         case Attempt.Failure(err) =>
           error = Some(err.pushContext(count.toString))
           remaining = BitVector.empty
-    Attempt.fromErrOption(error, DecodeResult(bldr.result, remaining))
+    Attempt.fromErrOption(error, DecodeResult(bldr.result(), remaining))
 
 /** Provides functions for working with decoders.
   */
