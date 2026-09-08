@@ -41,7 +41,25 @@ type DropUnits[A <: Tuple] <: Tuple = A match
   case EmptyTuple => EmptyTuple
 
 object DropUnits:
-  // actually it should be InlineFoldR.Step[[T <: Tuple] =>> T => DropUnits[T]], but it leads to endless comipilation for scala 3.3.8 (https://github.com/scala/scala3/issues/23110)
+  // actually it should be InlineFoldR.Step[[T <: Tuple] =>> T => DropUnits[T]], but it leads to endless compilation for scala 3.3.7/3.3.8 (https://github.com/scala/scala3/issues/23110)
+  // object DropStep extends InlineFoldR.Step[[T <: Tuple] =>> T => Tuple]:
+  // object DropStep extends InlineFoldR.Step[[T <: Tuple] =>> T => DropUnits[T]]:
+  //   inline def apply[Elem, T <: Tuple](
+  //       acc: T => DropUnits[T]
+  //   ): (Elem *: T) => DropUnits[Elem *: T] =
+  //     (elem: Elem *: T) =>
+  //       inline erasedValue[Elem & Matchable] match
+  //         case _: Unit => acc(elem.tail)
+  //         case _       => elem.head *: acc(elem.tail)
+
+  // inline def drop[A <: Tuple](a: A): DropUnits[A] =
+  //   InlineFoldR
+  //     .fold[[T <: Tuple] =>> T => DropUnits[T], A](
+  //       (_: EmptyTuple) => EmptyTuple,
+  //       DropStep
+  //     )(a)
+  //     .asInstanceOf[DropUnits[A]]
+
   object DropStep extends InlineFoldR.Step[[T <: Tuple] =>> T => Tuple]:
     inline def apply[Elem, T <: Tuple](
         acc: T => Tuple
