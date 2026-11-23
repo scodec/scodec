@@ -30,6 +30,9 @@
 
 package scodec
 
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalacheck.Prop.forAll
 import scodec.bits.*
 import scodec.codecs.*
 
@@ -91,4 +94,48 @@ class DerivedCodecTest extends CodecSuite:
 
   test("derivation of recursive ADTs") {
     roundtrip(Codec[Tree[Int]], Node(Node(Leaf(1), Leaf(2)), Node(Leaf(3), Leaf(4))))
+  }
+
+  enum Color derives Codec:
+    case Red, Green, Blue
+
+  test("derived sum codecs fail to decode an unknown ordinal") {
+    Codec[Color].decode(hex"03".bits) match
+      case Attempt.Failure(err: KnownDiscriminatorType[?]#UnknownDiscriminator) =>
+        assertEquals(err.discriminator: Any, 3)
+      case other => fail(s"expected an unknown discriminator failure, got $other")
+  }
+
+  // Valid ordinals, the first invalid one, arbitrary bytes and inputs too short for an ordinal.
+  private val sumBits: Gen[BitVector] =
+    Gen.oneOf(
+      for
+        ordinal <- Gen.oneOf(Gen.choose(0, Color.values.length), Gen.choose(0, 255))
+        rest <- arbitrary[BitVector]
+      yield BitVector.fromInt(ordinal, 8) ++ rest,
+      Gen.choose(0, 7).map(BitVector.low(_))
+    )
+
+  property("derived sum codecs decode exactly the known ordinals") {
+    forAll(sumBits) { bits =>
+      val result = Codec[Color].decode(bits)
+      if bits.size < 8 then assert(result.isFailure)
+      else
+        val ordinal = bits.take(8).toInt(signed = false)
+        if ordinal < Color.values.length then
+          assertEquals(
+            result,
+            Attempt.successful(DecodeResult(Color.fromOrdinal(ordinal), bits.drop(8)))
+          )
+        else assert(result.isFailure)
+    }
+  }
+
+  property("derived codecs for recursive ADTs re-encode whatever they decode") {
+    forAll(sumBits) { bits =>
+      Codec[Tree[Int]].decode(bits) match
+        case Attempt.Successful(DecodeResult(tree, rest)) =>
+          assertEquals(Codec[Tree[Int]].encode(tree).map(_ ++ rest), Attempt.successful(bits))
+        case Attempt.Failure(_) => ()
+    }
   }

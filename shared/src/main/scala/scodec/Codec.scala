@@ -550,7 +550,8 @@ object Codec extends EncoderFunctions, DecoderFunctions:
       override def toString = "TupleCodec"
 
     final class SumCodec[A](mirror: Mirror.SumOf[A], caseCodecs0: => Array[Codec[Any]])
-        extends Codec[A]:
+        extends Codec[A],
+          codecs.KnownDiscriminatorType[Int]:
       private lazy val caseCodecs: Array[Codec[Any]] = caseCodecs0
 
       def sizeBound = caseCodecs.foldLeft(codecs.uint8.sizeBound)(_ + _.sizeBound)
@@ -561,7 +562,9 @@ object Codec extends EncoderFunctions, DecoderFunctions:
 
       def decode(bits: BitVector) =
         codecs.uint8
-          .flatMap(ordinal => caseCodecs(ordinal))
+          .flatMap: ordinal =>
+            if ordinal < caseCodecs.length then caseCodecs(ordinal)
+            else Decoder.liftAttempt(Attempt.failure(new UnknownDiscriminator(ordinal)))
           .decode(bits)
           .asInstanceOf[Attempt[DecodeResult[A]]]
 
